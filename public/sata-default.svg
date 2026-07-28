@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">SATA token image</title>
+  <desc id="desc">A simple circular SATA mark for devnet token metadata testing.</desc>
+  <rect width="1024" height="1024" fill="#0f172a"/>
+  <circle cx="512" cy="512" r="392" fill="#f8fafc"/>
+  <circle cx="512" cy="512" r="344" fill="#0f766e"/>
+  <circle cx="512" cy="512" r="278" fill="#ffffff"/>
+  <path d="M512 236 745 644H279L512 236Z" fill="#f97316"/>
+  <path d="M512 332 654 584H370L512 332Z" fill="#0f172a"/>
+  <text x="512" y="770" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="112" font-weight="700" fill="#0f172a">SATA</text>
+</svg>

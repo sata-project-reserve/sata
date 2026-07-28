@@ -1,0 +1,17 @@
+node_modules
+.next
+coverage
+playwright-report
+test-results
+.env
+.env.local
+.env.*.local
+*.log
+tsconfig.tsbuildinfo
+launch-manifest.json
+launch-report.md
+artifacts/
+*.key
+*keypair*.json
+id.json
+wallet.json

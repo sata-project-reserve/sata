@@ -1,0 +1,25 @@
+{
+  "name": "SATA",
+  "symbol": "SATA",
+  "description": "SATA is a community-driven experimental token on Solana. It provides no promise of profit, return, utility or appreciation.",
+  "image": "http://127.0.0.1:3001/sata-default.svg",
+  "attributes": [
+    {
+      "trait_type": "network",
+      "value": "devnet"
+    },
+    {
+      "trait_type": "project_type",
+      "value": "community experimental token"
+    }
+  ],
+  "properties": {
+    "category": "image",
+    "files": [
+      {
+        "uri": "http://127.0.0.1:3001/sata-default.svg",
+        "type": "image/svg+xml"
+      }
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "sata-token-launcher",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "format": "prettier --check .",
+    "security:check": "node scripts/security-check.mjs",
+    "prepare:metadata": "node scripts/prepare-mainnet-metadata.mjs",
+    "verify:devnet": "node scripts/verify-devnet.mjs"
+  },
+  "dependencies": {
+    "@metamask/connect-solana": "^0.4.0",
+    "@metaplex-foundation/mpl-token-metadata": "3.4.0",
+    "@raydium-io/raydium-sdk-v2": "0.2.59-alpha",
+    "@solana/kit": "7.0.0",
+    "@solana/spl-token": "0.4.15",
+    "@solana/web3.js": "1.98.4",
+    "bn.js": "^5.2.2",
+    "lucide-react": "^0.468.0",
+    "next": "16.2.10",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@next/eslint-plugin-next": "^16.2.10",
+    "@playwright/test": "^1.55.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@types/bn.js": "^5.2.0",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.19.0",
+    "@typescript-eslint/parser": "^8.19.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^16.2.10",
+    "eslint-config-prettier": "^9.1.0",
+    "jsdom": "^25.0.1",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}

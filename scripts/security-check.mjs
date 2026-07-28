@@ -2,7 +2,15 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const root = process.cwd();
-const ignored = new Set(['node_modules', '.next', 'coverage', 'playwright-report', 'test-results']);
+const ignored = new Set([
+  'node_modules',
+  '.next',
+  'out',
+  'dist',
+  'coverage',
+  'playwright-report',
+  'test-results'
+]);
 const ignoredFiles = new Set(['package-lock.json']);
 const findings = [];
 

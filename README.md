@@ -40,6 +40,7 @@ The app is designed to stop before every mainnet transaction. The owner must unl
 
 ## Transparency Roadmap
 
+- X/Twitter: [@SATAReserve](https://x.com/SATAReserve)
 - Public transparency page: `/transparency`
 - Raw public reports: `/transparency/latest.json` and `/transparency/latest.md`
 - [Long-term roadmap](docs/long-term-roadmap.md)

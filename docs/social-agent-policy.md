@@ -20,11 +20,13 @@ Preferred display name:
 
 `SATA`
 
-Preferred handle candidates:
+Live account:
 
-- `SATAonSol`
-- `SATAReserve`
-- `SATAproof`
+`https://x.com/SATAReserve`
+
+Handle:
+
+`@SATAReserve`
 
 Bio:
 
@@ -32,7 +34,7 @@ Bio:
 
 Website:
 
-Use the public transparency page after deployment.
+`https://sata-project-reserve.github.io/sata/`
 
 Pinned post:
 

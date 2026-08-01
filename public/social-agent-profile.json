@@ -3,8 +3,11 @@
   "network": "solana-mainnet",
   "purpose": "Make SATA legible over time through transparent reserve, liquidity, authority, and roadmap updates.",
   "displayName": "SATA",
-  "handleCandidates": ["SATAonSol", "SATAReserve", "SATAproof"],
+  "handle": "SATAReserve",
+  "profileUrl": "https://x.com/SATAReserve",
   "bio": "Bitcoin-aligned community token on Solana. Mint/freeze authority revoked. Public liquidity and BTC reserve reports. Proof over promises. No redemption or price guarantee.",
+  "website": "https://sata-project-reserve.github.io/sata/",
+  "profileImage": "/sata-profile.png",
   "slogan": "Proof over promises.",
   "voice": {
     "tone": "factual, calm, transparent",

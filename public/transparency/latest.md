@@ -1,7 +1,7 @@
 # SATA Transparency Report
 
 Status: TRANSPARENCY_VERIFIED_WITH_DISCLOSURES
-Generated UTC: 2026-08-01T13:28:08.273Z
+Generated UTC: 2026-08-01T14:42:26.822Z
 Cadence: scheduled every 12 hours when GitHub Actions is enabled
 Slogan: Proof over promises.
 
@@ -51,7 +51,7 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Planned reserve: 500000 sats (0.005 BTC)
 - Metrics basis: actual-confirmed-chain
 - Proof message: SATA Bitcoin reserve address for Solana mint A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH. No redemption promise. Snapshot UTC: 2026-08-01T13:20:55Z.
-- Proof signature: AkcwRAIgTuFktugOzK4NVrAQFqvymy3gREk6LMV8AW9JTE7GvPACIBr8A6wMdHcm2nnN7NuxQmc9ZluTRPabRpp6cwwM9EKpASECMkly6+9vvZrpsgNHhFcSpklkpaluJV8IEsjNLweRTMk=
+- Proof signature: AkcwRAIgTuFktugOzK4NVrAQFqvymy3gREk6LMV8AW9JTE7GvPACIBrpp6cwwM9EKpASECMkly6+9vvZrpsgNHhFcSpklkpaluJV8IEsjNLweRTMk=
 - Sats per SATA: 50000000000000/99999685334994591
 - SATA per sat: 99999685334994591/50000000000000
 - Target for 1 sat per 1 SATA: 999996854 sats (9.99996854 BTC)

@@ -25,7 +25,10 @@ export const PROGRAM_IDS = {
   token2022: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
   associatedToken: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
   metaplexTokenMetadata: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  computeBudget: 'ComputeBudget111111111111111111111111111111',
   raydiumCpmmMainnet: 'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C',
+  raydiumCpmmLockMainnet: 'LockrWmn6K5twhz3y9w1dQERbmgSaRkfnTeTKbpofwE',
+  raydiumCpmmLockAuthorityMainnet: '3f7GcQFG397GAaEnv51zR6tsTVihYRydnydDD1cXekxH',
   wsolMint: 'So11111111111111111111111111111111111111112'
 } as const;
 

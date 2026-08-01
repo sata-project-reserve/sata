@@ -1,12 +1,12 @@
 # Dependency Decisions
 
-Sources consulted on July 17, 2026 and rechecked on July 27, 2026:
+Sources consulted on July 17, 2026 and rechecked on July 27 and July 29, 2026:
 
 - MetaMask Connect Solana docs: `@metamask/connect-solana` implements Wallet Standard and supports Wallet Adapter integration. This app uses MetaMask Connect directly to avoid bundling unrelated wallet adapters and hardware/mobile wallet transitive dependencies.
 - Solana Kit docs: `@solana/kit` is the current modular JavaScript SDK successor for new development.
 - SPL Token npm/docs: `@solana/spl-token` remains the stable web3.js v1 helper library for SPL Token and Token-2022 instructions.
 - Metaplex token docs: Token Metadata supports fungible token metadata; Kit package exists for new projects, while the established MPL package remains used for instruction compatibility.
-- Raydium docs: official TypeScript SDK is `@raydium-io/raydium-sdk-v2`; CPMM is the preferred default constant-product pool for new tokens.
+- Raydium docs: official TypeScript SDK is `@raydium-io/raydium-sdk-v2`; CPMM is the preferred default constant-product pool for new tokens. The CPMM program ID and LP-Lock / Burn & Earn program ID are verified against Raydium's published program-address page, and pool creation fetches `https://api-v3.raydium.io/main/cpmm-config` at runtime for the selected fee config.
 
 Selected versions:
 
@@ -18,7 +18,7 @@ Selected versions:
 - `@solana/web3.js` `1.98.4`: required by Wallet Adapter, SPL Token helpers, Raydium SDK, and MetaMask examples.
 - `@solana/spl-token` `0.4.15`: current SPL Token helper library for web3.js v1.
 - `@metaplex-foundation/mpl-token-metadata` `3.4.0`: established Token Metadata client used for instruction compatibility.
-- `@raydium-io/raydium-sdk-v2` `0.2.59-alpha`: current official Raydium SDK V2 release found during research. It remains the selected package for future owner-approved CPMM transaction construction; disabled planning code currently reimplements only Raydium's documented deterministic PDA seeds from the installed SDK source.
+- `@raydium-io/raydium-sdk-v2` `0.2.59-alpha`: current official Raydium SDK V2 release found during research. It is used for owner-approved CPMM pool, add-liquidity, and Burn & Earn LP-lock transaction construction; planning code also derives Raydium's documented deterministic PDA seeds so the owner can preview pool, vault, and LP addresses before signing.
 - Zod `^3.25.76`: mature schema validation library.
 - Vitest, Playwright, ESLint, Prettier: test, browser, lint, and formatting quality gates.
 

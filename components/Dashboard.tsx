@@ -10,14 +10,39 @@ import {
   PROGRAM_IDS,
   SUPPORTED_SOLANA_CHAINS
 } from '@/lib/solana/constants';
+import { PUBLIC_KEYS } from '@/lib/solana/public-keys';
 import { buildMetadataJson } from '@/lib/metadata/metadata';
 import { buildLaunchManifest, buildLaunchReport } from '@/lib/manifest/manifest';
-import { buildLiquidityPlan, buildPoolCreationPreview } from '@/lib/liquidity-planner/planner';
+import {
+  buildLiquidityPlan,
+  buildPoolCreationPreview,
+  CREATE_POOL_CONFIRMATION_PHRASE
+} from '@/lib/liquidity-planner/planner';
+import {
+  buildRaydiumCpmmAddLiquidityTransaction,
+  buildRaydiumCpmmLockLiquidityTransaction,
+  buildRaydiumCpmmPoolTransaction,
+  LOCK_LIQUIDITY_CONFIRMATION_PHRASE,
+  prepareRaydiumCpmmAddLiquidityPreview,
+  prepareRaydiumCpmmLockLiquidityPreview,
+  prepareRaydiumCpmmPoolPreview,
+  verifyRaydiumCpmmLiquidityLock,
+  verifyRaydiumCpmmPool,
+  type RaydiumAddLiquidityPreparedPreview,
+  type RaydiumLockLiquidityPreparedPreview,
+  type RaydiumPoolPreparedPreview,
+  type RaydiumPoolVerification
+} from '@/lib/liquidity-planner/raydium-pool';
 import { evaluateMarketReadiness } from '@/lib/market-readiness/checks';
 import { buildGmgnTokenReference } from '@/lib/market-readiness/gmgn';
 import { createConnection, inspectWallet } from '@/lib/solana/client';
 import { buildRevokeAuthorityTransaction, fetchAuthorityState, type AuthorityState } from '@/lib/solana/authority';
-import { planTokenLaunch, type TokenLaunchPlan } from '@/lib/solana/token-workflow';
+import {
+  deriveMetadataAddress,
+  planExistingMintLaunchCompletion,
+  planTokenLaunch,
+  type TokenLaunchPlan
+} from '@/lib/solana/token-workflow';
 import { verifyMintSupply, type VerificationResult } from '@/lib/solana/verification';
 import { executeWalletTransaction, type StandardWalletHandle } from '@/lib/wallet/execute';
 import { connectMetaMaskSolana } from '@/lib/wallet/metamask-solana';
@@ -37,6 +62,10 @@ type DashboardProps = {
   raydiumPoolCreationEnabled: boolean;
   defaultImageUri: string;
   defaultMetadataUri: string;
+  defaultBudgetSol: string;
+  defaultReserveSol: string;
+  defaultLiquiditySata: string;
+  defaultLiquiditySol: string;
 };
 
 const steps = [
@@ -66,8 +95,15 @@ export function Dashboard(props: DashboardProps) {
   const [activeStep, setActiveStep] = useState(0);
   const [connectedAddress, setConnectedAddress] = useState('');
   const [balanceSol, setBalanceSol] = useState('0');
-  const [budgetSol, setBudgetSol] = useState('0.25');
-  const [reserveSol, setReserveSol] = useState('0.05');
+  const [budgetSol, setBudgetSol] = useState(props.defaultBudgetSol);
+  const [reserveSol, setReserveSol] = useState(props.defaultReserveSol);
+  const [liquiditySata, setLiquiditySata] = useState(props.defaultLiquiditySata);
+  const [liquiditySol, setLiquiditySol] = useState(props.defaultLiquiditySol);
+  const [poolFeeConfigIndex, setPoolFeeConfigIndex] = useState('0');
+  const [poolOpenTimeUnix, setPoolOpenTimeUnix] = useState('0');
+  const [maxPoolPriceImpactBps, setMaxPoolPriceImpactBps] = useState('100');
+  const [existingPoolAddress, setExistingPoolAddress] = useState('');
+  const [resumeMintAddress, setResumeMintAddress] = useState('');
   const [tokenInput, setTokenInput] = useState<TokenConfigInput>({
     name: SATA_DEFAULTS.name,
     symbol: SATA_DEFAULTS.symbol,
@@ -82,6 +118,7 @@ export function Dashboard(props: DashboardProps) {
   });
   const [typedMint, setTypedMint] = useState('');
   const [poolPhrase, setPoolPhrase] = useState('');
+  const [lockPhrase, setLockPhrase] = useState('');
   const [walletHandle, setWalletHandle] = useState<StandardWalletHandle | null>(null);
   const [launchPlan, setLaunchPlan] = useState<TokenLaunchPlan | null>(null);
   const [activeTxIndex, setActiveTxIndex] = useState(0);
@@ -91,6 +128,16 @@ export function Dashboard(props: DashboardProps) {
   const [authorityPreview, setAuthorityPreview] = useState<TransactionPreview | null>(null);
   const [authorityKind, setAuthorityKind] = useState<'mint' | 'freeze' | null>(null);
   const [verificationChecks, setVerificationChecks] = useState<VerificationResult[]>([]);
+  const [poolPrepared, setPoolPrepared] = useState<RaydiumPoolPreparedPreview | null>(null);
+  const [poolVerification, setPoolVerification] = useState<RaydiumPoolVerification | null>(null);
+  const [poolSignature, setPoolSignature] = useState('');
+  const [addLiquidityPrepared, setAddLiquidityPrepared] =
+    useState<RaydiumAddLiquidityPreparedPreview | null>(null);
+  const [addLiquiditySignature, setAddLiquiditySignature] = useState('');
+  const [lockPrepared, setLockPrepared] = useState<RaydiumLockLiquidityPreparedPreview | null>(
+    null
+  );
+  const [lockSignature, setLockSignature] = useState('');
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -109,6 +156,16 @@ export function Dashboard(props: DashboardProps) {
       console.error = originalConsoleError;
     };
   }, []);
+
+  useEffect(() => {
+    setPoolPrepared(null);
+    setPoolVerification(null);
+    setPoolSignature('');
+    setAddLiquidityPrepared(null);
+    setAddLiquiditySignature('');
+    setLockPrepared(null);
+    setLockSignature('');
+  }, [liquiditySata, liquiditySol, poolFeeConfigIndex, poolOpenTimeUnix, typedMint, existingPoolAddress]);
 
   const validation = useMemo(() => {
     try {
@@ -179,25 +236,39 @@ export function Dashboard(props: DashboardProps) {
   const liquidity = useMemo(() => {
     if (!validation.ok) return null;
     try {
-      const sataAmount = validation.config.rawSupply / 10n;
-      const solAmount = parseHumanAmountToBaseUnits('1', 9).raw;
+      const sataAmount = parseHumanAmountToBaseUnits(
+        liquiditySata,
+        validation.config.decimals
+      ).raw;
+      const solAmount = parseHumanAmountToBaseUnits(liquiditySol, 9).raw;
       const plan = buildLiquidityPlan({
         sataMint: typedMint || 'pending-mint-address',
         quoteMint: PROGRAM_IDS.wsolMint,
         sataRawAmount: sataAmount,
         solLamports: solAmount,
         totalSataRawSupply: validation.config.rawSupply,
-        feeConfigIndex: 0,
-        poolOpenTimeUnix: 0n,
+        feeConfigIndex: Number(poolFeeConfigIndex),
+        poolOpenTimeUnix: BigInt(poolOpenTimeUnix || '0'),
         maxSolBudgetLamports: parseHumanAmountToBaseUnits(budgetSol, 9).raw,
         minSolReserveLamports: parseHumanAmountToBaseUnits(reserveSol, 9).raw,
-        maxAcceptablePriceImpactBps: 100n
+        maxAcceptablePriceImpactBps: BigInt(maxPoolPriceImpactBps || '0')
       });
       return buildPoolCreationPreview(plan, props.raydiumPoolCreationEnabled);
     } catch {
       return null;
     }
-  }, [budgetSol, props.raydiumPoolCreationEnabled, reserveSol, typedMint, validation]);
+  }, [
+    budgetSol,
+    liquiditySata,
+    liquiditySol,
+    maxPoolPriceImpactBps,
+    poolFeeConfigIndex,
+    poolOpenTimeUnix,
+    props.raydiumPoolCreationEnabled,
+    reserveSol,
+    typedMint,
+    validation
+  ]);
 
   const defaultReadinessChecks = evaluateMarketReadiness({
     mintExists: false,
@@ -222,30 +293,74 @@ export function Dashboard(props: DashboardProps) {
     manifestContainsPoolAndMint: false
   }).map((check) => ({ name: check.id, ok: check.ok, detail: check.detail }));
 
-  const manifestVerificationChecks =
+  const baseVerificationChecks =
     verificationChecks.length > 0 ? verificationChecks : defaultReadinessChecks;
+  const manifestVerificationChecks = poolVerification
+    ? [...baseVerificationChecks, ...poolVerification.checks]
+    : baseVerificationChecks;
   const tokenCreatedVerified =
-    launchPlan !== null &&
-    launchPlan.transactions.every((item) => signatures[item.label]) &&
     verificationChecks.length > 0 &&
-    verificationChecks.every((check) => check.ok);
+    verificationChecks.every((check) => check.ok) &&
+    Boolean(typedMint || launchPlan?.mint.publicKey);
+  const typedMintVerified =
+    verificationChecks.length > 0 &&
+    verificationChecks.every((check) => check.ok) &&
+    Boolean(typedMint);
+  const verifiedLaunchMint = tokenCreatedVerified
+    ? (launchPlan?.mint.publicKey.toBase58() ?? typedMint)
+    : typedMintVerified
+      ? typedMint
+      : '';
+  const authorityTypedMintMatches = Boolean(verifiedLaunchMint && typedMint === verifiedLaunchMint);
+  const poolCreatedVerified = Boolean(
+    poolVerification && poolVerification.checks.every((check) => check.ok)
+  );
+  const lockVerified = Boolean(
+    poolVerification?.checks.some((check) => check.name === 'raydium-locked-lp-amount' && check.ok)
+  );
+  const poolDisclosure =
+    poolVerification?.disclosure ??
+    lockPrepared?.disclosure ??
+    addLiquidityPrepared?.disclosure ??
+    poolPrepared?.disclosure ??
+    null;
+
+  useEffect(() => {
+    if (poolDisclosure?.poolAddress && !existingPoolAddress) {
+      setExistingPoolAddress(poolDisclosure.poolAddress);
+    }
+  }, [poolDisclosure?.poolAddress, existingPoolAddress]);
 
   const manifest = validation.ok
     ? buildLaunchManifest({
-        status: tokenCreatedVerified ? 'TOKEN_CREATED' : 'VERIFICATION_INCOMPLETE',
+        status: poolCreatedVerified
+          ? 'POOL_CREATED'
+          : tokenCreatedVerified
+            ? 'TOKEN_CREATED'
+            : 'VERIFICATION_INCOMPLETE',
         network: props.cluster,
         rpcHost: props.rpcHost,
         ownerPublicAddress: connectedAddress || 'not connected',
-        mintAddress: launchPlan?.mint.publicKey.toBase58(),
-        metadataAddress: launchPlan?.metadata.toBase58(),
-        associatedTokenAccount: launchPlan?.ata.toBase58(),
+        mintAddress: launchPlan?.mint.publicKey.toBase58() ?? verifiedLaunchMint,
+        metadataAddress: launchPlan?.metadata.toBase58() ?? poolDisclosure?.metadataAddress,
+        associatedTokenAccount: launchPlan?.ata.toBase58() ?? (connectedAddress && verifiedLaunchMint ? findOwnerTokenAccountForMint(connectedAddress, verifiedLaunchMint) : undefined),
         name: validation.config.name,
         symbol: validation.config.symbol,
         decimals: validation.config.decimals,
         humanSupply: validation.config.humanSupply,
         rawSupply: validation.config.rawSupply.toString(),
-        mintAuthorityStatus: 'owner until explicitly revoked',
-        freezeAuthorityStatus: 'owner until explicitly revoked',
+        mintAuthorityStatus: authorityState
+          ? (authorityState.mintAuthority ?? 'revoked')
+          : 'not checked in this session',
+        freezeAuthorityStatus: authorityState
+          ? (authorityState.freezeAuthority ?? 'revoked')
+          : 'not checked in this session',
+        ...(poolDisclosure?.metadataUpdateAuthority
+          ? { metadataUpdateAuthority: poolDisclosure.metadataUpdateAuthority }
+          : {}),
+        ...(poolDisclosure?.metadataMutable === true || poolDisclosure?.metadataMutable === false
+          ? { metadataMutable: poolDisclosure.metadataMutable }
+          : {}),
         transactionSignatures: signatures,
         explorerLinks: {},
         applicationCommitHash: 'not-a-git-repository',
@@ -257,11 +372,38 @@ export function Dashboard(props: DashboardProps) {
           raydiumSdk: '0.2.59-alpha'
         },
         verificationChecks: manifestVerificationChecks,
+        ...(poolDisclosure
+          ? {
+              liquidity: {
+                poolAddress: poolDisclosure.poolAddress,
+                poolProgram: poolDisclosure.poolProgram,
+                pair: poolDisclosure.pair,
+                poolOpeningTimestamp: poolDisclosure.poolOpeningTimestamp,
+                sataLiquidity: poolDisclosure.sataDepositedRaw,
+                solLiquidity: poolDisclosure.wsolDepositedLamports,
+                percentageSupplyInLiquidity:
+                  poolPrepared?.poolPreview.plan.percentageSupplyAllocatedPpm ?? 'not captured',
+                liquidityPositionOwner: poolDisclosure.liquidityPositionOwner,
+                lockBurnStatus: poolDisclosure.lockBurnStatus,
+                ...(poolDisclosure.lockProgram ? { lockProgram: poolDisclosure.lockProgram } : {}),
+                ...(poolDisclosure.lockPda ? { lockPda: poolDisclosure.lockPda } : {}),
+                ...(poolDisclosure.lockLpVault ? { lockLpVault: poolDisclosure.lockLpVault } : {}),
+                ...(poolDisclosure.feeKeyNftMint ? { feeKeyNftMint: poolDisclosure.feeKeyNftMint } : {}),
+                ...(poolDisclosure.feeKeyNftAccount
+                  ? { feeKeyNftAccount: poolDisclosure.feeKeyNftAccount }
+                  : {}),
+                ...(poolDisclosure.lockedLpAmountRaw
+                  ? { lockedLpAmountRaw: poolDisclosure.lockedLpAmountRaw }
+                  : {})
+              }
+            }
+          : {}),
         gmgn: {
           indexingStatus: 'not checked',
           buyRouteStatus: 'not checked',
           sellRouteStatus: 'not checked',
-        tokenPageReference: typedMint ? buildGmgnTokenReference(typedMint) : 'pending mint'
+          tokenPageReference: verifiedLaunchMint ? buildGmgnTokenReference(verifiedLaunchMint) : 'pending mint',
+          independentMarketDataStatus: poolCreatedVerified ? 'pool created; GMGN not checked' : 'pool not verified'
         }
       })
     : null;
@@ -367,6 +509,36 @@ export function Dashboard(props: DashboardProps) {
     }
   }
 
+  async function prepareResumeLaunchPlan() {
+    if (!validation.ok || !connectedAddress || !resumeMintAddress) return;
+    setBusy(true);
+    setStatusMessage('Preparing recovery transactions for existing mainnet mint...');
+    try {
+      const connection = createConnection(props.rpcUrl);
+      const mint = new PublicKey(resumeMintAddress);
+      const plan = await planExistingMintLaunchCompletion({
+        connection,
+        owner: new PublicKey(connectedAddress),
+        mint,
+        tokenConfig: validation.config,
+        metadataUri: validation.config.metadataUri,
+        network: props.cluster
+      });
+      setLaunchPlan(plan);
+      setActiveTxIndex(0);
+      setSignatures({});
+      setVerificationChecks([]);
+      setTypedMint(plan.mint.publicKey.toBase58());
+      setStatusMessage(
+        'Recovery plan prepared. It will not create another mint; it will mint supply and create metadata for the existing mint.'
+      );
+    } catch (error) {
+      setStatusMessage((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function approveCurrentLaunchTransaction() {
     if (!walletHandle || !launchPlan) return;
     const item = launchPlan.transactions[activeTxIndex];
@@ -376,6 +548,28 @@ export function Dashboard(props: DashboardProps) {
     try {
       const connection = createConnection(props.rpcUrl);
       const owner = new PublicKey(connectedAddress);
+      const expectedSupply = validation.ok ? validation.config.rawSupply : 0n;
+      const preExistingCompletion = await detectLaunchCompletion(
+        connection,
+        launchPlan,
+        expectedSupply
+      );
+      if (preExistingCompletion[item.label]) {
+        const firstIncompleteIndex = launchPlan.transactions.findIndex(
+          (transactionItem) => !preExistingCompletion[transactionItem.label]
+        );
+        const nextIndex =
+          firstIncompleteIndex === -1 ? launchPlan.transactions.length : firstIncompleteIndex;
+        setActiveTxIndex(nextIndex);
+        if (nextIndex >= launchPlan.transactions.length) {
+          await runPostLaunchVerification(connection, launchPlan, signatures);
+        } else {
+          setStatusMessage(
+            `${item.label} is already complete on-chain. Next owner approval: ${launchPlan.transactions[nextIndex]?.label}.`
+          );
+        }
+        return;
+      }
       await ensureFreshTransactionBudget({
         connection,
         owner,
@@ -394,7 +588,7 @@ export function Dashboard(props: DashboardProps) {
         item,
         signature,
         latestBlockhash: latest,
-        expectedSupply: validation.ok ? validation.config.rawSupply : 0n
+        expectedSupply
       });
       const nextSignatures = { ...signatures, [item.label]: signature };
       setSignatures(nextSignatures);
@@ -420,12 +614,27 @@ export function Dashboard(props: DashboardProps) {
 
   async function prepareAuthorityRevocation(kind: 'mint' | 'freeze') {
     if (!connectedAddress || !typedMint) return;
+    if (!authorityTypedMintMatches) {
+      setStatusMessage(
+        'Authority changes are locked until this session has fully verified token creation, supply, owner balance, and metadata for the typed mint.'
+      );
+      return;
+    }
     setBusy(true);
     setStatusMessage(`Preparing ${kind} authority revocation...`);
     try {
       const connection = createConnection(props.rpcUrl);
       const mint = new PublicKey(typedMint);
       const current = await fetchAuthorityState(connection, mint);
+      const currentAuthority =
+        kind === 'mint' ? current.mintAuthority : current.freezeAuthority;
+      if (currentAuthority === null) {
+        setAuthorityState(current);
+        setAuthorityPreview(null);
+        setAuthorityKind(null);
+        setStatusMessage(`${kind} authority is already revoked on-chain. Do not retry this action.`);
+        return;
+      }
       const { preview } = buildRevokeAuthorityTransaction({
         owner: new PublicKey(connectedAddress),
         mint,
@@ -446,6 +655,12 @@ export function Dashboard(props: DashboardProps) {
 
   async function approveAuthorityRevocation() {
     if (!walletHandle || !authorityKind || !typedMint || !connectedAddress) return;
+    if (!authorityTypedMintMatches) {
+      setStatusMessage(
+        'Authority revocation is blocked because the typed mint is not the verified completed launch mint.'
+      );
+      return;
+    }
     setBusy(true);
     setStatusMessage(`Requesting MetaMask approval for ${authorityKind} authority revocation...`);
     try {
@@ -461,8 +676,22 @@ export function Dashboard(props: DashboardProps) {
       });
       transaction.recentBlockhash = latest.blockhash;
       const signature = await executeWalletTransaction(walletHandle, transaction);
-      await connection.confirmTransaction({ signature, ...latest }, 'confirmed');
-      const current = await fetchAuthorityState(connection, mint);
+      let current: AuthorityState;
+      try {
+        await connection.confirmTransaction({ signature, ...latest }, 'confirmed');
+        current = await fetchAuthorityState(connection, mint);
+      } catch (error) {
+        current = await fetchAuthorityState(connection, mint);
+        const revoked =
+          authorityKind === 'mint'
+            ? current.mintAuthority === null
+            : current.freezeAuthority === null;
+        if (!revoked) {
+          throw new Error(
+            `MetaMask returned signature ${signature}, but ${authorityKind} authority was not confirmed before the blockhash expired: ${(error as Error).message}. Verify on-chain state before retrying.`
+          );
+        }
+      }
       setAuthorityState(current);
       setSignatures((existing) => ({ ...existing, [`revoke-${authorityKind}-authority`]: signature }));
       setStatusMessage(`${authorityKind} authority revocation confirmed: ${signature}`);
@@ -471,6 +700,382 @@ export function Dashboard(props: DashboardProps) {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function verifyTypedMintForAuthority() {
+    if (!validation.ok || !connectedAddress || !typedMint) return;
+    setBusy(true);
+    setStatusMessage('Verifying typed mint on-chain before authority management...');
+    try {
+      const connection = createConnection(props.rpcUrl);
+      const allChecks = await verifyTypedMintOnChain(connection, typedMint);
+      const currentAuthority = await fetchAuthorityState(connection, new PublicKey(typedMint));
+      setVerificationChecks(allChecks);
+      setAuthorityState(currentAuthority);
+      if (allChecks.every((check) => check.ok)) {
+        setStatusMessage('Typed mint verified on-chain. Authority management is unlocked for this mint.');
+      } else {
+        setStatusMessage('Typed mint verification failed. Do not revoke authority for this mint.');
+      }
+    } catch (error) {
+      setStatusMessage((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function preparePoolCreation() {
+    if (!validation.ok || !connectedAddress || !walletHandle) return;
+    if (!props.raydiumPoolCreationEnabled) {
+      setStatusMessage('Raydium pool creation is still locked by environment gates.');
+      return;
+    }
+    if (poolPhrase !== CREATE_POOL_CONFIRMATION_PHRASE) {
+      setStatusMessage(`Type ${CREATE_POOL_CONFIRMATION_PHRASE} before preparing the pool.`);
+      return;
+    }
+    const mintForPool = typedMint || launchPlan?.mint.publicKey.toBase58();
+    if (!mintForPool) {
+      setStatusMessage('Verify the SATA mint address before preparing liquidity.');
+      return;
+    }
+    setBusy(true);
+    setStatusMessage('Verifying SATA mint, balances, budget, authorities, and existing Raydium pools...');
+    try {
+      const connection = createConnection(props.rpcUrl);
+      const owner = new PublicKey(connectedAddress);
+      const checks = await verifyTypedMintOnChain(connection, mintForPool);
+      setVerificationChecks(checks);
+      setTypedMint(mintForPool);
+      if (!checks.every((check) => check.ok)) {
+        throw new Error('SATA mint verification failed. Pool creation remains blocked.');
+      }
+      const plan = buildCurrentLiquidityPlan(mintForPool);
+      const metadataAddress = launchPlan?.metadata.toBase58();
+      const prepared = await prepareRaydiumCpmmPoolPreview({
+        connection,
+        owner,
+        plan,
+        decimals: validation.config.decimals,
+        maxBudgetLamports: parseHumanAmountToBaseUnits(budgetSol, 9).raw,
+        reserveLamports: parseHumanAmountToBaseUnits(reserveSol, 9).raw,
+        ...(metadataAddress ? { metadataAddress } : {})
+      });
+      setAuthorityState({
+        mintAuthority: prepared.disclosure.mintAuthority,
+        freezeAuthority: prepared.disclosure.freezeAuthority
+      });
+      setPoolPrepared(prepared);
+      setPoolVerification(null);
+      setPoolSignature('');
+      setStatusMessage('Raydium CPMM pool preview prepared. Review the transaction preview before requesting MetaMask approval.');
+    } catch (error) {
+      setStatusMessage((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function approvePoolCreation() {
+    if (!validation.ok || !connectedAddress || !walletHandle || !poolPrepared) return;
+    setBusy(true);
+    setStatusMessage('Rebuilding the Raydium pool transaction with fresh on-chain state...');
+    try {
+      const connection = createConnection(props.rpcUrl);
+      const owner = new PublicKey(connectedAddress);
+      const build = await buildRaydiumCpmmPoolTransaction({
+        connection,
+        owner,
+        plan: poolPrepared.poolPreview.plan,
+        decimals: validation.config.decimals,
+        maxBudgetLamports: parseHumanAmountToBaseUnits(budgetSol, 9).raw,
+        reserveLamports: parseHumanAmountToBaseUnits(reserveSol, 9).raw,
+        metadataAddress: poolPrepared.disclosure.metadataAddress
+      });
+      setPoolPrepared({
+        poolPreview: build.poolPreview,
+        transactionPreview: build.transactionPreview,
+        disclosure: build.disclosure
+      });
+      setStatusMessage(
+        `Requesting MetaMask approval for Raydium CPMM pool creation. Local ephemeral signer count: ${build.localEphemeralSignerCount}.`
+      );
+      const signature = await executeWalletTransaction(walletHandle, build.transaction);
+      await confirmPoolTransactionOrDetectPool(connection, owner, build.disclosure, signature);
+      const verification = await verifyRaydiumCpmmPool({
+        connection,
+        owner,
+        disclosure: build.disclosure
+      });
+      setPoolVerification(verification);
+      setPoolSignature(signature);
+      setSignatures((existing) => ({ ...existing, 'create-raydium-cpmm-pool': signature }));
+      setStatusMessage(
+        verification.checks.every((check) => check.ok)
+          ? `Raydium pool created and verified: ${verification.disclosure.poolAddress}. GMGN indexing can now be checked.`
+          : 'Pool transaction landed, but verification has failures. Review the pool report before taking further action.'
+      );
+    } catch (error) {
+      setStatusMessage((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function refreshPoolVerification() {
+    if (!connectedAddress || !poolDisclosure) return;
+    setBusy(true);
+    setStatusMessage('Refreshing Raydium pool verification from on-chain state...');
+    try {
+      const connection = createConnection(props.rpcUrl);
+      const verification = await verifyRaydiumCpmmPool({
+        connection,
+        owner: new PublicKey(connectedAddress),
+        disclosure: poolDisclosure
+      });
+      setPoolVerification(verification);
+      setStatusMessage('Raydium pool verification refreshed.');
+    } catch (error) {
+      setStatusMessage((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function prepareAdditionalLiquidity() {
+    if (!validation.ok || !connectedAddress || !walletHandle) return;
+    const poolAddress = existingPoolAddress || poolDisclosure?.poolAddress;
+    const mintForPool = typedMint || launchPlan?.mint.publicKey.toBase58();
+    if (!mintForPool) {
+      setStatusMessage('Provide the verified SATA mint before adding liquidity.');
+      return;
+    }
+    setBusy(true);
+    setStatusMessage('Preparing an add-liquidity preview from the live Raydium pool ratio...');
+    try {
+      const connection = createConnection(props.rpcUrl);
+      const prepared = await prepareRaydiumCpmmAddLiquidityPreview({
+        connection,
+        owner: new PublicKey(connectedAddress),
+        ...(poolAddress ? { poolAddress } : {}),
+        sataMint: mintForPool,
+        solLamports: parseHumanAmountToBaseUnits(liquiditySol, 9).raw,
+        maxBudgetLamports: parseHumanAmountToBaseUnits(budgetSol, 9).raw,
+        reserveLamports: parseHumanAmountToBaseUnits(reserveSol, 9).raw
+      });
+      setExistingPoolAddress(prepared.disclosure.poolAddress);
+      setAddLiquidityPrepared(prepared);
+      setStatusMessage(
+        `Add-liquidity preview prepared. It will pair ${formatLamportsAsSol(BigInt(prepared.solLamports))} SOL with ${prepared.expectedSataRawAmount} SATA base units.`
+      );
+    } catch (error) {
+      setStatusMessage((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function prepareLiquidityLock() {
+    if (!validation.ok || !connectedAddress || !walletHandle) return;
+    const poolAddress = existingPoolAddress || poolDisclosure?.poolAddress;
+    const mintForPool = typedMint || launchPlan?.mint.publicKey.toBase58();
+    if (lockPhrase !== LOCK_LIQUIDITY_CONFIRMATION_PHRASE) {
+      setStatusMessage(`Type ${LOCK_LIQUIDITY_CONFIRMATION_PHRASE} before preparing the permanent LP lock.`);
+      return;
+    }
+    if (!mintForPool) {
+      setStatusMessage('Provide the verified SATA mint before preparing the LP lock.');
+      return;
+    }
+    setBusy(true);
+    setStatusMessage('Preparing Raydium Burn & Earn lock preview from the live LP token account...');
+    try {
+      const connection = createConnection(props.rpcUrl);
+      const prepared = await prepareRaydiumCpmmLockLiquidityPreview({
+        connection,
+        owner: new PublicKey(connectedAddress),
+        ...(poolAddress ? { poolAddress } : {}),
+        sataMint: mintForPool,
+        maxBudgetLamports: parseHumanAmountToBaseUnits(budgetSol, 9).raw,
+        reserveLamports: parseHumanAmountToBaseUnits(reserveSol, 9).raw
+      });
+      setExistingPoolAddress(prepared.disclosure.poolAddress);
+      setLockPrepared(prepared);
+      setStatusMessage(
+        `LP lock preview prepared. It will permanently lock ${prepared.lpAmountRaw} LP base units through Raydium Burn & Earn.`
+      );
+    } catch (error) {
+      setStatusMessage((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function approveLiquidityLock() {
+    if (!validation.ok || !connectedAddress || !walletHandle || !lockPrepared) return;
+    const poolAddress = existingPoolAddress || lockPrepared.disclosure.poolAddress;
+    const mintForPool = typedMint || launchPlan?.mint.publicKey.toBase58();
+    if (lockPhrase !== LOCK_LIQUIDITY_CONFIRMATION_PHRASE) {
+      setStatusMessage(`Type ${LOCK_LIQUIDITY_CONFIRMATION_PHRASE} before requesting the permanent LP lock approval.`);
+      return;
+    }
+    if (!poolAddress || !mintForPool) {
+      setStatusMessage('Existing pool address or SATA mint is missing.');
+      return;
+    }
+    setBusy(true);
+    setStatusMessage('Rebuilding the Raydium Burn & Earn lock transaction with fresh LP state...');
+    try {
+      const connection = createConnection(props.rpcUrl);
+      const owner = new PublicKey(connectedAddress);
+      const build = await buildRaydiumCpmmLockLiquidityTransaction({
+        connection,
+        owner,
+        poolAddress,
+        sataMint: mintForPool,
+        maxBudgetLamports: parseHumanAmountToBaseUnits(budgetSol, 9).raw,
+        reserveLamports: parseHumanAmountToBaseUnits(reserveSol, 9).raw
+      });
+      setLockPrepared({
+        transactionPreview: build.transactionPreview,
+        disclosure: build.disclosure,
+        ownerLpAta: build.ownerLpAta,
+        lpMint: build.lpMint,
+        lpAmountRaw: build.lpAmountRaw,
+        lockProgram: build.lockProgram,
+        lockAuthority: build.lockAuthority,
+        irreversible: build.irreversible
+      });
+      setStatusMessage(
+        `Requesting MetaMask approval to permanently lock ${build.lpAmountRaw} LP base units. Local ephemeral signer count: ${build.localEphemeralSignerCount}.`
+      );
+      await nextBrowserPaint();
+      const signature = await executeWalletTransaction(walletHandle, build.transaction);
+      await confirmLiquidityLockOrDetect(connection, owner, build.disclosure, signature, build.lpAmountRaw);
+      const verification = await verifyRaydiumCpmmLiquidityLock({
+        connection,
+        owner,
+        disclosure: build.disclosure,
+        lockedLpAmountRaw: build.lpAmountRaw
+      });
+      setPoolVerification(verification);
+      setLockSignature(signature);
+      setSignatures((existing) => ({
+        ...existing,
+        'lock-raydium-burn-and-earn-liquidity': signature
+      }));
+      setStatusMessage(
+        verification.checks.every((check) => check.ok)
+          ? `Raydium Burn & Earn LP lock verified: ${signature}`
+          : 'LP lock transaction landed, but independent lock verification has failures. Review before making any public claim.'
+      );
+    } catch (error) {
+      setStatusMessage((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function approveAdditionalLiquidity() {
+    if (!validation.ok || !connectedAddress || !walletHandle || !addLiquidityPrepared) return;
+    const poolAddress = existingPoolAddress || addLiquidityPrepared.disclosure.poolAddress;
+    const mintForPool = typedMint || launchPlan?.mint.publicKey.toBase58();
+    if (!poolAddress || !mintForPool) {
+      setStatusMessage('Existing pool address or SATA mint is missing.');
+      return;
+    }
+    setBusy(true);
+    setStatusMessage('Rebuilding the add-liquidity transaction with fresh pool state...');
+    try {
+      const connection = createConnection(props.rpcUrl);
+      const owner = new PublicKey(connectedAddress);
+      const build = await buildRaydiumCpmmAddLiquidityTransaction({
+        connection,
+        owner,
+        poolAddress,
+        sataMint: mintForPool,
+        solLamports: parseHumanAmountToBaseUnits(liquiditySol, 9).raw,
+        maxBudgetLamports: parseHumanAmountToBaseUnits(budgetSol, 9).raw,
+        reserveLamports: parseHumanAmountToBaseUnits(reserveSol, 9).raw
+      });
+      setAddLiquidityPrepared({
+        transactionPreview: build.transactionPreview,
+        disclosure: build.disclosure,
+        expectedSataRawAmount: build.expectedSataRawAmount,
+        solLamports: build.solLamports,
+        expectedLpRawAmount: build.expectedLpRawAmount
+      });
+      setStatusMessage(
+        `Requesting MetaMask approval to add liquidity. Expected LP base units: ${build.expectedLpRawAmount}.`
+      );
+      const signature = await executeWalletTransaction(walletHandle, build.transaction);
+      await confirmSubmittedTransaction(connection, signature, 'add-liquidity');
+      const verification = await verifyRaydiumCpmmPool({
+        connection,
+        owner,
+        disclosure: build.disclosure
+      });
+      setPoolVerification(verification);
+      setAddLiquiditySignature(signature);
+      setSignatures((existing) => ({ ...existing, 'add-raydium-cpmm-liquidity': signature }));
+      setStatusMessage(
+        verification.checks.every((check) => check.ok)
+          ? `Additional liquidity submitted and pool verification refreshed: ${signature}`
+          : 'Additional liquidity transaction landed, but pool verification has failures. Review before taking further action.'
+      );
+    } catch (error) {
+      setStatusMessage((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function verifyTypedMintOnChain(
+    connection: ReturnType<typeof createConnection>,
+    mintAddress: string
+  ): Promise<VerificationResult[]> {
+    if (!validation.ok || !connectedAddress) return [];
+    const mint = new PublicKey(mintAddress);
+    const ata = findOwnerTokenAccountForMint(connectedAddress, mintAddress);
+    const metadata = await findMetadataAddressForMint(connection, mintAddress);
+    const checks = await verifyMintSupply({
+      connection,
+      mint: mint.toBase58(),
+      ata,
+      expectedDecimals: validation.config.decimals,
+      expectedSupply: validation.config.rawSupply,
+      expectedOwner: connectedAddress
+    });
+    const metadataInfo = await connection.getAccountInfo(new PublicKey(metadata), 'confirmed');
+    return [
+      ...checks,
+      {
+        name: 'metadata-account',
+        ok: metadataInfo !== null,
+        detail: metadataInfo ? metadata : 'metadata account not found'
+      }
+    ];
+  }
+
+  function buildCurrentLiquidityPlan(mintAddress: string) {
+    if (!validation.ok) {
+      throw new Error('Token configuration is invalid.');
+    }
+    return buildLiquidityPlan({
+      sataMint: mintAddress,
+      quoteMint: PROGRAM_IDS.wsolMint,
+      sataRawAmount: parseHumanAmountToBaseUnits(
+        liquiditySata,
+        validation.config.decimals
+      ).raw,
+      solLamports: parseHumanAmountToBaseUnits(liquiditySol, 9).raw,
+      totalSataRawSupply: validation.config.rawSupply,
+      feeConfigIndex: Number(poolFeeConfigIndex),
+      poolOpenTimeUnix: BigInt(poolOpenTimeUnix || '0'),
+      maxSolBudgetLamports: parseHumanAmountToBaseUnits(budgetSol, 9).raw,
+      minSolReserveLamports: parseHumanAmountToBaseUnits(reserveSol, 9).raw,
+      maxAcceptablePriceImpactBps: BigInt(maxPoolPriceImpactBps || '0')
+    });
   }
 
   function fillSataDevnetDefaults() {
@@ -503,22 +1108,29 @@ export function Dashboard(props: DashboardProps) {
       expectedOwner: connectedAddress
     });
     const metadataInfo = await connection.getAccountInfo(plan.metadata, 'confirmed');
-    const allChecks = [
+    const onChainChecks = [
       ...checks,
       {
         name: 'metadata-account',
         ok: metadataInfo !== null,
         detail: metadataInfo ? plan.metadata.toBase58() : 'metadata account not found'
-      },
+      }
+    ];
+    const signatureLabels = Object.keys(completedSignatures);
+    const signatureComplete = plan.transactions.every((item) => completedSignatures[item.label]);
+    const allChecks = [
+      ...onChainChecks,
       {
-        name: 'all-token-creation-signatures',
-        ok: plan.transactions.every((item) => completedSignatures[item.label]),
-        detail: Object.keys(completedSignatures).join(', ')
+        name: 'recorded-token-creation-signatures',
+        ok: signatureComplete || onChainChecks.every((check) => check.ok),
+        detail: signatureComplete
+          ? signatureLabels.join(', ')
+          : 'not fully captured in browser state; recover signatures from wallet history or RPC before publishing the manifest'
       }
     ];
     setVerificationChecks(allChecks);
     setStatusMessage(
-      allChecks.every((check) => check.ok)
+      onChainChecks.every((check) => check.ok)
         ? 'Token creation verified on-chain. Manifest and report are ready in Verification report.'
         : 'Verification finished with failures. Review the Verification report before retrying anything.'
     );
@@ -533,6 +1145,9 @@ export function Dashboard(props: DashboardProps) {
             <span>Owner-operated Solana launch dashboard</span>
           </div>
           <div className="chip-row">
+            <a className="chip chip-link" href="/transparency">
+              Transparency
+            </a>
             <span className="chip">Mode: {props.appMode}</span>
             <span className="chip">Cluster: {props.cluster}</span>
             <span className="chip">RPC: {props.rpcHost}</span>
@@ -658,7 +1273,7 @@ export function Dashboard(props: DashboardProps) {
               <div className="notice safe">
                 If MetaMask shows a disabled Confirm button, wait for the request to finish loading,
                 scroll the wallet panel to the bottom, and confirm that this same account has enough
-                devnet SOL for rent plus fees. Canceling is safe; retrying will refresh the blockhash.
+                SOL for rent plus fees. Canceling is safe; retrying will refresh the blockhash.
               </div>
               <ul>
                 <li>Create mint with configured decimals.</li>
@@ -701,6 +1316,38 @@ export function Dashboard(props: DashboardProps) {
                   ? 'Launch Plan Prepared'
                   : 'Prepare Launch Transactions'}
               </button>
+              {props.cluster === 'mainnet-beta' && (
+                <div className="notice">
+                  <strong>Recover existing zero-supply mint</strong>
+                  <span>
+                    Use this only when a prior create-mint approval landed on-chain but the app did
+                    not advance before the blockhash confirmation timed out. It will not create a
+                    new mint.
+                  </span>
+                  <label>
+                    Existing mint address
+                    <input
+                      value={resumeMintAddress}
+                      onChange={(event) => setResumeMintAddress(event.target.value)}
+                    />
+                  </label>
+                  <button
+                    className="secondary"
+                    disabled={
+                      busy ||
+                      !validation.ok ||
+                      !connectedAddress ||
+                      !resumeMintAddress ||
+                      props.appMode === 'readonly' ||
+                      blocksMainnetPlaceholder
+                    }
+                    type="button"
+                    onClick={() => void prepareResumeLaunchPlan()}
+                  >
+                    Resume Existing Mint
+                  </button>
+                </div>
+              )}
               {launchPlan && (
                 <>
                   <div className="operator-strip">
@@ -725,16 +1372,32 @@ export function Dashboard(props: DashboardProps) {
                   <pre className="preview">{launchPlan.transactions[activeTxIndex] ? stringifyBigint(launchPlan.transactions[activeTxIndex]?.preview) : 'All launch transactions have been submitted.'}</pre>
                   <div className="notice">
                     This request creates only the account shown in the preview. MetaMask may display
-                    "Estimated changes: Not available" for Solana devnet account creation; use the
+                    "Estimated changes: Not available" for Solana account creation; use the
                     program ID and fee details in both MetaMask and this preview before approving.
                   </div>
                   <button disabled={busy || !walletHandle || activeTxIndex >= launchPlan.transactions.length} type="button" onClick={() => void approveCurrentLaunchTransaction()}>
                     Request Next MetaMask Approval
                   </button>
                   {activeTxIndex >= launchPlan.transactions.length && (
-                    <button className="secondary" type="button" onClick={() => setActiveStep(6)}>
-                      Open Verification Report
-                    </button>
+                    <div className="grid">
+                      <button
+                        className="secondary"
+                        disabled={busy}
+                        type="button"
+                        onClick={() =>
+                          void runPostLaunchVerification(
+                            createConnection(props.rpcUrl),
+                            launchPlan,
+                            signatures
+                          )
+                        }
+                      >
+                        Refresh On-Chain Verification
+                      </button>
+                      <button className="secondary" type="button" onClick={() => setActiveStep(6)}>
+                        Open Verification Report
+                      </button>
+                    </div>
                   )}
                 </>
               )}
@@ -749,13 +1412,33 @@ export function Dashboard(props: DashboardProps) {
                 Mint and freeze authority revocations are permanent and are never combined with
                 unrelated transactions. They are not liquidity locking.
               </div>
+              {!tokenCreatedVerified && (
+                <div className="notice danger">
+                  Authority actions are locked until token creation, supply, owner balance, and
+                  metadata verification all pass in this session.
+                </div>
+              )}
+              {tokenCreatedVerified && !authorityTypedMintMatches && (
+                <div className="notice">
+                  Type the verified launch mint exactly before preparing any permanent authority
+                  change: <code>{verifiedLaunchMint}</code>
+                </div>
+              )}
               <label>
                 Type mint address before any permanent authority transaction
                 <input value={typedMint} onChange={(event) => setTypedMint(event.target.value)} />
               </label>
+              <button
+                className="secondary"
+                disabled={busy || !connectedAddress || !typedMint}
+                type="button"
+                onClick={() => void verifyTypedMintForAuthority()}
+              >
+                Verify Typed Mint On-Chain
+              </button>
               <div className="grid">
-                <button disabled={busy || !walletHandle || !typedMint} type="button" onClick={() => void prepareAuthorityRevocation('mint')}>Prepare mint-authority revocation</button>
-                <button disabled={busy || !walletHandle || !typedMint} type="button" onClick={() => void prepareAuthorityRevocation('freeze')}>Prepare freeze-authority revocation</button>
+                <button disabled={busy || !walletHandle || !authorityTypedMintMatches} type="button" onClick={() => void prepareAuthorityRevocation('mint')}>Prepare mint-authority revocation</button>
+                <button disabled={busy || !walletHandle || !authorityTypedMintMatches} type="button" onClick={() => void prepareAuthorityRevocation('freeze')}>Prepare freeze-authority revocation</button>
               </div>
               {authorityState && (
                 <div className="summary-grid">
@@ -765,7 +1448,7 @@ export function Dashboard(props: DashboardProps) {
                 </div>
               )}
               {authorityPreview && <pre className="preview">{stringifyBigint(authorityPreview)}</pre>}
-              <button disabled={busy || !walletHandle || !authorityPreview} type="button" onClick={() => void approveAuthorityRevocation()}>
+              <button disabled={busy || !walletHandle || !authorityPreview || !authorityTypedMintMatches} type="button" onClick={() => void approveAuthorityRevocation()}>
                 Request MetaMask Approval For Prepared Authority Action
               </button>
               {statusMessage && <div className="notice">{statusMessage}</div>}
@@ -802,14 +1485,214 @@ export function Dashboard(props: DashboardProps) {
                 Liquidity planning is {props.liquidityPlannerEnabled ? 'enabled' : 'disabled'}.
                 Raydium pool creation is {props.raydiumPoolCreationEnabled ? 'enabled' : 'locked'}.
               </div>
+              <div className="notice">
+                Pool creation uses the configured SOL budget and reserve. It will not spend the
+                whole wallet balance and it will not request an unlimited approval.
+              </div>
               <label>
                 Pool confirmation phrase
                 <input value={poolPhrase} onChange={(event) => setPoolPhrase(event.target.value)} />
               </label>
+              <div className="grid">
+                <label>
+                  SATA amount for liquidity
+                  <input
+                    value={liquiditySata}
+                    onChange={(event) => setLiquiditySata(event.target.value)}
+                  />
+                </label>
+                <label>
+                  SOL amount for liquidity
+                  <input
+                    value={liquiditySol}
+                    onChange={(event) => setLiquiditySol(event.target.value)}
+                  />
+                </label>
+                <label>
+                  Raydium CPMM fee config index
+                  <input
+                    value={poolFeeConfigIndex}
+                    onChange={(event) => setPoolFeeConfigIndex(event.target.value)}
+                  />
+                </label>
+                <label>
+                  Pool opening Unix time
+                  <input
+                    value={poolOpenTimeUnix}
+                    onChange={(event) => setPoolOpenTimeUnix(event.target.value)}
+                  />
+                </label>
+                <label>
+                  Max verification swap price impact, bps
+                  <input
+                    value={maxPoolPriceImpactBps}
+                    onChange={(event) => setMaxPoolPriceImpactBps(event.target.value)}
+                  />
+                </label>
+              </div>
               <pre className="preview">{liquidity ? stringifyBigint(liquidity) : 'No liquidity plan available.'}</pre>
-              <button disabled={poolPhrase !== 'CREATE SATA SOL POOL' || !props.raydiumPoolCreationEnabled} type="button">
+              <button
+                disabled={
+                  busy ||
+                  poolPhrase !== CREATE_POOL_CONFIRMATION_PHRASE ||
+                  !props.raydiumPoolCreationEnabled ||
+                  !walletHandle ||
+                  !(typedMint || launchPlan?.mint.publicKey)
+                }
+                type="button"
+                onClick={() => void preparePoolCreation()}
+              >
                 Prepare Raydium CPMM pool transaction
               </button>
+              <div className="notice">
+                Existing pool top-up uses the SOL amount above, calculates the matching SATA
+                amount from live pool reserves, and does not create another pool.
+              </div>
+              <label>
+                Existing Raydium pool address
+                <input
+                  value={existingPoolAddress || poolDisclosure?.poolAddress || ''}
+                  onChange={(event) => {
+                    setExistingPoolAddress(event.target.value);
+                    setLockPrepared(null);
+                    setLockSignature('');
+                  }}
+                />
+              </label>
+              <button
+                className="secondary"
+                disabled={
+                  busy ||
+                  !props.raydiumPoolCreationEnabled ||
+                  !walletHandle ||
+                  !(typedMint || launchPlan?.mint.publicKey)
+                }
+                type="button"
+                onClick={() => void prepareAdditionalLiquidity()}
+              >
+                Prepare Add-Liquidity Transaction
+              </button>
+              {addLiquidityPrepared && (
+                <>
+                  <div className="summary-grid">
+                    <div className="metric"><span>Pool</span><strong>{addLiquidityPrepared.disclosure.poolAddress}</strong></div>
+                    <div className="metric"><span>SOL input</span><strong>{formatLamportsAsSol(BigInt(addLiquidityPrepared.solLamports))}</strong></div>
+                    <div className="metric"><span>SATA required</span><strong>{addLiquidityPrepared.expectedSataRawAmount}</strong></div>
+                    <div className="metric"><span>LP owner</span><strong>{addLiquidityPrepared.disclosure.liquidityPositionOwner}</strong></div>
+                  </div>
+                  <pre className="preview">{stringifyBigint(addLiquidityPrepared.transactionPreview)}</pre>
+                  <pre className="preview">{stringifyBigint(addLiquidityPrepared.disclosure)}</pre>
+                  <div className="notice">
+                    Review the live pool, SOL amount, computed SATA amount, LP custody, and max
+                    spend before requesting MetaMask approval.
+                  </div>
+                  <button
+                    disabled={busy || !walletHandle}
+                    type="button"
+                    onClick={() => void approveAdditionalLiquidity()}
+                  >
+                    Request MetaMask Approval To Add Liquidity
+                  </button>
+                </>
+              )}
+              {poolPrepared && (
+                <>
+                  <div className="summary-grid">
+                    <div className="metric"><span>Pool</span><strong>{poolPrepared.disclosure.poolAddress}</strong></div>
+                    <div className="metric"><span>SATA vault</span><strong>{poolPrepared.disclosure.sataVault}</strong></div>
+                    <div className="metric"><span>WSOL vault</span><strong>{poolPrepared.disclosure.wsolVault}</strong></div>
+                    <div className="metric"><span>LP owner</span><strong>{poolPrepared.disclosure.liquidityPositionOwner}</strong></div>
+                  </div>
+                  <pre className="preview">{stringifyBigint(poolPrepared.transactionPreview)}</pre>
+                  <pre className="preview">{stringifyBigint(poolPrepared.disclosure)}</pre>
+                  <div className="notice">
+                    Review the pool address, Raydium program ID, deposit amounts, LP custody, and
+                    maximum SOL spend before requesting MetaMask approval.
+                  </div>
+                  <button
+                    disabled={busy || !walletHandle || poolPhrase !== CREATE_POOL_CONFIRMATION_PHRASE}
+                    type="button"
+                    onClick={() => void approvePoolCreation()}
+                  >
+                    Request MetaMask Approval For Raydium Pool
+                  </button>
+                </>
+              )}
+              <div className="notice danger">
+                Raydium Burn & Earn LP locking is permanent. It locks the LP tokens currently in
+                the owner LP account; it is not a SATA supply burn and it does not lock any future
+                LP tokens added later.
+              </div>
+              <label>
+                LP lock confirmation phrase
+                <input
+                  value={lockPhrase}
+                  onChange={(event) => setLockPhrase(event.target.value)}
+                  placeholder={LOCK_LIQUIDITY_CONFIRMATION_PHRASE}
+                />
+              </label>
+              <div className="grid">
+                <button
+                  className="secondary"
+                  disabled={
+                    busy ||
+                    lockPhrase !== LOCK_LIQUIDITY_CONFIRMATION_PHRASE ||
+                    !props.raydiumPoolCreationEnabled ||
+                    !walletHandle ||
+                    !(typedMint || launchPlan?.mint.publicKey)
+                  }
+                  type="button"
+                  onClick={() => void prepareLiquidityLock()}
+                >
+                  Prepare Raydium Burn & Earn LP Lock
+                </button>
+                <button
+                  disabled={
+                    busy ||
+                    lockPhrase !== LOCK_LIQUIDITY_CONFIRMATION_PHRASE ||
+                    !walletHandle ||
+                    !lockPrepared
+                  }
+                  type="button"
+                  onClick={() => void approveLiquidityLock()}
+                >
+                  Request MetaMask Approval To Permanently Lock LP
+                </button>
+              </div>
+              {lockPrepared && (
+                <>
+                  <div className="summary-grid">
+                    <div className="metric"><span>LP mint</span><strong>{lockPrepared.lpMint}</strong></div>
+                    <div className="metric"><span>Owner LP ATA</span><strong>{lockPrepared.ownerLpAta}</strong></div>
+                    <div className="metric"><span>LP base units to lock</span><strong>{lockPrepared.lpAmountRaw}</strong></div>
+                    <div className="metric"><span>Lock program</span><strong>{lockPrepared.lockProgram}</strong></div>
+                    <div className="metric"><span>Lock PDA</span><strong>{lockPrepared.disclosure.lockPda ?? 'generated when transaction is built'}</strong></div>
+                    <div className="metric"><span>Fee Key NFT</span><strong>{lockPrepared.disclosure.feeKeyNftMint ?? 'generated when transaction is built'}</strong></div>
+                  </div>
+                  <pre className="preview">{stringifyBigint(lockPrepared.transactionPreview)}</pre>
+                  <pre className="preview">{stringifyBigint(lockPrepared.disclosure)}</pre>
+                  <div className="notice">
+                    Review the LP amount, Raydium LP-Lock program, lock PDA, Fee Key NFT, and
+                    permanent flag before approving in MetaMask.
+                  </div>
+                </>
+              )}
+              {poolVerification && (
+                <>
+                  <div className="summary-grid">
+                    <div className="metric"><span>Pool status</span><strong>{poolVerification.checks.every((check) => check.ok) ? 'verified' : 'needs review'}</strong></div>
+                    <div className="metric"><span>Pool signature</span><strong>{poolSignature || 'not recorded'}</strong></div>
+                    <div className="metric"><span>Add-liquidity signature</span><strong>{addLiquiditySignature || 'not recorded'}</strong></div>
+                    <div className="metric"><span>Lock signature</span><strong>{lockSignature || 'not recorded'}</strong></div>
+                    <div className="metric"><span>Liquidity</span><strong>{lockVerified ? 'locked via Burn & Earn' : poolVerification.disclosure.removable ? 'removable' : 'not owner-removable in this session'}</strong></div>
+                  </div>
+                  <pre className="preview">{stringifyBigint(poolVerification.checks)}</pre>
+                  <button className="secondary" disabled={busy} type="button" onClick={() => void refreshPoolVerification()}>
+                    Refresh Pool Verification
+                  </button>
+                </>
+              )}
+              {statusMessage && <div className="notice">{statusMessage}</div>}
             </>
           )}
 
@@ -919,7 +1802,7 @@ function refreshLaunchTxForSigning(
   for (const signaturePair of item.transaction.signatures) {
     signaturePair.signature = null;
   }
-  if (item.label === 'create-mint') {
+  if (item.label === 'create-mint' && 'secretKey' in plan.mint) {
     item.transaction.partialSign(plan.mint);
   }
 }
@@ -960,6 +1843,119 @@ async function confirmLaunchTransactionOrDetectProgress(params: {
 
     throw new Error(
       `MetaMask returned signature ${params.signature}, but ${params.item.label} was not confirmed before the blockhash expired or the RPC rejected it: ${(error as Error).message}. The intended account is not complete on-chain. Click Request Next MetaMask Approval again; the app will reuse mint ${params.plan.mint.publicKey.toBase58()} with a fresh blockhash.`
+    );
+  }
+}
+
+async function confirmPoolTransactionOrDetectPool(
+  connection: ReturnType<typeof createConnection>,
+  owner: PublicKey,
+  disclosure: RaydiumPoolPreparedPreview['disclosure'],
+  signature: string
+): Promise<void> {
+  try {
+    await connection.confirmTransaction(signature, 'confirmed');
+    return;
+  } catch (error) {
+    const status = await connection.getSignatureStatus(signature, {
+      searchTransactionHistory: true
+    });
+    if (
+      status.value &&
+      !status.value.err &&
+      (status.value.confirmationStatus === 'confirmed' ||
+        status.value.confirmationStatus === 'finalized')
+    ) {
+      return;
+    }
+
+    try {
+      const verification = await verifyRaydiumCpmmPool({ connection, owner, disclosure });
+      if (
+        verification.checks.some((check) => check.name === 'raydium-pool-account' && check.ok) &&
+        verification.checks.some((check) => check.name === 'raydium-sata-reserve' && check.ok) &&
+        verification.checks.some((check) => check.name === 'raydium-wsol-reserve' && check.ok)
+      ) {
+        return;
+      }
+    } catch {
+      // Keep the original confirmation error below.
+    }
+
+    throw new Error(
+      `MetaMask returned signature ${signature}, but Raydium pool creation was not confirmed before the RPC timeout or blockhash expiry: ${(error as Error).message}. Refresh pool verification before retrying; do not create a second pool if the first one landed.`
+    );
+  }
+}
+
+async function confirmSubmittedTransaction(
+  connection: ReturnType<typeof createConnection>,
+  signature: string,
+  label: string
+): Promise<void> {
+  try {
+    await connection.confirmTransaction(signature, 'confirmed');
+    return;
+  } catch (error) {
+    const status = await connection.getSignatureStatus(signature, {
+      searchTransactionHistory: true
+    });
+    if (
+      status.value &&
+      !status.value.err &&
+      (status.value.confirmationStatus === 'confirmed' ||
+        status.value.confirmationStatus === 'finalized')
+    ) {
+      return;
+    }
+    throw new Error(
+      `MetaMask returned signature ${signature}, but ${label} was not confirmed before the RPC timeout or blockhash expiry: ${(error as Error).message}. Refresh on-chain verification before retrying.`
+    );
+  }
+}
+
+async function confirmLiquidityLockOrDetect(
+  connection: ReturnType<typeof createConnection>,
+  owner: PublicKey,
+  disclosure: RaydiumLockLiquidityPreparedPreview['disclosure'],
+  signature: string,
+  lockedLpAmountRaw: string
+): Promise<void> {
+  try {
+    await connection.confirmTransaction(signature, 'confirmed');
+    return;
+  } catch (error) {
+    const status = await connection.getSignatureStatus(signature, {
+      searchTransactionHistory: true
+    });
+    if (
+      status.value &&
+      !status.value.err &&
+      (status.value.confirmationStatus === 'confirmed' ||
+        status.value.confirmationStatus === 'finalized')
+    ) {
+      return;
+    }
+
+    try {
+      const verification = await verifyRaydiumCpmmLiquidityLock({
+        connection,
+        owner,
+        disclosure,
+        lockedLpAmountRaw
+      });
+      if (
+        verification.checks.some((check) => check.name === 'raydium-locked-lp-amount' && check.ok) &&
+        verification.checks.some((check) => check.name === 'owner-lp-balance-after-lock' && check.ok)
+      ) {
+        return;
+      }
+    } catch {
+      // Keep the original confirmation error below.
+    }
+
+    throw new Error(
+      `MetaMask returned signature ${signature}, but the LP lock was not confirmed before the RPC timeout or blockhash expiry: ${(error as Error).message}. Refresh on-chain pool verification before retrying.`
     );
   }
 }
@@ -1068,8 +2064,43 @@ async function fetchAndSetBalance(
   return balanceLamports;
 }
 
+function findOwnerTokenAccountForMint(
+  owner: string,
+  mint: string
+): string {
+  return PublicKey.findProgramAddressSync(
+    [
+      new PublicKey(owner).toBuffer(),
+      PUBLIC_KEYS.splToken.toBuffer(),
+      new PublicKey(mint).toBuffer()
+    ],
+    PUBLIC_KEYS.associatedToken
+  )[0].toBase58();
+}
+
+async function findMetadataAddressForMint(
+  connection: ReturnType<typeof createConnection>,
+  mint: string
+): Promise<string> {
+  const metadata = deriveMetadataAddress(new PublicKey(mint));
+  const account = await connection.getAccountInfo(metadata, 'confirmed');
+  if (!account) {
+    throw new Error('No Metaplex metadata account was found for the typed mint.');
+  }
+  return metadata.toBase58();
+}
+
 function formatLamportsAsSol(lamports: bigint): string {
   const whole = lamports / LAMPORTS_PER_SOL_BIGINT;
   const fractional = (lamports % LAMPORTS_PER_SOL_BIGINT).toString().padStart(9, '0');
   return `${whole.toString()}.${fractional}`.replace(/\.?0+$/, '');
+}
+
+function nextBrowserPaint(): Promise<void> {
+  if (typeof window === 'undefined' || typeof window.requestAnimationFrame !== 'function') {
+    return Promise.resolve();
+  }
+  return new Promise((resolve) => {
+    window.requestAnimationFrame(() => resolve());
+  });
 }

@@ -12,6 +12,7 @@
     "test:e2e": "playwright test",
     "format": "prettier --check .",
     "security:check": "node scripts/security-check.mjs",
+    "transparency:report": "node scripts/generate-transparency-report.mjs",
     "prepare:metadata": "node scripts/prepare-mainnet-metadata.mjs",
     "verify:devnet": "node scripts/verify-devnet.mjs"
   },

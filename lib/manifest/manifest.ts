@@ -45,6 +45,12 @@ export type LaunchManifest = {
     percentageSupplyInLiquidity?: string;
     liquidityPositionOwner?: string;
     lockBurnStatus?: string;
+    lockProgram?: string;
+    lockPda?: string;
+    lockLpVault?: string;
+    feeKeyNftMint?: string;
+    feeKeyNftAccount?: string;
+    lockedLpAmountRaw?: string;
   };
   gmgn?: {
     buyRouteStatus?: string;
@@ -98,6 +104,12 @@ export function buildLaunchReport(manifest: LaunchManifest): string {
     '',
     '## Verification',
     ...manifest.verificationChecks.map((check) => `- ${check.name}: ${check.ok ? 'pass' : 'fail'} - ${check.detail}`),
+    '',
+    '## Liquidity',
+    `Pool: ${manifest.liquidity?.poolAddress ?? 'not verified'}`,
+    `Lock/burn status: ${manifest.liquidity?.lockBurnStatus ?? 'not verified'}`,
+    `Fee Key NFT: ${manifest.liquidity?.feeKeyNftMint ?? 'not minted or not verified'}`,
+    `Locked LP amount: ${manifest.liquidity?.lockedLpAmountRaw ?? 'not verified'}`,
     '',
     '## GMGN',
     `Indexing: ${manifest.gmgn?.indexingStatus ?? 'not checked'}`,

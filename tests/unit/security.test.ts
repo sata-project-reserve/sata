@@ -9,6 +9,7 @@ import { assertMainnetUnlocked, MAINNET_CONFIRMATION_PHRASE } from '@/lib/valida
 describe('security controls', () => {
   it('rejects unapproved program IDs', () => {
     expect(() => assertAllowedProgramIds([PROGRAM_IDS.splToken])).not.toThrow();
+    expect(() => assertAllowedProgramIds([PROGRAM_IDS.raydiumCpmmLockMainnet])).not.toThrow();
     expect(() => assertAllowedProgramIds(['Bad111111111111111111111111111111111111111'])).toThrow(/unapproved/);
   });
 

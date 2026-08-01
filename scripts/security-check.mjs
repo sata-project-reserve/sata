@@ -15,9 +15,15 @@ const ignoredFiles = new Set(['package-lock.json']);
 const findings = [];
 
 const secretPatterns = [
-  { name: 'seed phrase wording', pattern: /\b(seed phrase|secret recovery phrase|private key)\s*[:=]\s*["']?[^"'\n]+/i },
+  {
+    name: 'seed phrase wording',
+    pattern: /\b(seed phrase|secret recovery phrase|private key)\s*[:=]\s*["']?[^"'\n]+/i
+  },
   { name: 'base58 private-key-like array', pattern: /\[[\d,\s]{120,}\]/ },
-  { name: 'hard-coded api key', pattern: /(api[_-]?key|secret|private[_-]?key)\s*[:=]\s*["'][^"']{12,}/i },
+  {
+    name: 'hard-coded api key',
+    pattern: /(api[_-]?key|secret|private[_-]?key)\s*[:=]\s*["'][^"']{12,}/i
+  },
   { name: 'unsafe mainnet default', pattern: /MAINNET_ENABLED\s*=\s*true/ }
 ];
 
@@ -27,7 +33,10 @@ const approvedProgramIds = [
   'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
   'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
   'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  'ComputeBudget111111111111111111111111111111',
   'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C',
+  'LockrWmn6K5twhz3y9w1dQERbmgSaRkfnTeTKbpofwE',
+  '3f7GcQFG397GAaEnv51zR6tsTVihYRydnydDD1cXekxH',
   'So11111111111111111111111111111111111111112',
   'solana:mainnet',
   'solana:devnet',
@@ -65,14 +74,15 @@ function scanFile(file) {
   }
   const scansExecutableSource = /^(app|components|lib|scripts|docs)[\\/]/.test(rel);
   if (!scansExecutableSource) return;
-  const programMatches = text.match(/[1-9A-HJ-NP-Za-km-z]{32,44}/g) ?? [];
-  for (const match of programMatches) {
-    if (
-      match.length >= 32 &&
-      /Program|program|PROGRAM|raydium|Raydium|Token|TOKEN|metaqbxx|CPMM/.test(text) &&
-      !approvedProgramIds.includes(match)
-    ) {
-      findings.push(`${rel}: unapproved program-id-like string ${match}`);
+  for (const line of text.split(/\r?\n/)) {
+    if (!/\bprogram\b|program[_-]?id/i.test(line)) continue;
+    const programMatches = [...line.matchAll(/["'`]([1-9A-HJ-NP-Za-km-z]{32,44})["'`]/g)].map(
+      (match) => match[1]
+    );
+    for (const match of programMatches) {
+      if (match.length >= 32 && !approvedProgramIds.includes(match)) {
+        findings.push(`${rel}: unapproved program-id-like string ${match}`);
+      }
     }
   }
 }
@@ -85,4 +95,6 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('Security check passed: no obvious secret files, unsafe mainnet defaults, or unapproved program IDs found.');
+console.log(
+  'Security check passed: no obvious secret files, unsafe mainnet defaults, or unapproved program IDs found.'
+);

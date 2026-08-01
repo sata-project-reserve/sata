@@ -22,6 +22,10 @@ export default function Home() {
       raydiumPoolCreationEnabled={config.raydiumPoolCreationEnabled}
       defaultImageUri={config.NEXT_PUBLIC_SATA_IMAGE_URI}
       defaultMetadataUri={config.NEXT_PUBLIC_SATA_METADATA_URI}
+      defaultBudgetSol={config.NEXT_PUBLIC_DEFAULT_MAX_SOL_BUDGET}
+      defaultReserveSol={config.NEXT_PUBLIC_DEFAULT_MIN_SOL_RESERVE}
+      defaultLiquiditySata={config.NEXT_PUBLIC_DEFAULT_LIQUIDITY_SATA}
+      defaultLiquiditySol={config.NEXT_PUBLIC_DEFAULT_LIQUIDITY_SOL}
     />
   );
 }

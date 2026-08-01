@@ -6,7 +6,9 @@ export const ALLOWED_PROGRAM_IDS = new Set<string>([
   PROGRAM_IDS.token2022,
   PROGRAM_IDS.associatedToken,
   PROGRAM_IDS.metaplexTokenMetadata,
-  PROGRAM_IDS.raydiumCpmmMainnet
+  PROGRAM_IDS.computeBudget,
+  PROGRAM_IDS.raydiumCpmmMainnet,
+  PROGRAM_IDS.raydiumCpmmLockMainnet
 ]);
 
 export function assertAllowedProgramIds(programIds: readonly string[]): void {

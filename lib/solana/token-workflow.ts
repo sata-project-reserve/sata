@@ -5,10 +5,12 @@ import {
   SystemProgram,
   Transaction,
   TransactionInstruction,
-  type Connection
+  type Connection,
+  type ParsedAccountData
 } from '@solana/web3.js';
 import { getCreateMetadataAccountV3InstructionDataSerializer } from '@metaplex-foundation/mpl-token-metadata';
 import {
+  createAssociatedTokenAccountIdempotentInstruction,
   createAssociatedTokenAccountInstruction,
   createInitializeMint2Instruction,
   createMintToInstruction,
@@ -24,7 +26,7 @@ import type { TransactionPreview } from '@/lib/security/transaction-preview';
 import { validateTransactionPreview } from '@/lib/security/transaction-preview';
 
 export type TokenLaunchPlan = {
-  mint: Keypair;
+  mint: Keypair | { publicKey: PublicKey };
   ata: PublicKey;
   metadata: PublicKey;
   transactions: Array<{ label: string; transaction: Transaction; preview: TransactionPreview }>;
@@ -151,6 +153,149 @@ export async function planTokenLaunch(params: {
 
   for (const item of transactions) validateTransactionPreview(item.preview);
   return { mint, ata, metadata, transactions };
+}
+
+export async function planExistingMintLaunchCompletion(params: {
+  connection: Connection;
+  owner: PublicKey;
+  mint: PublicKey;
+  tokenConfig: ValidatedTokenConfig;
+  metadataUri: string;
+  network: string;
+  latestBlockhash?: string;
+}): Promise<TokenLaunchPlan> {
+  const mintAccount = await params.connection.getParsedAccountInfo(params.mint, 'confirmed');
+  const mintInfo = mintAccount.value?.data;
+  if (mintAccount.value?.owner.toBase58() !== PROGRAM_IDS.splToken || !isParsedAccountData(mintInfo)) {
+    throw new Error('Existing mint is missing or is not owned by the SPL Token Program.');
+  }
+
+  const parsed = getMintParsedInfo(mintInfo);
+
+  if (parsed?.decimals !== params.tokenConfig.decimals) {
+    throw new Error(
+      `Existing mint decimals ${String(parsed?.decimals)} do not match configured decimals ${params.tokenConfig.decimals}.`
+    );
+  }
+  if (parsed.supply !== '0') {
+    throw new Error(
+      `Existing mint supply is ${String(parsed.supply)}. Recovery only supports a zero-supply mint controlled by the connected owner.`
+    );
+  }
+  if (parsed.mintAuthority !== params.owner.toBase58()) {
+    throw new Error(
+      `Existing mint authority is ${parsed.mintAuthority ?? 'revoked'}, not the connected owner.`
+    );
+  }
+
+  const ata = getAssociatedTokenAddressSync(params.mint, params.owner, false, TOKEN_PROGRAM_ID);
+  const metadata = deriveMetadataAddress(params.mint);
+  const ataRent = BigInt(
+    await params.connection.getMinimumBalanceForRentExemption(165, 'confirmed')
+  );
+  const latestBlockhash =
+    params.latestBlockhash ?? (await params.connection.getLatestBlockhash('confirmed')).blockhash;
+
+  const createAtaAndMintInstructions = [
+    createAssociatedTokenAccountIdempotentInstruction(
+      params.owner,
+      ata,
+      params.owner,
+      params.mint,
+      TOKEN_PROGRAM_ID
+    ),
+    createMintToInstruction(
+      params.mint,
+      ata,
+      params.owner,
+      params.tokenConfig.rawSupply,
+      [],
+      TOKEN_PROGRAM_ID
+    )
+  ];
+
+  const metadataInstruction = buildMetadataPlaceholderInstruction(
+    params.owner,
+    params.mint,
+    params.metadataUri,
+    params.tokenConfig,
+    params.network
+  );
+
+  const tx1 = new Transaction().add(...createAtaAndMintInstructions);
+  tx1.feePayer = params.owner;
+  tx1.recentBlockhash = latestBlockhash;
+
+  const tx2 = new Transaction().add(metadataInstruction);
+  tx2.feePayer = params.owner;
+  tx2.recentBlockhash = latestBlockhash;
+
+  const transactions = [
+    {
+      label: 'create-ata-and-mint-supply',
+      transaction: tx1,
+      preview: buildPreview({
+        purpose: 'Resume SATA launch by creating owner ATA and minting fixed supply',
+        network: params.network,
+        owner: params.owner,
+        programs: [PROGRAM_IDS.associatedToken, PROGRAM_IDS.splToken],
+        newAccounts: [ata.toBase58()],
+        mint: params.mint,
+        amount: params.tokenConfig.rawSupply.toString(),
+        rent: ataRent,
+        permanent: false,
+        reversible: false
+      })
+    },
+    {
+      label: 'create-metadata',
+      transaction: tx2,
+      preview: buildPreview({
+        purpose: 'Create Metaplex token metadata for resumed SATA mint',
+        network: params.network,
+        owner: params.owner,
+        programs: [PROGRAM_IDS.metaplexTokenMetadata],
+        newAccounts: [metadata.toBase58()],
+        mint: params.mint,
+        amount: undefined,
+        rent: 0n,
+        permanent: false,
+        reversible: true
+      })
+    }
+  ];
+
+  for (const item of transactions) validateTransactionPreview(item.preview);
+  return { mint: { publicKey: params.mint }, ata, metadata, transactions };
+}
+
+function isParsedAccountData(value: unknown): value is ParsedAccountData {
+  return typeof value === 'object' && value !== null && 'parsed' in value;
+}
+
+type MintParsedInfo = {
+  decimals?: number;
+  supply?: string;
+  mintAuthority?: string;
+  freezeAuthority?: string;
+};
+
+function getMintParsedInfo(data: ParsedAccountData): MintParsedInfo {
+  const parsed = data.parsed as unknown;
+  if (typeof parsed !== 'object' || parsed === null || !('info' in parsed)) {
+    throw new Error('Existing mint account did not contain parsed mint info.');
+  }
+  const info = parsed.info;
+  if (typeof info !== 'object' || info === null) {
+    throw new Error('Existing mint parsed info is malformed.');
+  }
+  const fields = info as Record<string, unknown>;
+  const result: MintParsedInfo = {};
+  if (typeof fields.decimals === 'number') result.decimals = fields.decimals;
+  if (typeof fields.supply === 'string') result.supply = fields.supply;
+  if (typeof fields.mintAuthority === 'string') result.mintAuthority = fields.mintAuthority;
+  if (typeof fields.freezeAuthority === 'string') result.freezeAuthority = fields.freezeAuthority;
+  return result;
 }
 
 export function deriveMetadataAddress(mint: PublicKey): PublicKey {

@@ -1,0 +1,109 @@
+# SATA Transparency Report
+
+Status: TRANSPARENCY_VERIFIED_WITH_DISCLOSURES
+Generated UTC: 2026-08-01T13:28:08.273Z
+Cadence: scheduled every 12 hours when GitHub Actions is enabled
+Slogan: Proof over promises.
+
+This report is read-only. It does not request wallet signatures, spend SOL, upload secrets, or include full RPC URLs.
+
+## Solana
+
+- Network: mainnet-beta
+- RPC host: solana-rpc.publicnode.com
+- Owner: HtDVYgAwWWzWWTSer1MtNVvJpZHhKjLo2Drzu2eARRaT
+- SATA mint: A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
+- Supply: 999996853.34994591 SATA (999996853349945910 base units)
+- Launch initial supply: 1000000000 SATA (1000000000000000000 base units)
+- Mint authority: revoked
+- Freeze authority: revoked
+- Metadata: 4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g
+- Metadata update authority: HtDVYgAwWWzWWTSer1MtNVvJpZHhKjLo2Drzu2eARRaT
+- Metadata mutable: true
+
+## Liquidity
+
+- DEX: Raydium CPMM
+- Pair: SATA/WSOL
+- Pool: CYRZoXLjgNFTQJnvyJpym1wfTAEoGz6kJMYJFb5hUd8e
+- Pool program: CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C
+- Pool open: true
+- SATA reserve: 139909583.671810613 (139909583671810613 base units)
+- WSOL reserve: 2.768399171 (2768399171 lamports)
+- LP mint: 4wp3yZVVdwBvkRnx5qHn8uLRFuw3P9Srt3JvGqn6mrdi
+- Total locked LP: 9199123117269
+- Owner unlocked LP: 10384383731650
+- Lock status: PARTIALLY_LOCKED_OWNER_LP_REMAINS
+- Removable by owner: true
+- Disclosure: Raydium Burn & Earn lock verified, but the owner still holds unlocked LP tokens that remain removable unless separately locked or burned.
+
+## Raydium Lock Transactions
+
+- 6r2o4X88cZZ8HZZtk1nvCUdFGqvHcr1ByUVZddHyfqcRCeEAjD7pFghLvrJtgU5sEKA78ZEBc37rr7pcBDgD7Qn: 9199123117269 LP base units, verified=true
+
+## Bitcoin Reserve
+
+- Status: verified-balance-and-proof
+- Address: bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk
+- Actual reserve: 500000 sats (0.005 BTC)
+- Confirmed reserve: 500000 sats (0.005 BTC)
+- Unconfirmed reserve: 0 sats (0 BTC)
+- Planned reserve: 500000 sats (0.005 BTC)
+- Metrics basis: actual-confirmed-chain
+- Proof message: SATA Bitcoin reserve address for Solana mint A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH. No redemption promise. Snapshot UTC: 2026-08-01T13:20:55Z.
+- Proof signature: AkcwRAIgTuFktugOzK4NVrAQFqvymy3gREk6LMV8AW9JTE7GvPACIBr8A6wMdHcm2nnN7NuxQmc9ZluTRPabRpp6cwwM9EKpASECMkly6+9vvZrpsgNHhFcSpklkpaluJV8IEsjNLweRTMk=
+- Sats per SATA: 50000000000000/99999685334994591
+- SATA per sat: 99999685334994591/50000000000000
+- Target for 1 sat per 1 SATA: 999996854 sats (9.99996854 BTC)
+- Additional sats to that treasury milestone: 999496854
+
+The Bitcoin reserve is a transparency metric only. It is not a redemption promise, guaranteed price floor, yield product, or market-support commitment.
+
+## GMGN
+
+- Token page reference: https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
+- Status: manual/public status should be checked from GMGN; this report does not scrape authenticated pages or bypass access controls
+
+## Warnings
+
+- sata-supply-equals-launch-initial: 999996853349945910
+- metadata-mutability-disclosed: mutable
+- owner-unlocked-lp-balance-zero: 10384383731650
+
+## Checks
+
+- sata-mint-exists: pass (critical) - A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
+- sata-token-program: pass (critical) - TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA
+- sata-decimals: pass (critical) - 9
+- sata-supply-not-above-launch-initial: pass (critical) - 999996853349945910
+- sata-supply-equals-launch-initial: fail (warning) - 999996853349945910
+- sata-mint-authority-revoked: pass (critical) - revoked
+- sata-freeze-authority-revoked: pass (critical) - revoked
+- metadata-pda: pass (critical) - 4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g
+- metadata-account-owner: pass (critical) - metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s
+- metadata-update-authority: pass (warning) - HtDVYgAwWWzWWTSer1MtNVvJpZHhKjLo2Drzu2eARRaT
+- metadata-mutability-disclosed: fail (warning) - mutable
+- owner-sata-token-account: pass (warning) - GHJHn3hezf11MK1CaS6Ndf5yD4dPKXfig2RKYHArk4aN
+- raydium-pool-account: pass (critical) - CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C
+- raydium-pool-mints: pass (critical) - So11111111111111111111111111111111111111112, A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
+- raydium-pool-open: pass (critical) - 1785346170
+- raydium-sata-reserve: pass (critical) - 139909583671810613
+- raydium-wsol-reserve: pass (critical) - 2768399171
+- raydium-lp-lock-verified: pass (critical) - Raydium Burn & Earn lock verified, but the owner still holds unlocked LP tokens that remain removable unless separately locked or burned.
+- owner-unlocked-lp-balance-zero: fail (warning) - 10384383731650
+- bitcoin-reserve-proof: pass (warning) - verified-balance-and-proof
+
+## Links
+
+- Mint explorer: https://explorer.solana.com/address/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
+- Pool explorer: https://explorer.solana.com/address/CYRZoXLjgNFTQJnvyJpym1wfTAEoGz6kJMYJFb5hUd8e
+- Metadata explorer: https://explorer.solana.com/address/4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g
+- GMGN: https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
+
+## Permanent Caveats
+
+- SATA has no hidden mint authority when the mint-authority check is passing.
+- SATA has no freeze authority when the freeze-authority check is passing.
+- Liquidity is described as locked only for LP balances independently verified in Raydium Burn & Earn accounts.
+- Any owner unlocked LP balance remains removable and is disclosed separately.
+- No report field contains seed phrases, private keys, signed transaction bytes, or full RPC URLs.

@@ -1,5 +1,5 @@
 import bs58 from 'bs58';
-import type { Transaction } from '@solana/web3.js';
+import type { Transaction, VersionedTransaction } from '@solana/web3.js';
 
 export type StandardWalletHandle = {
   wallet: unknown;
@@ -36,15 +36,10 @@ type WalletWithFeatures = {
 
 export async function executeWalletTransaction(
   handle: StandardWalletHandle,
-  transaction: Transaction
+  transaction: Transaction | VersionedTransaction
 ): Promise<string> {
   const wallet = handle.wallet as WalletWithFeatures;
-  const serialized = toPlainUint8Array(
-    transaction.serialize({
-      requireAllSignatures: false,
-      verifySignatures: false
-    })
-  );
+  const serialized = serializeForWallet(transaction);
 
   const signAndSend = wallet.features['solana:signAndSendTransaction'] as
     | SignAndSendFeature
@@ -71,6 +66,19 @@ export async function executeWalletTransaction(
 
   throw new Error(
     'This wallet only exposes signTransaction; direct send fallback is disabled until RPC submission is explicitly reviewed.'
+  );
+}
+
+function serializeForWallet(transaction: Transaction | VersionedTransaction): Uint8Array {
+  if ('message' in transaction && 'version' in transaction.message) {
+    return toPlainUint8Array(transaction.serialize());
+  }
+
+  return toPlainUint8Array(
+    transaction.serialize({
+      requireAllSignatures: false,
+      verifySignatures: false
+    })
   );
 }
 

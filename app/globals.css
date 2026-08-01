@@ -137,6 +137,11 @@ label {
   background: var(--panel-muted);
 }
 
+.chip-link {
+  color: var(--accent-strong);
+  text-decoration: none;
+}
+
 .main {
   max-width: 1180px;
   margin: 0 auto;
@@ -294,5 +299,101 @@ label {
 
   .steps {
     position: static;
+  }
+}
+
+.public-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1.25rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.public-hero {
+  min-height: 58vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  gap: 1rem;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding: 3rem 0 2rem;
+}
+
+.public-hero h1 {
+  margin: 0.25rem 0 0;
+  max-width: 720px;
+  font-size: clamp(2.2rem, 7vw, 5.4rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+.public-hero p {
+  max-width: 680px;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.eyebrow {
+  color: var(--accent-strong);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.proof-stack,
+.public-band {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.public-band {
+  padding: 1.25rem 0;
+}
+
+.section-heading {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.section-heading p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.proof-block {
+  display: grid;
+  gap: 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: white;
+  padding: 0.85rem;
+}
+
+.proof-block span {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.proof-block code {
+  overflow-wrap: anywhere;
+}
+
+.warning-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (max-width: 860px) {
+  .public-hero {
+    min-height: auto;
+    grid-template-columns: 1fr;
+    padding-top: 1.5rem;
   }
 }

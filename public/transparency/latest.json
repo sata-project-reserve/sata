@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "status": "TRANSPARENCY_VERIFIED_WITH_DISCLOSURES",
+  "project": "SATA",
+  "slogan": "Proof over promises.",
+  "generatedAtUtc": "2026-08-01T13:28:08.273Z",
+  "reportCadence": "scheduled every 12 hours when GitHub Actions is enabled",
+  "network": "mainnet-beta",
+  "rpcHost": "solana-rpc.publicnode.com",
+  "owner": "HtDVYgAwWWzWWTSer1MtNVvJpZHhKjLo2Drzu2eARRaT",
+  "solana": {
+    "ownerSolLamports": "604159051",
+    "ownerSol": "0.604159051",
+    "sataMint": "A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
+    "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+    "decimals": 9,
+    "supplyRaw": "999996853349945910",
+    "supplyUi": "999996853.34994591",
+    "launchInitialSupplyRaw": "1000000000000000000",
+    "launchInitialSupplyUi": "1000000000",
+    "mintAuthority": null,
+    "freezeAuthority": null,
+    "ownerSataAta": "GHJHn3hezf11MK1CaS6Ndf5yD4dPKXfig2RKYHArk4aN",
+    "ownerSataRaw": "820125372917007530",
+    "metadataAddress": "4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g",
+    "derivedMetadataAddress": "4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g",
+    "metadataOwnerProgram": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s",
+    "metadataUpdateAuthority": "HtDVYgAwWWzWWTSer1MtNVvJpZHhKjLo2Drzu2eARRaT",
+    "metadataMutable": true
+  },
+  "liquidity": {
+    "dex": "Raydium CPMM",
+    "pair": "SATA/WSOL",
+    "poolAddress": "CYRZoXLjgNFTQJnvyJpym1wfTAEoGz6kJMYJFb5hUd8e",
+    "poolProgram": "CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C",
+    "lpMint": "4wp3yZVVdwBvkRnx5qHn8uLRFuw3P9Srt3JvGqn6mrdi",
+    "mintA": "So11111111111111111111111111111111111111112",
+    "mintB": "A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
+    "sataVault": "CJpJN5EdTb8xKhoFaYdFtye95iF7maNr5Yr9brGAU3SA",
+    "wsolVault": "Cjg7uPynhfESN1YTU5y9VhqbPTZsTfqjydazqcaRgnXR",
+    "sataReserveRaw": "139909583671810613",
+    "sataReserveUi": "139909583.671810613",
+    "wsolReserveLamports": "2768399171",
+    "wsolReserveUi": "2.768399171",
+    "poolOpenTimeUnix": "1785346170",
+    "poolOpen": true,
+    "ownerLpAta": "CXXWbG2eTR5GMraJ7HiY7Qr1B9nBL8tncGD88fahJKJa",
+    "ownerUnlockedLpRaw": "10384383731650",
+    "lockProgram": "LockrWmn6K5twhz3y9w1dQERbmgSaRkfnTeTKbpofwE",
+    "lockAuthority": "3f7GcQFG397GAaEnv51zR6tsTVihYRydnydDD1cXekxH",
+    "lockStatus": "PARTIALLY_LOCKED_OWNER_LP_REMAINS",
+    "lockDisclosure": "Raydium Burn & Earn lock verified, but the owner still holds unlocked LP tokens that remain removable unless separately locked or burned.",
+    "removable": true,
+    "totalLockedLpRaw": "9199123117269",
+    "latestLockSignature": "6r2o4X88cZZ8HZZtk1nvCUdFGqvHcr1ByUVZddHyfqcRCeEAjD7pFghLvrJtgU5sEKA78ZEBc37rr7pcBDgD7Qn",
+    "lockTransactions": [
+      {
+        "signature": "6r2o4X88cZZ8HZZtk1nvCUdFGqvHcr1ByUVZddHyfqcRCeEAjD7pFghLvrJtgU5sEKA78ZEBc37rr7pcBDgD7Qn",
+        "slot": 436040963,
+        "blockTimeUtc": "2026-07-29T23:29:12.000Z",
+        "lockPda": "DCZc9BAQ6upF6uJgfHbzzWRM17npSWWzr52TBgELXAqu",
+        "lpMint": "4wp3yZVVdwBvkRnx5qHn8uLRFuw3P9Srt3JvGqn6mrdi",
+        "lockLpVault": "e1kdHRnB6boMMcrLbBmZ1Y46mqRcjtZqGTCjrWcC27q",
+        "lockedLpAmountRaw": "9199123117269",
+        "feeKeyMint": "FQq3W44pup68ux6rEZR91AX77Nwth8rH49m9aSouGpT6",
+        "feeKeyAccount": "46CgAnDrX6Rw3qW88urh7XM5yRba9FmKbf4ry4USDYHm",
+        "verified": true
+      }
+    ]
+  },
+  "bitcoinReserve": {
+    "status": "verified-balance-and-proof",
+    "address": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
+    "reserveSats": "500000",
+    "confirmedReserveSats": "500000",
+    "mempoolReserveSats": "0",
+    "proofMessage": "SATA Bitcoin reserve address for Solana mint A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH. No redemption promise. Snapshot UTC: 2026-08-01T13:20:55Z.",
+    "proofSignature": "AkcwRAIgTuFktugOzK4NVrAQFqvymy3gREk6LMV8AW9JTE7GvPACIBr8A6wMdHcm2nnN7NuxQmc9ZluTRPabRpp6cwwM9EKpASECMkly6+9vvZrpsgNHhFcSpklkpaluJV8IEsjNLweRTMk=",
+    "lastCheckedUtc": "2026-08-01T13:28:09.724Z",
+    "plannedReserveSats": "500000",
+    "plannedReserveBtc": "0.005",
+    "metricsBasis": "actual-confirmed-chain",
+    "confirmedReserveBtc": "0.005",
+    "mempoolReserveBtc": "0",
+    "reserveBtc": "0.005",
+    "targetReserveSatsForOneSatPerSata": "999996854",
+    "targetReserveBtcForOneSatPerSata": "9.99996854",
+    "additionalSatsToOneSatPerSata": "999496854",
+    "satsPerSata": "50000000000000/99999685334994591",
+    "sataPerSat": "99999685334994591/50000000000000",
+    "progressToOneSatPerSataPpm": "500",
+    "caveat": "The Bitcoin reserve is a transparency metric only. It is not a redemption promise, guaranteed price floor, yield product, or market-support commitment."
+  },
+  "gmgn": {
+    "tokenPageReference": "https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
+    "indexingStatus": "manual/public status should be checked from GMGN; this report does not scrape authenticated pages or bypass access controls"
+  },
+  "links": {
+    "mintExplorer": "https://explorer.solana.com/address/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
+    "poolExplorer": "https://explorer.solana.com/address/CYRZoXLjgNFTQJnvyJpym1wfTAEoGz6kJMYJFb5hUd8e",
+    "metadataExplorer": "https://explorer.solana.com/address/4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g",
+    "gmgn": "https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH"
+  },
+  "checks": [
+    {
+      "name": "sata-mint-exists",
+      "ok": true,
+      "level": "critical",
+      "detail": "A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH"
+    },
+    {
+      "name": "sata-token-program",
+      "ok": true,
+      "level": "critical",
+      "detail": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+    },
+    {
+      "name": "sata-decimals",
+      "ok": true,
+      "level": "critical",
+      "detail": "9"
+    },
+    {
+      "name": "sata-supply-not-above-launch-initial",
+      "ok": true,
+      "level": "critical",
+      "detail": "999996853349945910"
+    },
+    {
+      "name": "sata-supply-equals-launch-initial",
+      "ok": false,
+      "level": "warning",
+      "detail": "999996853349945910"
+    },
+    {
+      "name": "sata-mint-authority-revoked",
+      "ok": true,
+      "level": "critical",
+      "detail": "revoked"
+    },
+    {
+      "name": "sata-freeze-authority-revoked",
+      "ok": true,
+      "level": "critical",
+      "detail": "revoked"
+    },
+    {
+      "name": "metadata-pda",
+      "ok": true,
+      "level": "critical",
+      "detail": "4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g"
+    },
+    {
+      "name": "metadata-account-owner",
+      "ok": true,
+      "level": "critical",
+      "detail": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    },
+    {
+      "name": "metadata-update-authority",
+      "ok": true,
+      "level": "warning",
+      "detail": "HtDVYgAwWWzWWTSer1MtNVvJpZHhKjLo2Drzu2eARRaT"
+    },
+    {
+      "name": "metadata-mutability-disclosed",
+      "ok": false,
+      "level": "warning",
+      "detail": "mutable"
+    },
+    {
+      "name": "owner-sata-token-account",
+      "ok": true,
+      "level": "warning",
+      "detail": "GHJHn3hezf11MK1CaS6Ndf5yD4dPKXfig2RKYHArk4aN"
+    },
+    {
+      "name": "raydium-pool-account",
+      "ok": true,
+      "level": "critical",
+      "detail": "CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C"
+    },
+    {
+      "name": "raydium-pool-mints",
+      "ok": true,
+      "level": "critical",
+      "detail": "So11111111111111111111111111111111111111112, A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH"
+    },
+    {
+      "name": "raydium-pool-open",
+      "ok": true,
+      "level": "critical",
+      "detail": "1785346170"
+    },
+    {
+      "name": "raydium-sata-reserve",
+      "ok": true,
+      "level": "critical",
+      "detail": "139909583671810613"
+    },
+    {
+      "name": "raydium-wsol-reserve",
+      "ok": true,
+      "level": "critical",
+      "detail": "2768399171"
+    },
+    {
+      "name": "raydium-lp-lock-verified",
+      "ok": true,
+      "level": "critical",
+      "detail": "Raydium Burn & Earn lock verified, but the owner still holds unlocked LP tokens that remain removable unless separately locked or burned."
+    },
+    {
+      "name": "owner-unlocked-lp-balance-zero",
+      "ok": false,
+      "level": "warning",
+      "detail": "10384383731650"
+    },
+    {
+      "name": "bitcoin-reserve-proof",
+      "ok": true,
+      "level": "warning",
+      "detail": "verified-balance-and-proof"
+    }
+  ],
+  "warnings": [
+    "sata-supply-equals-launch-initial: 999996853349945910",
+    "metadata-mutability-disclosed: mutable",
+    "owner-unlocked-lp-balance-zero: 10384383731650"
+  ],
+  "permanentCaveats": [
+    "SATA has no hidden mint authority when the mint-authority check is passing.",
+    "SATA has no freeze authority when the freeze-authority check is passing.",
+    "Liquidity is described as locked only for LP balances independently verified in Raydium Burn & Earn accounts.",
+    "Any owner unlocked LP balance remains removable and is disclosed separately.",
+    "No report field contains seed phrases, private keys, signed transaction bytes, or full RPC URLs."
+  ]
+}

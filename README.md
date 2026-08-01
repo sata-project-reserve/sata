@@ -21,6 +21,7 @@ npm run test:e2e
 npm run build
 npm run security:check
 npm run verify:devnet
+npm run transparency:report
 ```
 
 Current MetaMask/Solana package selections require Node `>=20.19.0`; Node `22 LTS` is recommended before running all gates.
@@ -36,3 +37,19 @@ Current MetaMask/Solana package selections require Node `>=20.19.0`; Node `22 LT
 ## Mainnet Boundary
 
 The app is designed to stop before every mainnet transaction. The owner must unlock mainnet after all readiness gates pass and approve each transaction in MetaMask.
+
+## Transparency Roadmap
+
+- Public transparency page: `/transparency`
+- Raw public reports: `/transparency/latest.json` and `/transparency/latest.md`
+- [Long-term roadmap](docs/long-term-roadmap.md)
+- [Bitcoin treasury policy](docs/bitcoin-treasury-policy.md)
+- [Transparency register](docs/transparency-register.md)
+- [Transparency reporting](docs/transparency-reporting.md)
+- [Social agent policy](docs/social-agent-policy.md)
+
+The `1 SATA = 1 sat` idea is treated as an aspirational transparency and adoption milestone, not a guaranteed price target, redemption promise, or market-support claim.
+
+`npm run transparency:report` generates read-only public JSON and Markdown reports under `public/transparency/`. The included GitHub Actions workflow can publish the static report every 12 hours through GitHub Pages.
+
+`public/social-agent-profile.json` provides machine-readable boundaries for a future AI-managed X/Twitter account.

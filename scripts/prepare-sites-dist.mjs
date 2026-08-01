@@ -2,7 +2,11 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const imageSvg = readFileSync(join('public', 'mainnet', 'sata-image.svg'), 'utf8');
+const transparencyJson = readFileSync(join('public', 'transparency', 'latest.json'), 'utf8');
+const transparencyMd = readFileSync(join('public', 'transparency', 'latest.md'), 'utf8');
+const socialAgentProfile = readFileSync(join('public', 'social-agent-profile.json'), 'utf8');
 const hostingJson = readFileSync(join('.openai', 'hosting.json'), 'utf8');
+const report = JSON.parse(transparencyJson);
 
 rmSync('dist', { recursive: true, force: true });
 mkdirSync(join('dist', 'server'), { recursive: true });
@@ -10,6 +14,10 @@ mkdirSync(join('dist', '.openai'), { recursive: true });
 
 const server = `
 const imageSvg = ${JSON.stringify(imageSvg)};
+const transparencyJson = ${JSON.stringify(transparencyJson)};
+const transparencyMd = ${JSON.stringify(transparencyMd)};
+const socialAgentProfile = ${JSON.stringify(socialAgentProfile)};
+const transparencyHtml = ${JSON.stringify(buildTransparencyHtml(report))};
 
 function buildMetadata(origin) {
   const image = origin + '/mainnet/sata-image.svg';
@@ -50,9 +58,29 @@ export default {
         headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
       });
     }
+    if (url.pathname === '/transparency') {
+      return new Response(transparencyHtml, {
+        headers: withCors({ 'content-type': 'text/html; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/transparency/latest.json') {
+      return new Response(transparencyJson, {
+        headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/transparency/latest.md') {
+      return new Response(transparencyMd, {
+        headers: withCors({ 'content-type': 'text/markdown; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/social-agent-profile.json') {
+      return new Response(socialAgentProfile, {
+        headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
+      });
+    }
     if (url.pathname === '/') {
       return new Response(
-        '<!doctype html><title>SATA Token Assets</title><h1>SATA Token Assets</h1><ul><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li></ul>',
+        '<!doctype html><title>SATA</title><h1>SATA</h1><ul><li><a href="/transparency">Transparency</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li></ul>',
         { headers: withCors({ 'content-type': 'text/html; charset=utf-8' }) }
       );
     }
@@ -67,3 +95,92 @@ export default {
 writeFileSync(join('dist', 'server', 'index.js'), server.trimStart(), 'utf8');
 writeFileSync(join('dist', '.openai', 'hosting.json'), hostingJson, 'utf8');
 console.log('Prepared Sites server output in dist');
+
+function buildTransparencyHtml(report) {
+  const warnings =
+    report.warnings.length === 0
+      ? '<li>No active warning-level disclosures.</li>'
+      : report.warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join('');
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SATA Transparency</title>
+  <style>
+    :root { color-scheme: light; --bg: #f6f7f9; --panel: #fff; --text: #111827; --muted: #5b6472; --line: #d9dee7; --accent: #0f766e; --warning: #a15c07; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { max-width: 1120px; margin: 0 auto; padding: 24px; display: grid; gap: 18px; }
+    .hero { min-height: 52vh; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr); gap: 18px; align-items: center; border-bottom: 1px solid var(--line); }
+    h1 { margin: 0; font-size: clamp(42px, 8vw, 84px); line-height: .95; letter-spacing: 0; }
+    h2 { margin: 0; font-size: 24px; }
+    p { color: var(--muted); line-height: 1.6; }
+    a { color: #0b5f59; }
+    .eyebrow { color: #0b5f59; font-size: 13px; font-weight: 700; text-transform: uppercase; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .metric, .panel { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 14px; }
+    .metric span { display: block; color: var(--muted); font-size: 13px; }
+    .metric strong, code { overflow-wrap: anywhere; }
+    .panel { display: grid; gap: 10px; }
+    .warning { border-left: 4px solid var(--warning); background: #fff7ed; }
+    @media (max-width: 800px) { .hero, .grid { grid-template-columns: 1fr; } .hero { min-height: auto; padding-top: 16px; } }
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div>
+      <span class="eyebrow">SATA transparency</span>
+      <h1>Proof over promises.</h1>
+      <p>SATA publishes public checks for token authority, Raydium liquidity, LP lock status, and the Bitcoin reserve. This is not a redemption promise, guaranteed price floor, yield product, or investment claim.</p>
+      <p><a href="/transparency/latest.json">Latest JSON</a> · <a href="/transparency/latest.md">Latest Markdown</a> · <a href="/social-agent-profile.json">Social agent profile</a></p>
+    </div>
+    <div class="panel">
+      <div class="metric"><span>Status</span><strong>${escapeHtml(report.status)}</strong></div>
+      <div class="metric"><span>Generated UTC</span><strong>${escapeHtml(report.generatedAtUtc)}</strong></div>
+      <div class="metric"><span>BTC Proof</span><strong>${escapeHtml(report.bitcoinReserve.status)}</strong></div>
+    </div>
+  </section>
+  <section class="panel">
+    <h2>Bitcoin Reserve</h2>
+    <div class="grid">
+      <div class="metric"><span>Address</span><strong>${escapeHtml(report.bitcoinReserve.address ?? 'pending')}</strong></div>
+      <div class="metric"><span>Confirmed Reserve</span><strong>${escapeHtml(report.bitcoinReserve.confirmedReserveSats ?? 'not verified')} sats</strong></div>
+      <div class="metric"><span>Proof Status</span><strong>${escapeHtml(report.bitcoinReserve.status)}</strong></div>
+      <div class="metric"><span>Sats Per SATA</span><strong>${escapeHtml(report.bitcoinReserve.satsPerSata)}</strong></div>
+      <div class="metric"><span>SATA Per Sat</span><strong>${escapeHtml(report.bitcoinReserve.sataPerSat)}</strong></div>
+      <div class="metric"><span>1 Sat Per SATA Milestone</span><strong>${escapeHtml(report.bitcoinReserve.targetReserveSatsForOneSatPerSata)} sats</strong></div>
+    </div>
+    <div class="metric"><span>Proof Message</span><code>${escapeHtml(report.bitcoinReserve.proofMessage ?? 'not published')}</code></div>
+    <div class="metric"><span>Proof Signature</span><code>${escapeHtml(report.bitcoinReserve.proofSignature ?? 'not published')}</code></div>
+  </section>
+  <section class="panel">
+    <h2>Liquidity</h2>
+    <div class="grid">
+      <div class="metric"><span>Pool</span><strong>${escapeHtml(report.liquidity.poolAddress)}</strong></div>
+      <div class="metric"><span>SATA Reserve</span><strong>${escapeHtml(report.liquidity.sataReserveUi)}</strong></div>
+      <div class="metric"><span>WSOL Reserve</span><strong>${escapeHtml(report.liquidity.wsolReserveUi)}</strong></div>
+      <div class="metric"><span>Locked LP</span><strong>${escapeHtml(report.liquidity.totalLockedLpRaw)}</strong></div>
+      <div class="metric"><span>Owner Unlocked LP</span><strong>${escapeHtml(report.liquidity.ownerUnlockedLpRaw)}</strong></div>
+      <div class="metric"><span>Lock Status</span><strong>${escapeHtml(report.liquidity.lockStatus)}</strong></div>
+    </div>
+    <div class="metric warning"><span>Disclosure</span><strong>${escapeHtml(report.liquidity.lockDisclosure)}</strong></div>
+  </section>
+  <section class="panel">
+    <h2>Warnings</h2>
+    <ul>${warnings}</ul>
+  </section>
+</main>
+</body>
+</html>`;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}

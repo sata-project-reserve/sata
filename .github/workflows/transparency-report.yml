@@ -1,0 +1,76 @@
+name: SATA Transparency Report
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: sata-transparency-report
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate transparency report
+        run: npm run transparency:report
+        env:
+          NEXT_PUBLIC_MAINNET_RPC_URL: ${{ vars.NEXT_PUBLIC_MAINNET_RPC_URL }}
+          SATA_PLANNED_RESERVE_SATS: ${{ vars.SATA_PLANNED_RESERVE_SATS }}
+          SATA_SIGNATURE_SCAN_LIMIT: ${{ vars.SATA_SIGNATURE_SCAN_LIMIT }}
+          SATA_BTC_API_BASE: ${{ vars.SATA_BTC_API_BASE }}
+          SATA_BTC_RESERVE_ADDRESS: ${{ vars.SATA_BTC_RESERVE_ADDRESS }}
+          SATA_BTC_RESERVE_MESSAGE: ${{ vars.SATA_BTC_RESERVE_MESSAGE }}
+          SATA_BTC_RESERVE_SIGNATURE: ${{ vars.SATA_BTC_RESERVE_SIGNATURE }}
+
+      - name: Build static site
+        run: npm run build
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sata-transparency-report
+          path: |
+            artifacts/transparency/latest.json
+            artifacts/transparency/latest.md
+
+      - name: Commit latest public report
+        run: |
+          git config user.name "sata-report-bot"
+          git config user.email "sata-report-bot@users.noreply.github.com"
+          git add public/transparency
+          git diff --cached --quiet || git commit -m "chore: publish SATA transparency report"
+          git push
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

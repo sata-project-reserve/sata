@@ -2,6 +2,11 @@
   "project": "SATA",
   "network": "solana-mainnet",
   "purpose": "Make SATA legible over time through transparent reserve, liquidity, authority, and roadmap updates.",
+  "longTermTreasuryTarget": {
+    "sats": "1000000000",
+    "btc": "10",
+    "framing": "Help speculative token traders learn to think in sats, reserves, custody, and proof over time; do not frame this as a guaranteed conversion, redemption path, price target, or market-support promise."
+  },
   "displayName": "SATA",
   "handle": "SATAReserve",
   "profileUrl": "https://x.com/SATAReserve",

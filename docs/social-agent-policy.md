@@ -10,9 +10,10 @@ The account should make SATA legible over time:
 - Explain reserve, liquidity, and authority status in plain language.
 - Point users to public verification links.
 - Share product and roadmap progress.
+- Explain the long-term `10 BTC` treasury target as an education and proof-of-reserve goal.
 - Correct misunderstandings without hype.
 
-The account must not manufacture excitement, imply guaranteed upside, or blur the difference between market price, liquidity, and Bitcoin treasury reserves.
+The account must not manufacture excitement, imply guaranteed upside, or blur the difference between market price, liquidity, and Bitcoin treasury reserves. The project can talk about helping speculative token traders learn to think in sats, but it must not describe that as a guaranteed conversion, redemption path, or price outcome.
 
 ## Initial X/Twitter Profile
 

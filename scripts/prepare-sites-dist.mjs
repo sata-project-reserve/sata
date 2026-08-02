@@ -24,8 +24,16 @@ function buildMetadata(origin) {
   return {
     name: 'SATA',
     symbol: 'SATA',
-    description: 'SATA is a community-driven experimental token on Solana. It provides no promise of profit, return, utility or appreciation.',
+    description: 'SATA is a Bitcoin-aligned community token on Solana with public reserve, liquidity, and authority reporting. It provides no promise of profit, redemption, return, utility or appreciation.',
     image,
+    external_url: 'https://sata-project-reserve.github.io/sata/',
+    website: 'https://sata-project-reserve.github.io/sata/',
+    twitter: 'https://x.com/SATAReserve',
+    extensions: {
+      website: 'https://sata-project-reserve.github.io/sata/',
+      twitter: 'https://x.com/SATAReserve',
+      twitter_username: 'SATAReserve'
+    },
     attributes: [
       { trait_type: 'network', value: 'mainnet-beta' },
       { trait_type: 'project_type', value: 'community experimental token' }
@@ -80,7 +88,7 @@ export default {
     }
     if (url.pathname === '/') {
       return new Response(
-        '<!doctype html><title>SATA</title><h1>SATA</h1><ul><li><a href="/transparency">Transparency</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li></ul>',
+        '<!doctype html><title>SATA</title><h1>SATA</h1><p>Proof over promises. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
         { headers: withCors({ 'content-type': 'text/html; charset=utf-8' }) }
       );
     }
@@ -134,7 +142,8 @@ function buildTransparencyHtml(report) {
       <span class="eyebrow">SATA transparency</span>
       <h1>Proof over promises.</h1>
       <p>SATA publishes public checks for token authority, Raydium liquidity, LP lock status, and the Bitcoin reserve. This is not a redemption promise, guaranteed price floor, yield product, or investment claim.</p>
-      <p><a href="/transparency/latest.json">Latest JSON</a> · <a href="/transparency/latest.md">Latest Markdown</a> · <a href="/social-agent-profile.json">Social agent profile</a></p>
+      <p>Long-term treasury target: 10 BTC. The goal is to move attention toward sats, custody, reserves, and proof over time, without promising a conversion path or market price.</p>
+      <p><a href="/transparency/latest.json">Latest JSON</a> · <a href="/transparency/latest.md">Latest Markdown</a> · <a href="/social-agent-profile.json">Social agent profile</a> · <a href="https://x.com/SATAReserve">@SATAReserve</a></p>
     </div>
     <div class="panel">
       <div class="metric"><span>Status</span><strong>${escapeHtml(report.status)}</strong></div>
@@ -151,6 +160,7 @@ function buildTransparencyHtml(report) {
       <div class="metric"><span>Sats Per SATA</span><strong>${escapeHtml(report.bitcoinReserve.satsPerSata)}</strong></div>
       <div class="metric"><span>SATA Per Sat</span><strong>${escapeHtml(report.bitcoinReserve.sataPerSat)}</strong></div>
       <div class="metric"><span>1 Sat Per SATA Milestone</span><strong>${escapeHtml(report.bitcoinReserve.targetReserveSatsForOneSatPerSata)} sats</strong></div>
+      <div class="metric"><span>10 BTC Treasury Target</span><strong>1,000,000,000 sats</strong></div>
     </div>
     <div class="metric"><span>Proof Message</span><code>${escapeHtml(report.bitcoinReserve.proofMessage ?? 'not published')}</code></div>
     <div class="metric"><span>Proof Signature</span><code>${escapeHtml(report.bitcoinReserve.proofSignature ?? 'not published')}</code></div>

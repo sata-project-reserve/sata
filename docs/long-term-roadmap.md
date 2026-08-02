@@ -4,6 +4,8 @@
 
 SATA should become a transparent Bitcoin-aligned community token on Solana with verifiable reserves, locked liquidity, revoked token authorities, public reporting, and useful products or services.
 
+The long-term treasury target is `10 BTC`, equal to `1,000,000,000 sats`. The project narrative should be framed as helping speculative token traders learn to think in sats, reserves, custody, and proof over time. It must not be framed as a guaranteed conversion, redemption path, or promise that the market will price SATA at any specific level.
+
 The phrase `1 SATA = 1 sat` can be used internally as an aspirational milestone, but it must not be promoted as a guaranteed price target, redemption claim, or promise of appreciation. There are two separate milestones:
 
 - Treasury milestone: public BTC reserves reach `1 sat per 1 SATA`. For the current `1,000,000,000 SATA` supply, this requires `1,000,000,000 sats` (`10 BTC`).

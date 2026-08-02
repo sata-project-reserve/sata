@@ -38,12 +38,19 @@ export default function TransparencyPage() {
             status, and the Bitcoin reserve. This page is informational only; it is not a
             redemption promise, guaranteed price floor, yield product, or investment claim.
           </p>
+          <p>
+            Long-term treasury target: 10 BTC. The goal is to move attention toward sats, custody,
+            reserves, and proof over time, without promising a conversion path or market price.
+          </p>
           <div className="inline-actions">
             <a className="button-link" href="/transparency/latest.json">
               Latest JSON
             </a>
             <a className="button-link" href="/transparency/latest.md">
               Latest Markdown
+            </a>
+            <a className="button-link" href="https://x.com/SATAReserve">
+              @SATAReserve
             </a>
           </div>
         </div>
@@ -102,6 +109,10 @@ export default function TransparencyPage() {
           <div className="metric">
             <span>1 Sat Per SATA Milestone</span>
             <strong>{bitcoinReserve.targetReserveSatsForOneSatPerSata} sats</strong>
+          </div>
+          <div className="metric">
+            <span>10 BTC Treasury Target</span>
+            <strong>1,000,000,000 sats</strong>
           </div>
         </div>
         <div className="proof-block">

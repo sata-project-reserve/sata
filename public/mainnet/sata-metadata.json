@@ -1,8 +1,16 @@
 {
   "name": "SATA",
   "symbol": "SATA",
-  "description": "SATA is a community-driven experimental token on Solana. It provides no promise of profit, return, utility or appreciation.",
+  "description": "SATA is a Bitcoin-aligned community token on Solana with public reserve, liquidity, and authority reporting. It provides no promise of profit, redemption, return, utility or appreciation.",
   "image": "https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-image.svg",
+  "external_url": "https://sata-project-reserve.github.io/sata/",
+  "website": "https://sata-project-reserve.github.io/sata/",
+  "twitter": "https://x.com/SATAReserve",
+  "extensions": {
+    "website": "https://sata-project-reserve.github.io/sata/",
+    "twitter": "https://x.com/SATAReserve",
+    "twitter_username": "SATAReserve"
+  },
   "attributes": [
     {
       "trait_type": "network",

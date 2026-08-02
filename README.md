@@ -48,9 +48,10 @@ The app is designed to stop before every mainnet transaction. The owner must unl
 - [Transparency register](docs/transparency-register.md)
 - [Transparency reporting](docs/transparency-reporting.md)
 - [Social agent policy](docs/social-agent-policy.md)
+- [Social agent runbook](docs/social-agent-runbook.md)
 
 The `1 SATA = 1 sat` idea is treated as an aspirational transparency and adoption milestone, not a guaranteed price target, redemption promise, or market-support claim.
 
 `npm run transparency:report` generates read-only public JSON and Markdown reports under `public/transparency/`. The included GitHub Actions workflow can publish the static report every 12 hours through GitHub Pages.
 
-`public/social-agent-profile.json` provides machine-readable boundaries for a future AI-managed X/Twitter account.
+`public/social-agent-profile.json` provides machine-readable boundaries for a future AI-managed X/Twitter account. `public/social-agent-content-queue.json` contains draft-only starter posts that can be validated with `npm run social:check`.

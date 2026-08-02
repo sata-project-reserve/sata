@@ -1,0 +1,53 @@
+{
+  "project": "SATA",
+  "account": {
+    "displayName": "SATA",
+    "handle": "SATAReserve",
+    "profileUrl": "https://x.com/SATAReserve"
+  },
+  "mode": "draft-only-until-human-approval",
+  "sourceOfTruth": {
+    "transparencyJson": "/transparency/latest.json",
+    "socialAgentProfile": "/social-agent-profile.json",
+    "policyDoc": "docs/social-agent-policy.md",
+    "runbook": "docs/social-agent-runbook.md"
+  },
+  "posts": [
+    {
+      "id": "pinned-proof-overview",
+      "status": "ready-for-review",
+      "type": "pinned",
+      "text": "SATA publishes checks for token authority, Raydium liquidity, LP lock status, and the BTC reserve. Reserve transparency is not a redemption promise or guaranteed price floor. Owner-held unlocked LP is disclosed.\n\nhttps://sata-project-reserve.github.io/sata/transparency"
+    },
+    {
+      "id": "btc-reserve-first-tranche",
+      "status": "ready-for-review",
+      "type": "transparency",
+      "text": "SATA has a dedicated Bitcoin reserve address with signed address-control proof. Current first tranche: 500,000 sats.\n\nThe BTC reserve is not a redemption promise or guaranteed price floor.\n\nhttps://sata-project-reserve.github.io/sata/transparency"
+    },
+    {
+      "id": "authority-revoked",
+      "status": "ready-for-review",
+      "type": "education",
+      "text": "SATA mint and freeze authorities are revoked on Solana mainnet. That means no hidden minting path and no freeze authority when the public checks are passing.\n\nVerify from the public report:\nhttps://sata-project-reserve.github.io/sata/transparency"
+    },
+    {
+      "id": "liquidity-disclosure",
+      "status": "ready-for-review",
+      "type": "transparency",
+      "text": "The Raydium SATA/WSOL pool is live. Initial Burn & Earn LP lock is verified, and owner-held unlocked LP is disclosed separately.\n\nUnlocked LP remains removable unless separately locked and verified.\n\nhttps://sata-project-reserve.github.io/sata/transparency"
+    },
+    {
+      "id": "ten-btc-target",
+      "status": "ready-for-review",
+      "type": "roadmap",
+      "text": "Long-term SATA treasury target: 10 BTC.\n\nThe point is to move attention toward sats, custody, reserves, and proof over time. This is not a redemption path, price target, or market-support promise.\n\nProof over promises."
+    },
+    {
+      "id": "gmgn-route-pending",
+      "status": "hold-until-manual-verification",
+      "type": "market-readiness",
+      "text": "GMGN route status will be claimed only after current buy and sell routes are manually verified from the public interface.\n\nUntil then, use the transparency report as source of truth. Unlocked LP remains removable unless separately locked and verified."
+    }
+  ]
+}

@@ -5,6 +5,10 @@ const imageSvg = readFileSync(join('public', 'mainnet', 'sata-image.svg'), 'utf8
 const transparencyJson = readFileSync(join('public', 'transparency', 'latest.json'), 'utf8');
 const transparencyMd = readFileSync(join('public', 'transparency', 'latest.md'), 'utf8');
 const socialAgentProfile = readFileSync(join('public', 'social-agent-profile.json'), 'utf8');
+const socialAgentContentQueue = readFileSync(
+  join('public', 'social-agent-content-queue.json'),
+  'utf8'
+);
 const hostingJson = readFileSync(join('.openai', 'hosting.json'), 'utf8');
 const report = JSON.parse(transparencyJson);
 
@@ -17,6 +21,7 @@ const imageSvg = ${JSON.stringify(imageSvg)};
 const transparencyJson = ${JSON.stringify(transparencyJson)};
 const transparencyMd = ${JSON.stringify(transparencyMd)};
 const socialAgentProfile = ${JSON.stringify(socialAgentProfile)};
+const socialAgentContentQueue = ${JSON.stringify(socialAgentContentQueue)};
 const transparencyHtml = ${JSON.stringify(buildTransparencyHtml(report))};
 
 function buildMetadata(origin) {
@@ -86,9 +91,14 @@ export default {
         headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
       });
     }
+    if (url.pathname === '/social-agent-content-queue.json') {
+      return new Response(socialAgentContentQueue, {
+        headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
+      });
+    }
     if (url.pathname === '/') {
       return new Response(
-        '<!doctype html><title>SATA</title><h1>SATA</h1><p>Proof over promises. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
+        '<!doctype html><title>SATA</title><h1>SATA</h1><p>Proof over promises. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
         { headers: withCors({ 'content-type': 'text/html; charset=utf-8' }) }
       );
     }
@@ -143,7 +153,7 @@ function buildTransparencyHtml(report) {
       <h1>Proof over promises.</h1>
       <p>SATA publishes public checks for token authority, Raydium liquidity, LP lock status, and the Bitcoin reserve. This is not a redemption promise, guaranteed price floor, yield product, or investment claim.</p>
       <p>Long-term treasury target: 10 BTC. The goal is to move attention toward sats, custody, reserves, and proof over time, without promising a conversion path or market price.</p>
-      <p><a href="/transparency/latest.json">Latest JSON</a> · <a href="/transparency/latest.md">Latest Markdown</a> · <a href="/social-agent-profile.json">Social agent profile</a> · <a href="https://x.com/SATAReserve">@SATAReserve</a></p>
+      <p><a href="/transparency/latest.json">Latest JSON</a> · <a href="/transparency/latest.md">Latest Markdown</a> · <a href="/social-agent-profile.json">Social agent profile</a> · <a href="/social-agent-content-queue.json">Content queue</a> · <a href="https://x.com/SATAReserve">@SATAReserve</a></p>
     </div>
     <div class="panel">
       <div class="metric"><span>Status</span><strong>${escapeHtml(report.status)}</strong></div>

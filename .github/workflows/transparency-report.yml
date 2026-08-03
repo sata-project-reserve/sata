@@ -1,6 +1,24 @@
 name: SATA Transparency Report
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/transparency-report.yml'
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'public/mainnet/**'
+      - 'public/project-profile.json'
+      - 'public/social-agent-profile.json'
+      - 'public/social-agent-content-queue.json'
+      - 'public/social-agent-monitoring-log.json'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'next.config.*'
+      - 'tsconfig.json'
   schedule:
     - cron: '0 */12 * * *'
   workflow_dispatch:

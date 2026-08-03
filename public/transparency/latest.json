@@ -3,7 +3,7 @@
   "status": "TRANSPARENCY_VERIFIED_WITH_DISCLOSURES",
   "project": "SATA",
   "slogan": "Proof over promises.",
-  "generatedAtUtc": "2026-08-03T17:11:22.324Z",
+  "generatedAtUtc": "2026-08-03T17:13:19.533Z",
   "reportCadence": "scheduled every 12 hours when GitHub Actions is enabled",
   "network": "mainnet-beta",
   "rpcHost": "solana-rpc.publicnode.com",
@@ -103,7 +103,7 @@
       "method": "published-register-match",
       "detail": "proof fields match the public transparency register; independent cryptographic verification should still be performed with Bitcoin tooling"
     },
-    "lastCheckedUtc": "2026-08-03T17:11:23.927Z",
+    "lastCheckedUtc": "2026-08-03T17:13:21.077Z",
     "plannedReserveSats": "500000",
     "plannedReserveBtc": "0.005",
     "metricsBasis": "actual-confirmed-chain",

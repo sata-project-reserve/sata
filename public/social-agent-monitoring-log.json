@@ -12,7 +12,7 @@
       "type": "pinned",
       "status": "published-and-pinned",
       "publishedAtUtc": "2026-08-03T12:04:00Z",
-      "postUrl": null,
+      "postUrl": "https://x.com/SATAReserve/status/2084248941801906474",
       "source": "owner-provided screenshot",
       "observations": [
         {
@@ -23,6 +23,15 @@
           "likes": 0,
           "bookmarks": 0,
           "notes": "Initial screenshot confirms the post is pinned on @SATAReserve."
+        },
+        {
+          "observedAtUtc": "2026-08-03T12:44:58Z",
+          "views": 17,
+          "replies": 0,
+          "reposts": 0,
+          "likes": 0,
+          "bookmarks": 0,
+          "notes": "Observed from public X profile HTML."
         }
       ]
     }

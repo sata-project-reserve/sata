@@ -3,7 +3,7 @@
   "status": "TRANSPARENCY_VERIFIED_WITH_DISCLOSURES",
   "project": "SATA",
   "slogan": "Proof over promises.",
-  "generatedAtUtc": "2026-08-03T16:01:04.135Z",
+  "generatedAtUtc": "2026-08-03T16:36:16.996Z",
   "reportCadence": "scheduled every 12 hours when GitHub Actions is enabled",
   "network": "mainnet-beta",
   "rpcHost": "solana-rpc.publicnode.com",
@@ -100,7 +100,7 @@
       "method": "published-register-match",
       "detail": "proof fields match the public transparency register; independent cryptographic verification should still be performed with Bitcoin tooling"
     },
-    "lastCheckedUtc": "2026-08-03T16:02:44.046Z",
+    "lastCheckedUtc": "2026-08-03T16:36:18.765Z",
     "plannedReserveSats": "500000",
     "plannedReserveBtc": "0.005",
     "metricsBasis": "actual-confirmed-chain",
@@ -119,11 +119,17 @@
     "tokenPageReference": "https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
     "indexingStatus": "manual/public status should be checked from GMGN; this report does not scrape authenticated pages or bypass access controls"
   },
+  "dexscreener": {
+    "pairPageReference": "https://dexscreener.com/solana/cyrzoxljgnftqjnvyjpym1wftaeogz6kjmyjfb5hud8e",
+    "tokenApiReference": "https://api.dexscreener.com/latest/dex/tokens/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
+    "indexingStatus": "DexScreener pair indexing is public, but richer token profile fields may require metadata refresh, platform indexing, or a submitted token profile"
+  },
   "links": {
     "mintExplorer": "https://explorer.solana.com/address/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
     "poolExplorer": "https://explorer.solana.com/address/CYRZoXLjgNFTQJnvyJpym1wfTAEoGz6kJMYJFb5hUd8e",
     "metadataExplorer": "https://explorer.solana.com/address/4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g",
-    "gmgn": "https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH"
+    "gmgn": "https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
+    "dexscreener": "https://dexscreener.com/solana/cyrzoxljgnftqjnvyjpym1wftaeogz6kjmyjfb5hud8e"
   },
   "checks": [
     {

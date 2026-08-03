@@ -355,11 +355,18 @@ export async function generateTransparencyReport() {
       indexingStatus:
         'manual/public status should be checked from GMGN; this report does not scrape authenticated pages or bypass access controls'
     },
+    dexscreener: {
+      pairPageReference: `https://dexscreener.com/solana/${POOL.toLowerCase()}`,
+      tokenApiReference: `https://api.dexscreener.com/latest/dex/tokens/${SATA_MINT}`,
+      indexingStatus:
+        'DexScreener pair indexing is public, but richer token profile fields may require metadata refresh, platform indexing, or a submitted token profile'
+    },
     links: {
       mintExplorer: `https://explorer.solana.com/address/${SATA_MINT}`,
       poolExplorer: `https://explorer.solana.com/address/${POOL}`,
       metadataExplorer: `https://explorer.solana.com/address/${EXPECTED_METADATA}`,
-      gmgn: `https://gmgn.ai/sol/token/${SATA_MINT}`
+      gmgn: `https://gmgn.ai/sol/token/${SATA_MINT}`,
+      dexscreener: `https://dexscreener.com/solana/${POOL.toLowerCase()}`
     },
     checks,
     warnings: checks
@@ -824,6 +831,12 @@ ${report.bitcoinReserve.caveat}
 - Token page reference: ${report.gmgn.tokenPageReference}
 - Status: ${report.gmgn.indexingStatus}
 
+## DexScreener
+
+- Pair page reference: ${report.dexscreener.pairPageReference}
+- Token API reference: ${report.dexscreener.tokenApiReference}
+- Status: ${report.dexscreener.indexingStatus}
+
 ## Warnings
 
 ${warnings}
@@ -838,6 +851,7 @@ ${checks}
 - Pool explorer: ${report.links.poolExplorer}
 - Metadata explorer: ${report.links.metadataExplorer}
 - GMGN: ${report.links.gmgn}
+- DexScreener: ${report.links.dexscreener}
 
 ## Permanent Caveats
 

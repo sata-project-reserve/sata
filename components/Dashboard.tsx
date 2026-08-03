@@ -1142,7 +1142,7 @@ export function Dashboard(props: DashboardProps) {
         <div className="topbar-inner">
           <div className="brand">
             <h1>SATA Token Launcher</h1>
-            <span>Owner-operated Solana launch dashboard</span>
+            <span>Temporary launch and transparency surface while the official SATA website is built</span>
           </div>
           <div className="chip-row">
             <a className="chip chip-link" href="https://sata-project-reserve.github.io/sata/transparency">

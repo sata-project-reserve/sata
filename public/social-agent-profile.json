@@ -17,7 +17,8 @@
     "disclosure": "SATA is an independent personal project and is not affiliated with or endorsed by the founder's employer, clients, schools, or other organizations."
   },
   "bio": "Bitcoin-aligned community token on Solana. Mint/freeze authority revoked. Public liquidity and BTC reserve reports. Proof over promises. No redemption or price guarantee.",
-  "website": "https://sata-project-reserve.github.io/sata/",
+  "website": "https://sata-project-reserve.github.io/sata/transparency",
+  "websiteStatus": "Temporary transparency and launch-app surface while the dedicated official SATA website is being built.",
   "profileImage": "/sata-profile.png",
   "slogan": "Proof over promises.",
   "voice": {

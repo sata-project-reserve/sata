@@ -1,16 +1,52 @@
 {
   "name": "SATA",
   "symbol": "SATA",
-  "description": "SATA is a Bitcoin-aligned community token on Solana with public reserve, liquidity, and authority reporting. It provides no promise of profit, redemption, return, utility or appreciation.",
-  "image": "https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-image.svg",
-  "external_url": "https://sata-project-reserve.github.io/sata/",
-  "website": "https://sata-project-reserve.github.io/sata/",
+  "description": "SATA is a Bitcoin-aligned Solana token and transparency experiment publishing public BTC reserve, liquidity, LP lock, authority, and founder-distribution reports. No redemption promise, price guarantee, yield, or market-support claim.",
+  "image": "https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-image.png",
+  "header": "https://sata-token-assets.jboudou007.chatgpt.site/sata-x-header.png",
+  "external_url": "https://sata-project-reserve.github.io/sata/transparency",
+  "website": "https://sata-project-reserve.github.io/sata/transparency",
   "twitter": "https://x.com/SATAReserve",
+  "x": "https://x.com/SATAReserve",
+  "github": "https://github.com/sata-project-reserve/sata",
+  "repository": "https://github.com/sata-project-reserve/sata",
+  "dexscreener": "https://dexscreener.com/solana/cyrzoxljgnftqjnvyjpym1wftaeogz6kjmyjfb5hud8e",
+  "gmgn": "https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
+  "temporary_website_note": "The current website is the public transparency and launch-app surface. A dedicated official website is planned.",
   "extensions": {
-    "website": "https://sata-project-reserve.github.io/sata/",
+    "website": "https://sata-project-reserve.github.io/sata/transparency",
+    "transparency": "https://sata-project-reserve.github.io/sata/transparency",
     "twitter": "https://x.com/SATAReserve",
-    "twitter_username": "SATAReserve"
+    "x": "https://x.com/SATAReserve",
+    "twitter_username": "SATAReserve",
+    "x_username": "SATAReserve",
+    "github": "https://github.com/sata-project-reserve/sata",
+    "repository": "https://github.com/sata-project-reserve/sata",
+    "dexscreener": "https://dexscreener.com/solana/cyrzoxljgnftqjnvyjpym1wftaeogz6kjmyjfb5hud8e",
+    "gmgn": "https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH"
   },
+  "links": [
+    {
+      "label": "Transparency",
+      "url": "https://sata-project-reserve.github.io/sata/transparency"
+    },
+    {
+      "label": "X",
+      "url": "https://x.com/SATAReserve"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/sata-project-reserve/sata"
+    },
+    {
+      "label": "DexScreener",
+      "url": "https://dexscreener.com/solana/cyrzoxljgnftqjnvyjpym1wftaeogz6kjmyjfb5hud8e"
+    },
+    {
+      "label": "GMGN",
+      "url": "https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH"
+    }
+  ],
   "attributes": [
     {
       "trait_type": "network",
@@ -18,15 +54,19 @@
     },
     {
       "trait_type": "project_type",
-      "value": "community experimental token"
+      "value": "Bitcoin-aligned transparency token"
+    },
+    {
+      "trait_type": "website_status",
+      "value": "temporary transparency site"
     }
   ],
   "properties": {
     "category": "image",
     "files": [
       {
-        "uri": "https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-image.svg",
-        "type": "image/svg+xml"
+        "uri": "https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-image.png",
+        "type": "image/png"
       }
     ]
   }

@@ -44,6 +44,11 @@ export default function TransparencyPage() {
             Long-term treasury target: 10 BTC. The goal is to move attention toward sats, custody,
             reserves, and proof over time, without promising a conversion path or market price.
           </p>
+          <p>
+            This is the temporary public transparency and launch-app surface. A dedicated official
+            SATA website is planned after the core reporting, custody, and liquidity disclosures are
+            stable.
+          </p>
           <div className="inline-actions">
             <a className="button-link" href={`${PUBLIC_BASE_URL}/transparency/latest.json`}>
               Latest JSON
@@ -56,6 +61,12 @@ export default function TransparencyPage() {
             </a>
             <a className="button-link" href="https://github.com/sata-project-reserve/sata">
               GitHub Repository
+            </a>
+            <a className="button-link" href={report.links.dexscreener}>
+              DexScreener
+            </a>
+            <a className="button-link" href={report.links.gmgn}>
+              GMGN
             </a>
             <a className="button-link" href="https://x.com/SATAReserve">
               @SATAReserve

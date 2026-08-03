@@ -61,7 +61,12 @@ for (const post of queue.posts ?? []) {
       findings.push(`${post.id}: missing required caveat for ${topic.pattern}`);
     }
   }
-  if (/https?:\/\/\S+/i.test(post.text) && !/sata-project-reserve\.github\.io|gmgn\.ai|x\.com/i.test(post.text)) {
+  if (
+    /https?:\/\/\S+/i.test(post.text) &&
+    !/sata-project-reserve\.github\.io|github\.com\/sata-project-reserve\/sata|gmgn\.ai|dexscreener\.com|x\.com/i.test(
+      post.text
+    )
+  ) {
     findings.push(`${post.id}: contains a non-approved URL`);
   }
 }

@@ -1,7 +1,7 @@
 # SATA Transparency Report
 
 Status: TRANSPARENCY_VERIFIED_WITH_DISCLOSURES
-Generated UTC: 2026-08-03T16:01:04.135Z
+Generated UTC: 2026-08-03T16:36:16.996Z
 Cadence: scheduled every 12 hours when GitHub Actions is enabled
 Slogan: Proof over promises.
 
@@ -78,6 +78,12 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 - Token page reference: https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
 - Status: manual/public status should be checked from GMGN; this report does not scrape authenticated pages or bypass access controls
 
+## DexScreener
+
+- Pair page reference: https://dexscreener.com/solana/cyrzoxljgnftqjnvyjpym1wftaeogz6kjmyjfb5hud8e
+- Token API reference: https://api.dexscreener.com/latest/dex/tokens/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
+- Status: DexScreener pair indexing is public, but richer token profile fields may require metadata refresh, platform indexing, or a submitted token profile
+
 ## Warnings
 
 - sata-supply-equals-launch-initial: 999996853349945910
@@ -113,6 +119,7 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 - Pool explorer: https://explorer.solana.com/address/CYRZoXLjgNFTQJnvyJpym1wfTAEoGz6kJMYJFb5hUd8e
 - Metadata explorer: https://explorer.solana.com/address/4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g
 - GMGN: https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
+- DexScreener: https://dexscreener.com/solana/cyrzoxljgnftqjnvyjpym1wftaeogz6kjmyjfb5hud8e
 
 ## Permanent Caveats
 

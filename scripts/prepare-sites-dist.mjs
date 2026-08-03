@@ -2,6 +2,8 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const imageSvg = readFileSync(join('public', 'mainnet', 'sata-image.svg'), 'utf8');
+const imagePngBase64 = readFileSync(join('public', 'mainnet', 'sata-image.png'), 'base64');
+const headerPngBase64 = readFileSync(join('public', 'sata-x-header.png'), 'base64');
 const transparencyJson = readFileSync(join('public', 'transparency', 'latest.json'), 'utf8');
 const transparencyMd = readFileSync(join('public', 'transparency', 'latest.md'), 'utf8');
 const socialAgentProfile = readFileSync(join('public', 'social-agent-profile.json'), 'utf8');
@@ -23,6 +25,8 @@ mkdirSync(join('dist', '.openai'), { recursive: true });
 
 const server = `
 const imageSvg = ${JSON.stringify(imageSvg)};
+const imagePngBase64 = ${JSON.stringify(imagePngBase64)};
+const headerPngBase64 = ${JSON.stringify(headerPngBase64)};
 const transparencyJson = ${JSON.stringify(transparencyJson)};
 const transparencyMd = ${JSON.stringify(transparencyMd)};
 const socialAgentProfile = ${JSON.stringify(socialAgentProfile)};
@@ -32,29 +36,66 @@ const projectProfile = ${JSON.stringify(projectProfile)};
 const transparencyHtml = ${JSON.stringify(buildTransparencyHtml(report))};
 
 function buildMetadata(origin) {
-  const image = origin + '/mainnet/sata-image.svg';
+  const image = origin + '/mainnet/sata-image.png';
+  const header = origin + '/sata-x-header.png';
+  const transparency = 'https://sata-project-reserve.github.io/sata/transparency';
+  const repository = 'https://github.com/sata-project-reserve/sata';
+  const x = 'https://x.com/SATAReserve';
+  const dexscreener = 'https://dexscreener.com/solana/cyrzoxljgnftqjnvyjpym1wftaeogz6kjmyjfb5hud8e';
+  const gmgn = 'https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH';
   return {
     name: 'SATA',
     symbol: 'SATA',
-    description: 'SATA is a Bitcoin-aligned community token on Solana with public reserve, liquidity, and authority reporting. It provides no promise of profit, redemption, return, utility or appreciation.',
+    description: 'SATA is a Bitcoin-aligned Solana token and transparency experiment publishing public BTC reserve, liquidity, LP lock, authority, and founder-distribution reports. No redemption promise, price guarantee, yield, or market-support claim.',
     image,
-    external_url: 'https://sata-project-reserve.github.io/sata/',
-    website: 'https://sata-project-reserve.github.io/sata/',
-    twitter: 'https://x.com/SATAReserve',
+    header,
+    external_url: transparency,
+    website: transparency,
+    twitter: x,
+    x,
+    github: repository,
+    repository,
+    dexscreener,
+    gmgn,
+    temporary_website_note: 'The current website is the public transparency and launch-app surface. A dedicated official website is planned.',
     extensions: {
-      website: 'https://sata-project-reserve.github.io/sata/',
-      twitter: 'https://x.com/SATAReserve',
-      twitter_username: 'SATAReserve'
+      website: transparency,
+      transparency,
+      twitter: x,
+      x,
+      twitter_username: 'SATAReserve',
+      x_username: 'SATAReserve',
+      github: repository,
+      repository,
+      dexscreener,
+      gmgn
     },
+    links: [
+      { label: 'Transparency', url: transparency },
+      { label: 'X', url: x },
+      { label: 'GitHub', url: repository },
+      { label: 'DexScreener', url: dexscreener },
+      { label: 'GMGN', url: gmgn }
+    ],
     attributes: [
       { trait_type: 'network', value: 'mainnet-beta' },
-      { trait_type: 'project_type', value: 'community experimental token' }
+      { trait_type: 'project_type', value: 'Bitcoin-aligned transparency token' },
+      { trait_type: 'website_status', value: 'temporary transparency site' }
     ],
     properties: {
       category: 'image',
-      files: [{ uri: image, type: 'image/svg+xml' }]
+      files: [{ uri: image, type: 'image/png' }]
     }
   };
+}
+
+function decodeBase64(value) {
+  const binary = atob(value);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+  return bytes;
 }
 
 function withCors(headers) {
@@ -71,6 +112,16 @@ export default {
     if (url.pathname === '/mainnet/sata-image.svg') {
       return new Response(imageSvg, {
         headers: withCors({ 'content-type': 'image/svg+xml; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/mainnet/sata-image.png') {
+      return new Response(decodeBase64(imagePngBase64), {
+        headers: withCors({ 'content-type': 'image/png' })
+      });
+    }
+    if (url.pathname === '/sata-x-header.png') {
+      return new Response(decodeBase64(headerPngBase64), {
+        headers: withCors({ 'content-type': 'image/png' })
       });
     }
     if (url.pathname === '/mainnet/sata-metadata.json') {
@@ -115,7 +166,7 @@ export default {
     }
     if (url.pathname === '/') {
       return new Response(
-        '<!doctype html><title>SATA</title><h1>SATA</h1><p>Proof over promises. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="https://github.com/sata-project-reserve/sata">GitHub repository</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
+        '<!doctype html><title>SATA</title><h1>SATA</h1><p>Proof over promises. Temporary transparency and launch-app surface while the official SATA website is being built. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="https://github.com/sata-project-reserve/sata">GitHub repository</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.png">sata-image.png</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/sata-x-header.png">sata-x-header.png</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
         { headers: withCors({ 'content-type': 'text/html; charset=utf-8' }) }
       );
     }
@@ -170,7 +221,7 @@ function buildTransparencyHtml(report) {
       <h1>Proof over promises.</h1>
       <p>SATA publishes public checks for token authority, Raydium liquidity, LP lock status, and the Bitcoin reserve. This is not a redemption promise, guaranteed price floor, yield product, or investment claim.</p>
       <p>Long-term treasury target: 10 BTC. The goal is to move attention toward sats, custody, reserves, and proof over time, without promising a conversion path or market price.</p>
-      <p><a href="/transparency/latest.json">Latest JSON</a> · <a href="/transparency/latest.md">Latest Markdown</a> · <a href="/project-profile.json">Project profile</a> · <a href="https://github.com/sata-project-reserve/sata">GitHub repository</a> · <a href="/social-agent-profile.json">Social agent profile</a> · <a href="/social-agent-content-queue.json">Content queue</a> · <a href="/social-agent-monitoring-log.json">Monitoring log</a> · <a href="https://x.com/SATAReserve">@SATAReserve</a></p>
+      <p><a href="/transparency/latest.json">Latest JSON</a> · <a href="/transparency/latest.md">Latest Markdown</a> · <a href="/project-profile.json">Project profile</a> · <a href="https://github.com/sata-project-reserve/sata">GitHub repository</a> · <a href="${escapeHtml(report.links.dexscreener)}">DexScreener</a> · <a href="${escapeHtml(report.links.gmgn)}">GMGN</a> · <a href="/social-agent-profile.json">Social agent profile</a> · <a href="/social-agent-content-queue.json">Content queue</a> · <a href="/social-agent-monitoring-log.json">Monitoring log</a> · <a href="https://x.com/SATAReserve">@SATAReserve</a></p>
     </div>
     <div class="panel">
       <div class="metric"><span>Status</span><strong>${escapeHtml(report.status)}</strong></div>

@@ -36,8 +36,9 @@ const projectProfile = ${JSON.stringify(projectProfile)};
 const transparencyHtml = ${JSON.stringify(buildTransparencyHtml(report))};
 
 function buildMetadata(origin) {
-  const image = origin + '/mainnet/sata-image.png';
-  const header = origin + '/sata-x-header.png';
+  const assetBase = 'https://sata-project-reserve.github.io/sata';
+  const image = assetBase + '/mainnet/sata-image.png';
+  const header = assetBase + '/sata-x-header.png';
   const transparency = 'https://sata-project-reserve.github.io/sata/transparency';
   const repository = 'https://github.com/sata-project-reserve/sata';
   const x = 'https://x.com/SATAReserve';

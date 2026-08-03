@@ -2,8 +2,8 @@
   "name": "SATA",
   "symbol": "SATA",
   "description": "SATA is a Bitcoin-aligned Solana token and transparency experiment publishing public BTC reserve, liquidity, LP lock, authority, and founder-distribution reports. No redemption promise, price guarantee, yield, or market-support claim.",
-  "image": "https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-image.png",
-  "header": "https://sata-token-assets.jboudou007.chatgpt.site/sata-x-header.png",
+  "image": "https://sata-project-reserve.github.io/sata/mainnet/sata-image.png",
+  "header": "https://sata-project-reserve.github.io/sata/sata-x-header.png",
   "external_url": "https://sata-project-reserve.github.io/sata/transparency",
   "website": "https://sata-project-reserve.github.io/sata/transparency",
   "twitter": "https://x.com/SATAReserve",
@@ -65,7 +65,7 @@
     "category": "image",
     "files": [
       {
-        "uri": "https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-image.png",
+      "uri": "https://sata-project-reserve.github.io/sata/mainnet/sata-image.png",
         "type": "image/png"
       }
     ]

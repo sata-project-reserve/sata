@@ -8,14 +8,23 @@ SATA transparency reports are generated from read-only public data. The report j
 
 - `public/transparency/latest.json`
 - `public/transparency/latest.md`
+- `public/transparency/history.json`
+- `public/transparency/history.md`
+- `public/health.json`
+- `public/sitemap.xml`
+- `public/robots.txt`
 - `artifacts/transparency/latest.json`
 - `artifacts/transparency/latest.md`
+- `artifacts/transparency/history.json`
+- `artifacts/transparency/history.md`
 - timestamped local copies under `artifacts/transparency/`
 
 The `public/transparency` files are included in the static Next export, so a deployed site can expose stable URLs:
 
 - `https://sata-project-reserve.github.io/sata/transparency/latest.json`
 - `https://sata-project-reserve.github.io/sata/transparency/latest.md`
+- `https://sata-project-reserve.github.io/sata/transparency/history.json`
+- `https://sata-project-reserve.github.io/sata/health.json`
 
 ## What The Report Verifies
 
@@ -26,6 +35,7 @@ The `public/transparency` files are included in the static Next export, so a dep
 - Mint authority is revoked.
 - Freeze authority is revoked.
 - Metaplex metadata PDA and metadata owner program resolve.
+- On-chain Metaplex metadata name, symbol, URI, mutability, and update authority are reported.
 - Raydium CPMM SATA/WSOL pool exists.
 - Pool reserves are nonzero.
 - Pool open time has passed.
@@ -34,6 +44,12 @@ The `public/transparency` files are included in the static Next export, so a dep
 - Bitcoin reserve balance is checked when a public BTC address is configured.
 - Bitcoin proof fields are checked against the public transparency register. This is not a substitute for independent BIP-322 cryptographic verification.
 - Founder/direct ownership, SATA in the pool, and SATA outside the founder wallet and pool are reported as separate concentration metrics.
+
+## History And Freshness
+
+The report generator also writes a material history ledger. A new history row is appended only when tracked material state changes, such as BTC reserve sats, founder percentage, pool SATA percentage, locked LP, owner unlocked LP, metadata URI, metadata update authority, or metadata mutability.
+
+`public/health.json` exposes the latest report timestamp, source commit, canonical transparency URL, on-chain metadata URI, expected metadata URI, and current warnings. Crawlers and AI systems can use it to check whether HTML, JSON, and metadata are synchronized.
 
 ## Cadence
 

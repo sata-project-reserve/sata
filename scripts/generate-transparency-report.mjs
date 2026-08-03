@@ -1,5 +1,8 @@
+import { createHash } from 'node:crypto';
+import { execFile as execFileCallback } from 'node:child_process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { promisify } from 'node:util';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
   address,
@@ -26,6 +29,8 @@ const LAUNCH_INITIAL_SUPPLY_RAW = '1000000000000000000';
 const SATS_PER_BTC = 100_000_000n;
 const DEFAULT_PLANNED_RESERVE_SATS = 1_000_000n;
 const DEFAULT_RPC_URL = 'https://solana-rpc.publicnode.com';
+const PUBLIC_BASE_URL = 'https://sata-project-reserve.github.io/sata';
+const TOKEN_METADATA_URL = 'https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-metadata.json';
 const PUBLISHED_BTC_PROOF = {
   address: 'bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk',
   message:
@@ -65,6 +70,7 @@ const KNOWN_RAYDIUM_LOCKS = [
 let requestId = 1;
 const addressEncoder = getAddressEncoder();
 const addressDecoder = getAddressDecoder();
+const execFile = promisify(execFileCallback);
 
 export function formatBaseUnits(amount, decimals) {
   const value = typeof amount === 'bigint' ? amount : BigInt(amount);
@@ -259,6 +265,7 @@ export async function generateTransparencyReport() {
       ? 'TRANSPARENCY_VERIFIED_WITH_DISCLOSURES'
       : 'TRANSPARENCY_VERIFIED'
     : 'VERIFICATION_INCOMPLETE';
+  const sourceCommit = await getSourceCommit();
 
   return {
     schemaVersion: 1,
@@ -267,6 +274,14 @@ export async function generateTransparencyReport() {
     slogan: 'Proof over promises.',
     generatedAtUtc: generatedAt.toISOString(),
     reportCadence: 'scheduled every 12 hours when GitHub Actions is enabled',
+    source: {
+      commit: sourceCommit,
+      repository: 'https://github.com/sata-project-reserve/sata',
+      transparencyPage: `${PUBLIC_BASE_URL}/transparency`,
+      latestJson: `${PUBLIC_BASE_URL}/transparency/latest.json`,
+      historyJson: `${PUBLIC_BASE_URL}/transparency/history.json`,
+      healthJson: `${PUBLIC_BASE_URL}/health.json`
+    },
     network: 'mainnet-beta',
     rpcHost,
     owner: OWNER,
@@ -713,26 +728,158 @@ async function writeReports(report) {
   const slug = report.generatedAtUtc.replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
   const artifactDir = join('artifacts', 'transparency');
   const publicDir = join('public', 'transparency');
-  const json = `${JSON.stringify(report, null, 2)}\n`;
-  const markdown = buildMarkdownReport(report);
   await Promise.all([
     mkdir(artifactDir, { recursive: true }),
     mkdir(publicDir, { recursive: true })
   ]);
+  const history = await buildHistoryLedger(report, publicDir);
+  const health = buildHealthReport(report, history);
+  const sitemap = buildSitemap(report);
+  const robots = buildRobots();
+  const json = `${JSON.stringify(report, null, 2)}\n`;
+  const markdown = buildMarkdownReport(report);
+  const historyJson = `${JSON.stringify(history, null, 2)}\n`;
+  const historyMarkdown = buildHistoryMarkdown(history);
+  const healthJson = `${JSON.stringify(health, null, 2)}\n`;
   await Promise.all([
     writeFile(join(artifactDir, `sata-transparency-${slug}.json`), json, 'utf8'),
     writeFile(join(artifactDir, `sata-transparency-${slug}.md`), markdown, 'utf8'),
     writeFile(join(artifactDir, 'latest.json'), json, 'utf8'),
     writeFile(join(artifactDir, 'latest.md'), markdown, 'utf8'),
+    writeFile(join(artifactDir, 'history.json'), historyJson, 'utf8'),
+    writeFile(join(artifactDir, 'history.md'), historyMarkdown, 'utf8'),
     writeFile(join(publicDir, 'latest.json'), json, 'utf8'),
-    writeFile(join(publicDir, 'latest.md'), markdown, 'utf8')
+    writeFile(join(publicDir, 'latest.md'), markdown, 'utf8'),
+    writeFile(join(publicDir, 'history.json'), historyJson, 'utf8'),
+    writeFile(join(publicDir, 'history.md'), historyMarkdown, 'utf8'),
+    writeFile(join('public', 'health.json'), healthJson, 'utf8'),
+    writeFile(join('public', 'sitemap.xml'), sitemap, 'utf8'),
+    writeFile(join('public', 'robots.txt'), robots, 'utf8')
   ]);
   return {
     artifactJson: join(artifactDir, `sata-transparency-${slug}.json`),
     artifactMarkdown: join(artifactDir, `sata-transparency-${slug}.md`),
     publicJson: join(publicDir, 'latest.json'),
-    publicMarkdown: join(publicDir, 'latest.md')
+    publicMarkdown: join(publicDir, 'latest.md'),
+    publicHistoryJson: join(publicDir, 'history.json'),
+    publicHealthJson: join('public', 'health.json')
   };
+}
+
+async function buildHistoryLedger(report, publicDir) {
+  const previous = await readJsonIfExists(join(publicDir, 'history.json'));
+  const entries = Array.isArray(previous?.entries) ? previous.entries : [];
+  const entry = buildHistoryEntry(report);
+  const latestEntry = entries.at(-1);
+  const nextEntries =
+    latestEntry?.stateHash === entry.stateHash ? entries : [...entries, entry];
+  return {
+    schemaVersion: 1,
+    project: 'SATA Reserve Token',
+    purpose:
+      'Append-only material-state ledger for reserve, distribution, liquidity, and metadata changes.',
+    generatedAtUtc: report.generatedAtUtc,
+    latestStateHash: nextEntries.at(-1)?.stateHash ?? null,
+    entries: nextEntries
+  };
+}
+
+function buildHistoryEntry(report) {
+  const materialState = {
+    btcReserveSats: report.bitcoinReserve.confirmedReserveSats,
+    founderDirectPercent: report.distribution.founderDirectPercent,
+    founderDirectRaw: report.distribution.founderDirectRaw,
+    poolSataPercent: report.distribution.poolSataPercent,
+    poolSataRaw: report.distribution.poolSataRaw,
+    outsideFounderAndPoolPercent: report.distribution.outsideFounderAndPoolPercent,
+    lockedLpRaw: report.liquidity.totalLockedLpRaw,
+    ownerUnlockedLpRaw: report.liquidity.ownerUnlockedLpRaw,
+    metadataUpdateAuthority: report.solana.metadataUpdateAuthority,
+    metadataMutable: report.solana.metadataMutable,
+    metadataUri: report.solana.metadataUri
+  };
+  return {
+    observedAtUtc: report.generatedAtUtc,
+    stateHash: hashJson(materialState),
+    summary: {
+      btcReserveSats: materialState.btcReserveSats,
+      founderDirectPercent: materialState.founderDirectPercent,
+      poolSataPercent: materialState.poolSataPercent,
+      outsideFounderAndPoolPercent: materialState.outsideFounderAndPoolPercent,
+      lockedLpRaw: materialState.lockedLpRaw,
+      ownerUnlockedLpRaw: materialState.ownerUnlockedLpRaw,
+      metadataUpdateAuthority: materialState.metadataUpdateAuthority,
+      metadataMutable: materialState.metadataMutable,
+      metadataUri: materialState.metadataUri
+    },
+    links: {
+      reportJson: report.source.latestJson,
+      repositoryCommit: `${report.source.repository}/commit/${report.source.commit}`,
+      bitcoinReserveAddress: `https://mempool.space/address/${report.bitcoinReserve.address}`,
+      solanaMint: report.links.mintExplorer,
+      solanaMetadata: report.links.metadataExplorer,
+      latestLpLockTransaction: report.liquidity.latestLockSignature
+        ? `https://explorer.solana.com/tx/${report.liquidity.latestLockSignature}`
+        : null,
+      dexscreener: report.links.dexscreener,
+      gmgn: report.links.gmgn
+    }
+  };
+}
+
+function buildHealthReport(report, history) {
+  return {
+    status: 'ok',
+    project: 'SATA Reserve Token',
+    generatedAtUtc: new Date().toISOString(),
+    latestReportGeneratedAtUtc: report.generatedAtUtc,
+    sourceCommit: report.source.commit,
+    canonicalTransparencyUrl: report.source.transparencyPage,
+    latestJson: report.source.latestJson,
+    historyJson: report.source.historyJson,
+    onChainMetadataUri: report.solana.metadataUri,
+    expectedMetadataUri: TOKEN_METADATA_URL,
+    reportAndMetadataUriMatch: report.solana.metadataUri === TOKEN_METADATA_URL,
+    latestHistoryStateHash: history.latestStateHash,
+    warnings: report.warnings
+  };
+}
+
+function buildSitemap(report) {
+  const urls = [
+    `${PUBLIC_BASE_URL}/`,
+    report.source.transparencyPage,
+    `${PUBLIC_BASE_URL}/transparency/history`,
+    report.source.latestJson,
+    `${PUBLIC_BASE_URL}/transparency/latest.md`,
+    report.source.historyJson,
+    `${PUBLIC_BASE_URL}/transparency/history.md`,
+    `${PUBLIC_BASE_URL}/project-profile.json`,
+    `${PUBLIC_BASE_URL}/social-agent-profile.json`,
+    report.source.healthJson,
+    `${PUBLIC_BASE_URL}/mainnet/sata-metadata.json`
+  ];
+  const urlEntries = urls
+    .map(
+      (url) => `  <url>
+    <loc>${escapeXml(url)}</loc>
+    <lastmod>${escapeXml(report.generatedAtUtc)}</lastmod>
+  </url>`
+    )
+    .join('\n');
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlEntries}
+</urlset>
+`;
+}
+
+function buildRobots() {
+  return `User-agent: *
+Allow: /
+
+Sitemap: ${PUBLIC_BASE_URL}/sitemap.xml
+`;
 }
 
 function buildMarkdownReport(report) {
@@ -861,6 +1008,54 @@ ${checks}
 
 ${report.permanentCaveats.map((item) => `- ${item}`).join('\n')}
 `;
+}
+
+function buildHistoryMarkdown(history) {
+  const rows = history.entries
+    .map(
+      (entry) =>
+        `| ${entry.observedAtUtc} | ${entry.summary.btcReserveSats} | ${entry.summary.founderDirectPercent} | ${entry.summary.poolSataPercent} | ${entry.summary.lockedLpRaw} | ${entry.summary.ownerUnlockedLpRaw} | ${entry.summary.metadataMutable} | ${entry.stateHash} |`
+    )
+    .join('\n');
+  return `# SATA Material History
+
+This append-only ledger records material reserve, distribution, liquidity, and metadata states when they change.
+
+| Observed UTC | BTC reserve sats | Founder direct | Pool SATA | Locked LP raw | Owner unlocked LP raw | Metadata mutable | State hash |
+| --- | ---: | ---: | ---: | ---: | ---: | --- | --- |
+${rows || '| none | 0 | 0% | 0% | 0 | 0 | unknown | none |'}
+`;
+}
+
+async function readJsonIfExists(path) {
+  try {
+    return JSON.parse(await readFile(path, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+function hashJson(value) {
+  return createHash('sha256').update(JSON.stringify(value)).digest('hex');
+}
+
+async function getSourceCommit() {
+  if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA;
+  try {
+    const { stdout } = await execFile('git', ['rev-parse', 'HEAD']);
+    return stdout.trim();
+  } catch {
+    return 'unknown';
+  }
+}
+
+function escapeXml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;');
 }
 
 async function rpc(method, params) {

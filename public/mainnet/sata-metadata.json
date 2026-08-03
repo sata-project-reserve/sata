@@ -1,7 +1,7 @@
 {
   "name": "SATA",
   "symbol": "SATA",
-  "description": "SATA is a Bitcoin-aligned Solana token and transparency experiment publishing public BTC reserve, liquidity, LP lock, authority, and founder-distribution reports. No redemption promise, price guarantee, yield, or market-support claim.",
+  "description": "SATA Reserve Token is a Bitcoin-aligned Solana token and transparency experiment publishing public BTC reserve, liquidity, LP lock, authority, and founder-distribution reports. No redemption promise, price guarantee, yield, or market-support claim.",
   "image": "https://sata-project-reserve.github.io/sata/mainnet/sata-image.png",
   "header": "https://sata-project-reserve.github.io/sata/sata-x-header.png",
   "external_url": "https://sata-project-reserve.github.io/sata/transparency",

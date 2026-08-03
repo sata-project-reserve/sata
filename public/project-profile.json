@@ -1,6 +1,7 @@
 {
-  "project": "SATA",
-  "description": "SATA is a solo-founder, Bitcoin-aligned experimental token and transparency system on Solana.",
+  "project": "SATA Reserve Token",
+  "aliases": ["SATA", "SATA Reserve on Solana"],
+  "description": "SATA Reserve Token is a solo-founder, Bitcoin-aligned experimental token and transparency system on Solana.",
   "websiteStatus": {
     "current": "temporary transparency and launch-app surface",
     "planned": "dedicated official SATA website",
@@ -38,7 +39,10 @@
   "sourceOfTruth": {
     "transparencyPage": "https://sata-project-reserve.github.io/sata/transparency",
     "transparencyJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
+    "transparencyHistory": "https://sata-project-reserve.github.io/sata/transparency/history.json",
+    "health": "https://sata-project-reserve.github.io/sata/health.json",
     "repository": "https://github.com/sata-project-reserve/sata",
+    "metadataPolicy": "https://github.com/sata-project-reserve/sata/blob/main/docs/metadata-policy.md",
     "social": "https://x.com/SATAReserve",
     "dexscreener": "https://dexscreener.com/solana/cyrzoxljgnftqjnvyjpym1wftaeogz6kjmyjfb5hud8e",
     "gmgn": "https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH"

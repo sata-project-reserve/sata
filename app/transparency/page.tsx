@@ -1,8 +1,12 @@
 import report from '@/public/transparency/latest.json';
 
 export const metadata = {
-  title: 'SATA Transparency',
-  description: 'Public SATA reserve, liquidity, and authority verification report.'
+  title: 'SATA Reserve Token Transparency',
+  description:
+    'Public SATA Reserve Token BTC reserve, liquidity, authority, metadata, and founder-distribution verification report.',
+  alternates: {
+    canonical: 'https://sata-project-reserve.github.io/sata/transparency'
+  }
 };
 
 type Check = {
@@ -56,6 +60,12 @@ export default function TransparencyPage() {
             <a className="button-link" href={`${PUBLIC_BASE_URL}/transparency/latest.md`}>
               Latest Markdown
             </a>
+            <a className="button-link" href={`${PUBLIC_BASE_URL}/transparency/history.json`}>
+              History JSON
+            </a>
+            <a className="button-link" href={`${PUBLIC_BASE_URL}/health.json`}>
+              Health JSON
+            </a>
             <a className="button-link" href={`${PUBLIC_BASE_URL}/project-profile.json`}>
               Project Profile
             </a>
@@ -81,6 +91,14 @@ export default function TransparencyPage() {
           <div className="metric">
             <span>Generated UTC</span>
             <strong>{report.generatedAtUtc}</strong>
+          </div>
+          <div className="metric">
+            <span>Source Commit</span>
+            <strong>
+              <a href={`${report.source.repository}/commit/${report.source.commit}`}>
+                {report.source.commit.slice(0, 12)}
+              </a>
+            </strong>
           </div>
           <div className="metric">
             <span>Critical Checks</span>
@@ -226,6 +244,18 @@ export default function TransparencyPage() {
           <div className="metric">
             <span>Metadata Mutable</span>
             <strong>{String(solana.metadataMutable)}</strong>
+          </div>
+          <div className="metric">
+            <span>Metadata URI</span>
+            <strong>{solana.metadataUri ?? 'unknown'}</strong>
+          </div>
+          <div className="metric">
+            <span>Metadata Policy</span>
+            <strong>
+              <a href="https://github.com/sata-project-reserve/sata/blob/main/docs/metadata-policy.md">
+                Public policy
+              </a>
+            </strong>
           </div>
           <div className="metric">
             <span>Owner SOL</span>

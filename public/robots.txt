@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sata-project-reserve.github.io/sata/sitemap.xml

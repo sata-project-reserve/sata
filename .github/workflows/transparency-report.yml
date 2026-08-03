@@ -89,12 +89,17 @@ jobs:
           path: |
             artifacts/transparency/latest.json
             artifacts/transparency/latest.md
+            artifacts/transparency/history.json
+            artifacts/transparency/history.md
+            public/health.json
+            public/sitemap.xml
+            public/robots.txt
 
       - name: Commit latest public report
         run: |
           git config user.name "sata-report-bot"
           git config user.email "sata-report-bot@users.noreply.github.com"
-          git add public/transparency
+          git add public/transparency public/health.json public/sitemap.xml public/robots.txt
           git diff --cached --quiet || git commit -m "chore: publish SATA transparency report"
           git push
 

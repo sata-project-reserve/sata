@@ -3,7 +3,7 @@
   "status": "TRANSPARENCY_VERIFIED_WITH_DISCLOSURES",
   "project": "SATA",
   "slogan": "Proof over promises.",
-  "generatedAtUtc": "2026-08-03T12:46:46.225Z",
+  "generatedAtUtc": "2026-08-03T13:19:08.214Z",
   "reportCadence": "scheduled every 12 hours when GitHub Actions is enabled",
   "network": "mainnet-beta",
   "rpcHost": "solana-rpc.publicnode.com",
@@ -68,15 +68,39 @@
       }
     ]
   },
+  "distribution": {
+    "stage": "early-stage-founder-led",
+    "founderRole": "Founder and sole maintainer",
+    "founderPublicGithub": "https://github.com/jboudou007",
+    "founderDisclosure": "SATA is an independent personal project and is not affiliated with or endorsed by the founder's employer, clients, schools, or other organizations.",
+    "founderDirectRaw": "824951151759262409",
+    "founderDirectUi": "824951151.759262409",
+    "founderDirectPercent": "82.49%",
+    "poolSataRaw": "140676222992328334",
+    "poolSataUi": "140676222.992328334",
+    "poolSataPercent": "14.06%",
+    "outsideFounderAndPoolRaw": "34369478598355167",
+    "outsideFounderAndPoolUi": "34369478.598355167",
+    "outsideFounderAndPoolPercent": "3.43%",
+    "ownerUnlockedLpRaw": "10384383731650",
+    "totalLockedLpRaw": "9199123117269",
+    "controlCaveat": "Adding SATA to liquidity reduces direct wallet concentration, but founder control only materially decreases when the resulting LP tokens are locked, burned, or controlled by an accountable multisig.",
+    "intendedDirection": "Gradually deploy undeployed supply into liquidity and ecosystem uses while publishing whether LP positions remain owner-controlled, locked, burned, or multisig-controlled."
+  },
   "bitcoinReserve": {
-    "status": "verified-balance-and-proof",
+    "status": "verified-balance-and-published-proof",
     "address": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
     "reserveSats": "500000",
     "confirmedReserveSats": "500000",
     "mempoolReserveSats": "0",
     "proofMessage": "SATA Bitcoin reserve address for Solana mint A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH. No redemption promise. Snapshot UTC: 2026-08-01T13:20:55Z.",
-    "proofSignature": "AkcwRAIgTuFktugOzK4NVrAQFqvymy3gREk6LMV8AW9JTE7GvPACIBrpp6cwwM9EKpASECMkly6+9vvZrpsgNHhFcSpklkpaluJV8IEsjNLweRTMk=",
-    "lastCheckedUtc": "2026-08-03T12:46:47.305Z",
+    "proofSignature": "AkcwRAIgTuFktugOzK4NVrAQFqvymy3gREk6LMV8AW9JTE7GvPACIBr8A6wMdHcm2nnN7NuxQmc9ZluTRPabRpp6cwwM9EKpASECMkly6+9vvZrpsgNHhFcSpklkpaluJV8IEsjNLweRTMk=",
+    "proofValidation": {
+      "ok": true,
+      "method": "published-register-match",
+      "detail": "proof fields match the public transparency register; independent cryptographic verification should still be performed with Bitcoin tooling"
+    },
+    "lastCheckedUtc": "2026-08-03T13:19:10.169Z",
     "plannedReserveSats": "500000",
     "plannedReserveBtc": "0.005",
     "metricsBasis": "actual-confirmed-chain",
@@ -220,7 +244,7 @@
       "name": "bitcoin-reserve-proof",
       "ok": true,
       "level": "warning",
-      "detail": "verified-balance-and-proof"
+      "detail": "verified-balance-and-published-proof"
     }
   ],
   "warnings": [
@@ -231,6 +255,7 @@
   "permanentCaveats": [
     "SATA has no hidden mint authority when the mint-authority check is passing.",
     "SATA has no freeze authority when the freeze-authority check is passing.",
+    "SATA is currently founder-led, and direct founder balance plus founder-controlled unlocked LP are disclosed as material concentration risks.",
     "Liquidity is described as locked only for LP balances independently verified in Raydium Burn & Earn accounts.",
     "Any owner unlocked LP balance remains removable and is disclosed separately.",
     "No report field contains seed phrases, private keys, signed transaction bytes, or full RPC URLs."

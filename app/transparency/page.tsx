@@ -13,6 +13,7 @@ type Check = {
 };
 
 const checks = report.checks as Check[];
+const PUBLIC_BASE_URL = 'https://sata-project-reserve.github.io/sata';
 
 function passCount(level: Check['level']) {
   return checks.filter((check) => check.level === level && check.ok).length;
@@ -24,6 +25,7 @@ function totalCount(level: Check['level']) {
 
 export default function TransparencyPage() {
   const bitcoinReserve = report.bitcoinReserve;
+  const distribution = report.distribution;
   const liquidity = report.liquidity;
   const solana = report.solana;
 
@@ -43,11 +45,14 @@ export default function TransparencyPage() {
             reserves, and proof over time, without promising a conversion path or market price.
           </p>
           <div className="inline-actions">
-            <a className="button-link" href="/transparency/latest.json">
+            <a className="button-link" href={`${PUBLIC_BASE_URL}/transparency/latest.json`}>
               Latest JSON
             </a>
-            <a className="button-link" href="/transparency/latest.md">
+            <a className="button-link" href={`${PUBLIC_BASE_URL}/transparency/latest.md`}>
               Latest Markdown
+            </a>
+            <a className="button-link" href={`${PUBLIC_BASE_URL}/project-profile.json`}>
+              Project Profile
             </a>
             <a className="button-link" href="https://x.com/SATAReserve">
               @SATAReserve
@@ -122,6 +127,63 @@ export default function TransparencyPage() {
         <div className="proof-block">
           <span>Proof Signature</span>
           <code>{bitcoinReserve.proofSignature ?? 'not published'}</code>
+        </div>
+        <div className="notice">
+          <strong>Proof validation</strong>
+          <span>{bitcoinReserve.proofValidation?.detail ?? 'not checked'}</span>
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Founder And Distribution</h2>
+          <p>Current concentration is disclosed as a material risk, not hidden.</p>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Stage</span>
+            <strong>{distribution.stage}</strong>
+          </div>
+          <div className="metric">
+            <span>Founder Role</span>
+            <strong>{distribution.founderRole}</strong>
+          </div>
+          <div className="metric">
+            <span>Founder GitHub</span>
+            <strong>
+              <a href={distribution.founderPublicGithub}>jboudou007</a>
+            </strong>
+          </div>
+          <div className="metric">
+            <span>Founder Direct SATA</span>
+            <strong>
+              {distribution.founderDirectUi} ({distribution.founderDirectPercent})
+            </strong>
+          </div>
+          <div className="metric">
+            <span>SATA In Pool</span>
+            <strong>
+              {distribution.poolSataUi} ({distribution.poolSataPercent})
+            </strong>
+          </div>
+          <div className="metric">
+            <span>Outside Founder And Pool</span>
+            <strong>
+              {distribution.outsideFounderAndPoolUi} ({distribution.outsideFounderAndPoolPercent})
+            </strong>
+          </div>
+        </div>
+        <div className="notice">
+          <strong>Control caveat</strong>
+          <span>{distribution.controlCaveat}</span>
+        </div>
+        <div className="notice safe">
+          <strong>Intended direction</strong>
+          <span>{distribution.intendedDirection}</span>
+        </div>
+        <div className="notice">
+          <strong>Independence disclosure</strong>
+          <span>{distribution.founderDisclosure}</span>
         </div>
       </section>
 

@@ -51,8 +51,9 @@ Allowed only when the current transparency report supports them:
 - Raydium CPMM SATA/WSOL pool exists.
 - A Raydium Burn & Earn LP lock is verified for the locked LP amount shown in the report.
 - Owner-held unlocked LP remains removable when the report says so.
-- Bitcoin reserve address balance is verified when the report says `verified-balance-only` or `verified-balance-and-proof`.
-- Bitcoin address control is signature-proven only when the report says `verified-balance-and-proof`.
+- Bitcoin reserve address balance is verified when the report status begins with `verified-balance-`.
+- Bitcoin reserve address proof is published-register matched only when `bitcoinReserve.proofValidation.ok` is `true`.
+- Do not describe the BTC proof as independently cryptographically verified until a real BIP-322 verifier is wired into the report generator.
 
 ## Required Caveats
 

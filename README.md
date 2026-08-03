@@ -41,9 +41,13 @@ The app is designed to stop before every mainnet transaction. The owner must unl
 ## Transparency Roadmap
 
 - X/Twitter: [@SATAReserve](https://x.com/SATAReserve)
-- Public transparency page: `/transparency`
-- Raw public reports: `/transparency/latest.json` and `/transparency/latest.md`
+- Public transparency page: `https://sata-project-reserve.github.io/sata/transparency`
+- Raw public reports: `https://sata-project-reserve.github.io/sata/transparency/latest.json` and `https://sata-project-reserve.github.io/sata/transparency/latest.md`
+- Founder and sole maintainer: [Jean Bilong](https://github.com/jboudou007)
+- Machine-readable project profile: `https://sata-project-reserve.github.io/sata/project-profile.json`
+- SATA is an independent personal project, not affiliated with or endorsed by the founder's employer, clients, schools, or other organizations.
 - [Long-term roadmap](docs/long-term-roadmap.md)
+- [Founder and disclosures](docs/founder-and-disclosures.md)
 - [Bitcoin treasury policy](docs/bitcoin-treasury-policy.md)
 - [Transparency register](docs/transparency-register.md)
 - [Transparency reporting](docs/transparency-reporting.md)

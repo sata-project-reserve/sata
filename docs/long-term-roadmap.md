@@ -11,6 +11,18 @@ The phrase `1 SATA = 1 sat` can be used internally as an aspirational milestone,
 - Treasury milestone: public BTC reserves reach `1 sat per 1 SATA`. For the current `1,000,000,000 SATA` supply, this requires `1,000,000,000 sats` (`10 BTC`).
 - Market milestone: independent buyers and sellers organically quote SATA around `1 sat`. This can only be earned through liquidity, trust, utility, and demand. It must not be manufactured.
 
+## Distribution Strategy
+
+The current high founder-controlled balance is disclosed as undeployed project inventory, not decentralization. It should remain a visible risk until on-chain actions reduce unilateral control.
+
+Reducing direct wallet balance by adding liquidity is only a first step. SATA should distinguish:
+
+- Tokens directly held by the founder.
+- Tokens inside liquidity positions whose LP tokens remain founder-controlled.
+- Tokens and LP positions locked, burned, or controlled by an accountable multisig.
+
+Only the third category materially reduces unilateral founder control. Future distribution reports should track these categories separately.
+
 ## Principles
 
 - No hidden minting.

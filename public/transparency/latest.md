@@ -1,7 +1,7 @@
 # SATA Transparency Report
 
 Status: TRANSPARENCY_VERIFIED_WITH_DISCLOSURES
-Generated UTC: 2026-08-03T12:46:46.225Z
+Generated UTC: 2026-08-03T13:19:08.214Z
 Cadence: scheduled every 12 hours when GitHub Actions is enabled
 Slogan: Proof over promises.
 
@@ -37,13 +37,26 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Removable by owner: true
 - Disclosure: Raydium Burn & Earn lock verified, but the owner still holds unlocked LP tokens that remain removable unless separately locked or burned.
 
+## Distribution
+
+- Stage: early-stage-founder-led
+- Founder role: Founder and sole maintainer
+- Founder public GitHub: https://github.com/jboudou007
+- Founder direct SATA: 824951151.759262409 (82.49%)
+- SATA in pool: 140676222.992328334 (14.06%)
+- SATA outside founder wallet and pool: 34369478.598355167 (3.43%)
+- Owner unlocked LP: 10384383731650
+- Locked LP: 9199123117269
+- Control caveat: Adding SATA to liquidity reduces direct wallet concentration, but founder control only materially decreases when the resulting LP tokens are locked, burned, or controlled by an accountable multisig.
+- Intended direction: Gradually deploy undeployed supply into liquidity and ecosystem uses while publishing whether LP positions remain owner-controlled, locked, burned, or multisig-controlled.
+
 ## Raydium Lock Transactions
 
 - 6r2o4X88cZZ8HZZtk1nvCUdFGqvHcr1ByUVZddHyfqcRCeEAjD7pFghLvrJtgU5sEKA78ZEBc37rr7pcBDgD7Qn: 9199123117269 LP base units, verified=true
 
 ## Bitcoin Reserve
 
-- Status: verified-balance-and-proof
+- Status: verified-balance-and-published-proof
 - Address: bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk
 - Actual reserve: 500000 sats (0.005 BTC)
 - Confirmed reserve: 500000 sats (0.005 BTC)
@@ -51,7 +64,8 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Planned reserve: 500000 sats (0.005 BTC)
 - Metrics basis: actual-confirmed-chain
 - Proof message: SATA Bitcoin reserve address for Solana mint A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH. No redemption promise. Snapshot UTC: 2026-08-01T13:20:55Z.
-- Proof signature: AkcwRAIgTuFktugOzK4NVrAQFqvymy3gREk6LMV8AW9JTE7GvPACIBrpp6cwwM9EKpASECMkly6+9vvZrpsgNHhFcSpklkpaluJV8IEsjNLweRTMk=
+- Proof signature: AkcwRAIgTuFktugOzK4NVrAQFqvymy3gREk6LMV8AW9JTE7GvPACIBr8A6wMdHcm2nnN7NuxQmc9ZluTRPabRpp6cwwM9EKpASECMkly6+9vvZrpsgNHhFcSpklkpaluJV8IEsjNLweRTMk=
+- Proof validation: proof fields match the public transparency register; independent cryptographic verification should still be performed with Bitcoin tooling
 - Sats per SATA: 50000000000000/99999685334994591
 - SATA per sat: 99999685334994591/50000000000000
 - Target for 1 sat per 1 SATA: 999996854 sats (9.99996854 BTC)
@@ -91,7 +105,7 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 - raydium-wsol-reserve: pass (critical) - 2753831615
 - raydium-lp-lock-verified: pass (critical) - Raydium Burn & Earn lock verified, but the owner still holds unlocked LP tokens that remain removable unless separately locked or burned.
 - owner-unlocked-lp-balance-zero: fail (warning) - 10384383731650
-- bitcoin-reserve-proof: pass (warning) - verified-balance-and-proof
+- bitcoin-reserve-proof: pass (warning) - verified-balance-and-published-proof
 
 ## Links
 
@@ -104,6 +118,7 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 
 - SATA has no hidden mint authority when the mint-authority check is passing.
 - SATA has no freeze authority when the freeze-authority check is passing.
+- SATA is currently founder-led, and direct founder balance plus founder-controlled unlocked LP are disclosed as material concentration risks.
 - Liquidity is described as locked only for LP balances independently verified in Raydium Burn & Earn accounts.
 - Any owner unlocked LP balance remains removable and is disclosed separately.
 - No report field contains seed phrases, private keys, signed transaction bytes, or full RPC URLs.

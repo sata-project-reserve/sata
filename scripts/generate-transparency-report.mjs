@@ -26,6 +26,13 @@ const LAUNCH_INITIAL_SUPPLY_RAW = '1000000000000000000';
 const SATS_PER_BTC = 100_000_000n;
 const DEFAULT_PLANNED_RESERVE_SATS = 1_000_000n;
 const DEFAULT_RPC_URL = 'https://solana-rpc.publicnode.com';
+const PUBLISHED_BTC_PROOF = {
+  address: 'bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk',
+  message:
+    'SATA Bitcoin reserve address for Solana mint A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH. No redemption promise. Snapshot UTC: 2026-08-01T13:20:55Z.',
+  signature:
+    'AkcwRAIgTuFktugOzK4NVrAQFqvymy3gREk6LMV8AW9JTE7GvPACIBr8A6wMdHcm2nnN7NuxQmc9ZluTRPabRpp6cwwM9EKpASECMkly6+9vvZrpsgNHhFcSpklkpaluJV8IEsjNLweRTMk='
+};
 
 const RPC_URL =
   envValue('NEXT_PUBLIC_MAINNET_RPC_URL') ?? envValue('MAINNET_RPC_URL') ?? DEFAULT_RPC_URL;
@@ -228,9 +235,17 @@ export async function generateTransparencyReport() {
     supplyRaw: BigInt(mintInfo?.supply ?? LAUNCH_INITIAL_SUPPLY_RAW),
     decimals: Number(mintInfo?.decimals ?? EXPECTED_DECIMALS)
   });
+  const distribution = buildDistributionMetrics({
+    supplyRaw: BigInt(mintInfo?.supply ?? LAUNCH_INITIAL_SUPPLY_RAW),
+    decimals: Number(mintInfo?.decimals ?? EXPECTED_DECIMALS),
+    ownerSataRaw: BigInt(ownerSataBalance?.amount ?? '0'),
+    poolSataRaw: pool.sataReserveRaw,
+    ownerUnlockedLpRaw: BigInt(ownerLpBalance?.amount ?? '0'),
+    totalLockedLpRaw: BigInt(lockReport.totalLockedLpRaw)
+  });
   addCheck(
     'bitcoin-reserve-proof',
-    bitcoinReserve.status === 'verified-balance-and-proof',
+    bitcoinReserve.proofValidation?.ok === true,
     bitcoinReserve.status,
     'warning'
   );
@@ -302,6 +317,7 @@ export async function generateTransparencyReport() {
       latestLockSignature: lockReport.latestSignature,
       lockTransactions: lockReport.locks
     },
+    distribution,
     bitcoinReserve: {
       ...bitcoinReserve,
       plannedReserveSats: PLANNED_RESERVE_SATS.toString(),
@@ -352,6 +368,7 @@ export async function generateTransparencyReport() {
     permanentCaveats: [
       'SATA has no hidden mint authority when the mint-authority check is passing.',
       'SATA has no freeze authority when the freeze-authority check is passing.',
+      'SATA is currently founder-led, and direct founder balance plus founder-controlled unlocked LP are disclosed as material concentration risks.',
       'Liquidity is described as locked only for LP balances independently verified in Raydium Burn & Earn accounts.',
       'Any owner unlocked LP balance remains removable and is disclosed separately.',
       'No report field contains seed phrases, private keys, signed transaction bytes, or full RPC URLs.'
@@ -531,6 +548,11 @@ async function readBitcoinReserve() {
   const reserveAddress = envValue('SATA_BTC_RESERVE_ADDRESS');
   const proofMessage = envValue('SATA_BTC_RESERVE_MESSAGE');
   const proofSignature = envValue('SATA_BTC_RESERVE_SIGNATURE');
+  const proofValidation = validatePublishedBitcoinProof({
+    address: reserveAddress,
+    message: proofMessage,
+    signature: proofSignature
+  });
   if (!reserveAddress) {
     return {
       status: 'pending-address',
@@ -540,6 +562,7 @@ async function readBitcoinReserve() {
       mempoolReserveSats: null,
       proofMessage: null,
       proofSignature: null,
+      proofValidation,
       lastCheckedUtc: new Date().toISOString()
     };
   }
@@ -560,17 +583,16 @@ async function readBitcoinReserve() {
       BigInt(body.mempool_stats?.spent_txo_sum ?? 0);
     const reserveSats = confirmedReserveSats + mempoolReserveSats;
     const pendingSuffix = mempoolReserveSats > 0n ? '-with-unconfirmed-funds' : '';
+    const proofSuffix = proofValidation.ok ? 'and-published-proof' : 'only-proof-validation-failed';
     return {
-      status:
-        proofMessage && proofSignature
-          ? `verified-balance-and-proof${pendingSuffix}`
-          : `verified-balance-only${pendingSuffix}`,
+      status: `verified-balance-${proofSuffix}${pendingSuffix}`,
       address: reserveAddress,
       reserveSats,
       confirmedReserveSats,
       mempoolReserveSats,
       proofMessage: proofMessage || null,
       proofSignature: proofSignature || null,
+      proofValidation,
       lastCheckedUtc: new Date().toISOString()
     };
   } catch (error) {
@@ -582,9 +604,71 @@ async function readBitcoinReserve() {
       mempoolReserveSats: null,
       proofMessage: proofMessage || null,
       proofSignature: proofSignature || null,
+      proofValidation,
       lastCheckedUtc: new Date().toISOString()
     };
   }
+}
+
+function validatePublishedBitcoinProof({ address, message, signature }) {
+  if (!address) return { ok: false, method: 'published-register-match', detail: 'missing address' };
+  if (!message || !signature) {
+    return {
+      ok: false,
+      method: 'published-register-match',
+      detail: 'missing proof message or signature'
+    };
+  }
+  const decoded = Buffer.from(signature, 'base64');
+  const base64RoundTrip = decoded.toString('base64') === signature;
+  if (!base64RoundTrip) {
+    return { ok: false, method: 'published-register-match', detail: 'signature is not valid base64' };
+  }
+  const matchesRegister =
+    address === PUBLISHED_BTC_PROOF.address &&
+    message === PUBLISHED_BTC_PROOF.message &&
+    signature === PUBLISHED_BTC_PROOF.signature;
+  return {
+    ok: matchesRegister,
+    method: 'published-register-match',
+    detail: matchesRegister
+      ? 'proof fields match the public transparency register; independent cryptographic verification should still be performed with Bitcoin tooling'
+      : 'proof fields do not match the public transparency register'
+  };
+}
+
+function buildDistributionMetrics({
+  supplyRaw,
+  decimals,
+  ownerSataRaw,
+  poolSataRaw,
+  ownerUnlockedLpRaw,
+  totalLockedLpRaw
+}) {
+  const outsideFounderAndPoolRaw = supplyRaw - ownerSataRaw - poolSataRaw;
+  const safeOutsideRaw = outsideFounderAndPoolRaw > 0n ? outsideFounderAndPoolRaw : 0n;
+  return {
+    stage: 'early-stage-founder-led',
+    founderRole: 'Founder and sole maintainer',
+    founderPublicGithub: 'https://github.com/jboudou007',
+    founderDisclosure:
+      "SATA is an independent personal project and is not affiliated with or endorsed by the founder's employer, clients, schools, or other organizations.",
+    founderDirectRaw: ownerSataRaw.toString(),
+    founderDirectUi: formatBaseUnits(ownerSataRaw, decimals),
+    founderDirectPercent: formatPercent(ownerSataRaw, supplyRaw),
+    poolSataRaw: poolSataRaw.toString(),
+    poolSataUi: formatBaseUnits(poolSataRaw, decimals),
+    poolSataPercent: formatPercent(poolSataRaw, supplyRaw),
+    outsideFounderAndPoolRaw: safeOutsideRaw.toString(),
+    outsideFounderAndPoolUi: formatBaseUnits(safeOutsideRaw, decimals),
+    outsideFounderAndPoolPercent: formatPercent(safeOutsideRaw, supplyRaw),
+    ownerUnlockedLpRaw: ownerUnlockedLpRaw.toString(),
+    totalLockedLpRaw: totalLockedLpRaw.toString(),
+    controlCaveat:
+      'Adding SATA to liquidity reduces direct wallet concentration, but founder control only materially decreases when the resulting LP tokens are locked, burned, or controlled by an accountable multisig.',
+    intendedDirection:
+      'Gradually deploy undeployed supply into liquidity and ecosystem uses while publishing whether LP positions remain owner-controlled, locked, burned, or multisig-controlled.'
+  };
 }
 
 function buildReserveMetrics({ reserveSats, supplyRaw, decimals }) {
@@ -605,6 +689,14 @@ function buildReserveMetrics({ reserveSats, supplyRaw, decimals }) {
     sataPerSat: stringifyFraction(sataPerSat),
     progressPpm
   };
+}
+
+function formatPercent(amount, total) {
+  if (total <= 0n) return '0.00%';
+  const basisPoints = (amount * 10_000n) / total;
+  const whole = basisPoints / 100n;
+  const fraction = (basisPoints % 100n).toString().padStart(2, '0');
+  return `${whole.toString()}.${fraction}%`;
 }
 
 async function writeReports(report) {
@@ -691,6 +783,19 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Removable by owner: ${String(report.liquidity.removable)}
 - Disclosure: ${report.liquidity.lockDisclosure}
 
+## Distribution
+
+- Stage: ${report.distribution.stage}
+- Founder role: ${report.distribution.founderRole}
+- Founder public GitHub: ${report.distribution.founderPublicGithub}
+- Founder direct SATA: ${report.distribution.founderDirectUi} (${report.distribution.founderDirectPercent})
+- SATA in pool: ${report.distribution.poolSataUi} (${report.distribution.poolSataPercent})
+- SATA outside founder wallet and pool: ${report.distribution.outsideFounderAndPoolUi} (${report.distribution.outsideFounderAndPoolPercent})
+- Owner unlocked LP: ${report.distribution.ownerUnlockedLpRaw}
+- Locked LP: ${report.distribution.totalLockedLpRaw}
+- Control caveat: ${report.distribution.controlCaveat}
+- Intended direction: ${report.distribution.intendedDirection}
+
 ## Raydium Lock Transactions
 
 ${lockRows}
@@ -706,6 +811,7 @@ ${lockRows}
 - Metrics basis: ${report.bitcoinReserve.metricsBasis}
 - Proof message: ${report.bitcoinReserve.proofMessage ?? 'not published'}
 - Proof signature: ${report.bitcoinReserve.proofSignature ?? 'not published'}
+- Proof validation: ${report.bitcoinReserve.proofValidation?.detail ?? 'not checked'}
 - Sats per SATA: ${report.bitcoinReserve.satsPerSata}
 - SATA per sat: ${report.bitcoinReserve.sataPerSat}
 - Target for 1 sat per 1 SATA: ${report.bitcoinReserve.targetReserveSatsForOneSatPerSata} sats (${report.bitcoinReserve.targetReserveBtcForOneSatPerSata} BTC)

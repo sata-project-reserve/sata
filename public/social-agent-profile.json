@@ -10,6 +10,12 @@
   "displayName": "SATA",
   "handle": "SATAReserve",
   "profileUrl": "https://x.com/SATAReserve",
+  "founder": {
+    "name": "Jean Bilong",
+    "role": "Founder and sole maintainer",
+    "github": "https://github.com/jboudou007",
+    "disclosure": "SATA is an independent personal project and is not affiliated with or endorsed by the founder's employer, clients, schools, or other organizations."
+  },
   "bio": "Bitcoin-aligned community token on Solana. Mint/freeze authority revoked. Public liquidity and BTC reserve reports. Proof over promises. No redemption or price guarantee.",
   "website": "https://sata-project-reserve.github.io/sata/",
   "profileImage": "/sata-profile.png",
@@ -26,7 +32,7 @@
     "Raydium Burn & Earn LP lock is verified for the reported locked amount",
     "owner unlocked LP remains removable when disclosed by the report",
     "Bitcoin reserve balance is verified when reported",
-    "Bitcoin reserve address proof is verified only when status is verified-balance-and-proof"
+    "Bitcoin reserve address proof is verified only when the report proofValidation.ok field is true"
   ],
   "prohibitedClaims": [
     "guaranteed price",
@@ -43,9 +49,10 @@
     "SATA can be volatile and liquidity can be thin."
   ],
   "sourceOfTruth": {
-    "transparencyJson": "/transparency/latest.json",
-    "transparencyMarkdown": "/transparency/latest.md",
-    "transparencyPage": "/transparency",
+    "transparencyJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
+    "transparencyMarkdown": "https://sata-project-reserve.github.io/sata/transparency/latest.md",
+    "transparencyPage": "https://sata-project-reserve.github.io/sata/transparency",
+    "projectProfile": "https://sata-project-reserve.github.io/sata/project-profile.json",
     "policyDoc": "docs/social-agent-policy.md"
   }
 }

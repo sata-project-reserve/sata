@@ -14,8 +14,8 @@ SATA transparency reports are generated from read-only public data. The report j
 
 The `public/transparency` files are included in the static Next export, so a deployed site can expose stable URLs:
 
-- `/transparency/latest.json`
-- `/transparency/latest.md`
+- `https://sata-project-reserve.github.io/sata/transparency/latest.json`
+- `https://sata-project-reserve.github.io/sata/transparency/latest.md`
 
 ## What The Report Verifies
 
@@ -32,6 +32,8 @@ The `public/transparency` files are included in the static Next export, so a dep
 - Raydium Burn & Earn LP lock accounts are scanned and verified when found.
 - Any owner-held unlocked LP balance is disclosed as removable.
 - Bitcoin reserve balance is checked when a public BTC address is configured.
+- Bitcoin proof fields are checked against the public transparency register. This is not a substitute for independent BIP-322 cryptographic verification.
+- Founder/direct ownership, SATA in the pool, and SATA outside the founder wallet and pool are reported as separate concentration metrics.
 
 ## Cadence
 
@@ -54,10 +56,11 @@ The workflow also supports manual runs through `workflow_dispatch`.
 The workflow at `.github/workflows/transparency-report.yml`:
 
 1. Installs dependencies.
-2. Generates the transparency report.
-3. Builds the static Next export.
-4. Commits the latest public report files.
-5. Deploys the `out/` directory to GitHub Pages.
+2. Runs type-checking, linting, social-policy validation, security checks, and unit tests.
+3. Generates the transparency report.
+4. Builds the static Next export.
+5. Commits the latest public report files.
+6. Deploys the `out/` directory to GitHub Pages.
 
 Repository setup required:
 

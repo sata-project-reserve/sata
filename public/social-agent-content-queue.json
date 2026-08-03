@@ -7,8 +7,9 @@
   },
   "mode": "draft-only-until-human-approval",
   "sourceOfTruth": {
-    "transparencyJson": "/transparency/latest.json",
-    "socialAgentProfile": "/social-agent-profile.json",
+    "transparencyJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
+    "socialAgentProfile": "https://sata-project-reserve.github.io/sata/social-agent-profile.json",
+    "projectProfile": "https://sata-project-reserve.github.io/sata/project-profile.json",
     "policyDoc": "docs/social-agent-policy.md",
     "runbook": "docs/social-agent-runbook.md"
   },

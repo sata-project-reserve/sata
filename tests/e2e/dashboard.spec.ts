@@ -27,7 +27,8 @@ test('liquidity planner exposes permanent LP lock controls', async ({ page }) =>
 test('public transparency page publishes reserve proof status', async ({ page }) => {
   await page.goto('/transparency');
   await expect(page.getByRole('heading', { name: 'Proof over promises.' })).toBeVisible();
-  await expect(page.getByText('verified-balance-and-proof')).toBeVisible();
+  await expect(page.getByText('verified-balance-and-published-proof')).toBeVisible();
   await expect(page.getByText('500000 sats')).toBeVisible();
   await expect(page.getByText('PARTIALLY_LOCKED_OWNER_LP_REMAINS')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Founder And Distribution' })).toBeVisible();
 });

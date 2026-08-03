@@ -33,6 +33,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Validate social content
+        run: npm run social:check
+
+      - name: Security check
+        run: npm run security:check
+
+      - name: Unit tests
+        run: npm run test
+
       - name: Generate transparency report
         run: npm run transparency:report
         env:

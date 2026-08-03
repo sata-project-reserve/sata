@@ -1,0 +1,39 @@
+{
+  "project": "SATA",
+  "description": "SATA is a solo-founder, Bitcoin-aligned experimental token and transparency system on Solana.",
+  "founder": {
+    "name": "Jean Bilong",
+    "role": "Founder and sole maintainer",
+    "publicProfiles": {
+      "github": "https://github.com/jboudou007",
+      "x": "https://x.com/SATAReserve"
+    }
+  },
+  "independence": {
+    "statement": "SATA is an independent personal project. It is not affiliated with, sponsored by, or endorsed by the founder's employer, clients, schools, or any other organization unless a future public agreement says so."
+  },
+  "riskFraming": {
+    "stage": "extremely early-stage",
+    "governance": "founder-led",
+    "currentWeaknesses": [
+      "high founder-controlled token concentration",
+      "owner-held unlocked LP remains removable",
+      "thin liquidity",
+      "mutable metadata",
+      "no independent audit yet",
+      "limited public operating history"
+    ],
+    "intendedDirection": [
+      "progressively deploy undeployed supply into liquidity and ecosystem uses",
+      "lock, burn, or share control of LP positions when the project is ready to claim reduced unilateral control",
+      "grow BTC reserves only through disclosed sources",
+      "publish a durable history of reserve, liquidity, and ownership changes"
+    ]
+  },
+  "sourceOfTruth": {
+    "transparencyPage": "https://sata-project-reserve.github.io/sata/transparency",
+    "transparencyJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
+    "repository": "https://github.com/sata-project-reserve/sata",
+    "social": "https://x.com/SATAReserve"
+  }
+}

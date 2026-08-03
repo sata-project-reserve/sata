@@ -54,6 +54,9 @@ export default function TransparencyPage() {
             <a className="button-link" href={`${PUBLIC_BASE_URL}/project-profile.json`}>
               Project Profile
             </a>
+            <a className="button-link" href="https://github.com/sata-project-reserve/sata">
+              GitHub Repository
+            </a>
             <a className="button-link" href="https://x.com/SATAReserve">
               @SATAReserve
             </a>

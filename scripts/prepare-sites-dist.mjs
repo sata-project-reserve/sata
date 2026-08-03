@@ -115,7 +115,7 @@ export default {
     }
     if (url.pathname === '/') {
       return new Response(
-        '<!doctype html><title>SATA</title><h1>SATA</h1><p>Proof over promises. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
+        '<!doctype html><title>SATA</title><h1>SATA</h1><p>Proof over promises. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="https://github.com/sata-project-reserve/sata">GitHub repository</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
         { headers: withCors({ 'content-type': 'text/html; charset=utf-8' }) }
       );
     }
@@ -170,7 +170,7 @@ function buildTransparencyHtml(report) {
       <h1>Proof over promises.</h1>
       <p>SATA publishes public checks for token authority, Raydium liquidity, LP lock status, and the Bitcoin reserve. This is not a redemption promise, guaranteed price floor, yield product, or investment claim.</p>
       <p>Long-term treasury target: 10 BTC. The goal is to move attention toward sats, custody, reserves, and proof over time, without promising a conversion path or market price.</p>
-      <p><a href="/transparency/latest.json">Latest JSON</a> · <a href="/transparency/latest.md">Latest Markdown</a> · <a href="/project-profile.json">Project profile</a> · <a href="/social-agent-profile.json">Social agent profile</a> · <a href="/social-agent-content-queue.json">Content queue</a> · <a href="/social-agent-monitoring-log.json">Monitoring log</a> · <a href="https://x.com/SATAReserve">@SATAReserve</a></p>
+      <p><a href="/transparency/latest.json">Latest JSON</a> · <a href="/transparency/latest.md">Latest Markdown</a> · <a href="/project-profile.json">Project profile</a> · <a href="https://github.com/sata-project-reserve/sata">GitHub repository</a> · <a href="/social-agent-profile.json">Social agent profile</a> · <a href="/social-agent-content-queue.json">Content queue</a> · <a href="/social-agent-monitoring-log.json">Monitoring log</a> · <a href="https://x.com/SATAReserve">@SATAReserve</a></p>
     </div>
     <div class="panel">
       <div class="metric"><span>Status</span><strong>${escapeHtml(report.status)}</strong></div>

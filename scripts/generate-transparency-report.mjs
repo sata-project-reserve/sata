@@ -288,7 +288,10 @@ export async function generateTransparencyReport() {
       derivedMetadataAddress: metadataAddress,
       metadataOwnerProgram: metadataAccount?.owner ?? null,
       metadataUpdateAuthority: metadataSummary?.updateAuthority ?? null,
-      metadataMutable: metadataSummary?.mutable ?? 'unknown'
+      metadataMutable: metadataSummary?.mutable ?? 'unknown',
+      metadataName: metadataSummary?.name ?? null,
+      metadataSymbol: metadataSummary?.symbol ?? null,
+      metadataUri: metadataSummary?.uri ?? null
     },
     liquidity: {
       dex: 'Raydium CPMM',
@@ -773,6 +776,7 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Metadata: ${report.solana.metadataAddress}
 - Metadata update authority: ${report.solana.metadataUpdateAuthority ?? 'unknown'}
 - Metadata mutable: ${String(report.solana.metadataMutable)}
+- Metadata URI: ${report.solana.metadataUri ?? 'unknown'}
 
 ## Liquidity
 
@@ -946,9 +950,12 @@ function readMetadataSummary(base64Data) {
     let offset = 1;
     const updateAuthority = publicKeyFromData(data, offset);
     offset += 64;
-    offset = skipBorshString(data, offset);
-    offset = skipBorshString(data, offset);
-    offset = skipBorshString(data, offset);
+    const nameField = readBorshString(data, offset);
+    offset = nameField.nextOffset;
+    const symbolField = readBorshString(data, offset);
+    offset = symbolField.nextOffset;
+    const uriField = readBorshString(data, offset);
+    offset = uriField.nextOffset;
     offset += 2;
     const hasCreators = data[offset];
     offset += 1;
@@ -960,16 +967,29 @@ function readMetadataSummary(base64Data) {
     const mutableByte = data[offset];
     return {
       updateAuthority,
-      mutable: mutableByte === 1 ? true : mutableByte === 0 ? false : 'unknown'
+      mutable: mutableByte === 1 ? true : mutableByte === 0 ? false : 'unknown',
+      name: cleanMetadataString(nameField.value),
+      symbol: cleanMetadataString(symbolField.value),
+      uri: cleanMetadataString(uriField.value)
     };
   } catch {
-    return { updateAuthority: 'unknown', mutable: 'unknown' };
+    return { updateAuthority: 'unknown', mutable: 'unknown', name: null, symbol: null, uri: null };
   }
 }
 
-function skipBorshString(data, offset) {
+function readBorshString(data, offset) {
   const length = data.readUInt32LE(offset);
-  return offset + 4 + length;
+  const start = offset + 4;
+  const end = start + length;
+  return {
+    value: data.subarray(start, end).toString('utf8'),
+    nextOffset: end
+  };
+}
+
+function cleanMetadataString(value) {
+  const cleaned = value.replace(/\0+$/g, '').trim();
+  return cleaned.length > 0 ? cleaned : null;
 }
 
 async function deriveAssociatedTokenAddress(owner, mint) {

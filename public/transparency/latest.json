@@ -3,7 +3,7 @@
   "status": "TRANSPARENCY_VERIFIED_WITH_DISCLOSURES",
   "project": "SATA",
   "slogan": "Proof over promises.",
-  "generatedAtUtc": "2026-08-03T17:02:23.710Z",
+  "generatedAtUtc": "2026-08-03T17:11:22.324Z",
   "reportCadence": "scheduled every 12 hours when GitHub Actions is enabled",
   "network": "mainnet-beta",
   "rpcHost": "solana-rpc.publicnode.com",
@@ -26,7 +26,10 @@
     "derivedMetadataAddress": "4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g",
     "metadataOwnerProgram": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s",
     "metadataUpdateAuthority": "HtDVYgAwWWzWWTSer1MtNVvJpZHhKjLo2Drzu2eARRaT",
-    "metadataMutable": true
+    "metadataMutable": true,
+    "metadataName": "SATA",
+    "metadataSymbol": "SATA",
+    "metadataUri": "https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-metadata.json"
   },
   "liquidity": {
     "dex": "Raydium CPMM",
@@ -100,7 +103,7 @@
       "method": "published-register-match",
       "detail": "proof fields match the public transparency register; independent cryptographic verification should still be performed with Bitcoin tooling"
     },
-    "lastCheckedUtc": "2026-08-03T17:02:26.286Z",
+    "lastCheckedUtc": "2026-08-03T17:11:23.927Z",
     "plannedReserveSats": "500000",
     "plannedReserveBtc": "0.005",
     "metricsBasis": "actual-confirmed-chain",

@@ -1,7 +1,7 @@
 # SATA Transparency Report
 
 Status: TRANSPARENCY_VERIFIED_WITH_DISCLOSURES
-Generated UTC: 2026-08-03T17:02:23.710Z
+Generated UTC: 2026-08-03T17:11:22.324Z
 Cadence: scheduled every 12 hours when GitHub Actions is enabled
 Slogan: Proof over promises.
 
@@ -20,6 +20,7 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Metadata: 4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g
 - Metadata update authority: HtDVYgAwWWzWWTSer1MtNVvJpZHhKjLo2Drzu2eARRaT
 - Metadata mutable: true
+- Metadata URI: https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-metadata.json
 
 ## Liquidity
 

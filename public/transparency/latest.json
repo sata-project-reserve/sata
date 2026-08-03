@@ -3,7 +3,7 @@
   "status": "TRANSPARENCY_VERIFIED_WITH_DISCLOSURES",
   "project": "SATA",
   "slogan": "Proof over promises.",
-  "generatedAtUtc": "2026-08-02T13:27:39.126Z",
+  "generatedAtUtc": "2026-08-03T03:18:20.918Z",
   "reportCadence": "scheduled every 12 hours when GitHub Actions is enabled",
   "network": "mainnet-beta",
   "rpcHost": "solana-rpc.publicnode.com",
@@ -38,10 +38,10 @@
     "mintB": "A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
     "sataVault": "CJpJN5EdTb8xKhoFaYdFtye95iF7maNr5Yr9brGAU3SA",
     "wsolVault": "Cjg7uPynhfESN1YTU5y9VhqbPTZsTfqjydazqcaRgnXR",
-    "sataReserveRaw": "135078762298249008",
-    "sataReserveUi": "135078762.298249008",
-    "wsolReserveLamports": "2867624171",
-    "wsolReserveUi": "2.867624171",
+    "sataReserveRaw": "139929722395734721",
+    "sataReserveUi": "139929722.395734721",
+    "wsolReserveLamports": "2768481571",
+    "wsolReserveUi": "2.768481571",
     "poolOpenTimeUnix": "1785346170",
     "poolOpen": true,
     "ownerLpAta": "CXXWbG2eTR5GMraJ7HiY7Qr1B9nBL8tncGD88fahJKJa",
@@ -76,7 +76,7 @@
     "mempoolReserveSats": "0",
     "proofMessage": "SATA Bitcoin reserve address for Solana mint A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH. No redemption promise. Snapshot UTC: 2026-08-01T13:20:55Z.",
     "proofSignature": "AkcwRAIgTuFktugOzK4NVrAQFqvymy3gREk6LMV8AW9JTE7GvPACIBrpp6cwwM9EKpASECMkly6+9vvZrpsgNHhFcSpklkpaluJV8IEsjNLweRTMk=",
-    "lastCheckedUtc": "2026-08-02T13:27:40.271Z",
+    "lastCheckedUtc": "2026-08-03T03:18:23.779Z",
     "plannedReserveSats": "500000",
     "plannedReserveBtc": "0.005",
     "metricsBasis": "actual-confirmed-chain",
@@ -196,13 +196,13 @@
       "name": "raydium-sata-reserve",
       "ok": true,
       "level": "critical",
-      "detail": "135078762298249008"
+      "detail": "139929722395734721"
     },
     {
       "name": "raydium-wsol-reserve",
       "ok": true,
       "level": "critical",
-      "detail": "2867624171"
+      "detail": "2768481571"
     },
     {
       "name": "raydium-lp-lock-verified",

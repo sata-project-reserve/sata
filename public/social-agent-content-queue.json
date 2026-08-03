@@ -15,8 +15,10 @@
   "posts": [
     {
       "id": "pinned-proof-overview",
-      "status": "ready-for-review",
+      "status": "published",
       "type": "pinned",
+      "publishedAtUtc": "2026-08-03T12:04:00Z",
+      "postUrl": null,
       "text": "SATA publishes checks for token authority, Raydium liquidity, LP lock status, and the BTC reserve. Reserve transparency is not a redemption promise or guaranteed price floor. Owner-held unlocked LP is disclosed.\n\nhttps://sata-project-reserve.github.io/sata/transparency"
     },
     {

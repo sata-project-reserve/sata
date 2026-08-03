@@ -1,0 +1,41 @@
+{
+  "project": "SATA",
+  "account": {
+    "displayName": "SATA",
+    "handle": "SATAReserve",
+    "profileUrl": "https://x.com/SATAReserve"
+  },
+  "mode": "manual-observation-until-x-api-enabled",
+  "posts": [
+    {
+      "id": "pinned-proof-overview",
+      "type": "pinned",
+      "status": "published-and-pinned",
+      "publishedAtUtc": "2026-08-03T12:04:00Z",
+      "postUrl": null,
+      "source": "owner-provided screenshot",
+      "observations": [
+        {
+          "observedAtUtc": "2026-08-03T12:04:00Z",
+          "views": 4,
+          "replies": 0,
+          "reposts": 0,
+          "likes": 0,
+          "bookmarks": 0,
+          "notes": "Initial screenshot confirms the post is pinned on @SATAReserve."
+        }
+      ]
+    }
+  ],
+  "monitoringRules": {
+    "cadence": ["15m-after-post", "1h-after-post", "24h-after-post", "daily-while-pinned"],
+    "track": ["views", "replies", "reposts", "likes", "bookmarks", "quote-posts-if-visible"],
+    "escalateOn": [
+      "questions about redemption or backing",
+      "claims that liquidity is fully locked",
+      "security accusations",
+      "impersonation or fake links",
+      "requests for private wallet or custody details"
+    ]
+  }
+}

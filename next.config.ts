@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ['127.0.0.1', 'localhost'],
   typedRoutes: true,
   output: 'export',
+  ...(process.env.GITHUB_PAGES === 'true' ? { assetPrefix: '/sata' } : {}),
   images: {
     unoptimized: true
   }

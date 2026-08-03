@@ -1145,7 +1145,7 @@ export function Dashboard(props: DashboardProps) {
             <span>Owner-operated Solana launch dashboard</span>
           </div>
           <div className="chip-row">
-            <a className="chip chip-link" href="/transparency">
+            <a className="chip chip-link" href="https://sata-project-reserve.github.io/sata/transparency">
               Transparency
             </a>
             <span className="chip">Mode: {props.appMode}</span>

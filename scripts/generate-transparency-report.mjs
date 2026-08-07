@@ -1040,6 +1040,7 @@ function hashJson(value) {
 }
 
 async function getSourceCommit() {
+  if (process.env.SOURCE_COMMIT) return process.env.SOURCE_COMMIT;
   if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA;
   try {
     const { stdout } = await execFile('git', ['rev-parse', 'HEAD']);

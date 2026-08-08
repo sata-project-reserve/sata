@@ -1,7 +1,7 @@
 # SATA Transparency Report
 
 Status: TRANSPARENCY_VERIFIED_WITH_DISCLOSURES
-Generated UTC: 2026-08-07T13:10:24.131Z
+Generated UTC: 2026-08-08T01:49:58.368Z
 Cadence: scheduled every 12 hours when GitHub Actions is enabled
 Slogan: Proof over promises.
 
@@ -29,8 +29,8 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Pool: CYRZoXLjgNFTQJnvyJpym1wfTAEoGz6kJMYJFb5hUd8e
 - Pool program: CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C
 - Pool open: true
-- SATA reserve: 140676222.992328334 (140676222992328334 base units)
-- WSOL reserve: 2.753831615 (2753831615 lamports)
+- SATA reserve: 140677836.922218366 (140677836922218366 base units)
+- WSOL reserve: 2.753800111 (2753800111 lamports)
 - LP mint: 4wp3yZVVdwBvkRnx5qHn8uLRFuw3P9Srt3JvGqn6mrdi
 - Total locked LP: 9199123117269
 - Owner unlocked LP: 10384383731650
@@ -44,8 +44,8 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Founder role: Founder and sole maintainer
 - Founder public GitHub: https://github.com/jboudou007
 - Founder direct SATA: 824951151.759262409 (82.49%)
-- SATA in pool: 140676222.992328334 (14.06%)
-- SATA outside founder wallet and pool: 34369478.598355167 (3.43%)
+- SATA in pool: 140677836.922218366 (14.06%)
+- SATA outside founder wallet and pool: 34367864.668465135 (3.43%)
 - Owner unlocked LP: 10384383731650
 - Locked LP: 9199123117269
 - Control caveat: Adding SATA to liquidity reduces direct wallet concentration, but founder control only materially decreases when the resulting LP tokens are locked, burned, or controlled by an accountable multisig.
@@ -108,8 +108,8 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 - raydium-pool-account: pass (critical) - CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C
 - raydium-pool-mints: pass (critical) - So11111111111111111111111111111111111111112, A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
 - raydium-pool-open: pass (critical) - 1785346170
-- raydium-sata-reserve: pass (critical) - 140676222992328334
-- raydium-wsol-reserve: pass (critical) - 2753831615
+- raydium-sata-reserve: pass (critical) - 140677836922218366
+- raydium-wsol-reserve: pass (critical) - 2753800111
 - raydium-lp-lock-verified: pass (critical) - Raydium Burn & Earn lock verified, but the owner still holds unlocked LP tokens that remain removable unless separately locked or burned.
 - owner-unlocked-lp-balance-zero: fail (warning) - 10384383731650
 - bitcoin-reserve-proof: pass (warning) - verified-balance-and-published-proof

@@ -3,10 +3,10 @@
   "status": "TRANSPARENCY_VERIFIED_WITH_DISCLOSURES",
   "project": "SATA",
   "slogan": "Proof over promises.",
-  "generatedAtUtc": "2026-08-09T12:57:01.388Z",
+  "generatedAtUtc": "2026-08-09T16:23:29.839Z",
   "reportCadence": "scheduled every 12 hours when GitHub Actions is enabled",
   "source": {
-    "commit": "a6f1fd2e38582ad6a8fceb6f0844ad500902ca71",
+    "commit": "50782e73a89618f4863d38b864db35b9cb10cc26",
     "repository": "https://github.com/sata-project-reserve/sata",
     "transparencyPage": "https://sata-project-reserve.github.io/sata/transparency",
     "latestJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
@@ -17,8 +17,8 @@
   "rpcHost": "solana-rpc.publicnode.com",
   "owner": "HtDVYgAwWWzWWTSer1MtNVvJpZHhKjLo2Drzu2eARRaT",
   "solana": {
-    "ownerSolLamports": "1194147327",
-    "ownerSol": "1.194147327",
+    "ownerSolLamports": "697302976",
+    "ownerSol": "0.697302976",
     "sataMint": "A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
     "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
     "decimals": 9,
@@ -29,7 +29,7 @@
     "mintAuthority": null,
     "freezeAuthority": null,
     "ownerSataAta": "GHJHn3hezf11MK1CaS6Ndf5yD4dPKXfig2RKYHArk4aN",
-    "ownerSataRaw": "824951151759262409",
+    "ownerSataRaw": "774361428019676678",
     "metadataAddress": "4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g",
     "derivedMetadataAddress": "4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g",
     "metadataOwnerProgram": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s",
@@ -49,32 +49,32 @@
     "mintB": "A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
     "sataVault": "CJpJN5EdTb8xKhoFaYdFtye95iF7maNr5Yr9brGAU3SA",
     "wsolVault": "Cjg7uPynhfESN1YTU5y9VhqbPTZsTfqjydazqcaRgnXR",
-    "sataReserveRaw": "140677836922218366",
-    "sataReserveUi": "140677836.922218366",
-    "wsolReserveLamports": "2753800111",
-    "wsolReserveUi": "2.753800111",
+    "sataReserveRaw": "191267560661804097",
+    "sataReserveUi": "191267560.661804097",
+    "wsolReserveLamports": "3743800111",
+    "wsolReserveUi": "3.743800111",
     "poolOpenTimeUnix": "1785346170",
     "poolOpen": true,
     "ownerLpAta": "CXXWbG2eTR5GMraJ7HiY7Qr1B9nBL8tncGD88fahJKJa",
-    "ownerUnlockedLpRaw": "10384383731650",
+    "ownerUnlockedLpRaw": "0",
     "lockProgram": "LockrWmn6K5twhz3y9w1dQERbmgSaRkfnTeTKbpofwE",
     "lockAuthority": "3f7GcQFG397GAaEnv51zR6tsTVihYRydnydDD1cXekxH",
-    "lockStatus": "PARTIALLY_LOCKED_OWNER_LP_REMAINS",
-    "lockDisclosure": "Raydium Burn & Earn lock verified, but the owner still holds unlocked LP tokens that remain removable unless separately locked or burned.",
-    "removable": true,
-    "totalLockedLpRaw": "9199123117269",
-    "latestLockSignature": "6r2o4X88cZZ8HZZtk1nvCUdFGqvHcr1ByUVZddHyfqcRCeEAjD7pFghLvrJtgU5sEKA78ZEBc37rr7pcBDgD7Qn",
+    "lockStatus": "LOCKED_BY_RAYDIUM_BURN_AND_EARN",
+    "lockDisclosure": "Raydium Burn & Earn lock verified and no owner unlocked LP balance was detected.",
+    "removable": false,
+    "totalLockedLpRaw": "26627909375363",
+    "latestLockSignature": "3PkvrV272xGkFHfXHDZp66ZzHr9MJhRJrvQjd3K5trYaJCbc8Xve94Hb5YNnBzVkdhugvVMcMZBbiEqNW3gigm93",
     "lockTransactions": [
       {
-        "signature": "6r2o4X88cZZ8HZZtk1nvCUdFGqvHcr1ByUVZddHyfqcRCeEAjD7pFghLvrJtgU5sEKA78ZEBc37rr7pcBDgD7Qn",
-        "slot": 436040963,
-        "blockTimeUtc": "2026-07-29T23:29:12.000Z",
-        "lockPda": "DCZc9BAQ6upF6uJgfHbzzWRM17npSWWzr52TBgELXAqu",
+        "signature": "3PkvrV272xGkFHfXHDZp66ZzHr9MJhRJrvQjd3K5trYaJCbc8Xve94Hb5YNnBzVkdhugvVMcMZBbiEqNW3gigm93",
+        "slot": 438226136,
+        "blockTimeUtc": "2026-08-09T15:51:17.000Z",
+        "lockPda": "4DxVNRQHMd3zSsk6Lk2ehrETxanD7rjsKsAZGHYK4hYp",
         "lpMint": "4wp3yZVVdwBvkRnx5qHn8uLRFuw3P9Srt3JvGqn6mrdi",
         "lockLpVault": "e1kdHRnB6boMMcrLbBmZ1Y46mqRcjtZqGTCjrWcC27q",
-        "lockedLpAmountRaw": "9199123117269",
-        "feeKeyMint": "FQq3W44pup68ux6rEZR91AX77Nwth8rH49m9aSouGpT6",
-        "feeKeyAccount": "46CgAnDrX6Rw3qW88urh7XM5yRba9FmKbf4ry4USDYHm",
+        "lockedLpAmountRaw": "26627909375363",
+        "feeKeyMint": "98LdbbYv3q584JefJyM7TMiTeEBauDQvFwZpi4AgpPU5",
+        "feeKeyAccount": "uHiz154Ny5Kf4SYqFmg9SaXEywFa598rWYywMz4gEUu",
         "verified": true
       }
     ]
@@ -84,17 +84,17 @@
     "founderRole": "Founder and sole maintainer",
     "founderPublicGithub": "https://github.com/jboudou007",
     "founderDisclosure": "SATA is an independent personal project and is not affiliated with or endorsed by the founder's employer, clients, schools, or other organizations.",
-    "founderDirectRaw": "824951151759262409",
-    "founderDirectUi": "824951151.759262409",
-    "founderDirectPercent": "82.49%",
-    "poolSataRaw": "140677836922218366",
-    "poolSataUi": "140677836.922218366",
-    "poolSataPercent": "14.06%",
+    "founderDirectRaw": "774361428019676678",
+    "founderDirectUi": "774361428.019676678",
+    "founderDirectPercent": "77.43%",
+    "poolSataRaw": "191267560661804097",
+    "poolSataUi": "191267560.661804097",
+    "poolSataPercent": "19.12%",
     "outsideFounderAndPoolRaw": "34367864668465135",
     "outsideFounderAndPoolUi": "34367864.668465135",
     "outsideFounderAndPoolPercent": "3.43%",
-    "ownerUnlockedLpRaw": "10384383731650",
-    "totalLockedLpRaw": "9199123117269",
+    "ownerUnlockedLpRaw": "0",
+    "totalLockedLpRaw": "26627909375363",
     "controlCaveat": "Adding SATA to liquidity reduces direct wallet concentration, but founder control only materially decreases when the resulting LP tokens are locked, burned, or controlled by an accountable multisig.",
     "intendedDirection": "Gradually deploy undeployed supply into liquidity and ecosystem uses while publishing whether LP positions remain owner-controlled, locked, burned, or multisig-controlled."
   },
@@ -111,7 +111,7 @@
       "method": "published-register-match",
       "detail": "proof fields match the public transparency register; independent cryptographic verification should still be performed with Bitcoin tooling"
     },
-    "lastCheckedUtc": "2026-08-09T12:57:02.694Z",
+    "lastCheckedUtc": "2026-08-09T16:23:31.381Z",
     "plannedReserveSats": "500000",
     "plannedReserveBtc": "0.005",
     "metricsBasis": "actual-confirmed-chain",
@@ -237,25 +237,25 @@
       "name": "raydium-sata-reserve",
       "ok": true,
       "level": "critical",
-      "detail": "140677836922218366"
+      "detail": "191267560661804097"
     },
     {
       "name": "raydium-wsol-reserve",
       "ok": true,
       "level": "critical",
-      "detail": "2753800111"
+      "detail": "3743800111"
     },
     {
       "name": "raydium-lp-lock-verified",
       "ok": true,
       "level": "critical",
-      "detail": "Raydium Burn & Earn lock verified, but the owner still holds unlocked LP tokens that remain removable unless separately locked or burned."
+      "detail": "Raydium Burn & Earn lock verified and no owner unlocked LP balance was detected."
     },
     {
       "name": "owner-unlocked-lp-balance-zero",
-      "ok": false,
+      "ok": true,
       "level": "warning",
-      "detail": "10384383731650"
+      "detail": "0"
     },
     {
       "name": "bitcoin-reserve-proof",
@@ -266,8 +266,7 @@
   ],
   "warnings": [
     "sata-supply-equals-launch-initial: 999996853349945910",
-    "metadata-mutability-disclosed: mutable",
-    "owner-unlocked-lp-balance-zero: 10384383731650"
+    "metadata-mutability-disclosed: mutable"
   ],
   "permanentCaveats": [
     "SATA has no hidden mint authority when the mint-authority check is passing.",

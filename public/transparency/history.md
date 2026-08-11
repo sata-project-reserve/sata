@@ -5,3 +5,4 @@ This append-only ledger records material reserve, distribution, liquidity, and m
 | Observed UTC | BTC reserve sats | Founder direct | Pool SATA | Locked LP raw | Owner unlocked LP raw | Metadata mutable | State hash |
 | --- | ---: | ---: | ---: | ---: | ---: | --- | --- |
 | 2026-08-09T16:23:29.839Z | 500000 | 77.43% | 19.12% | 26627909375363 | 0 | true | d13a26f2406e3bc04966c22723369920fc0f541dcad12c6cd197c513a80cec16 |
+| 2026-08-11T01:56:42.099Z | 500000 | 77.43% | 19.24% | 26627909375363 | 0 | true | b8e87d7ec6941d7ea7744ab9872e751fe16077ae5ca5e0cf4aedd2785f2ef7d4 |

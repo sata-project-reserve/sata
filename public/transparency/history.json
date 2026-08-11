@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "project": "SATA Reserve Token",
   "purpose": "Append-only material-state ledger for reserve, distribution, liquidity, and metadata changes.",
-  "generatedAtUtc": "2026-08-10T13:15:14.237Z",
-  "latestStateHash": "d13a26f2406e3bc04966c22723369920fc0f541dcad12c6cd197c513a80cec16",
+  "generatedAtUtc": "2026-08-11T01:56:42.099Z",
+  "latestStateHash": "b8e87d7ec6941d7ea7744ab9872e751fe16077ae5ca5e0cf4aedd2785f2ef7d4",
   "entries": [
     {
       "observedAtUtc": "2026-08-09T16:23:29.839Z",
@@ -22,6 +22,31 @@
       "links": {
         "reportJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
         "repositoryCommit": "https://github.com/sata-project-reserve/sata/commit/50782e73a89618f4863d38b864db35b9cb10cc26",
+        "bitcoinReserveAddress": "https://mempool.space/address/bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
+        "solanaMint": "https://explorer.solana.com/address/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
+        "solanaMetadata": "https://explorer.solana.com/address/4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g",
+        "latestLpLockTransaction": "https://explorer.solana.com/tx/3PkvrV272xGkFHfXHDZp66ZzHr9MJhRJrvQjd3K5trYaJCbc8Xve94Hb5YNnBzVkdhugvVMcMZBbiEqNW3gigm93",
+        "dexscreener": "https://dexscreener.com/solana/cyrzoxljgnftqjnvyjpym1wftaeogz6kjmyjfb5hud8e",
+        "gmgn": "https://gmgn.ai/sol/token/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH"
+      }
+    },
+    {
+      "observedAtUtc": "2026-08-11T01:56:42.099Z",
+      "stateHash": "b8e87d7ec6941d7ea7744ab9872e751fe16077ae5ca5e0cf4aedd2785f2ef7d4",
+      "summary": {
+        "btcReserveSats": "500000",
+        "founderDirectPercent": "77.43%",
+        "poolSataPercent": "19.24%",
+        "outsideFounderAndPoolPercent": "3.32%",
+        "lockedLpRaw": "26627909375363",
+        "ownerUnlockedLpRaw": "0",
+        "metadataUpdateAuthority": "HtDVYgAwWWzWWTSer1MtNVvJpZHhKjLo2Drzu2eARRaT",
+        "metadataMutable": true,
+        "metadataUri": "https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-metadata.json"
+      },
+      "links": {
+        "reportJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
+        "repositoryCommit": "https://github.com/sata-project-reserve/sata/commit/6020643f8c39357e767a1a3d0dd3f76069087b40",
         "bitcoinReserveAddress": "https://mempool.space/address/bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
         "solanaMint": "https://explorer.solana.com/address/A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
         "solanaMetadata": "https://explorer.solana.com/address/4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g",

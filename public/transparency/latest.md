@@ -1,7 +1,7 @@
 # SATA Transparency Report
 
 Status: TRANSPARENCY_VERIFIED_WITH_DISCLOSURES
-Generated UTC: 2026-08-11T13:12:22.502Z
+Generated UTC: 2026-08-12T02:09:47.804Z
 Cadence: scheduled every 12 hours when GitHub Actions is enabled
 Slogan: Proof over promises.
 
@@ -53,7 +53,7 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 
 ## Raydium Lock Transactions
 
-- 3PkvrV272xGkFHfXHDZp66ZzHr9MJhRJrvQjd3K5trYaJCbc8Xve94Hb5YNnBzVkdhugvVMcMZBbiEqNW3gigm93: 26627909375363 LP base units, verified=true
+- 6r2o4X88cZZ8HZZtk1nvCUdFGqvHcr1ByUVZddHyfqcRCeEAjD7pFghLvrJtgU5sEKA78ZEBc37rr7pcBDgD7Qn: 26627909375363 LP base units, verified=true
 
 ## Bitcoin Reserve
 

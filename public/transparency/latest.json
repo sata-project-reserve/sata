@@ -3,10 +3,10 @@
   "status": "TRANSPARENCY_VERIFIED_WITH_DISCLOSURES",
   "project": "SATA",
   "slogan": "Proof over promises.",
-  "generatedAtUtc": "2026-08-11T13:12:22.502Z",
+  "generatedAtUtc": "2026-08-12T02:09:47.804Z",
   "reportCadence": "scheduled every 12 hours when GitHub Actions is enabled",
   "source": {
-    "commit": "76e9589f2a588f79901f12127893968fa53162c9",
+    "commit": "e82830d5287fd18cceab2cdbc172c50e7eb0d36b",
     "repository": "https://github.com/sata-project-reserve/sata",
     "transparencyPage": "https://sata-project-reserve.github.io/sata/transparency",
     "latestJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
@@ -63,18 +63,18 @@
     "lockDisclosure": "Raydium Burn & Earn lock verified and no owner unlocked LP balance was detected.",
     "removable": false,
     "totalLockedLpRaw": "26627909375363",
-    "latestLockSignature": "3PkvrV272xGkFHfXHDZp66ZzHr9MJhRJrvQjd3K5trYaJCbc8Xve94Hb5YNnBzVkdhugvVMcMZBbiEqNW3gigm93",
+    "latestLockSignature": "6r2o4X88cZZ8HZZtk1nvCUdFGqvHcr1ByUVZddHyfqcRCeEAjD7pFghLvrJtgU5sEKA78ZEBc37rr7pcBDgD7Qn",
     "lockTransactions": [
       {
-        "signature": "3PkvrV272xGkFHfXHDZp66ZzHr9MJhRJrvQjd3K5trYaJCbc8Xve94Hb5YNnBzVkdhugvVMcMZBbiEqNW3gigm93",
-        "slot": 438226136,
-        "blockTimeUtc": "2026-08-09T15:51:17.000Z",
-        "lockPda": "4DxVNRQHMd3zSsk6Lk2ehrETxanD7rjsKsAZGHYK4hYp",
+        "signature": "6r2o4X88cZZ8HZZtk1nvCUdFGqvHcr1ByUVZddHyfqcRCeEAjD7pFghLvrJtgU5sEKA78ZEBc37rr7pcBDgD7Qn",
+        "slot": 436040963,
+        "blockTimeUtc": "2026-07-29T23:29:12.000Z",
+        "lockPda": "DCZc9BAQ6upF6uJgfHbzzWRM17npSWWzr52TBgELXAqu",
         "lpMint": "4wp3yZVVdwBvkRnx5qHn8uLRFuw3P9Srt3JvGqn6mrdi",
         "lockLpVault": "e1kdHRnB6boMMcrLbBmZ1Y46mqRcjtZqGTCjrWcC27q",
         "lockedLpAmountRaw": "26627909375363",
-        "feeKeyMint": "98LdbbYv3q584JefJyM7TMiTeEBauDQvFwZpi4AgpPU5",
-        "feeKeyAccount": "uHiz154Ny5Kf4SYqFmg9SaXEywFa598rWYywMz4gEUu",
+        "feeKeyMint": "FQq3W44pup68ux6rEZR91AX77Nwth8rH49m9aSouGpT6",
+        "feeKeyAccount": "46CgAnDrX6Rw3qW88urh7XM5yRba9FmKbf4ry4USDYHm",
         "verified": true
       }
     ]
@@ -111,7 +111,7 @@
       "method": "published-register-match",
       "detail": "proof fields match the public transparency register; independent cryptographic verification should still be performed with Bitcoin tooling"
     },
-    "lastCheckedUtc": "2026-08-11T13:12:25.126Z",
+    "lastCheckedUtc": "2026-08-12T02:09:48.674Z",
     "plannedReserveSats": "500000",
     "plannedReserveBtc": "0.005",
     "metricsBasis": "actual-confirmed-chain",

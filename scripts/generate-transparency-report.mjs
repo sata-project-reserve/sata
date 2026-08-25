@@ -1108,16 +1108,22 @@ async function getParsedAccount(publicKey) {
 }
 
 async function getTokenBalance(publicKey) {
-  try {
-    const result = await rpc('getTokenAccountBalance', [publicKey, { commitment: 'confirmed' }]);
-    return {
-      amount: result.value.amount,
-      decimals: result.value.decimals,
-      uiAmountString: result.value.uiAmountString
-    };
-  } catch {
-    return null;
+  const account = await getRawAccount(publicKey);
+  if (!account) return null;
+  if (account.owner !== TOKEN_PROGRAM) {
+    throw new Error(
+      `Token account ${publicKey} is owned by ${account.owner}, expected ${TOKEN_PROGRAM}`
+    );
   }
+  const data = Buffer.from(account.data, 'base64');
+  if (data.length < 72) {
+    throw new Error(`Token account ${publicKey} is too short to decode: ${data.length} bytes`);
+  }
+  return {
+    mint: publicKeyFromData(data, 0),
+    owner: publicKeyFromData(data, 32),
+    amount: data.readBigUInt64LE(64).toString()
+  };
 }
 
 function decodeCpmmPool(data) {

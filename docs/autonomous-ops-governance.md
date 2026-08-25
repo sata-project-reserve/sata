@@ -14,6 +14,8 @@ Autonomy is useful for repeatable public operations:
 
 Autonomy is not appropriate for private keys, reserve custody, discretionary trading, undisclosed promotion, or legal commitments.
 
+Jean Bilong is the Executive Chairman. Agents operate as staff: they prepare work, verify facts, monitor public signals, draft proposals, and maintain records. The Executive Chairman approves final transactions, project proposals, treasury movement, liquidity changes, paid promotion, token compensation, partnerships, and public commitments.
+
 ## Operating Units
 
 ### Transparency
@@ -112,6 +114,7 @@ Authority limits:
 4. Publish one factual post only when there is real news or a useful explanation.
 5. Move custody toward multisig before the reserve grows materially.
 6. Maintain a public register for treasury, liquidity, and paid promotion decisions.
+7. Use `public/executive-approval-queue.json` as the public approval queue for agent-prepared work.
 
 ## Required Human Gates
 
@@ -126,6 +129,8 @@ Human approval is always required for:
 - legal, tax, or investment interpretation;
 - wallet migration;
 - security incidents.
+
+The approval flow is documented in `docs/executive-approval-runbook.md`. Run `npm run ops:plan` to view items awaiting chairman review and `npm run ops:check` to validate the queue.
 
 ## Public Target Language
 

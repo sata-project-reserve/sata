@@ -11,6 +11,8 @@
     "test": "vitest run --coverage",
     "test:e2e": "playwright test",
     "format": "prettier --check .",
+    "ops:check": "node scripts/validate-executive-approvals.mjs",
+    "ops:plan": "node scripts/executive-approval-agent.mjs plan",
     "security:check": "node scripts/security-check.mjs",
     "social:check": "node scripts/validate-social-content.mjs",
     "social:agent": "node scripts/x-social-agent.mjs",

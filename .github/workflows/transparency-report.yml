@@ -67,6 +67,9 @@ jobs:
       - name: Validate social content
         run: npm run social:check
 
+      - name: Validate executive approval queue
+        run: npm run ops:check
+
       - name: Security check
         run: npm run security:check
 

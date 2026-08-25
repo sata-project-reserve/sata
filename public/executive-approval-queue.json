@@ -1,0 +1,116 @@
+{
+  "project": "SATA Reserve Token",
+  "mode": "executive-chairman-final-approval",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-08-25T15:00:00Z",
+  "executiveChairman": {
+    "name": "Jean Bilong",
+    "role": "Executive Chairman",
+    "authority": [
+      "final transaction approval",
+      "treasury and reserve movement approval",
+      "liquidity action approval",
+      "paid promotion and token grant approval",
+      "partnership and public commitment approval",
+      "project proposal approval"
+    ]
+  },
+  "operatingCompanyModel": {
+    "agentRole": "operating staff",
+    "agentCan": [
+      "prepare proposals",
+      "draft factual public communications",
+      "verify public project state",
+      "monitor public channels",
+      "prepare non-custodial transaction plans",
+      "maintain disclosure records"
+    ],
+    "agentCannot": [
+      "hold private keys or seed phrases",
+      "move BTC, SOL, SATA, or LP tokens",
+      "approve paid promotion",
+      "approve token grants",
+      "make legal, tax, or investment commitments",
+      "promise price, redemption, or market support"
+    ]
+  },
+  "approvalRules": {
+    "defaultStatus": "draft",
+    "chairmanApprovalStatus": "approved-by-chairman",
+    "executionRequiresEvidence": true,
+    "sensitiveCategoriesRequireChairmanApproval": [
+      "treasury-action",
+      "liquidity-action",
+      "token-compensation",
+      "paid-promotion",
+      "partnership",
+      "legal",
+      "security",
+      "wallet-custody"
+    ]
+  },
+  "items": [
+    {
+      "id": "enable-approved-only-x-posting",
+      "title": "Enable approved-only X social agent posting",
+      "category": "operations",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-08-25T15:00:00Z",
+      "preparedBy": "codex-ops",
+      "summary": "Allow the X social agent to publish only queue items that the Executive Chairman has already approved.",
+      "rationale": "This gives SATA an operating-company social cadence without allowing agents to invent market claims or approve posts themselves.",
+      "proposedAction": "Set GitHub repo variable SATA_X_AGENT_ENABLE_POSTING=true, add X_ACCESS_TOKEN as a GitHub Actions secret, change social queue mode to approved-only-automation, and approve individual posts before publication.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Agent cannot publish unless the specific queue item is marked approved.",
+        "No wallet credentials are required.",
+        "Posts still pass social policy validation before publishing.",
+        "Paid or token-compensated posts remain separate approval items."
+      ],
+      "publicDisclosure": "Automated posts must remain factual and source-linked. Paid or token-compensated content requires explicit Sponsored/Paid Partnership disclosure.",
+      "evidence": []
+    },
+    {
+      "id": "standard-promoter-intake-policy",
+      "title": "Adopt standard promoter intake policy",
+      "category": "paid-promotion",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-08-25T15:00:00Z",
+      "preparedBy": "codex-ops",
+      "summary": "Require promoter proposals to include deliverables, compensation, draft copy, disclosure policy, and anti-bot confirmation before any payment or token grant.",
+      "rationale": "SATA can work with legitimate promoters only if compensation is disclosed and claims stay factual.",
+      "proposedAction": "Use the promoter intake checklist for every promoter and pay only after the approved deliverable is live and unchanged.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Reject fake engagement, pump language, investor targeting, guaranteed results, and undisclosed paid promotion.",
+        "Require Sponsored/Paid Partnership disclosure for cash or token compensation.",
+        "Keep payment records and public post URLs.",
+        "Do not give promoters discretionary posting authority over SATA-owned accounts."
+      ],
+      "publicDisclosure": "Sponsored/Paid Partnership. Crypto assets involve risk. No price guarantee, no redemption promise, and liquidity can be thin and volatile.",
+      "evidence": []
+    },
+    {
+      "id": "btc-reserve-custody-roadmap",
+      "title": "Move BTC reserve custody toward multisig as the reserve grows",
+      "category": "treasury-action",
+      "status": "draft",
+      "createdAtUtc": "2026-08-25T15:00:00Z",
+      "preparedBy": "codex-ops",
+      "summary": "Prepare a staged custody roadmap before the reserve grows materially toward the 1,000,000,000 sats target.",
+      "rationale": "Single-signer custody is acceptable for early speed, but the project needs stronger controls as the reserve becomes material.",
+      "proposedAction": "Draft a public multisig migration plan with signer roles, movement disclosure, verification steps, and fallback procedure.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "No agent may hold reserve signing keys.",
+        "No reserve movement should occur without a public note and chairman approval.",
+        "Reserve language must remain transparency-only, not a redemption promise or price floor."
+      ],
+      "publicDisclosure": "The BTC reserve is a transparency metric only. It is not a redemption promise, guaranteed price floor, yield product, or market-support commitment.",
+      "evidence": []
+    }
+  ]
+}

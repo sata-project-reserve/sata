@@ -57,6 +57,7 @@
     "transparencyHistory": "https://sata-project-reserve.github.io/sata/transparency/history.json",
     "health": "https://sata-project-reserve.github.io/sata/health.json",
     "projectProfile": "https://sata-project-reserve.github.io/sata/project-profile.json",
+    "executiveApprovalQueue": "https://sata-project-reserve.github.io/sata/executive-approval-queue.json",
     "metadataPolicy": "https://github.com/sata-project-reserve/sata/blob/main/docs/metadata-policy.md",
     "policyDoc": "docs/social-agent-policy.md"
   }

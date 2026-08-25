@@ -1,0 +1,234 @@
+import { readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
+const QUEUE_PATH = join('public', 'social-agent-content-queue.json');
+const MONITORING_PATH = join('public', 'social-agent-monitoring-log.json');
+const REPORT_PATH = join('public', 'transparency', 'latest.json');
+const PROFILE_PATH = join('public', 'social-agent-profile.json');
+const X_POST_URL = 'https://api.x.com/2/tweets';
+const POSTING_MODE = 'approved-only-automation';
+const REVIEW_MODE = 'draft-only-until-human-approval';
+const MAX_POSTS_PER_RUN = 1;
+
+const [, , command = 'plan'] = process.argv;
+
+const queue = await readJson(QUEUE_PATH);
+const monitoring = await readJson(MONITORING_PATH);
+const report = await readJson(REPORT_PATH);
+const profile = await readJson(PROFILE_PATH);
+
+switch (command) {
+  case 'plan':
+    printPlan();
+    break;
+  case 'draft-report-update':
+    await draftReportUpdate();
+    break;
+  case 'dry-run-post-next-approved':
+    await postNextApproved({ dryRun: true });
+    break;
+  case 'post-next-approved':
+    await postNextApproved({ dryRun: false });
+    break;
+  default:
+    throw new Error(
+      `Unknown x-social-agent command: ${command}. Use plan, draft-report-update, dry-run-post-next-approved, or post-next-approved.`
+    );
+}
+
+function printPlan() {
+  const approved = approvedPosts();
+  const ready = (queue.posts ?? []).filter((post) => post.status === 'ready-for-review');
+  const hold = (queue.posts ?? []).filter((post) => String(post.status).startsWith('hold'));
+  console.log(
+    JSON.stringify(
+      {
+        project: queue.project,
+        account: queue.account,
+        mode: queue.mode,
+        automationEnabled: process.env.SATA_X_AGENT_ENABLE_POSTING === 'true',
+        latestReport: {
+          status: report.status,
+          generatedAtUtc: report.generatedAtUtc,
+          sourceCommit: report.source?.commit,
+          sataReserveUi: report.liquidity?.sataReserveUi,
+          wsolReserveUi: report.liquidity?.wsolReserveUi,
+          lockedLpRaw: report.liquidity?.totalLockedLpRaw,
+          ownerUnlockedLpRaw: report.liquidity?.ownerUnlockedLpRaw,
+          btcReserveSats: report.bitcoinReserve?.reserveSats
+        },
+        counts: {
+          approved: approved.length,
+          readyForReview: ready.length,
+          hold: hold.length,
+          published: (queue.posts ?? []).filter((post) => post.status === 'published').length
+        },
+        nextAction:
+          approved.length > 0
+            ? `Next approved post: ${approved[0].id}`
+            : 'No approved post. Drafts remain queued for human approval.'
+      },
+      null,
+      2
+    )
+  );
+}
+
+async function draftReportUpdate() {
+  const id = `transparency-${compactTimestamp(report.generatedAtUtc)}`;
+  if ((queue.posts ?? []).some((post) => post.id === id)) {
+    console.log(`Draft already exists: ${id}`);
+    return;
+  }
+
+  const text = [
+    `SATA transparency report updated: ${report.status}.`,
+    '',
+    `Raydium pool: ${report.liquidity.sataReserveUi} SATA / ${report.liquidity.wsolReserveUi} WSOL.`,
+    `Locked LP: ${report.liquidity.totalLockedLpRaw}. Owner unlocked LP: ${report.liquidity.ownerUnlockedLpRaw}.`,
+    '',
+    'The BTC reserve is not a redemption promise or guaranteed price floor.',
+    report.source.transparencyPage
+  ].join('\n');
+
+  queue.posts = [
+    ...(queue.posts ?? []),
+    {
+      id,
+      status: 'ready-for-review',
+      type: 'transparency',
+      text
+    }
+  ];
+  await writeJson(QUEUE_PATH, queue);
+  console.log(`Created ready-for-review draft: ${id}`);
+}
+
+async function postNextApproved({ dryRun }) {
+  if (!assertPostingMode()) return;
+  const posts = approvedPosts().slice(0, MAX_POSTS_PER_RUN);
+  if (posts.length === 0) {
+    console.log('No approved posts to publish.');
+    return;
+  }
+  if (!dryRun && !assertLivePostingAllowed()) return;
+
+  for (const post of posts) {
+    validatePostForPublication(post);
+    if (dryRun) {
+      console.log(
+        JSON.stringify(
+          {
+            dryRun: true,
+            wouldPost: {
+              id: post.id,
+              text: post.text,
+              paidPartnership: Boolean(post.paidPartnership)
+            }
+          },
+          null,
+          2
+        )
+      );
+      continue;
+    }
+
+    const published = await createPost(post);
+    markPublished(post, published.data.id);
+    await writeJson(QUEUE_PATH, queue);
+    await writeJson(MONITORING_PATH, monitoring);
+    console.log(`Published ${post.id}: ${post.postUrl}`);
+  }
+}
+
+function approvedPosts() {
+  return (queue.posts ?? []).filter((post) => post.status === 'approved');
+}
+
+function assertPostingMode() {
+  if (![POSTING_MODE, REVIEW_MODE].includes(queue.mode)) {
+    throw new Error(`Unsupported queue mode: ${queue.mode}`);
+  }
+  if (queue.mode !== POSTING_MODE) {
+    console.log(
+      `Queue mode is ${queue.mode}. Set it to ${POSTING_MODE} only after enabling approved-only automation.`
+    );
+    return false;
+  }
+  return true;
+}
+
+function assertLivePostingAllowed() {
+  if (process.env.SATA_X_AGENT_ENABLE_POSTING !== 'true') {
+    console.log('Live posting is disabled. Set SATA_X_AGENT_ENABLE_POSTING=true to allow it.');
+    return false;
+  }
+  if (!process.env.X_ACCESS_TOKEN) {
+    throw new Error('Missing X_ACCESS_TOKEN OAuth user-context access token.');
+  }
+  return true;
+}
+
+function validatePostForPublication(post) {
+  if (!post.id || !post.text) throw new Error('Approved posts require id and text.');
+  if (post.text.length > 280) {
+    throw new Error(`${post.id} exceeds 280 characters: ${post.text.length}`);
+  }
+  if (post.requiresHumanApproval && post.approvedBy !== 'owner') {
+    throw new Error(`${post.id} requires approvedBy: "owner".`);
+  }
+  if (/treasury movement|liquidity removal|wallet migration|security incident/i.test(post.type)) {
+    throw new Error(`${post.id} is escalation-only and cannot be auto-posted.`);
+  }
+}
+
+async function createPost(post) {
+  const response = await fetch(X_POST_URL, {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${process.env.X_ACCESS_TOKEN}`,
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      text: post.text,
+      paid_partnership: Boolean(post.paidPartnership)
+    })
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(`X create post failed (${response.status}): ${JSON.stringify(body)}`);
+  }
+  if (!body?.data?.id) {
+    throw new Error(`X create post response did not include a post id: ${JSON.stringify(body)}`);
+  }
+  return body;
+}
+
+function markPublished(post, postId) {
+  const publishedAtUtc = new Date().toISOString();
+  post.status = 'published';
+  post.publishedAtUtc = publishedAtUtc;
+  post.postUrl = `https://x.com/${queue.account.handle}/status/${postId}`;
+  monitoring.posts ??= [];
+  monitoring.posts.push({
+    id: post.id,
+    type: post.type,
+    status: 'published',
+    publishedAtUtc,
+    postUrl: post.postUrl,
+    source: 'x-social-agent',
+    observations: []
+  });
+}
+
+function compactTimestamp(value) {
+  return String(value).replaceAll(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
+}
+
+async function readJson(path) {
+  return JSON.parse(await readFile(path, 'utf8'));
+}
+
+async function writeJson(path, value) {
+  await writeFile(path, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
+}

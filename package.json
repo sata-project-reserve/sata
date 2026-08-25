@@ -13,6 +13,10 @@
     "format": "prettier --check .",
     "security:check": "node scripts/security-check.mjs",
     "social:check": "node scripts/validate-social-content.mjs",
+    "social:agent": "node scripts/x-social-agent.mjs",
+    "social:agent:plan": "node scripts/x-social-agent.mjs plan",
+    "social:agent:dry-run": "node scripts/x-social-agent.mjs dry-run-post-next-approved",
+    "social:agent:post": "node scripts/x-social-agent.mjs post-next-approved",
     "transparency:report": "node scripts/generate-transparency-report.mjs",
     "prepare:metadata": "node scripts/prepare-mainnet-metadata.mjs",
     "verify:devnet": "node scripts/verify-devnet.mjs"

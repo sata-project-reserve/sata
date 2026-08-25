@@ -1,0 +1,66 @@
+name: SATA X Social Agent
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      command:
+        description: Agent command to run
+        required: true
+        default: plan
+        type: choice
+        options:
+          - plan
+          - draft-report-update
+          - dry-run-post-next-approved
+          - post-next-approved
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sata-x-social-agent
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate social content
+        run: npm run social:check
+
+      - name: Run social agent
+        run: node scripts/x-social-agent.mjs "${AGENT_COMMAND}"
+        env:
+          AGENT_COMMAND: ${{ github.event.inputs.command || 'post-next-approved' }}
+          SATA_X_AGENT_ENABLE_POSTING: ${{ vars.SATA_X_AGENT_ENABLE_POSTING }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+
+      - name: Commit agent state
+        run: |
+          set -euo pipefail
+          git config user.name "sata-social-agent"
+          git config user.email "sata-social-agent@users.noreply.github.com"
+          git add public/social-agent-content-queue.json public/social-agent-monitoring-log.json
+          if git diff --cached --quiet; then
+            echo "No social agent state changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: update SATA social agent state"
+          git push origin HEAD:main

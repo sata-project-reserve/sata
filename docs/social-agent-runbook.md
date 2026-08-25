@@ -22,7 +22,17 @@ The agent may use these public references:
 
 ## Operating Mode
 
-Default mode is draft-only. The agent prepares posts, checks them against policy, and waits for human approval before publishing unless the owner explicitly enables automatic posting later.
+Default mode is draft-only. The agent prepares posts, checks them against policy, and waits for human approval before publishing unless the owner explicitly enables approved-only automation later.
+
+Approved-only automation mode is allowed only when all of these are true:
+
+- `public/social-agent-content-queue.json` has `"mode": "approved-only-automation"`.
+- The specific post has `"status": "approved"`.
+- The runtime has `SATA_X_AGENT_ENABLE_POSTING=true`.
+- The runtime has an `X_ACCESS_TOKEN` OAuth user-context token with write access.
+- The post passes `npm run social:check`.
+
+The scheduled GitHub workflow never generates market claims by itself. It can only publish queue items that were already approved in the repository.
 
 Do not store X API keys, OAuth tokens, seed phrases, private keys, RPC secrets, or wallet data in this repository. Runtime credentials belong in a separate secret manager.
 
@@ -67,6 +77,15 @@ Human approval is required before posting about:
 5. Run `npm run social:check`.
 6. Save the draft for human review.
 7. Publish only after approval.
+
+## Agent Commands
+
+- `npm run social:agent:plan` prints current queue status and the latest report values.
+- `npm run social:agent -- draft-report-update` creates a ready-for-review transparency draft from the latest report.
+- `npm run social:agent:dry-run` shows the next approved post without publishing.
+- `npm run social:agent:post` publishes one approved post only when approved-only automation and runtime credentials are enabled.
+
+The GitHub workflow `.github/workflows/x-social-agent.yml` runs every six hours. By default it attempts `post-next-approved`, but it will do nothing unless approved-only automation and the X token are configured.
 
 ## Weekly Workflow
 

@@ -34,8 +34,10 @@ const riskyTopics = [
 
 const findings = [];
 
-if (queue.mode !== 'draft-only-until-human-approval') {
-  findings.push('queue.mode must remain draft-only-until-human-approval');
+const allowedModes = ['draft-only-until-human-approval', 'approved-only-automation'];
+
+if (!allowedModes.includes(queue.mode)) {
+  findings.push(`queue.mode must be one of: ${allowedModes.join(', ')}`);
 }
 
 for (const post of queue.posts ?? []) {

@@ -1,0 +1,104 @@
+{
+  "project": "SATA Reserve Token",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-08-26T12:30:00Z",
+  "mode": "revenue-first-reserve-growth",
+  "objective": "Generate legitimate operating revenue from existing SATA transparency infrastructure and allocate approved proceeds toward the 1,000,000,000 sats reserve target.",
+  "agentBoundary": {
+    "agentCan": [
+      "draft service offers",
+      "prepare prospect lists from public information",
+      "prepare invoices or payment instructions for chairman approval",
+      "record deliverables, receipts, and evidence",
+      "prepare reserve or liquidity allocation proposals"
+    ],
+    "agentCannot": [
+      "hold private keys or seed phrases",
+      "move BTC, SOL, SATA, USDC, or LP tokens",
+      "trade project assets",
+      "promise revenue, price, liquidity, return, redemption, or market support",
+      "approve paid promotion or token compensation"
+    ]
+  },
+  "currentAssetsToUse": [
+    "published SATA transparency report",
+    "GitHub Actions transparency automation",
+    "reserve-growth and executive-approval operating files",
+    "SATA social account and approved-only content queue",
+    "existing public credibility from locked liquidity and disclosed reserve"
+  ],
+  "revenueStreams": [
+    {
+      "id": "transparency-audit",
+      "label": "Transparency audit for crypto teams",
+      "priceUsd": "50",
+      "deliverable": "One-page public-readiness audit covering supply, authorities, liquidity lock, reserve claims, and disclosure gaps.",
+      "paymentTiming": "after draft delivery or through escrow when available"
+    },
+    {
+      "id": "transparency-report-setup",
+      "label": "Transparency report setup",
+      "priceUsd": "150",
+      "deliverable": "Repo-based public report template, disclosure checklist, and deployment instructions for a client project.",
+      "paymentTiming": "50% upfront only after chairman approval, 50% after delivery"
+    },
+    {
+      "id": "full-proof-dashboard",
+      "label": "Full proof dashboard and workflow setup",
+      "priceUsd": "300",
+      "deliverable": "Automated public report workflow, proof dashboard, public JSON endpoints, and operating runbook.",
+      "paymentTiming": "milestone-based after chairman-approved scope"
+    }
+  ],
+  "allocationPolicy": {
+    "currencyPreference": ["BTC", "USDC on Solana", "SOL"],
+    "requiresChairmanApprovalBeforeConversion": true,
+    "postReceiptAllocationPercent": {
+      "btcReserve": 70,
+      "liquidity": 20,
+      "operatingBudget": 10
+    },
+    "requiredEvidence": [
+      "client or counterparty identifier when public or internally recorded",
+      "approved scope",
+      "payment transaction id",
+      "delivered artifact link",
+      "allocation transaction ids",
+      "updated transparency report"
+    ]
+  },
+  "goToMarketRules": [
+    "Lead with proof tooling and public reporting, not SATA price action.",
+    "Use Sponsored/Paid Partnership disclosure for any paid or token-compensated SATA coverage.",
+    "Prefer public, factual deliverables over engagement promises.",
+    "Do not buy fake engagement, bots, raids, or investor lists.",
+    "Do not sell hidden token allocations or make undisclosed compensation arrangements."
+  ],
+  "nextCycle": {
+    "id": "revenue-cycle-001",
+    "durationDays": 14,
+    "targetClosedRevenueUsd": "300",
+    "minimumAcceptableFirstDealUsd": "50",
+    "primaryOfferId": "transparency-audit",
+    "successCriteria": [
+      "at least one paid transparency audit or setup deal",
+      "all compensation and deliverables recorded",
+      "no undisclosed promotion",
+      "chairman-approved allocation proposal for any received funds"
+    ]
+  },
+  "prohibitedRoutes": [
+    "hidden selling into buyers",
+    "wash trading or artificial volume",
+    "undisclosed paid promotion",
+    "fake engagement, bots, raids, or investor lists",
+    "unapproved token grants",
+    "unapproved liquidity removal",
+    "using the reserve as a guaranteed price floor",
+    "using private keys or seed phrases in an agent workflow"
+  ],
+  "publicLanguage": {
+    "allowed": "SATA sells transparency tooling and public-reporting services while building its own proof-first treasury discipline.",
+    "requiredCaveat": "No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment."
+  }
+}

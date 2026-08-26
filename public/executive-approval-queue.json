@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-08-26T12:00:00Z",
+  "updatedAtUtc": "2026-08-26T12:30:00Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -184,25 +184,55 @@
       "id": "reserve-tranche-to-1m-sats",
       "title": "Add 500000 sats to reach 1M sats",
       "category": "treasury-action",
-      "status": "ready-for-chairman-review",
+      "status": "superseded",
       "createdAtUtc": "2026-08-26T11:28:52.179Z",
       "preparedBy": "reserve-growth-agent",
-      "summary": "Move the BTC reserve from 500000 sats to 1000000 sats.",
-      "rationale": "The next reserve milestone is small, easy to verify, and keeps the 1,000,000,000 sats target moving through disclosed treasury actions.",
-      "proposedAction": "Executive Chairman sends 500000 sats (0.005 BTC), plus any required Bitcoin network fee, to reserve address bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk. After confirmation, rerun the transparency report and record the transaction id as evidence.",
-      "execution": "manual-chairman-action",
+      "summary": "Superseded direct BTC tranche proposal. The chairman rejected additional chairman-funded BTC for this step.",
+      "rationale": "Reserve growth should proceed through operating revenue and approved asset-allocation proposals instead of requesting another direct BTC tranche.",
+      "proposedAction": "No execution. Use the revenue-first reserve cycle proposal instead.",
+      "execution": "no-execution",
       "requiredChairmanApproval": true,
       "riskReview": [
-        "No agent signs, broadcasts, or custodies the transaction.",
-        "Bitcoin network fee must be considered separately from the reserve amount.",
-        "The tranche must not be described as price support.",
-        "Post-execution evidence must include the Bitcoin transaction id and updated transparency report."
+        "No direct BTC tranche is requested.",
+        "No agent signs, broadcasts, or custodies any transaction.",
+        "Reserve growth must come from disclosed revenue, grants, donations, or pre-approved asset conversions.",
+        "Post-execution evidence is still required for any future reserve addition."
       ],
       "publicDisclosure": "Proposed reserve tranche for the long-term 1,000,000,000 sats milestone. No price guarantee, no redemption promise, and no market-support commitment.",
       "evidence": [
         {
           "type": "transparency-report",
           "url": "https://sata-project-reserve.github.io/sata/transparency/latest.json"
+        },
+        {
+          "type": "reserve-growth-plan",
+          "url": "https://sata-project-reserve.github.io/sata/reserve-growth-plan.json"
+        }
+      ]
+    },
+    {
+      "id": "revenue-first-reserve-cycle",
+      "title": "Run first 14-day revenue-first reserve cycle",
+      "category": "revenue-action",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-08-26T12:30:00Z",
+      "preparedBy": "codex-ops",
+      "summary": "Use existing SATA proof tooling and public credibility to sell transparency services, then allocate approved proceeds toward BTC reserve growth, liquidity, and operating budget.",
+      "rationale": "The project should generate operating revenue from the transparency/reporting infrastructure it already built instead of relying on new chairman-funded BTC tranches.",
+      "proposedAction": "Approve revenue cycle 001 from revenue-operating-plan.json: sell $50 transparency audits first, then $150 report setup and $300 full proof-dashboard setup when qualified prospects ask for deeper work. Payment instructions, deliverables, conversions, reserve additions, and liquidity actions require chairman approval before execution.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "No agent may hold keys, receive funds, trade assets, or move BTC, SOL, SATA, USDC, or LP tokens.",
+        "No revenue pitch may promise SATA price movement, liquidity, investment return, redemption, or market support.",
+        "Client work must be factual transparency tooling or reporting, not fake engagement or paid investor targeting.",
+        "Any received funds need a separate allocation record before being converted, sent to reserve, or added to liquidity."
+      ],
+      "publicDisclosure": "SATA may sell transparency tooling and public-reporting services. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment.",
+      "evidence": [
+        {
+          "type": "operating-plan",
+          "url": "https://sata-project-reserve.github.io/sata/revenue-operating-plan.json"
         },
         {
           "type": "reserve-growth-plan",

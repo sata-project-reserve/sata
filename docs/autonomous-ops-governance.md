@@ -106,6 +106,24 @@ Authority limits:
 - no price predictions, guaranteed results, or investor targeting claims;
 - no token grants without public disclosure and approval.
 
+### Revenue
+
+Owner: Executive Chairman approval with agent-prepared sales operations.
+
+Responsibilities:
+
+- sell transparency audits, report setup, and proof-dashboard services built from existing SATA infrastructure;
+- record scope, deliverables, payment evidence, and allocation evidence;
+- prepare revenue-to-reserve and revenue-to-liquidity proposals after funds are received;
+- keep revenue language separate from SATA market-price claims.
+
+Authority limits:
+
+- no agent may receive funds, hold keys, or trade project assets;
+- no revenue pitch may promise price, return, redemption, liquidity, or market support;
+- no service work may depend on fake engagement, bots, raids, investor lists, or undisclosed paid promotion;
+- no received funds may be converted, added to reserve, or added to liquidity without chairman approval.
+
 ## Near-Term Setup
 
 1. Keep the transparency workflow green.
@@ -116,6 +134,7 @@ Authority limits:
 6. Maintain a public register for treasury, liquidity, and paid promotion decisions.
 7. Use `public/executive-approval-queue.json` as the public approval queue for agent-prepared work.
 8. Use `public/reserve-growth-plan.json` as the machine-readable operating plan for the 1,000,000,000 sats target.
+9. Use `public/revenue-operating-plan.json` as the machine-readable plan for revenue-first reserve growth.
 
 ## Required Human Gates
 
@@ -134,6 +153,8 @@ Human approval is always required for:
 The approval flow is documented in `docs/executive-approval-runbook.md`. Run `npm run ops:plan` to view items awaiting chairman review and `npm run ops:check` to validate the queue.
 
 Reserve growth is documented in `docs/bitcoin-treasury-policy.md`. Run `npm run ops:reserve-plan` to view progress toward the 1,000,000,000 sats target.
+
+Revenue operations are defined in `public/revenue-operating-plan.json`. Run `npm run ops:revenue-plan` to view the active revenue cycle and `npm run ops:revenue-check` to validate the operating rules.
 
 ## Public Target Language
 

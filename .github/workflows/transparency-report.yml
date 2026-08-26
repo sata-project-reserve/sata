@@ -11,6 +11,9 @@ on:
       - 'lib/**'
       - 'public/mainnet/**'
       - 'public/project-profile.json'
+      - 'public/executive-approval-queue.json'
+      - 'public/reserve-growth-plan.json'
+      - 'public/revenue-operating-plan.json'
       - 'public/social-agent-profile.json'
       - 'public/social-agent-content-queue.json'
       - 'public/social-agent-monitoring-log.json'
@@ -72,6 +75,9 @@ jobs:
 
       - name: Validate reserve growth plan
         run: npm run ops:reserve-check
+
+      - name: Validate revenue operating plan
+        run: npm run ops:revenue-check
 
       - name: Security check
         run: npm run security:check

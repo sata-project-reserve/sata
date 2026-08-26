@@ -23,6 +23,7 @@ const socialAgentMonitoringLog = readFileSync(
   join('public', 'social-agent-monitoring-log.json'),
   'utf8'
 );
+const revenueOperatingPlan = readFileSync(join('public', 'revenue-operating-plan.json'), 'utf8');
 const projectProfile = readFileSync(join('public', 'project-profile.json'), 'utf8');
 const metadataPolicy = readFileSync(join('docs', 'metadata-policy.md'), 'utf8');
 const hostingJson = readFileSync(join('.openai', 'hosting.json'), 'utf8');
@@ -47,6 +48,7 @@ const sitemapXml = ${JSON.stringify(sitemapXml)};
 const socialAgentProfile = ${JSON.stringify(socialAgentProfile)};
 const socialAgentContentQueue = ${JSON.stringify(socialAgentContentQueue)};
 const socialAgentMonitoringLog = ${JSON.stringify(socialAgentMonitoringLog)};
+const revenueOperatingPlan = ${JSON.stringify(revenueOperatingPlan)};
 const projectProfile = ${JSON.stringify(projectProfile)};
 const metadataPolicy = ${JSON.stringify(metadataPolicy)};
 const transparencyHtml = ${JSON.stringify(buildTransparencyHtml(report))};
@@ -204,6 +206,11 @@ export default {
     }
     if (url.pathname === '/social-agent-monitoring-log.json') {
       return new Response(socialAgentMonitoringLog, {
+        headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/revenue-operating-plan.json') {
+      return new Response(revenueOperatingPlan, {
         headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
       });
     }

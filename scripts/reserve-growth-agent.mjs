@@ -132,7 +132,9 @@ function reserveState() {
 
 function openTreasuryApprovals() {
   return (queue.items ?? []).filter(
-    (item) => item.category === 'treasury-action' && item.status !== 'executed'
+    (item) =>
+      item.category === 'treasury-action' &&
+      !['executed', 'rejected', 'superseded'].includes(item.status)
   );
 }
 

@@ -41,6 +41,9 @@ jobs:
       - name: Validate reserve growth plan
         run: npm run ops:reserve-check
 
+      - name: Validate revenue operating plan
+        run: npm run ops:revenue-check
+
       - name: Security check
         run: npm run security:check
 

@@ -857,6 +857,7 @@ function buildSitemap(report) {
     `${PUBLIC_BASE_URL}/project-profile.json`,
     `${PUBLIC_BASE_URL}/social-agent-profile.json`,
     `${PUBLIC_BASE_URL}/executive-approval-queue.json`,
+    `${PUBLIC_BASE_URL}/reserve-growth-plan.json`,
     report.source.healthJson,
     `${PUBLIC_BASE_URL}/mainnet/sata-metadata.json`
   ];

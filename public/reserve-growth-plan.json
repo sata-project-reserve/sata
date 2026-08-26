@@ -1,0 +1,82 @@
+{
+  "project": "SATA Reserve Token",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-08-26T12:00:00Z",
+  "target": {
+    "targetSats": "1000000000",
+    "targetBtc": "10",
+    "description": "Long-term BTC reserve milestone."
+  },
+  "currentReference": {
+    "source": "public/transparency/latest.json",
+    "reserveSats": "500000",
+    "reserveBtc": "0.005",
+    "remainingSats": "999500000",
+    "remainingBtc": "9.995",
+    "progressPpm": "500",
+    "progressPercent": "0.05%"
+  },
+  "operatingPrinciples": [
+    "Grow reserves through chairman-approved, disclosed treasury actions.",
+    "Treat reserves as transparency metrics, not redemption promises or price floors.",
+    "Separate treasury reserves, market price, liquidity, and operating budget.",
+    "Publish evidence for each reserve movement.",
+    "Keep agents non-custodial and proposal-driven."
+  ],
+  "allowedRoutes": [
+    {
+      "id": "chairman-funded-tranche",
+      "label": "Chairman-approved direct BTC reserve tranche",
+      "requiredApproval": "Executive Chairman",
+      "requiredEvidence": ["bitcoin transaction id", "reserve address balance update", "transparency report update"]
+    },
+    {
+      "id": "operating-revenue-allocation",
+      "label": "Disclosed allocation from legitimate operating revenue",
+      "requiredApproval": "Executive Chairman",
+      "requiredEvidence": ["source category", "allocation amount", "bitcoin transaction id", "public note"]
+    },
+    {
+      "id": "grant-or-donation",
+      "label": "Public grant or donation to the reserve",
+      "requiredApproval": "Executive Chairman",
+      "requiredEvidence": ["sender category if public", "bitcoin transaction id", "public note"]
+    },
+    {
+      "id": "asset-conversion",
+      "label": "Pre-approved conversion of project assets",
+      "requiredApproval": "Executive Chairman",
+      "requiredEvidence": ["proposal id", "route", "amount cap", "execution transaction ids", "destination"]
+    }
+  ],
+  "prohibitedRoutes": [
+    "wash trading or artificial volume",
+    "undisclosed paid promotion",
+    "hidden selling into buyers",
+    "using the reserve to imply a guaranteed price floor",
+    "using private keys or seed phrases in an agent workflow",
+    "unapproved liquidity removal",
+    "unapproved token grants"
+  ],
+  "milestones": [
+    { "sats": "1000000", "btc": "0.01", "label": "1M sats" },
+    { "sats": "5000000", "btc": "0.05", "label": "5M sats" },
+    { "sats": "10000000", "btc": "0.1", "label": "10M sats" },
+    { "sats": "50000000", "btc": "0.5", "label": "50M sats" },
+    { "sats": "100000000", "btc": "1", "label": "100M sats" },
+    { "sats": "250000000", "btc": "2.5", "label": "250M sats" },
+    { "sats": "500000000", "btc": "5", "label": "500M sats" },
+    { "sats": "1000000000", "btc": "10", "label": "1B sats" }
+  ],
+  "chairmanApprovalRequiredFor": [
+    "any BTC reserve movement",
+    "any SOL, SATA, or LP token movement",
+    "any project asset conversion",
+    "any paid promotion or token-compensated promotion",
+    "any public statement that could be interpreted as treasury, market, legal, tax, or investment guidance"
+  ],
+  "publicLanguage": {
+    "allowed": "SATA has a long-term treasury milestone of 1,000,000,000 sats. The BTC reserve is a transparency metric, not a redemption promise or guaranteed price floor.",
+    "requiredCaveat": "No price guarantee, no redemption promise, and no market-support commitment."
+  }
+}

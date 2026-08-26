@@ -6,6 +6,8 @@ SATA should use Bitcoin reserves as a transparency primitive, not as a marketing
 
 ## Current Reserve Math
 
+Long-term reserve target: `1,000,000,000 sats` (`10 BTC`).
+
 First Bitcoin reserve tranche: `500,000 sats` (`0.005 BTC`).
 
 Current reported SATA supply: `999,996,853.34994591 SATA`.
@@ -17,8 +19,11 @@ Exact reserve ratio:
 - Progress toward a treasury ratio of `1 sat per 1 SATA`: about `0.05%`.
 - Total reserve needed for `1 sat per 1 SATA`: `999,996,854 sats` (`9.99996854 BTC`).
 - Additional reserve needed from the first tranche: `999,496,854 sats`.
+- Additional reserve needed to reach the full `1,000,000,000 sats` milestone: `999,500,000 sats` (`9.995 BTC`).
 
 This is a public treasury reserve ratio. It is not the same as a market quote, and it is not a redemption guarantee unless a separate legally reviewed redemption mechanism is created.
+
+The 1,000,000,000 sats milestone is an operating treasury target. It is not a promise that market price, liquidity, or redemption value will converge to any amount.
 
 ## Required Reserve Controls
 
@@ -67,9 +72,25 @@ Disallowed categories:
 - Hidden market support.
 - Private extraction by insiders.
 - Any claim that treasury spending guarantees price appreciation.
+- Hidden selling into buyers or undisclosed project asset conversion.
 
 ## Custody Roadmap
 
 Phase 1 can use a dedicated single reserve address for speed, but the target state should be multisig custody with public signer identities or clearly defined signer roles.
 
 The project should not mix personal Bitcoin funds with the SATA reserve address.
+
+## Reserve Growth Operating Process
+
+Use `public/reserve-growth-plan.json` as the machine-readable reserve growth plan.
+
+Use `npm run ops:reserve-plan` to view current progress, remaining sats, next milestone, allowed funding routes, prohibited routes, and open treasury approvals.
+
+Every reserve growth action must have:
+
+- Executive Chairman approval;
+- source-of-funds category;
+- amount;
+- destination reserve address;
+- public caveat language;
+- post-execution evidence.

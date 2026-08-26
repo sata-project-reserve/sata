@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-08-25T15:00:00Z",
+  "updatedAtUtc": "2026-08-26T12:00:00Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -110,6 +110,74 @@
         "Reserve language must remain transparency-only, not a redemption promise or price floor."
       ],
       "publicDisclosure": "The BTC reserve is a transparency metric only. It is not a redemption promise, guaranteed price floor, yield product, or market-support commitment.",
+      "evidence": []
+    },
+    {
+      "id": "reserve-growth-operating-policy",
+      "title": "Adopt 1,000,000,000 sats reserve growth operating policy",
+      "category": "treasury-action",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-08-26T12:00:00Z",
+      "preparedBy": "codex-ops",
+      "summary": "Set the operating target at 1,000,000,000 sats while keeping reserve language factual and non-promissory.",
+      "rationale": "The project needs a concrete treasury target, milestones, and funding rules so agents can prepare work without improvising financial commitments.",
+      "proposedAction": "Adopt public reserve-growth-plan.json as the operating reference for reserve milestones, allowed routes, prohibited routes, and chairman approval gates.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Reserve growth remains a treasury milestone, not a price guarantee.",
+        "Every treasury movement requires chairman approval and public evidence.",
+        "Agents may prepare proposals but may not sign transactions.",
+        "Any conversion of project assets must be pre-approved, capped, disclosed, and recorded."
+      ],
+      "publicDisclosure": "SATA has a long-term treasury milestone of 1,000,000,000 sats. The BTC reserve is a transparency metric only, not a redemption promise, guaranteed price floor, yield product, or market-support commitment.",
+      "evidence": [
+        {
+          "type": "policy",
+          "url": "https://sata-project-reserve.github.io/sata/reserve-growth-plan.json"
+        }
+      ]
+    },
+    {
+      "id": "recurring-reserve-tranche-program",
+      "title": "Create chairman-approved recurring BTC reserve tranche program",
+      "category": "treasury-action",
+      "status": "draft",
+      "createdAtUtc": "2026-08-26T12:00:00Z",
+      "preparedBy": "codex-ops",
+      "summary": "Prepare a repeatable process for adding sats to the reserve in disclosed tranches.",
+      "rationale": "Small, recurring, disclosed reserve additions can move SATA toward 1,000,000,000 sats without relying on hype or hidden market activity.",
+      "proposedAction": "Chairman selects tranche size, cadence, source of funds, custody path, and disclosure note before any BTC movement.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "No tranche may be described as a price-support action.",
+        "No tranche may be funded by undisclosed promotion or wash trading.",
+        "Each tranche requires transaction evidence and transparency report update.",
+        "Cadence should be suspended if operating cash is needed for security, infrastructure, or legal review."
+      ],
+      "publicDisclosure": "Reserve additions are treasury transparency events only. No price guarantee, no redemption promise, and no market-support commitment.",
+      "evidence": []
+    },
+    {
+      "id": "dev-sata-conversion-policy",
+      "title": "Require public approval before converting dev-held SATA for reserve growth",
+      "category": "treasury-action",
+      "status": "draft",
+      "createdAtUtc": "2026-08-26T12:00:00Z",
+      "preparedBy": "codex-ops",
+      "summary": "Define strict controls before any dev-held SATA is converted into SOL, BTC, liquidity, operating budget, or reserve assets.",
+      "rationale": "Founder-held SATA is a material concentration risk. Any conversion should be transparent, capped, and approved before execution.",
+      "proposedAction": "Require a chairman-approved proposal with max SATA amount, route, slippage limit, destination, public disclosure text, and post-execution evidence before any conversion.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "No hidden selling into buyers.",
+        "No trading plan may imply price support or guaranteed outcomes.",
+        "No agent may sign or submit the transaction.",
+        "Post-execution report must disclose amount, route, received assets, and reserve or liquidity destination."
+      ],
+      "publicDisclosure": "Founder-held SATA movements are material events and must be disclosed. No price guarantee, no redemption promise, and liquidity can be thin and volatile.",
       "evidence": []
     }
   ]

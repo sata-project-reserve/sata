@@ -151,7 +151,11 @@ function validateItem(item) {
       (name === 'price guarantee' &&
         /not .*guaranteed price floor|no price guarantee/i.test(item.publicDisclosure)) ||
       (name === 'pump language' &&
-        /reject .*pump language|no .*pump language/i.test(searchable));
+        /reject .*pump language|no .*pump language/i.test(searchable)) ||
+      (name === 'coordinated trading' &&
+        /no .*wash trading|reject .*wash trading|no .*coordinated trading|reject .*coordinated trading/i.test(
+          searchable
+        ));
     if (pattern.test(searchable) && !disclosureAllows) {
       findings.push(`${label}: matched forbidden wording ${name}`);
     }

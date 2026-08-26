@@ -115,6 +115,7 @@ Authority limits:
 5. Move custody toward multisig before the reserve grows materially.
 6. Maintain a public register for treasury, liquidity, and paid promotion decisions.
 7. Use `public/executive-approval-queue.json` as the public approval queue for agent-prepared work.
+8. Use `public/reserve-growth-plan.json` as the machine-readable operating plan for the 1,000,000,000 sats target.
 
 ## Required Human Gates
 
@@ -131,6 +132,8 @@ Human approval is always required for:
 - security incidents.
 
 The approval flow is documented in `docs/executive-approval-runbook.md`. Run `npm run ops:plan` to view items awaiting chairman review and `npm run ops:check` to validate the queue.
+
+Reserve growth is documented in `docs/bitcoin-treasury-policy.md`. Run `npm run ops:reserve-plan` to view progress toward the 1,000,000,000 sats target.
 
 ## Public Target Language
 

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "project": "SATA Reserve Token",
   "purpose": "Append-only material-state ledger for reserve, distribution, liquidity, and metadata changes.",
-  "generatedAtUtc": "2026-08-26T01:27:31.151Z",
+  "generatedAtUtc": "2026-08-26T04:32:52.546Z",
   "latestStateHash": "d1a9c702bf73e55bdbd6f2d3bd2639e484f924f86db71a4ad6ec43fd60dd25b7",
   "entries": [
     {

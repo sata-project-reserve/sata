@@ -179,6 +179,36 @@
       ],
       "publicDisclosure": "Founder-held SATA movements are material events and must be disclosed. No price guarantee, no redemption promise, and liquidity can be thin and volatile.",
       "evidence": []
+    },
+    {
+      "id": "reserve-tranche-to-1m-sats",
+      "title": "Add 500000 sats to reach 1M sats",
+      "category": "treasury-action",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-08-26T11:28:52.179Z",
+      "preparedBy": "reserve-growth-agent",
+      "summary": "Move the BTC reserve from 500000 sats to 1000000 sats.",
+      "rationale": "The next reserve milestone is small, easy to verify, and keeps the 1,000,000,000 sats target moving through disclosed treasury actions.",
+      "proposedAction": "Executive Chairman sends 500000 sats (0.005 BTC), plus any required Bitcoin network fee, to reserve address bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk. After confirmation, rerun the transparency report and record the transaction id as evidence.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "No agent signs, broadcasts, or custodies the transaction.",
+        "Bitcoin network fee must be considered separately from the reserve amount.",
+        "The tranche must not be described as price support.",
+        "Post-execution evidence must include the Bitcoin transaction id and updated transparency report."
+      ],
+      "publicDisclosure": "Proposed reserve tranche for the long-term 1,000,000,000 sats milestone. No price guarantee, no redemption promise, and no market-support commitment.",
+      "evidence": [
+        {
+          "type": "transparency-report",
+          "url": "https://sata-project-reserve.github.io/sata/transparency/latest.json"
+        },
+        {
+          "type": "reserve-growth-plan",
+          "url": "https://sata-project-reserve.github.io/sata/reserve-growth-plan.json"
+        }
+      ]
     }
   ]
 }

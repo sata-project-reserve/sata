@@ -86,6 +86,8 @@ Use `public/reserve-growth-plan.json` as the machine-readable reserve growth pla
 
 Use `npm run ops:reserve-plan` to view current progress, remaining sats, next milestone, allowed funding routes, prohibited routes, and open treasury approvals.
 
+Use `npm run ops:reserve-draft-next-tranche` to prepare the next milestone reserve proposal for Executive Chairman review.
+
 Every reserve growth action must have:
 
 - Executive Chairman approval;

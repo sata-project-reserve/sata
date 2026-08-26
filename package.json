@@ -13,6 +13,8 @@
     "format": "prettier --check .",
     "ops:check": "node scripts/validate-executive-approvals.mjs",
     "ops:plan": "node scripts/executive-approval-agent.mjs plan",
+    "ops:reserve-check": "node scripts/validate-reserve-growth-plan.mjs",
+    "ops:reserve-draft-next-tranche": "node scripts/reserve-growth-agent.mjs draft-next-tranche",
     "ops:reserve-plan": "node scripts/reserve-growth-agent.mjs plan",
     "security:check": "node scripts/security-check.mjs",
     "social:check": "node scripts/validate-social-content.mjs",

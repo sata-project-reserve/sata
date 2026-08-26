@@ -70,6 +70,9 @@ jobs:
       - name: Validate executive approval queue
         run: npm run ops:check
 
+      - name: Validate reserve growth plan
+        run: npm run ops:reserve-check
+
       - name: Security check
         run: npm run security:check
 

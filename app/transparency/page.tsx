@@ -1,4 +1,5 @@
 import report from '@/public/transparency/latest.json';
+import reservePlan from '@/public/reserve-growth-plan.json';
 
 export const metadata = {
   title: 'SATA Reserve Token Transparency',
@@ -27,11 +28,37 @@ function totalCount(level: Check['level']) {
   return checks.filter((check) => check.level === level).length;
 }
 
+function formatSatsAsBtc(sats: bigint) {
+  const whole = sats / 100_000_000n;
+  const fraction = (sats % 100_000_000n).toString().padStart(8, '0').replace(/0+$/, '');
+  return fraction ? `${whole.toString()}.${fraction}` : whole.toString();
+}
+
+function formatPercentFromPpm(ppm: bigint) {
+  const hundredths = ppm / 100n;
+  const whole = hundredths / 100n;
+  const fraction = (hundredths % 100n).toString().padStart(2, '0').replace(/0+$/, '');
+  return fraction ? `${whole.toString()}.${fraction}` : whole.toString();
+}
+
 export default function TransparencyPage() {
   const bitcoinReserve = report.bitcoinReserve;
   const distribution = report.distribution;
   const liquidity = report.liquidity;
   const solana = report.solana;
+  const reserveTargetSats = BigInt(reservePlan.target.targetSats);
+  const currentReserveSats = BigInt(bitcoinReserve.reserveSats ?? '0');
+  const remainingReserveSats =
+    reserveTargetSats > currentReserveSats ? reserveTargetSats - currentReserveSats : 0n;
+  const reserveProgressPpm =
+    reserveTargetSats > 0n ? (currentReserveSats * 1_000_000n) / reserveTargetSats : 0n;
+  const reserveProgressPercent = formatPercentFromPpm(reserveProgressPpm);
+  const nextMilestone = reservePlan.milestones.find(
+    (milestone) => BigInt(milestone.sats) > currentReserveSats
+  );
+  const nextMilestoneSatsNeeded = nextMilestone
+    ? BigInt(nextMilestone.sats) - currentReserveSats
+    : 0n;
 
   return (
     <main className="public-page">
@@ -150,6 +177,32 @@ export default function TransparencyPage() {
           <div className="metric">
             <span>10 BTC Treasury Target</span>
             <strong>1,000,000,000 sats</strong>
+          </div>
+          <div className="metric">
+            <span>Remaining To 1B Sats</span>
+            <strong>
+              {remainingReserveSats.toString()} sats ({formatSatsAsBtc(remainingReserveSats)} BTC)
+            </strong>
+          </div>
+          <div className="metric">
+            <span>Next Reserve Milestone</span>
+            <strong>
+              {nextMilestone
+                ? `${nextMilestone.label}: ${nextMilestoneSatsNeeded.toString()} sats needed`
+                : 'target reached'}
+            </strong>
+          </div>
+        </div>
+        <div className="progress-block" aria-label="BTC reserve progress toward 1 billion sats">
+          <div className="progress-heading">
+            <span>Progress To 1,000,000,000 Sats</span>
+            <strong>{reserveProgressPercent}%</strong>
+          </div>
+          <div className="progress-track">
+            <div
+              className="progress-fill"
+              style={{ width: `${Math.min(Number(reserveProgressPpm) / 10000, 100)}%` }}
+            />
           </div>
         </div>
         <div className="proof-block">

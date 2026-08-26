@@ -5,7 +5,7 @@
     "handle": "SATAReserve",
     "profileUrl": "https://x.com/SATAReserve"
   },
-  "mode": "draft-only-until-human-approval",
+  "mode": "approved-only-automation",
   "sourceOfTruth": {
     "transparencyJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
     "socialAgentProfile": "https://sata-project-reserve.github.io/sata/social-agent-profile.json",
@@ -49,9 +49,12 @@
     },
     {
       "id": "transparency-service-offer",
-      "status": "ready-for-review",
+      "status": "approved",
       "type": "revenue",
-      "text": "SATA is offering transparency audits for crypto teams: authority checks, liquidity-lock review, reserve-claim review, and disclosure gaps.\n\nFirst offer: $50 audit.\n\nThis is not a redemption path, price target, or market-support promise. Locked status must be verified."
+      "requiresHumanApproval": true,
+      "approvedBy": "owner",
+      "approvedAtUtc": "2026-08-26T12:45:00Z",
+      "text": "SATA offers $50 transparency audits: authority, liquidity-lock, BTC reserve, and disclosure checks.\n\nThe BTC reserve is not a redemption promise or guaranteed price floor. Locked status must be verified.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit"
     },
     {
       "id": "gmgn-route-pending",

@@ -848,6 +848,7 @@ function buildHealthReport(report, history) {
 function buildSitemap(report) {
   const urls = [
     `${PUBLIC_BASE_URL}/`,
+    `${PUBLIC_BASE_URL}/services/transparency-audit`,
     report.source.transparencyPage,
     `${PUBLIC_BASE_URL}/transparency/history`,
     report.source.latestJson,

@@ -34,3 +34,13 @@ test('public transparency page publishes reserve proof status', async ({ page })
   await expect(page.getByText('LOCKED_BY_RAYDIUM_BURN_AND_EARN')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Founder And Distribution' })).toBeVisible();
 });
+
+test('transparency audit service page publishes offer and boundaries', async ({ page }) => {
+  await page.goto('/services/transparency-audit');
+  await expect(
+    page.getByRole('heading', { name: 'Transparency audits for crypto teams.' })
+  ).toBeVisible();
+  await expect(page.getByText('$50')).toBeVisible();
+  await expect(page.getByText('No price guarantee')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Contact @SATAReserve' })).toBeVisible();
+});

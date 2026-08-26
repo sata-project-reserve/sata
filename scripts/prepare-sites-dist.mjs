@@ -29,6 +29,7 @@ const metadataPolicy = readFileSync(join('docs', 'metadata-policy.md'), 'utf8');
 const hostingJson = readFileSync(join('.openai', 'hosting.json'), 'utf8');
 const report = JSON.parse(transparencyJson);
 const history = JSON.parse(transparencyHistoryJson);
+const revenuePlan = JSON.parse(revenueOperatingPlan);
 
 rmSync('dist', { recursive: true, force: true });
 mkdirSync(join('dist', 'server'), { recursive: true });
@@ -53,6 +54,7 @@ const projectProfile = ${JSON.stringify(projectProfile)};
 const metadataPolicy = ${JSON.stringify(metadataPolicy)};
 const transparencyHtml = ${JSON.stringify(buildTransparencyHtml(report))};
 const historyHtml = ${JSON.stringify(buildHistoryHtml(history))};
+const serviceHtml = ${JSON.stringify(buildServiceHtml(report, revenuePlan))};
 
 function buildMetadata(origin) {
   const assetBase = 'https://sata-project-reserve.github.io/sata';
@@ -156,6 +158,11 @@ export default {
     }
     if (url.pathname === '/transparency/history') {
       return new Response(historyHtml, {
+        headers: withCors({ 'content-type': 'text/html; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/services/transparency-audit') {
+      return new Response(serviceHtml, {
         headers: withCors({ 'content-type': 'text/html; charset=utf-8' })
       });
     }
@@ -389,6 +396,65 @@ function buildHistoryHtml(history) {
       <thead><tr><th>Observed UTC</th><th>BTC Sats</th><th>Founder</th><th>Pool SATA</th><th>Locked LP</th><th>Unlocked LP</th><th>Metadata</th><th>Evidence</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
+  </section>
+</main>
+</body>
+</html>`;
+}
+
+function buildServiceHtml(report, revenuePlan) {
+  const offers = revenuePlan.revenueStreams
+    .map(
+      (offer) => `<div class="metric"><span>${escapeHtml(offer.label)}</span><strong>$${escapeHtml(offer.priceUsd)}</strong><p>${escapeHtml(offer.deliverable)}</p></div>`
+    )
+    .join('');
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SATA Transparency Audit Service</title>
+  <style>
+    :root { color-scheme: light; --bg: #f6f7f9; --panel: #fff; --text: #111827; --muted: #5b6472; --line: #d9dee7; --accent: #0f766e; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { max-width: 1120px; margin: 0 auto; padding: 24px; display: grid; gap: 18px; }
+    h1 { margin: 0; font-size: clamp(38px, 7vw, 72px); line-height: 1; letter-spacing: 0; }
+    h2 { margin: 0; font-size: 24px; }
+    p { color: var(--muted); line-height: 1.6; }
+    a { color: #0b5f59; }
+    .hero { min-height: 54vh; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); gap: 18px; align-items: center; border-bottom: 1px solid var(--line); }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .metric { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 14px; }
+    .metric span { display: block; color: var(--muted); font-size: 13px; }
+    .metric strong { overflow-wrap: anywhere; }
+    .mark { width: min(180px, 48vw); aspect-ratio: 1; border: 1px solid var(--line); border-radius: 8px; object-fit: cover; background: #eef2f5; }
+    @media (max-width: 800px) { .hero, .grid { grid-template-columns: 1fr; } .hero { min-height: auto; padding-top: 16px; } }
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div>
+      <p><strong>SATA services</strong></p>
+      <h1>Transparency audits for crypto teams.</h1>
+      <p>SATA is packaging its own public reporting stack into compact audits and setup work for teams that want clearer authority, liquidity, reserve, and disclosure evidence.</p>
+      <p><a href="https://x.com/SATAReserve">Contact @SATAReserve</a> · <a href="/revenue-operating-plan.json">Operating plan</a> · <a href="/transparency">SATA transparency</a></p>
+    </div>
+    <div>
+      <img class="mark" src="/mainnet/sata-image.png" alt="SATA reserve token mark">
+      <div class="metric"><span>Current SATA Report</span><strong>${escapeHtml(report.status)}</strong></div>
+      <div class="metric"><span>Reserve Proof Status</span><strong>${escapeHtml(report.bitcoinReserve.status)}</strong></div>
+      <div class="metric"><span>LP Lock Status</span><strong>${escapeHtml(report.liquidity.lockStatus)}</strong></div>
+    </div>
+  </section>
+  <section>
+    <h2>Offer Menu</h2>
+    <div class="grid">${offers}</div>
+  </section>
+  <section class="metric">
+    <strong>Boundaries</strong>
+    <p>No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment. SATA does not sell fake engagement, raids, bots, or investor lists.</p>
   </section>
 </main>
 </body>

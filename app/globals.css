@@ -425,6 +425,94 @@ label {
   gap: 0.75rem;
 }
 
+.service-page {
+  gap: 1.25rem;
+}
+
+.service-hero {
+  min-height: 56vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: 1rem;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding: 2.5rem 0 2rem;
+}
+
+.service-copy {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.service-copy h1 {
+  margin: 0;
+  max-width: 780px;
+  font-size: clamp(2.2rem, 6vw, 4.8rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.service-copy p {
+  max-width: 680px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.service-proof {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.service-mark {
+  width: min(180px, 48vw);
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--panel-muted);
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.service-offer {
+  min-height: 190px;
+  display: grid;
+  gap: 0.65rem;
+  align-content: start;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  padding: 0.95rem;
+}
+
+.service-offer span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.service-offer strong {
+  font-size: 2rem;
+}
+
+.service-offer p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.service-checklist {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
 .history-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--line);
@@ -462,6 +550,17 @@ label {
   .public-hero {
     min-height: auto;
     grid-template-columns: 1fr;
+    padding-top: 1.5rem;
+  }
+
+  .service-hero,
+  .service-grid,
+  .service-checklist {
+    grid-template-columns: 1fr;
+  }
+
+  .service-hero {
+    min-height: auto;
     padding-top: 1.5rem;
   }
 }

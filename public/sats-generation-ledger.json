@@ -1,0 +1,90 @@
+{
+  "project": "SATA Reserve Token",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-08-26T13:00:00Z",
+  "mode": "sats-generation-ledger",
+  "objective": "Increase confirmed BTC reserve sats through legitimate revenue, grants, donations, and chairman-approved asset conversions.",
+  "target": {
+    "targetSats": "1000000000",
+    "currentReserveSats": "500000",
+    "remainingSats": "999500000",
+    "nextMilestoneSats": "1000000",
+    "nextMilestoneAdditionalSatsNeeded": "500000"
+  },
+  "unitEconomics": {
+    "primaryMetric": "confirmed BTC reserve sats",
+    "secondaryMetric": "received revenue awaiting chairman-approved allocation",
+    "defaultPostReceiptAllocationPercent": {
+      "btcReserve": 70,
+      "liquidity": 20,
+      "operatingBudget": 10
+    },
+    "conversionRule": "Do not estimate or promise sats before execution. Record actual BTC or sats received from the completed transaction."
+  },
+  "pipeline": [
+    {
+      "id": "first-transparency-audit-sale",
+      "source": "SATA transparency audit service",
+      "stage": "approved-for-outreach",
+      "offerId": "transparency-audit",
+      "targetRevenueUsd": "50",
+      "targetSats": "actual sats recorded after payment or conversion",
+      "nextAction": "Find one crypto team with unclear authority, liquidity, reserve, or disclosure claims and offer the $50 audit.",
+      "evidence": ["https://sata-project-reserve.github.io/sata/services/transparency-audit"]
+    },
+    {
+      "id": "first-transparency-setup-sale",
+      "source": "SATA transparency report setup",
+      "stage": "approved-for-outreach",
+      "offerId": "transparency-report-setup",
+      "targetRevenueUsd": "150",
+      "targetSats": "actual sats recorded after payment or conversion",
+      "nextAction": "Qualify prospects that need a public proof page and GitHub Actions report setup.",
+      "evidence": ["https://sata-project-reserve.github.io/sata/revenue-operating-plan.json"]
+    },
+    {
+      "id": "first-proof-dashboard-sale",
+      "source": "Full proof dashboard setup",
+      "stage": "qualified-only",
+      "offerId": "full-proof-dashboard",
+      "targetRevenueUsd": "300",
+      "targetSats": "actual sats recorded after payment or conversion",
+      "nextAction": "Offer only after a client asks for automated reporting beyond a simple audit.",
+      "evidence": ["https://sata-project-reserve.github.io/sata/revenue-operating-plan.json"]
+    }
+  ],
+  "receipts": [],
+  "allocations": [],
+  "requiredReceiptFields": [
+    "id",
+    "receivedAtUtc",
+    "source",
+    "currency",
+    "amount",
+    "transactionId",
+    "chairmanApprovedBy",
+    "deliverableUrl"
+  ],
+  "requiredAllocationFields": [
+    "id",
+    "receiptId",
+    "allocatedAtUtc",
+    "allocatedTo",
+    "currency",
+    "amount",
+    "actualSatsAdded",
+    "transactionId",
+    "transparencyReportUrl"
+  ],
+  "prohibitedRoutes": [
+    "wash trading or artificial volume",
+    "hidden selling into buyers",
+    "undisclosed paid promotion",
+    "fake engagement, bots, raids, or investor lists",
+    "unapproved token grants",
+    "unapproved liquidity removal",
+    "agent custody of private keys or seed phrases",
+    "promising price, profit, return, redemption, liquidity, or market support"
+  ],
+  "nextOperatingAction": "Close the first $50 transparency audit, collect payment only through chairman-approved instructions, deliver the audit, then propose a recorded allocation into BTC reserve sats."
+}

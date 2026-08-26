@@ -32,6 +32,8 @@ test('public transparency page publishes reserve proof status', async ({ page })
     page.getByText('Confirmed Reserve').locator('..').getByText('500000 sats')
   ).toBeVisible();
   await expect(page.getByText('LOCKED_BY_RAYDIUM_BURN_AND_EARN')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Sats Generation' })).toBeVisible();
+  await expect(page.getByText('confirmed BTC reserve sats')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Founder And Distribution' })).toBeVisible();
 });
 

@@ -3,10 +3,15 @@ import { join } from 'node:path';
 
 const PLAN_PATH = join('public', 'revenue-operating-plan.json');
 const QUEUE_PATH = join('public', 'executive-approval-queue.json');
+const LEDGER_PATH = join('public', 'sats-generation-ledger.json');
 
 const [, , command = 'plan'] = process.argv;
 
-const [plan, queue] = await Promise.all([readJson(PLAN_PATH), readJson(QUEUE_PATH)]);
+const [plan, queue, ledger] = await Promise.all([
+  readJson(PLAN_PATH),
+  readJson(QUEUE_PATH),
+  readJson(LEDGER_PATH)
+]);
 
 switch (command) {
   case 'plan':
@@ -35,6 +40,19 @@ function printPlan() {
           deliverable: stream.deliverable
         })),
         allocationPolicy: plan.allocationPolicy.postReceiptAllocationPercent,
+        satsGeneration: {
+          objective: ledger.objective,
+          currentReserveSats: ledger.target.currentReserveSats,
+          remainingSats: ledger.target.remainingSats,
+          openPipeline: ledger.pipeline.map((item) => ({
+            id: item.id,
+            stage: item.stage,
+            targetRevenueUsd: item.targetRevenueUsd,
+            nextAction: item.nextAction
+          })),
+          receipts: ledger.receipts.length,
+          allocations: ledger.allocations.length
+        },
         openRevenueApprovals: openRevenueApprovals.map((item) => ({
           id: item.id,
           status: item.status,

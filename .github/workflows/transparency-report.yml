@@ -14,6 +14,7 @@ on:
       - 'public/executive-approval-queue.json'
       - 'public/reserve-growth-plan.json'
       - 'public/revenue-operating-plan.json'
+      - 'public/sats-generation-ledger.json'
       - 'public/social-agent-profile.json'
       - 'public/social-agent-content-queue.json'
       - 'public/social-agent-monitoring-log.json'
@@ -78,6 +79,9 @@ jobs:
 
       - name: Validate revenue operating plan
         run: npm run ops:revenue-check
+
+      - name: Validate sats generation ledger
+        run: npm run ops:sats-check
 
       - name: Security check
         run: npm run security:check

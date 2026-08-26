@@ -18,6 +18,8 @@
     "ops:reserve-plan": "node scripts/reserve-growth-agent.mjs plan",
     "ops:revenue-check": "node scripts/validate-revenue-operating-plan.mjs",
     "ops:revenue-plan": "node scripts/revenue-agent.mjs plan",
+    "ops:sats-check": "node scripts/validate-sats-generation-ledger.mjs",
+    "ops:sats-plan": "node scripts/sats-generation-agent.mjs plan",
     "security:check": "node scripts/security-check.mjs",
     "social:check": "node scripts/validate-social-content.mjs",
     "social:agent": "node scripts/x-social-agent.mjs",

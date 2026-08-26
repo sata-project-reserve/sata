@@ -860,6 +860,7 @@ function buildSitemap(report) {
     `${PUBLIC_BASE_URL}/executive-approval-queue.json`,
     `${PUBLIC_BASE_URL}/reserve-growth-plan.json`,
     `${PUBLIC_BASE_URL}/revenue-operating-plan.json`,
+    `${PUBLIC_BASE_URL}/sats-generation-ledger.json`,
     report.source.healthJson,
     `${PUBLIC_BASE_URL}/mainnet/sata-metadata.json`
   ];

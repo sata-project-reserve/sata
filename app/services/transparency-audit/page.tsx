@@ -40,6 +40,9 @@ export default function TransparencyAuditServicePage() {
             <a className="button-link" href="https://x.com/SATAReserve">
               Contact @SATAReserve
             </a>
+            <a className="button-link" href="/sats-generation-ledger.json">
+              View Sats Ledger
+            </a>
             <a className="button-link" href="/revenue-operating-plan.json">
               View Operating Plan
             </a>

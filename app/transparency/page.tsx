@@ -1,5 +1,6 @@
 import report from '@/public/transparency/latest.json';
 import reservePlan from '@/public/reserve-growth-plan.json';
+import satsLedger from '@/public/sats-generation-ledger.json';
 
 export const metadata = {
   title: 'SATA Reserve Token Transparency',
@@ -59,6 +60,16 @@ export default function TransparencyPage() {
   const nextMilestoneSatsNeeded = nextMilestone
     ? BigInt(nextMilestone.sats) - currentReserveSats
     : 0n;
+  const openSatsPipeline = satsLedger.pipeline.filter((item) =>
+    ['approved-for-outreach', 'qualified-only', 'proposal-sent'].includes(item.stage)
+  );
+  const targetPipelineUsd = openSatsPipeline.reduce(
+    (total, item) => total + Number(item.targetRevenueUsd),
+    0
+  );
+  const receiptsAwaitingAllocation = satsLedger.receipts.filter(
+    (receipt) => !('allocatedAtUtc' in receipt)
+  );
 
   return (
     <main className="public-page">
@@ -216,6 +227,45 @@ export default function TransparencyPage() {
         <div className="notice">
           <strong>Proof validation</strong>
           <span>{bitcoinReserve.proofValidation?.detail ?? 'not checked'}</span>
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Sats Generation</h2>
+          <p>Operating pipeline for turning legitimate revenue into confirmed reserve sats.</p>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Primary Metric</span>
+            <strong>{satsLedger.unitEconomics.primaryMetric}</strong>
+          </div>
+          <div className="metric">
+            <span>Open Pipeline</span>
+            <strong>
+              {openSatsPipeline.length} items / ${targetPipelineUsd.toString()} target revenue
+            </strong>
+          </div>
+          <div className="metric">
+            <span>Receipts Awaiting Allocation</span>
+            <strong>{receiptsAwaitingAllocation.length}</strong>
+          </div>
+          <div className="metric">
+            <span>BTC Reserve Allocation Rule</span>
+            <strong>{satsLedger.unitEconomics.defaultPostReceiptAllocationPercent.btcReserve}%</strong>
+          </div>
+          <div className="metric">
+            <span>Next Sat-Positive Action</span>
+            <strong>{satsLedger.nextOperatingAction}</strong>
+          </div>
+          <div className="metric">
+            <span>Ledger</span>
+            <strong>
+              <a href={`${PUBLIC_BASE_URL}/sats-generation-ledger.json`}>
+                sats-generation-ledger.json
+              </a>
+            </strong>
+          </div>
         </div>
       </section>
 

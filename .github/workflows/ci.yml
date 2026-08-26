@@ -47,6 +47,9 @@ jobs:
       - name: Validate sats generation ledger
         run: npm run ops:sats-check
 
+      - name: Validate sats invoice queue
+        run: npm run ops:invoice-check
+
       - name: Security check
         run: npm run security:check
 

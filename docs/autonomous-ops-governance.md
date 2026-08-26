@@ -116,6 +116,7 @@ Responsibilities:
 - record scope, deliverables, payment evidence, and allocation evidence;
 - prepare revenue-to-reserve and revenue-to-liquidity proposals after funds are received;
 - keep the sats-generation ledger current as the primary operating scoreboard;
+- prepare exact-sats invoice records for chairman approval before any customer receives payment instructions;
 - keep revenue language separate from SATA market-price claims.
 
 Authority limits:
@@ -137,6 +138,7 @@ Authority limits:
 8. Use `public/reserve-growth-plan.json` as the machine-readable operating plan for the 1,000,000,000 sats target.
 9. Use `public/revenue-operating-plan.json` as the machine-readable plan for revenue-first reserve growth.
 10. Use `public/sats-generation-ledger.json` as the active pipeline, receipt, and allocation ledger for generating more sats.
+11. Use `public/sats-invoice-queue.json` for chairman-approved direct-reserve BTC invoices.
 
 ## Required Human Gates
 
@@ -159,6 +161,8 @@ Reserve growth is documented in `docs/bitcoin-treasury-policy.md`. Run `npm run 
 Revenue operations are defined in `public/revenue-operating-plan.json`. Run `npm run ops:revenue-plan` to view the active revenue cycle and `npm run ops:revenue-check` to validate the operating rules.
 
 Sats generation is tracked in `public/sats-generation-ledger.json`. Run `npm run ops:sats-plan` to view the current sat-positive pipeline and `npm run ops:sats-check` to validate receipt and allocation records.
+
+Invoice controls are tracked in `public/sats-invoice-queue.json`. Run `npm run ops:invoice-plan` to view invoice templates and `npm run ops:invoice-check` to validate quote and custody rules.
 
 ## Public Target Language
 

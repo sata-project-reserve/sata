@@ -25,6 +25,7 @@ const socialAgentMonitoringLog = readFileSync(
 );
 const revenueOperatingPlan = readFileSync(join('public', 'revenue-operating-plan.json'), 'utf8');
 const satsGenerationLedger = readFileSync(join('public', 'sats-generation-ledger.json'), 'utf8');
+const satsInvoiceQueue = readFileSync(join('public', 'sats-invoice-queue.json'), 'utf8');
 const projectProfile = readFileSync(join('public', 'project-profile.json'), 'utf8');
 const metadataPolicy = readFileSync(join('docs', 'metadata-policy.md'), 'utf8');
 const hostingJson = readFileSync(join('.openai', 'hosting.json'), 'utf8');
@@ -52,6 +53,7 @@ const socialAgentContentQueue = ${JSON.stringify(socialAgentContentQueue)};
 const socialAgentMonitoringLog = ${JSON.stringify(socialAgentMonitoringLog)};
 const revenueOperatingPlan = ${JSON.stringify(revenueOperatingPlan)};
 const satsGenerationLedger = ${JSON.stringify(satsGenerationLedger)};
+const satsInvoiceQueue = ${JSON.stringify(satsInvoiceQueue)};
 const projectProfile = ${JSON.stringify(projectProfile)};
 const metadataPolicy = ${JSON.stringify(metadataPolicy)};
 const transparencyHtml = ${JSON.stringify(buildTransparencyHtml(report))};
@@ -225,6 +227,11 @@ export default {
     }
     if (url.pathname === '/sats-generation-ledger.json') {
       return new Response(satsGenerationLedger, {
+        headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/sats-invoice-queue.json') {
+      return new Response(satsInvoiceQueue, {
         headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
       });
     }

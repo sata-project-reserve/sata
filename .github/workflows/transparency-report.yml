@@ -15,6 +15,7 @@ on:
       - 'public/reserve-growth-plan.json'
       - 'public/revenue-operating-plan.json'
       - 'public/sats-generation-ledger.json'
+      - 'public/sats-invoice-queue.json'
       - 'public/social-agent-profile.json'
       - 'public/social-agent-content-queue.json'
       - 'public/social-agent-monitoring-log.json'
@@ -82,6 +83,9 @@ jobs:
 
       - name: Validate sats generation ledger
         run: npm run ops:sats-check
+
+      - name: Validate sats invoice queue
+        run: npm run ops:invoice-check
 
       - name: Security check
         run: npm run security:check

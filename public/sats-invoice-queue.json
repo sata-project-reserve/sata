@@ -1,0 +1,47 @@
+{
+  "project": "SATA Reserve Token",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-08-26T19:05:00Z",
+  "mode": "chairman-approved-direct-reserve-invoices",
+  "purpose": "Convert legitimate service revenue into confirmed BTC reserve sats without agent custody.",
+  "paymentPolicy": {
+    "preferredSettlement": "BTC directly to the published SATA reserve address",
+    "reserveAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
+    "quoteRule": "Each invoice must include an exact sats amount, quote source, quote timestamp, and expiration before it is sent to a customer.",
+    "custodyRule": "No agent may receive funds, hold keys, or redirect payments away from the published reserve address.",
+    "deliveryRule": "Deliver service work only after payment confirmation or chairman-approved escrow terms."
+  },
+  "invoices": [
+    {
+      "id": "invoice-template-transparency-audit-50",
+      "status": "template",
+      "offerId": "transparency-audit",
+      "customer": "to-be-filled-after-qualified-lead",
+      "usdPrice": "50",
+      "settlementCurrency": "BTC",
+      "paymentAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
+      "amountSats": "quote-required-before-sending",
+      "quoteSource": "quote-required-before-sending",
+      "quoteCreatedAtUtc": "quote-required-before-sending",
+      "quoteExpiresAtUtc": "quote-required-before-sending",
+      "chairmanApprovalRequired": true,
+      "deliverable": "One-page public-readiness audit covering token authorities, liquidity lock, reserve claims, and disclosure gaps.",
+      "postPaymentActions": [
+        "wait for Bitcoin transaction confirmation",
+        "record transaction id in sats-generation-ledger.json receipts",
+        "deliver audit artifact",
+        "regenerate transparency report so confirmed reserve sats update publicly"
+      ],
+      "publicDisclosure": "Service revenue may be paid directly into the BTC reserve. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment."
+    }
+  ],
+  "prohibitedInvoicePatterns": [
+    "agent custody",
+    "private keys or seed phrases",
+    "payment to unapproved address",
+    "missing chairman approval",
+    "undisclosed paid promotion",
+    "fake engagement, bots, raids, or investor lists",
+    "price, profit, return, redemption, liquidity, or market-support promise"
+  ]
+}

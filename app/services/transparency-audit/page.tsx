@@ -43,6 +43,9 @@ export default function TransparencyAuditServicePage() {
             <a className="button-link" href="/sats-generation-ledger.json">
               View Sats Ledger
             </a>
+            <a className="button-link" href="/sats-invoice-queue.json">
+              View Invoice Queue
+            </a>
             <a className="button-link" href="/revenue-operating-plan.json">
               View Operating Plan
             </a>
@@ -107,6 +110,27 @@ export default function TransparencyAuditServicePage() {
               <strong>{check}</strong>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Payment Path</h2>
+          <p>Qualified customers receive an exact sats invoice after chairman approval.</p>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Preferred Settlement</span>
+            <strong>BTC to the published reserve address</strong>
+          </div>
+          <div className="metric">
+            <span>Quote Rule</span>
+            <strong>Exact sats, source, timestamp, and expiration required</strong>
+          </div>
+          <div className="metric">
+            <span>Custody Rule</span>
+            <strong>No agent receives funds or controls keys</strong>
+          </div>
         </div>
       </section>
 

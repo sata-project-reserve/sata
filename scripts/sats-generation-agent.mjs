@@ -4,12 +4,14 @@ import { join } from 'node:path';
 const LEDGER_PATH = join('public', 'sats-generation-ledger.json');
 const REPORT_PATH = join('public', 'transparency', 'latest.json');
 const REVENUE_PLAN_PATH = join('public', 'revenue-operating-plan.json');
+const INVOICE_QUEUE_PATH = join('public', 'sats-invoice-queue.json');
 
 const [, , command = 'plan'] = process.argv;
-const [ledger, report, revenuePlan] = await Promise.all([
+const [ledger, report, revenuePlan, invoiceQueue] = await Promise.all([
   readJson(LEDGER_PATH),
   readJson(REPORT_PATH),
-  readJson(REVENUE_PLAN_PATH)
+  readJson(REVENUE_PLAN_PATH),
+  readJson(INVOICE_QUEUE_PATH)
 ]);
 
 switch (command) {
@@ -55,6 +57,15 @@ function printPlan() {
         nextAction: nextPipelineItem?.nextAction ?? ledger.nextOperatingAction,
         receiptsAwaitingAllocation: receipts.filter((receipt) => !receipt.allocatedAtUtc).length,
         recordedAllocations: allocations.length,
+        invoiceTemplates: (invoiceQueue.invoices ?? [])
+          .filter((invoice) => invoice.status === 'template')
+          .map((invoice) => ({
+            id: invoice.id,
+            offerId: invoice.offerId,
+            usdPrice: invoice.usdPrice,
+            settlementCurrency: invoice.settlementCurrency,
+            paymentAddress: invoice.paymentAddress
+          })),
         boundary:
           'The agent can create pipeline and evidence records. The Executive Chairman must approve payment instructions, conversions, and any BTC reserve movement.'
       },

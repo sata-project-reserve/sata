@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - '.github/workflows/transparency-report.yml'
+      - '.github/ISSUE_TEMPLATE/transparency-audit-intake.yml'
       - 'app/**'
       - 'components/**'
       - 'lib/**'

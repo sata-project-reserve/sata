@@ -42,6 +42,9 @@ export default function TransparencyAuditServicePage() {
             for teams that want clearer authority, liquidity, reserve, and disclosure evidence.
           </p>
           <div className="inline-actions">
+            <a className="button-link" href={deliveryKit.intakeUrl}>
+              Request Audit
+            </a>
             <a className="button-link" href="https://x.com/SATAReserve">
               Contact @SATAReserve
             </a>

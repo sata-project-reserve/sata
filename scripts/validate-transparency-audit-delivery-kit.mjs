@@ -5,6 +5,10 @@ const kit = JSON.parse(readFileSync(join('public', 'transparency-audit-delivery-
 const revenuePlan = JSON.parse(readFileSync(join('public', 'revenue-operating-plan.json'), 'utf8'));
 const invoiceQueue = JSON.parse(readFileSync(join('public', 'sats-invoice-queue.json'), 'utf8'));
 const prospectPipeline = JSON.parse(readFileSync(join('public', 'sats-prospect-pipeline.json'), 'utf8'));
+const intakeForm = readFileSync(
+  join('.github', 'ISSUE_TEMPLATE', 'transparency-audit-intake.yml'),
+  'utf8'
+);
 const findings = [];
 
 if (kit.schemaVersion !== 1) findings.push('schemaVersion must be 1');
@@ -31,6 +35,9 @@ if (prospectPipeline.primaryOfferId !== kit.primaryOfferId) {
 if (!/chairman-approved BTC invoices/i.test(kit.paymentDependency ?? '')) {
   findings.push('paymentDependency must require chairman-approved BTC invoices');
 }
+if (!/transparency-audit-intake\.yml/i.test(kit.intakeUrl ?? '')) {
+  findings.push('intakeUrl must point to the transparency audit intake issue form');
+}
 
 for (const field of [
   'projectName',
@@ -45,6 +52,19 @@ for (const field of [
   if (!(kit.requiredClientIntake ?? []).includes(field)) {
     findings.push(`requiredClientIntake missing ${field}`);
   }
+  if (!new RegExp(`id:\\s*${field}\\b`).test(intakeForm)) {
+    findings.push(`intake issue form missing field ${field}`);
+  }
+}
+
+for (const required of [
+  /SATA does not provide price promotion/i,
+  /market-making/i,
+  /investor targeting/i,
+  /fake engagement/i,
+  /Executive Chairman approval/i
+]) {
+  if (!required.test(intakeForm)) findings.push(`intake issue form missing ${required}`);
 }
 
 const sections = kit.deliverableTemplate?.sections ?? [];

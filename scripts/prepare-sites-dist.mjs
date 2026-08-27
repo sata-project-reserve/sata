@@ -475,7 +475,7 @@ function buildServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit) {
       <p><strong>SATA services</strong></p>
       <h1>Transparency audits for crypto teams.</h1>
       <p>SATA is packaging its own public reporting stack into compact audits and setup work for teams that want clearer authority, liquidity, reserve, and disclosure evidence.</p>
-      <p><a href="https://x.com/SATAReserve">Contact @SATAReserve</a> · <a href="/revenue-operating-plan.json">Operating plan</a> · <a href="/sats-invoice-queue.json">Invoice queue</a> · <a href="/sats-prospect-pipeline.json">Prospect pipeline</a> · <a href="/transparency">SATA transparency</a></p>
+      <p><a href="${escapeHtml(deliveryKit.intakeUrl)}">Request audit</a> · <a href="https://x.com/SATAReserve">Contact @SATAReserve</a> · <a href="/revenue-operating-plan.json">Operating plan</a> · <a href="/sats-invoice-queue.json">Invoice queue</a> · <a href="/sats-prospect-pipeline.json">Prospect pipeline</a> · <a href="/transparency-audit-delivery-kit.json">Delivery kit JSON</a> · <a href="/transparency">SATA transparency</a></p>
     </div>
     <div>
       <img class="mark" src="/mainnet/sata-image.png" alt="SATA reserve token mark">

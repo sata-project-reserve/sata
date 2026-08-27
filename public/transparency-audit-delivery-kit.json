@@ -8,6 +8,7 @@
   "priceUsd": "50",
   "paymentDependency": "Use sats-invoice-queue.json for chairman-approved BTC invoices before delivery.",
   "prospectDependency": "Use sats-prospect-pipeline.json to qualify evidence-backed buyers before outreach.",
+  "intakeUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml",
   "requiredClientIntake": [
     "projectName",
     "network",

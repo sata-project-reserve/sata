@@ -1,0 +1,98 @@
+name: Transparency Audit Intake
+description: Request a SATA transparency audit or public reporting setup.
+title: "[Transparency Audit]: "
+labels: ["transparency-audit", "service-intake"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form only for transparency audit or public reporting setup requests.
+
+        SATA does not provide price promotion, market-making, investor targeting, fake engagement, bots, raids, legal advice, tax advice, or investment advice.
+  - type: input
+    id: projectName
+    attributes:
+      label: Project name
+      description: Public project, token, or organization name.
+    validations:
+      required: true
+  - type: dropdown
+    id: network
+    attributes:
+      label: Network
+      options:
+        - Solana
+        - Ethereum
+        - BNB Chain
+        - Base
+        - Bitcoin
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: tokenOrContractAddress
+    attributes:
+      label: Token or contract address
+      description: Include the mint, token, or contract address to review.
+    validations:
+      required: true
+  - type: input
+    id: publicProjectUrl
+    attributes:
+      label: Public project URL
+      description: Website, docs, or public proof page.
+    validations:
+      required: true
+  - type: input
+    id: publicProfileUrl
+    attributes:
+      label: Public profile URL
+      description: X, GitHub, Telegram announcement channel, or other public profile.
+    validations:
+      required: true
+  - type: textarea
+    id: claimsToReview
+    attributes:
+      label: Claims to review
+      description: List reserve, supply, authority, liquidity, lock, ownership, or disclosure claims you want checked.
+    validations:
+      required: true
+  - type: dropdown
+    id: requestedDeliverableVisibility
+    attributes:
+      label: Requested deliverable visibility
+      options:
+        - Private draft first, public summary only after approval
+        - Public summary allowed after delivery
+        - Private only
+    validations:
+      required: true
+  - type: dropdown
+    id: paymentStatus
+    attributes:
+      label: Payment status
+      options:
+        - Need chairman-approved BTC invoice
+        - Invoice requested
+        - Paid and transaction id will be provided
+        - Escrow terms requested
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence links
+      description: Add block explorers, lock records, reserve proofs, repositories, or public posts.
+    validations:
+      required: false
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      options:
+        - label: I understand this is a public-evidence review, not legal, tax, or investment advice.
+          required: true
+        - label: I understand SATA does not provide price guarantees, redemption promises, market-support commitments, or trading recommendations.
+          required: true
+        - label: I understand payment instructions require Executive Chairman approval before they are sent.
+          required: true

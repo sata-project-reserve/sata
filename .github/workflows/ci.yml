@@ -50,6 +50,9 @@ jobs:
       - name: Validate sats invoice queue
         run: npm run ops:invoice-check
 
+      - name: Validate sats prospect pipeline
+        run: npm run ops:prospect-check
+
       - name: Security check
         run: npm run security:check
 

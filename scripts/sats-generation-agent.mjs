@@ -5,13 +5,15 @@ const LEDGER_PATH = join('public', 'sats-generation-ledger.json');
 const REPORT_PATH = join('public', 'transparency', 'latest.json');
 const REVENUE_PLAN_PATH = join('public', 'revenue-operating-plan.json');
 const INVOICE_QUEUE_PATH = join('public', 'sats-invoice-queue.json');
+const PROSPECT_PIPELINE_PATH = join('public', 'sats-prospect-pipeline.json');
 
 const [, , command = 'plan'] = process.argv;
-const [ledger, report, revenuePlan, invoiceQueue] = await Promise.all([
+const [ledger, report, revenuePlan, invoiceQueue, prospectPipeline] = await Promise.all([
   readJson(LEDGER_PATH),
   readJson(REPORT_PATH),
   readJson(REVENUE_PLAN_PATH),
-  readJson(INVOICE_QUEUE_PATH)
+  readJson(INVOICE_QUEUE_PATH),
+  readJson(PROSPECT_PIPELINE_PATH)
 ]);
 
 switch (command) {
@@ -28,6 +30,7 @@ function printPlan() {
   const remainingSats = targetSats > currentSats ? targetSats - currentSats : 0n;
   const receipts = ledger.receipts ?? [];
   const allocations = ledger.allocations ?? [];
+  const prospects = prospectPipeline.prospects ?? [];
   const openPipeline = (ledger.pipeline ?? []).filter((item) =>
     ['approved-for-outreach', 'qualified-only', 'proposal-sent'].includes(item.stage)
   );
@@ -55,6 +58,8 @@ function printPlan() {
           nextAction: item.nextAction
         })),
         nextAction: nextPipelineItem?.nextAction ?? ledger.nextOperatingAction,
+        prospectNextAction: prospectPipeline.nextOperatingAction,
+        activeProspects: prospects.length,
         receiptsAwaitingAllocation: receipts.filter((receipt) => !receipt.allocatedAtUtc).length,
         recordedAllocations: allocations.length,
         invoiceTemplates: (invoiceQueue.invoices ?? [])

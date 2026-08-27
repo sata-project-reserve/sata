@@ -2,6 +2,7 @@ import Image from 'next/image';
 
 import report from '@/public/transparency/latest.json';
 import revenuePlan from '@/public/revenue-operating-plan.json';
+import prospectPipeline from '@/public/sats-prospect-pipeline.json';
 
 export const metadata = {
   title: 'SATA Transparency Audit Service',
@@ -16,6 +17,9 @@ const setupOffer = revenuePlan.revenueStreams.find(
 const dashboardOffer = revenuePlan.revenueStreams.find(
   (stream) => stream.id === 'full-proof-dashboard'
 );
+const primaryProfile = prospectPipeline.idealCustomerProfile[0];
+const primaryBuyerDescription =
+  primaryProfile?.description ?? 'Crypto teams that need public transparency evidence review.';
 
 const checks = [
   'Mint, freeze, and metadata authority review',
@@ -45,6 +49,9 @@ export default function TransparencyAuditServicePage() {
             </a>
             <a className="button-link" href="/sats-invoice-queue.json">
               View Invoice Queue
+            </a>
+            <a className="button-link" href="/sats-prospect-pipeline.json">
+              View Prospect Pipeline
             </a>
             <a className="button-link" href="/revenue-operating-plan.json">
               View Operating Plan
@@ -130,6 +137,27 @@ export default function TransparencyAuditServicePage() {
           <div className="metric">
             <span>Custody Rule</span>
             <strong>No agent receives funds or controls keys</strong>
+          </div>
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Sales Pipeline</h2>
+          <p>{prospectPipeline.nextOperatingAction}</p>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Primary Buyer</span>
+            <strong>{primaryBuyerDescription}</strong>
+          </div>
+          <div className="metric">
+            <span>First Deal Target</span>
+            <strong>${prospectPipeline.target.firstClosedDealUsd}</strong>
+          </div>
+          <div className="metric">
+            <span>Outreach Limit</span>
+            <strong>{prospectPipeline.dailyCadence.outreachLimit} approved contacts per day</strong>
           </div>
         </div>
       </section>

@@ -1,0 +1,90 @@
+{
+  "project": "SATA Reserve Token",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-08-26T20:10:00Z",
+  "mode": "service-revenue-prospect-pipeline",
+  "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
+  "activeCycleId": "revenue-cycle-001",
+  "primaryOfferId": "transparency-audit",
+  "target": {
+    "firstClosedDealUsd": "50",
+    "cycleClosedRevenueUsd": "300",
+    "reserveTargetSats": "1000000000"
+  },
+  "idealCustomerProfile": [
+    {
+      "id": "new-token-team-with-public-claims",
+      "description": "Crypto teams that publish claims about reserves, supply controls, liquidity locks, or safety but do not present clean public evidence.",
+      "bestOfferId": "transparency-audit",
+      "qualificationSignals": [
+        "public token address or contract",
+        "public website, X account, or GitHub",
+        "authority, liquidity, reserve, or disclosure claim that can be independently reviewed",
+        "founder or operator can approve a $50 audit"
+      ]
+    },
+    {
+      "id": "team-needing-report-setup",
+      "description": "Teams that already want public reporting but need a lightweight GitHub or static-page implementation.",
+      "bestOfferId": "transparency-report-setup",
+      "qualificationSignals": [
+        "wants public JSON or Markdown reports",
+        "can provide token, liquidity, reserve, and ownership inputs",
+        "accepts explicit risk disclosures",
+        "can approve milestone scope before work starts"
+      ]
+    }
+  ],
+  "leadStages": [
+    "identified",
+    "qualified",
+    "chairman-review",
+    "outreach-approved",
+    "contacted",
+    "invoice-requested",
+    "paid",
+    "delivered",
+    "closed-lost"
+  ],
+  "requiredLeadFields": [
+    "id",
+    "stage",
+    "source",
+    "publicProfileUrl",
+    "projectUrl",
+    "observedClaim",
+    "recommendedOfferId",
+    "chairmanApprovedBeforeOutreach",
+    "evidence"
+  ],
+  "prospects": [],
+  "approvedOutreachTemplates": [
+    {
+      "id": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "channel": "public-dm-or-email",
+      "text": "Hey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked."
+    },
+    {
+      "id": "report-setup-qualified-follow-up",
+      "offerId": "transparency-report-setup",
+      "channel": "public-dm-or-email",
+      "text": "If you want the audit findings turned into a public proof page, SATA can set up a simple transparency report workflow after scope approval. It must include explicit risk language: no price guarantee, no redemption promise, and no market-support commitment."
+    }
+  ],
+  "qualificationRules": [
+    "Prefer operators who need evidence review or reporting setup, not people asking for pumps or paid hype.",
+    "Reject requests for bots, fake engagement, raids, investor lists, guaranteed buyers, or price predictions.",
+    "Do not contact a prospect unless a public project URL or token address is recorded.",
+    "Do not send an invoice unless the chairman approves the prospect, quote, amount, address, and scope.",
+    "Record payment only when funds arrive at the published reserve address or another chairman-approved address."
+  ],
+  "dailyCadence": {
+    "identifyProspects": 10,
+    "qualifyProspects": 5,
+    "chairmanReviewBatchSize": 3,
+    "outreachLimit": 3,
+    "followUpAfterHours": 48
+  },
+  "nextOperatingAction": "Identify ten crypto teams with public but weakly evidenced authority, liquidity, reserve, or disclosure claims; record only evidence-backed prospects for chairman review."
+}

@@ -26,12 +26,14 @@ const socialAgentMonitoringLog = readFileSync(
 const revenueOperatingPlan = readFileSync(join('public', 'revenue-operating-plan.json'), 'utf8');
 const satsGenerationLedger = readFileSync(join('public', 'sats-generation-ledger.json'), 'utf8');
 const satsInvoiceQueue = readFileSync(join('public', 'sats-invoice-queue.json'), 'utf8');
+const satsProspectPipeline = readFileSync(join('public', 'sats-prospect-pipeline.json'), 'utf8');
 const projectProfile = readFileSync(join('public', 'project-profile.json'), 'utf8');
 const metadataPolicy = readFileSync(join('docs', 'metadata-policy.md'), 'utf8');
 const hostingJson = readFileSync(join('.openai', 'hosting.json'), 'utf8');
 const report = JSON.parse(transparencyJson);
 const history = JSON.parse(transparencyHistoryJson);
 const revenuePlan = JSON.parse(revenueOperatingPlan);
+const prospectPipeline = JSON.parse(satsProspectPipeline);
 
 rmSync('dist', { recursive: true, force: true });
 mkdirSync(join('dist', 'server'), { recursive: true });
@@ -54,11 +56,12 @@ const socialAgentMonitoringLog = ${JSON.stringify(socialAgentMonitoringLog)};
 const revenueOperatingPlan = ${JSON.stringify(revenueOperatingPlan)};
 const satsGenerationLedger = ${JSON.stringify(satsGenerationLedger)};
 const satsInvoiceQueue = ${JSON.stringify(satsInvoiceQueue)};
+const satsProspectPipeline = ${JSON.stringify(satsProspectPipeline)};
 const projectProfile = ${JSON.stringify(projectProfile)};
 const metadataPolicy = ${JSON.stringify(metadataPolicy)};
 const transparencyHtml = ${JSON.stringify(buildTransparencyHtml(report))};
 const historyHtml = ${JSON.stringify(buildHistoryHtml(history))};
-const serviceHtml = ${JSON.stringify(buildServiceHtml(report, revenuePlan))};
+const serviceHtml = ${JSON.stringify(buildServiceHtml(report, revenuePlan, prospectPipeline))};
 
 function buildMetadata(origin) {
   const assetBase = 'https://sata-project-reserve.github.io/sata';
@@ -235,6 +238,11 @@ export default {
         headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
       });
     }
+    if (url.pathname === '/sats-prospect-pipeline.json') {
+      return new Response(satsProspectPipeline, {
+        headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
+      });
+    }
     if (url.pathname === '/project-profile.json') {
       return new Response(projectProfile, {
         headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
@@ -247,7 +255,7 @@ export default {
     }
     if (url.pathname === '/') {
       return new Response(
-        '<!doctype html><title>SATA Reserve Token</title><h1>SATA Reserve Token</h1><p>Proof over promises. Temporary transparency and launch-app surface while the official SATA website is being built. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/transparency/history">history</a></li><li><a href="/transparency/history.json">history.json</a></li><li><a href="/health.json">health.json</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="/docs/metadata-policy.md">metadata-policy.md</a></li><li><a href="https://github.com/sata-project-reserve/sata">GitHub repository</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.png">sata-image.png</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/sata-x-header.png">sata-x-header.png</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
+        '<!doctype html><title>SATA Reserve Token</title><h1>SATA Reserve Token</h1><p>Proof over promises. Temporary transparency and launch-app surface while the official SATA website is being built. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/transparency/history">history</a></li><li><a href="/transparency/history.json">history.json</a></li><li><a href="/health.json">health.json</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="/revenue-operating-plan.json">revenue-operating-plan.json</a></li><li><a href="/sats-generation-ledger.json">sats-generation-ledger.json</a></li><li><a href="/sats-invoice-queue.json">sats-invoice-queue.json</a></li><li><a href="/sats-prospect-pipeline.json">sats-prospect-pipeline.json</a></li><li><a href="/docs/metadata-policy.md">metadata-policy.md</a></li><li><a href="https://github.com/sata-project-reserve/sata">GitHub repository</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.png">sata-image.png</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/sata-x-header.png">sata-x-header.png</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
         { headers: withCors({ 'content-type': 'text/html; charset=utf-8' }) }
       );
     }
@@ -416,12 +424,15 @@ function buildHistoryHtml(history) {
 </html>`;
 }
 
-function buildServiceHtml(report, revenuePlan) {
+function buildServiceHtml(report, revenuePlan, prospectPipeline) {
   const offers = revenuePlan.revenueStreams
     .map(
       (offer) => `<div class="metric"><span>${escapeHtml(offer.label)}</span><strong>$${escapeHtml(offer.priceUsd)}</strong><p>${escapeHtml(offer.deliverable)}</p></div>`
     )
     .join('');
+  const firstProfile = prospectPipeline.idealCustomerProfile[0];
+  const primaryBuyerDescription =
+    firstProfile?.description ?? 'Crypto teams that need public transparency evidence review.';
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -453,7 +464,7 @@ function buildServiceHtml(report, revenuePlan) {
       <p><strong>SATA services</strong></p>
       <h1>Transparency audits for crypto teams.</h1>
       <p>SATA is packaging its own public reporting stack into compact audits and setup work for teams that want clearer authority, liquidity, reserve, and disclosure evidence.</p>
-      <p><a href="https://x.com/SATAReserve">Contact @SATAReserve</a> · <a href="/revenue-operating-plan.json">Operating plan</a> · <a href="/transparency">SATA transparency</a></p>
+      <p><a href="https://x.com/SATAReserve">Contact @SATAReserve</a> · <a href="/revenue-operating-plan.json">Operating plan</a> · <a href="/sats-invoice-queue.json">Invoice queue</a> · <a href="/sats-prospect-pipeline.json">Prospect pipeline</a> · <a href="/transparency">SATA transparency</a></p>
     </div>
     <div>
       <img class="mark" src="/mainnet/sata-image.png" alt="SATA reserve token mark">
@@ -465,6 +476,11 @@ function buildServiceHtml(report, revenuePlan) {
   <section>
     <h2>Offer Menu</h2>
     <div class="grid">${offers}</div>
+  </section>
+  <section class="metric">
+    <h2>Sales Pipeline</h2>
+    <p>${escapeHtml(prospectPipeline.nextOperatingAction)}</p>
+    <p><strong>Primary buyer:</strong> ${escapeHtml(primaryBuyerDescription)}</p>
   </section>
   <section class="metric">
     <strong>Boundaries</strong>

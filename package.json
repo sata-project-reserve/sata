@@ -22,6 +22,8 @@
     "ops:sats-plan": "node scripts/sats-generation-agent.mjs plan",
     "ops:invoice-check": "node scripts/validate-sats-invoice-queue.mjs",
     "ops:invoice-plan": "node scripts/sats-invoice-agent.mjs plan",
+    "ops:prospect-check": "node scripts/validate-sats-prospect-pipeline.mjs",
+    "ops:prospect-plan": "node scripts/sats-prospect-agent.mjs plan",
     "security:check": "node scripts/security-check.mjs",
     "social:check": "node scripts/validate-social-content.mjs",
     "social:agent": "node scripts/x-social-agent.mjs",

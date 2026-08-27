@@ -139,6 +139,7 @@ Authority limits:
 9. Use `public/revenue-operating-plan.json` as the machine-readable plan for revenue-first reserve growth.
 10. Use `public/sats-generation-ledger.json` as the active pipeline, receipt, and allocation ledger for generating more sats.
 11. Use `public/sats-invoice-queue.json` for chairman-approved direct-reserve BTC invoices.
+12. Use `public/sats-prospect-pipeline.json` for evidence-backed service prospecting before outreach.
 
 ## Required Human Gates
 
@@ -163,6 +164,8 @@ Revenue operations are defined in `public/revenue-operating-plan.json`. Run `npm
 Sats generation is tracked in `public/sats-generation-ledger.json`. Run `npm run ops:sats-plan` to view the current sat-positive pipeline and `npm run ops:sats-check` to validate receipt and allocation records.
 
 Invoice controls are tracked in `public/sats-invoice-queue.json`. Run `npm run ops:invoice-plan` to view invoice templates and `npm run ops:invoice-check` to validate quote and custody rules.
+
+Prospect controls are tracked in `public/sats-prospect-pipeline.json`. Run `npm run ops:prospect-plan` to view buyer segments and daily cadence, and `npm run ops:prospect-check` to validate outreach boundaries.
 
 ## Public Target Language
 

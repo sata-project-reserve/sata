@@ -24,15 +24,34 @@ Run:
 
 `npm run ops:notify`
 
-to text the Executive Chairman about new items awaiting review. The notifier uses Textbelt
-and requires:
+to message the Executive Chairman about new items awaiting review. The default notifier
+uses Twilio WhatsApp and requires:
 
+- `EXECUTIVE_APPROVAL_CHANNEL=whatsapp`;
+- `EXECUTIVE_APPROVAL_WHATSAPP`;
+- `TWILIO_ACCOUNT_SID`;
+- `TWILIO_AUTH_TOKEN`;
+- `TWILIO_WHATSAPP_FROM`.
+
+For quick testing, use the Twilio WhatsApp sandbox sender:
+
+`TWILIO_WHATSAPP_FROM=whatsapp:+14155238886`
+
+The chairman must first join the sandbox from WhatsApp using the join code shown
+in Twilio Console. Sandbox/free-form WhatsApp messages work inside the 24-hour
+customer-service window after the chairman messages the sandbox. For production
+or out-of-session notifications, set `TWILIO_WHATSAPP_CONTENT_SID` to an approved
+WhatsApp template that accepts the approval digest as variable `{{1}}`.
+
+Run `npm run ops:notify:test` first to validate notifier routing without sending a
+WhatsApp message or marking approval items as actually notified.
+
+SMS fallback is still available with:
+
+- `EXECUTIVE_APPROVAL_CHANNEL=sms`;
 - `EXECUTIVE_APPROVAL_PHONE`;
 - `TEXTBELT_API_KEY`;
 - optional `TEXTBELT_SENDER`.
-
-Run `npm run ops:notify:test` first to use Textbelt test mode. Test mode appends
-`_test` to the Textbelt key and does not mark approval items as actually notified.
 
 Notification delivery state is written to:
 

@@ -63,16 +63,7 @@ function printPlan() {
 }
 
 async function notifyChairman({ testMode }) {
-  const phone = process.env.EXECUTIVE_APPROVAL_PHONE;
-  const textbeltKey = process.env.TEXTBELT_API_KEY;
-  const sender = process.env.TEXTBELT_SENDER ?? queue.project ?? 'SATA';
-
-  if (!phone) {
-    throw new Error('EXECUTIVE_APPROVAL_PHONE is required for notifications.');
-  }
-  if (!textbeltKey) {
-    throw new Error('TEXTBELT_API_KEY is required for notifications.');
-  }
+  const channel = process.env.EXECUTIVE_APPROVAL_CHANNEL ?? 'whatsapp';
 
   const reviewItems = (queue.items ?? []).filter(
     (item) => item.status === 'ready-for-chairman-review'
@@ -87,14 +78,9 @@ async function notifyChairman({ testMode }) {
   }
 
   const body = formatNotificationDigest(unsentItems);
-  const response = await sendTextbeltSms({
-    phone,
-    body,
-    key: testMode ? toTextbeltTestKey(textbeltKey) : textbeltKey,
-    sender
-  });
+  const response = await sendNotification({ channel, body, testMode });
   if (!response.success) {
-    throw new Error(`Textbelt failed: ${response.error ?? 'unknown error'}`);
+    throw new Error(`${response.provider} failed: ${response.error ?? 'unknown error'}`);
   }
 
   const notifiedAtUtc = new Date().toISOString();
@@ -104,7 +90,8 @@ async function notifyChairman({ testMode }) {
       ...(log.events ?? []),
       {
         itemId: item.id,
-        textId: response.textId ?? null,
+        notificationId: response.notificationId ?? null,
+        provider: response.provider,
         notifiedAtUtc,
         testMode
       }
@@ -117,10 +104,6 @@ async function notifyChairman({ testMode }) {
       unsentItems.length
     } approval item(s).`
   );
-}
-
-function toTextbeltTestKey(key) {
-  return key.endsWith('_test') ? key : `${key}_test`;
 }
 
 async function decideItem(status, itemId) {
@@ -165,11 +148,88 @@ function formatNotificationDigest(items) {
   ].join('\n');
 }
 
-async function sendTextbeltSms({ phone, body, key, sender }) {
+async function sendNotification({ channel, body, testMode }) {
+  switch (channel) {
+    case 'whatsapp':
+    case 'twilio-whatsapp':
+      return sendTwilioWhatsApp({ body, testMode });
+    case 'sms':
+    case 'textbelt':
+      return sendTextbeltSms({ body, testMode });
+    default:
+      throw new Error(
+        `Unsupported EXECUTIVE_APPROVAL_CHANNEL: ${channel}. Use whatsapp or sms.`
+      );
+  }
+}
+
+async function sendTwilioWhatsApp({ body, testMode }) {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const from = normalizeWhatsApp(process.env.TWILIO_WHATSAPP_FROM ?? 'whatsapp:+14155238886');
+  const to = normalizeWhatsApp(process.env.EXECUTIVE_APPROVAL_WHATSAPP);
+  const contentSid = process.env.TWILIO_WHATSAPP_CONTENT_SID;
+
+  if (!accountSid) throw new Error('TWILIO_ACCOUNT_SID is required for WhatsApp notifications.');
+  if (!authToken) throw new Error('TWILIO_AUTH_TOKEN is required for WhatsApp notifications.');
+  if (!to) throw new Error('EXECUTIVE_APPROVAL_WHATSAPP is required for WhatsApp notifications.');
+
+  if (testMode) {
+    return {
+      success: true,
+      provider: 'twilio-whatsapp',
+      notificationId: 'test-mode'
+    };
+  }
+
+  const payload = new URLSearchParams({
+    From: from,
+    To: to
+  });
+  if (contentSid) {
+    payload.set('ContentSid', contentSid);
+    payload.set('ContentVariables', JSON.stringify({ 1: body }));
+  } else {
+    payload.set('Body', body);
+  }
+
+  const response = await fetch(
+    `https://api.twilio.com/2010-04-01/Accounts/${encodeURIComponent(accountSid)}/Messages.json`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${accountSid}:${authToken}`).toString('base64')}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: payload
+    }
+  );
+  const result = await response.json();
+  return {
+    success: response.ok,
+    provider: 'twilio-whatsapp',
+    notificationId: result.sid ?? null,
+    error: result.message ?? result.error_message ?? null
+  };
+}
+
+function normalizeWhatsApp(value) {
+  if (!value) return null;
+  return value.startsWith('whatsapp:') ? value : `whatsapp:${value}`;
+}
+
+async function sendTextbeltSms({ body, testMode }) {
+  const phone = process.env.EXECUTIVE_APPROVAL_PHONE;
+  const textbeltKey = process.env.TEXTBELT_API_KEY;
+  const sender = process.env.TEXTBELT_SENDER ?? queue.project ?? 'SATA';
+
+  if (!phone) throw new Error('EXECUTIVE_APPROVAL_PHONE is required for SMS notifications.');
+  if (!textbeltKey) throw new Error('TEXTBELT_API_KEY is required for SMS notifications.');
+
   const payload = new URLSearchParams({
     phone,
     message: body,
-    key,
+    key: testMode ? toTextbeltTestKey(textbeltKey) : textbeltKey,
     sender
   });
 
@@ -184,7 +244,17 @@ async function sendTextbeltSms({ phone, body, key, sender }) {
   if (!response.ok) {
     throw new Error(`Textbelt HTTP ${response.status}: ${await response.text()}`);
   }
-  return response.json();
+  const result = await response.json();
+  return {
+    success: result.success === true,
+    provider: 'textbelt',
+    notificationId: result.textId ?? null,
+    error: result.error ?? null
+  };
+}
+
+function toTextbeltTestKey(key) {
+  return key.endsWith('_test') ? key : `${key}_test`;
 }
 
 async function readNotificationLog() {

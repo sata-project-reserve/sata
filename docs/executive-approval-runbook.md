@@ -22,6 +22,34 @@ to view items awaiting chairman review.
 
 Run:
 
+`npm run ops:notify`
+
+to text the Executive Chairman about new items awaiting review. The notifier uses Textbelt
+and requires:
+
+- `EXECUTIVE_APPROVAL_PHONE`;
+- `TEXTBELT_API_KEY`;
+- optional `TEXTBELT_SENDER`.
+
+Run `npm run ops:notify:test` first to use Textbelt test mode. Test mode appends
+`_test` to the Textbelt key and does not mark approval items as actually notified.
+
+Notification delivery state is written to:
+
+`artifacts/executive-approval-notifications.json`
+
+so repeated notifier runs do not send duplicate texts for the same approval item.
+
+After the chairman replies in Codex or another approved control channel, record the decision:
+
+`npm run ops:approve -- <item-id>`
+
+or:
+
+`npm run ops:reject -- <item-id>`
+
+Run:
+
 `npm run ops:check`
 
 to validate the queue.

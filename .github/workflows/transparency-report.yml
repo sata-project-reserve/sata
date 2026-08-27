@@ -17,6 +17,7 @@ on:
       - 'public/sats-generation-ledger.json'
       - 'public/sats-invoice-queue.json'
       - 'public/sats-prospect-pipeline.json'
+      - 'public/transparency-audit-delivery-kit.json'
       - 'public/social-agent-profile.json'
       - 'public/social-agent-content-queue.json'
       - 'public/social-agent-monitoring-log.json'
@@ -90,6 +91,9 @@ jobs:
 
       - name: Validate sats prospect pipeline
         run: npm run ops:prospect-check
+
+      - name: Validate transparency audit delivery kit
+        run: npm run ops:delivery-check
 
       - name: Security check
         run: npm run security:check

@@ -140,6 +140,7 @@ Authority limits:
 10. Use `public/sats-generation-ledger.json` as the active pipeline, receipt, and allocation ledger for generating more sats.
 11. Use `public/sats-invoice-queue.json` for chairman-approved direct-reserve BTC invoices.
 12. Use `public/sats-prospect-pipeline.json` for evidence-backed service prospecting before outreach.
+13. Use `public/transparency-audit-delivery-kit.json` for paid audit intake, scope, and delivery gates.
 
 ## Required Human Gates
 
@@ -166,6 +167,8 @@ Sats generation is tracked in `public/sats-generation-ledger.json`. Run `npm run
 Invoice controls are tracked in `public/sats-invoice-queue.json`. Run `npm run ops:invoice-plan` to view invoice templates and `npm run ops:invoice-check` to validate quote and custody rules.
 
 Prospect controls are tracked in `public/sats-prospect-pipeline.json`. Run `npm run ops:prospect-plan` to view buyer segments and daily cadence, and `npm run ops:prospect-check` to validate outreach boundaries.
+
+Audit delivery controls are tracked in `public/transparency-audit-delivery-kit.json`. Run `npm run ops:delivery-plan` to view intake and delivery rules, and `npm run ops:delivery-check` to validate scope boundaries.
 
 ## Public Target Language
 

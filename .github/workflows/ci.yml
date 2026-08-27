@@ -53,6 +53,9 @@ jobs:
       - name: Validate sats prospect pipeline
         run: npm run ops:prospect-check
 
+      - name: Validate transparency audit delivery kit
+        run: npm run ops:delivery-check
+
       - name: Security check
         run: npm run security:check
 

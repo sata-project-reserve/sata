@@ -3,6 +3,7 @@ import Image from 'next/image';
 import report from '@/public/transparency/latest.json';
 import revenuePlan from '@/public/revenue-operating-plan.json';
 import prospectPipeline from '@/public/sats-prospect-pipeline.json';
+import deliveryKit from '@/public/transparency-audit-delivery-kit.json';
 
 export const metadata = {
   title: 'SATA Transparency Audit Service',
@@ -52,6 +53,9 @@ export default function TransparencyAuditServicePage() {
             </a>
             <a className="button-link" href="/sats-prospect-pipeline.json">
               View Prospect Pipeline
+            </a>
+            <a className="button-link" href="/transparency-audit-delivery-kit.json">
+              View Delivery Kit
             </a>
             <a className="button-link" href="/revenue-operating-plan.json">
               View Operating Plan
@@ -158,6 +162,27 @@ export default function TransparencyAuditServicePage() {
           <div className="metric">
             <span>Outreach Limit</span>
             <strong>{prospectPipeline.dailyCadence.outreachLimit} approved contacts per day</strong>
+          </div>
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Delivery Kit</h2>
+          <p>{deliveryKit.nextOperatingAction}</p>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Starter Turnaround</span>
+            <strong>{deliveryKit.deliveryCadence.starterAuditTurnaroundHours} hours</strong>
+          </div>
+          <div className="metric">
+            <span>Format</span>
+            <strong>{deliveryKit.deliverableTemplate.format}</strong>
+          </div>
+          <div className="metric">
+            <span>Quality Gate</span>
+            <strong>Verified, partially verified, and unverified claims stay separate</strong>
           </div>
         </div>
       </section>

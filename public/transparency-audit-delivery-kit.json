@@ -1,0 +1,61 @@
+{
+  "project": "SATA Reserve Token",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-08-26T20:35:00Z",
+  "mode": "transparency-audit-delivery-kit",
+  "objective": "Deliver paid transparency audits quickly and consistently so legitimate service revenue can increase confirmed BTC reserve sats.",
+  "primaryOfferId": "transparency-audit",
+  "priceUsd": "50",
+  "paymentDependency": "Use sats-invoice-queue.json for chairman-approved BTC invoices before delivery.",
+  "prospectDependency": "Use sats-prospect-pipeline.json to qualify evidence-backed buyers before outreach.",
+  "requiredClientIntake": [
+    "projectName",
+    "network",
+    "tokenOrContractAddress",
+    "publicProjectUrl",
+    "publicProfileUrl",
+    "claimsToReview",
+    "requestedDeliverableVisibility",
+    "paymentStatus"
+  ],
+  "deliverableTemplate": {
+    "title": "Transparency Audit - {projectName}",
+    "format": "Markdown and optional public JSON summary",
+    "sections": [
+      "Scope and limitations",
+      "Public inputs reviewed",
+      "Token authority review",
+      "Liquidity and lock evidence review",
+      "Reserve or treasury claim review",
+      "Ownership and concentration disclosure review",
+      "Disclosure gaps",
+      "Risk language",
+      "Recommended fixes",
+      "Evidence links"
+    ],
+    "requiredDisclosures": [
+      "This is a public-evidence review, not legal, tax, or investment advice.",
+      "No price guarantee, no redemption promise, and no market-support commitment.",
+      "Unverified claims must be labelled unverified until independently evidenced."
+    ]
+  },
+  "qualityGates": [
+    "Use only public evidence or client-provided evidence that the client approves for citation.",
+    "Separate verified, partially verified, and unverified claims.",
+    "Do not rate a token as safe, profitable, backed, guaranteed, or investment grade.",
+    "Do not include trading, price, buyer, or market-making recommendations.",
+    "Include at least one concrete fix for every material disclosure gap.",
+    "Record delivery evidence in sats-generation-ledger.json after payment confirmation."
+  ],
+  "deliveryCadence": {
+    "starterAuditTurnaroundHours": 24,
+    "maximumActiveStarterAudits": 3,
+    "followUpWindowDays": 7
+  },
+  "artifactNaming": {
+    "draftPattern": "artifacts/audits/{YYYYMMDD}-{project-slug}-draft.md",
+    "finalPattern": "artifacts/audits/{YYYYMMDD}-{project-slug}-final.md",
+    "publicSummaryPattern": "public/client-audits/{project-slug}.json"
+  },
+  "nextOperatingAction": "Prepare the first paid audit from a completed intake packet after the chairman approves the prospect and invoice."
+}

@@ -141,6 +141,7 @@ Authority limits:
 11. Use `public/sats-invoice-queue.json` for chairman-approved direct-reserve BTC invoices.
 12. Use `public/sats-prospect-pipeline.json` for evidence-backed service prospecting before outreach.
 13. Use `public/transparency-audit-delivery-kit.json` for paid audit intake, scope, and delivery gates.
+14. Use `npm run ops:intake-plan` and `npm run ops:intake-check` to convert GitHub issue intake into reviewable draft records.
 
 ## Required Human Gates
 
@@ -169,6 +170,8 @@ Invoice controls are tracked in `public/sats-invoice-queue.json`. Run `npm run o
 Prospect controls are tracked in `public/sats-prospect-pipeline.json`. Run `npm run ops:prospect-plan` to view buyer segments and daily cadence, and `npm run ops:prospect-check` to validate outreach boundaries.
 
 Audit delivery controls are tracked in `public/transparency-audit-delivery-kit.json`. Run `npm run ops:delivery-plan` to view intake and delivery rules, and `npm run ops:delivery-check` to validate scope boundaries.
+
+Audit intake conversion is handled by `scripts/audit-intake-agent.mjs`. Run `npm run ops:intake-plan` to view importer boundaries, and `node scripts/audit-intake-agent.mjs draft-from-issue-json <issue-json-path>` to draft prospect, invoice, and delivery records for chairman review.
 
 ## Public Target Language
 

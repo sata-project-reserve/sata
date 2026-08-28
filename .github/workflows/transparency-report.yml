@@ -19,6 +19,7 @@ on:
       - 'public/sats-invoice-queue.json'
       - 'public/sats-prospect-pipeline.json'
       - 'public/transparency-audit-delivery-kit.json'
+      - 'tests/fixtures/transparency-audit-intake-issue.json'
       - 'public/social-agent-profile.json'
       - 'public/social-agent-content-queue.json'
       - 'public/social-agent-monitoring-log.json'
@@ -95,6 +96,9 @@ jobs:
 
       - name: Validate transparency audit delivery kit
         run: npm run ops:delivery-check
+
+      - name: Validate audit intake workflow
+        run: npm run ops:intake-check
 
       - name: Security check
         run: npm run security:check

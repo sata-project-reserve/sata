@@ -1,16 +1,16 @@
 {
   "status": "ok",
   "project": "SATA Reserve Token",
-  "generatedAtUtc": "2026-08-28T21:53:46.463Z",
-  "latestReportGeneratedAtUtc": "2026-08-28T21:53:45.473Z",
-  "sourceCommit": "4bceae950f3c5b2d88a48b79b1e07f8b9989db7a",
+  "generatedAtUtc": "2026-08-28T23:32:04.613Z",
+  "latestReportGeneratedAtUtc": "2026-08-28T23:32:02.201Z",
+  "sourceCommit": "1cadb2ef2bc03ff91aebea0b23291ba305e9df84",
   "canonicalTransparencyUrl": "https://sata-project-reserve.github.io/sata/transparency",
   "latestJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
   "historyJson": "https://sata-project-reserve.github.io/sata/transparency/history.json",
   "onChainMetadataUri": "https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-metadata.json",
   "expectedMetadataUri": "https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-metadata.json",
   "reportAndMetadataUriMatch": true,
-  "latestHistoryStateHash": "d1a9c702bf73e55bdbd6f2d3bd2639e484f924f86db71a4ad6ec43fd60dd25b7",
+  "latestHistoryStateHash": "ab2e54fc6ebf6d5a5643689e6b8d3c477a20cea96df1c023f5039884977547e3",
   "warnings": [
     "sata-supply-equals-launch-initial: 999996853349945910",
     "metadata-mutability-disclosed: mutable"

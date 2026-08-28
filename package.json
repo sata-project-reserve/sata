@@ -26,6 +26,8 @@
     "ops:sats-plan": "node scripts/sats-generation-agent.mjs plan",
     "ops:invoice-check": "node scripts/validate-sats-invoice-queue.mjs",
     "ops:invoice-plan": "node scripts/sats-invoice-agent.mjs plan",
+    "ops:invoice-quote-check": "node scripts/validate-sats-invoice-quoter.mjs",
+    "ops:invoice-quote-plan": "node scripts/sats-invoice-quote-agent.mjs plan",
     "ops:prospect-check": "node scripts/validate-sats-prospect-pipeline.mjs",
     "ops:prospect-plan": "node scripts/sats-prospect-agent.mjs plan",
     "ops:delivery-check": "node scripts/validate-transparency-audit-delivery-kit.mjs",

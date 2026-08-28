@@ -1,0 +1,57 @@
+name: Audit Intake Review
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+      - reopened
+      - labeled
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  review:
+    if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'service-intake')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate audit intake workflow
+        run: npm run ops:intake-check
+
+      - name: Validate audit intake commenter
+        run: npm run ops:intake-comment-check
+
+      - name: Prepare intake review comment
+        run: node scripts/audit-intake-comment-agent.mjs comment-from-event-json "$GITHUB_EVENT_PATH" > .audit-intake-review-comment.md
+
+      - name: Upsert intake review comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          existing_id="$(gh api "repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}/comments" --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | contains("<!-- sata-audit-intake-review -->"))) | .id' | tail -n 1)"
+
+          if [ -n "$existing_id" ]; then
+            gh api \
+              --method PATCH \
+              "repos/${GITHUB_REPOSITORY}/issues/comments/${existing_id}" \
+              --field body="$(cat .audit-intake-review-comment.md)"
+          else
+            gh issue comment "$ISSUE_NUMBER" --body-file .audit-intake-review-comment.md
+          fi

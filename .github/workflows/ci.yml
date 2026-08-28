@@ -59,6 +59,9 @@ jobs:
       - name: Validate audit intake workflow
         run: npm run ops:intake-check
 
+      - name: Validate audit intake commenter
+        run: npm run ops:intake-comment-check
+
       - name: Security check
         run: npm run security:check
 

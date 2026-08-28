@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - '.github/workflows/transparency-report.yml'
+      - '.github/workflows/audit-intake.yml'
       - '.github/ISSUE_TEMPLATE/transparency-audit-intake.yml'
       - 'app/**'
       - 'components/**'
@@ -20,6 +21,7 @@ on:
       - 'public/sats-prospect-pipeline.json'
       - 'public/transparency-audit-delivery-kit.json'
       - 'tests/fixtures/transparency-audit-intake-issue.json'
+      - 'tests/fixtures/transparency-audit-intake-event.json'
       - 'public/social-agent-profile.json'
       - 'public/social-agent-content-queue.json'
       - 'public/social-agent-monitoring-log.json'
@@ -99,6 +101,9 @@ jobs:
 
       - name: Validate audit intake workflow
         run: npm run ops:intake-check
+
+      - name: Validate audit intake commenter
+        run: npm run ops:intake-comment-check
 
       - name: Security check
         run: npm run security:check

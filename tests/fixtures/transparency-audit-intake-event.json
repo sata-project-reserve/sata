@@ -1,0 +1,18 @@
+{
+  "action": "opened",
+  "issue": {
+    "number": 101,
+    "title": "[Transparency Audit]: Example Proof Token",
+    "url": "https://github.com/sata-project-reserve/sata/issues/101",
+    "html_url": "https://github.com/sata-project-reserve/sata/issues/101",
+    "body": "### Project name\nExample Proof Token\n\n### Network\nSolana\n\n### Token or contract address\nExampleMint11111111111111111111111111111111111\n\n### Public project URL\nhttps://example.invalid\n\n### Public profile URL\nhttps://x.com/example\n\n### Claims to review\nThe project claims mint authority is revoked and liquidity is locked.\n\n### Requested deliverable visibility\nPrivate draft first, public summary only after approval\n\n### Payment status\nNeed chairman-approved BTC invoice\n\n### Evidence links\nhttps://explorer.solana.com/address/ExampleMint11111111111111111111111111111111111\n",
+    "labels": [
+      {
+        "name": "transparency-audit"
+      },
+      {
+        "name": "service-intake"
+      }
+    ]
+  }
+}

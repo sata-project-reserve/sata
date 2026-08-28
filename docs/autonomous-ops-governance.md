@@ -142,6 +142,7 @@ Authority limits:
 12. Use `public/sats-prospect-pipeline.json` for evidence-backed service prospecting before outreach.
 13. Use `public/transparency-audit-delivery-kit.json` for paid audit intake, scope, and delivery gates.
 14. Use `npm run ops:intake-plan` and `npm run ops:intake-check` to convert GitHub issue intake into reviewable draft records.
+15. Use the Audit Intake Review workflow and `npm run ops:intake-comment-check` to acknowledge service-intake issues with safe chairman-review comments.
 
 ## Required Human Gates
 
@@ -172,6 +173,8 @@ Prospect controls are tracked in `public/sats-prospect-pipeline.json`. Run `npm 
 Audit delivery controls are tracked in `public/transparency-audit-delivery-kit.json`. Run `npm run ops:delivery-plan` to view intake and delivery rules, and `npm run ops:delivery-check` to validate scope boundaries.
 
 Audit intake conversion is handled by `scripts/audit-intake-agent.mjs`. Run `npm run ops:intake-plan` to view importer boundaries, and `node scripts/audit-intake-agent.mjs draft-from-issue-json <issue-json-path>` to draft prospect, invoice, and delivery records for chairman review.
+
+Audit intake issue comments are handled by `scripts/audit-intake-comment-agent.mjs` and `.github/workflows/audit-intake.yml`. The workflow only runs on issues labelled `service-intake`, upserts one marked review comment, and does not publish payment addresses, exact BTC invoices, or approval claims.
 
 ## Public Target Language
 

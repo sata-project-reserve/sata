@@ -32,6 +32,7 @@
     "ops:delivery-plan": "node scripts/transparency-audit-delivery-agent.mjs plan",
     "ops:intake-check": "node scripts/validate-audit-intake-workflow.mjs",
     "ops:intake-plan": "node scripts/audit-intake-agent.mjs plan",
+    "ops:intake-comment-check": "node scripts/validate-audit-intake-commenter.mjs",
     "security:check": "node scripts/security-check.mjs",
     "social:check": "node scripts/validate-social-content.mjs",
     "social:agent": "node scripts/x-social-agent.mjs",

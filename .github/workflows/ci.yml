@@ -59,6 +59,9 @@ jobs:
       - name: Validate transparency audit delivery kit
         run: npm run ops:delivery-check
 
+      - name: Validate transparency audit artifact generator
+        run: npm run ops:audit-artifact-check
+
       - name: Validate audit intake workflow
         run: npm run ops:intake-check
 

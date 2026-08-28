@@ -32,6 +32,8 @@
     "ops:prospect-plan": "node scripts/sats-prospect-agent.mjs plan",
     "ops:delivery-check": "node scripts/validate-transparency-audit-delivery-kit.mjs",
     "ops:delivery-plan": "node scripts/transparency-audit-delivery-agent.mjs plan",
+    "ops:audit-artifact-check": "node scripts/validate-transparency-audit-artifact.mjs",
+    "ops:audit-artifact-plan": "node scripts/transparency-audit-artifact-agent.mjs plan",
     "ops:intake-check": "node scripts/validate-audit-intake-workflow.mjs",
     "ops:intake-plan": "node scripts/audit-intake-agent.mjs plan",
     "ops:intake-comment-check": "node scripts/validate-audit-intake-commenter.mjs",

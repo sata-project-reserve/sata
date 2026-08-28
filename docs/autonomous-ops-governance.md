@@ -140,7 +140,7 @@ Authority limits:
 10. Use `public/sats-generation-ledger.json` as the active pipeline, receipt, and allocation ledger for generating more sats.
 11. Use `public/sats-invoice-queue.json` for chairman-approved direct-reserve BTC invoices, and `npm run ops:invoice-quote-plan` for exact-sats draft quote preparation.
 12. Use `public/sats-prospect-pipeline.json` for evidence-backed service prospecting before outreach.
-13. Use `public/transparency-audit-delivery-kit.json` for paid audit intake, scope, and delivery gates.
+13. Use `public/transparency-audit-delivery-kit.json` for paid audit intake, scope, delivery gates, and `npm run ops:audit-artifact-plan` for draft artifact preparation.
 14. Use `npm run ops:intake-plan` and `npm run ops:intake-check` to convert GitHub issue intake into reviewable draft records.
 15. Use the Audit Intake Review workflow and `npm run ops:intake-comment-check` to acknowledge service-intake issues with safe chairman-review comments.
 
@@ -173,6 +173,8 @@ Invoice quote preparation is handled by `scripts/sats-invoice-quote-agent.mjs`. 
 Prospect controls are tracked in `public/sats-prospect-pipeline.json`. Run `npm run ops:prospect-plan` to view buyer segments and daily cadence, and `npm run ops:prospect-check` to validate outreach boundaries.
 
 Audit delivery controls are tracked in `public/transparency-audit-delivery-kit.json`. Run `npm run ops:delivery-plan` to view intake and delivery rules, and `npm run ops:delivery-check` to validate scope boundaries.
+
+Audit artifact drafts are handled by `scripts/transparency-audit-artifact-agent.mjs`. Run `npm run ops:audit-artifact-plan` to view artifact boundaries, and `node scripts/transparency-audit-artifact-agent.mjs draft-from-issue-json <issue-json-path>` to produce a Markdown draft with required sections and disclosures.
 
 Audit intake conversion is handled by `scripts/audit-intake-agent.mjs`. Run `npm run ops:intake-plan` to view importer boundaries, and `node scripts/audit-intake-agent.mjs draft-from-issue-json <issue-json-path>` to draft prospect, invoice, and delivery records for chairman review.
 

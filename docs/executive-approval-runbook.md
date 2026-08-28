@@ -24,8 +24,35 @@ Run:
 
 `npm run ops:notify`
 
-to message the Executive Chairman about new items awaiting review. The default notifier
-uses Twilio WhatsApp and requires:
+to message the Executive Chairman about new items awaiting review. The default free
+notifier uses ntfy and requires:
+
+- `EXECUTIVE_APPROVAL_CHANNEL=ntfy`;
+- `NTFY_SERVER=https://ntfy.sh`;
+- `NTFY_TOPIC`.
+
+Install the ntfy app on the chairman's phone and subscribe to the same topic. Topics
+are created automatically and act like bearer secrets, so use a hard-to-guess value
+and do not publish it.
+
+Run `npm run ops:notify:test` first to validate notifier routing without sending a
+message or marking approval items as actually notified.
+
+Email fallback is available with:
+
+- `EXECUTIVE_APPROVAL_CHANNEL=email`;
+- `EXECUTIVE_APPROVAL_EMAIL`;
+- `SMTP_HOST`;
+- `SMTP_PORT`;
+- `SMTP_USER`;
+- `SMTP_PASS`;
+- optional `SMTP_FROM`.
+
+For Gmail, use `smtp.gmail.com`, port `587`, `SMTP_SECURE=false`, and a Google app
+password. For iCloud, use `smtp.mail.me.com`, port `587`, and an Apple app-specific
+password.
+
+WhatsApp fallback is available with Twilio:
 
 - `EXECUTIVE_APPROVAL_CHANNEL=whatsapp`;
 - `EXECUTIVE_APPROVAL_WHATSAPP`;
@@ -42,9 +69,6 @@ in Twilio Console. Sandbox/free-form WhatsApp messages work inside the 24-hour
 customer-service window after the chairman messages the sandbox. For production
 or out-of-session notifications, set `TWILIO_WHATSAPP_CONTENT_SID` to an approved
 WhatsApp template that accepts the approval digest as variable `{{1}}`.
-
-Run `npm run ops:notify:test` first to validate notifier routing without sending a
-WhatsApp message or marking approval items as actually notified.
 
 SMS fallback is still available with:
 

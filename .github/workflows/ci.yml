@@ -38,6 +38,9 @@ jobs:
       - name: Validate executive approval queue
         run: npm run ops:check
 
+      - name: Validate notification tools
+        run: npm run ops:notification-check
+
       - name: Validate reserve growth plan
         run: npm run ops:reserve-check
 

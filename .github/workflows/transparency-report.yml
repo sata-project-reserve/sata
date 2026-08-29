@@ -114,6 +114,9 @@ jobs:
       - name: Validate sats prospect candidates
         run: npm run ops:prospect-candidate-check
 
+      - name: Validate sats prospect review packets
+        run: npm run ops:prospect-review-check
+
       - name: Validate prospect intake workflow
         run: npm run ops:prospect-intake-check
 

@@ -46,6 +46,7 @@ export function buildRevenueCycleStatus({
     },
     funnel: {
       prospects: prospects.length,
+      identifiedProspects: prospects.filter((prospect) => prospect.stage === 'identified').length,
       chairmanReviewProspects: prospects.filter((prospect) => prospect.stage === 'chairman-review').length,
       outreachApprovedProspects: prospects.filter((prospect) => prospect.stage === 'outreach-approved').length,
       approvedInvoices: approvedInvoices.length,
@@ -118,6 +119,10 @@ function chooseNextAction({
   const chairmanReview = prospects.find((prospect) => prospect.stage === 'chairman-review');
   if (chairmanReview) {
     return `Prepare chairman review for prospect ${chairmanReview.id}.`;
+  }
+  const identified = prospects.find((prospect) => prospect.stage === 'identified');
+  if (identified) {
+    return 'Render prospect review packet for the next identified candidates before any outreach.';
   }
   if (prospects.length === 0) {
     return prospectPipeline.nextOperatingAction;

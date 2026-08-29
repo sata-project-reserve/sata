@@ -192,6 +192,8 @@ Audit intake conversion is handled by `scripts/audit-intake-agent.mjs`. Run `npm
 
 Audit intake issue comments are handled by `scripts/audit-intake-comment-agent.mjs` and `.github/workflows/audit-intake.yml`. The workflow only runs on issues labelled `service-intake`, upserts one marked review comment, and does not publish payment addresses, exact BTC invoices, or approval claims.
 
+Prospect review packets are handled by `scripts/sats-prospect-review-agent.mjs`. Run `npm run ops:prospect-review-plan` to produce the next bounded chairman review batch from identified prospects, or `node scripts/sats-prospect-review-agent.mjs render` for a Markdown packet. This does not approve outreach, invoices, payment requests, token grants, or commitments.
+
 ## Public Target Language
 
 Allowed:

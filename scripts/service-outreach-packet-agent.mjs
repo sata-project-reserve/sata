@@ -19,8 +19,11 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     case 'render':
       printPacket(pipeline, deliveryKit, args);
       break;
+    case 'render-approved':
+      printApprovedPacket(pipeline, deliveryKit, args);
+      break;
     default:
-      throw new Error(`Unknown service outreach command: ${command}. Use plan or render.`);
+      throw new Error(`Unknown service outreach command: ${command}. Use plan, render, or render-approved.`);
   }
 }
 
@@ -38,7 +41,7 @@ function printPlan(pipeline, deliveryKit) {
         servicePage: 'https://sata-project-reserve.github.io/sata/services/transparency-audit',
         intakeUrl: deliveryKit.intakeUrl,
         nextAction:
-          'Render a packet from an approved template for a qualified public-evidence prospect, then request chairman approval before outreach.',
+          'Render a packet from an approved template for a qualified public-evidence prospect, then request chairman approval before outreach. Use render-approved only for outreach-approved prospect records.',
         boundary:
           'Packets are draft outreach only. They do not approve contact, invoices, paid work, token grants, or payment instructions.'
       },
@@ -59,6 +62,41 @@ function printPacket(pipeline, deliveryKit, args) {
     projectUrl: options.projectUrl
   });
   console.log(packet);
+}
+
+function printApprovedPacket(pipeline, deliveryKit, args) {
+  const options = parseOptions(args);
+  const packet = renderApprovedProspectOutreachPacket({
+    pipeline,
+    deliveryKit,
+    prospectId: options.prospectId ?? options.prospect,
+    templateId: options.template ?? 'transparency-audit-first-contact'
+  });
+  console.log(packet);
+}
+
+export function renderApprovedProspectOutreachPacket({
+  pipeline,
+  deliveryKit,
+  prospectId,
+  templateId = 'transparency-audit-first-contact'
+}) {
+  const prospect = (pipeline.prospects ?? []).find((item) => item.id === prospectId);
+  if (!prospect) throw new Error(`Prospect not found: ${prospectId}`);
+  if (prospect.stage !== 'outreach-approved') {
+    throw new Error(`${prospect.id}: outreach packet requires outreach-approved stage.`);
+  }
+  if (prospect.chairmanApprovedBeforeOutreach !== true) {
+    throw new Error(`${prospect.id}: outreach packet requires chairmanApprovedBeforeOutreach.`);
+  }
+  return renderOutreachPacket({
+    pipeline,
+    deliveryKit,
+    templateId,
+    prospectName: prospect.id,
+    publicProfileUrl: prospect.publicProfileUrl,
+    projectUrl: prospect.projectUrl
+  });
 }
 
 export function renderOutreachPacket({

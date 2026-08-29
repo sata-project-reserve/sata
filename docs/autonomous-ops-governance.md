@@ -196,6 +196,8 @@ Prospect review packets are handled by `scripts/sats-prospect-review-agent.mjs`.
 
 Prospect stage transitions are handled by `scripts/sats-prospect-stage-agent.mjs`. Run `npm run ops:prospect-stage-plan` to see whether the current approval gate allows advancement, and use `node scripts/sats-prospect-stage-agent.mjs advance --approvalId "<approval-id>" --prospects "<id,id>"` only after the matching approval queue item is `approved-by-chairman`. This can move records to chairman-review only; outreach still needs a later explicit decision.
 
+Prospect-specific outreach packets must use `node scripts/service-outreach-packet-agent.mjs render-approved --prospectId "<id>"`. The approved render path rejects any prospect that is not already `outreach-approved`; generic render output remains a draft helper only.
+
 ## Public Target Language
 
 Allowed:

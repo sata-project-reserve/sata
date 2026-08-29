@@ -1,6 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { renderOutreachPacket } from './service-outreach-packet-agent.mjs';
+import {
+  renderApprovedProspectOutreachPacket,
+  renderOutreachPacket
+} from './service-outreach-packet-agent.mjs';
 
 const pipeline = readJson(join('public', 'sats-prospect-pipeline.json'));
 const deliveryKit = readJson(join('public', 'transparency-audit-delivery-kit.json'));
@@ -11,6 +14,38 @@ const packet = renderOutreachPacket({
   prospectName: 'Example Team',
   publicProfileUrl: 'https://x.com/example',
   projectUrl: 'https://example.invalid'
+});
+const approvedPipeline = {
+  ...pipeline,
+  prospects: [
+    {
+      id: 'approved-team',
+      stage: 'outreach-approved',
+      source: 'test',
+      publicProfileUrl: 'https://x.com/approved',
+      projectUrl: 'https://approved.invalid',
+      observedClaim: 'Public transparency claims need an evidence review.',
+      recommendedOfferId: 'transparency-audit',
+      chairmanApprovedBeforeOutreach: true,
+      evidence: ['https://approved.invalid']
+    },
+    {
+      id: 'identified-team',
+      stage: 'identified',
+      source: 'test',
+      publicProfileUrl: 'https://x.com/identified',
+      projectUrl: 'https://identified.invalid',
+      observedClaim: 'Public transparency claims need an evidence review.',
+      recommendedOfferId: 'transparency-audit',
+      chairmanApprovedBeforeOutreach: false,
+      evidence: ['https://identified.invalid']
+    }
+  ]
+};
+const approvedPacket = renderApprovedProspectOutreachPacket({
+  pipeline: approvedPipeline,
+  deliveryKit,
+  prospectId: 'approved-team'
 });
 const findings = [];
 
@@ -26,6 +61,30 @@ for (const required of [
 ]) {
   if (!required.test(packet)) findings.push(`outreach packet missing ${required}`);
 }
+
+for (const required of [
+  /approved-team/i,
+  /https:\/\/x\.com\/approved/i,
+  /https:\/\/approved\.invalid/i,
+  /Executive Chairman approval/i
+]) {
+  if (!required.test(approvedPacket)) findings.push(`approved outreach packet missing ${required}`);
+}
+
+assertRejects('identified prospect render', /requires outreach-approved stage/i, () =>
+  renderApprovedProspectOutreachPacket({
+    pipeline: approvedPipeline,
+    deliveryKit,
+    prospectId: 'identified-team'
+  })
+);
+assertRejects('unknown prospect render', /Prospect not found/i, () =>
+  renderApprovedProspectOutreachPacket({
+    pipeline: approvedPipeline,
+    deliveryKit,
+    prospectId: 'missing-team'
+  })
+);
 
 for (const prohibited of [
   /\bpump\b/i,
@@ -54,4 +113,16 @@ console.log('Service outreach packet check passed: manual outreach drafts are bo
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
+}
+
+function assertRejects(name, expected, fn) {
+  try {
+    fn();
+  } catch (error) {
+    if (!expected.test(error.message)) {
+      throw new Error(`${name}: expected ${expected}, received ${error.message}`);
+    }
+    return;
+  }
+  throw new Error(`${name}: expected rejection.`);
 }

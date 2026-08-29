@@ -35,6 +35,7 @@ function printPlan() {
         mode: pipeline.mode,
         activeCycleId: pipeline.activeCycleId,
         reserveTargetSats: pipeline.target.reserveTargetSats,
+        prospectIntakeUrl: pipeline.prospectIntakeUrl,
         currentReserveSats: ledger.target.currentReserveSats,
         firstClosedDealUsd: pipeline.target.firstClosedDealUsd,
         cycleClosedRevenueUsd: pipeline.target.cycleClosedRevenueUsd,

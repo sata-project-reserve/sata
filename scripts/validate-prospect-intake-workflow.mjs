@@ -10,6 +10,9 @@ const findings = [];
 
 if (!/prospect-intake/.test(form)) findings.push('issue form must apply the prospect-intake label');
 if (!/prospect-candidate/.test(form)) findings.push('issue form must apply the prospect-candidate label');
+if (!/prospect-candidate-intake\.yml/i.test(pipeline.prospectIntakeUrl ?? '')) {
+  findings.push('pipeline must publish the prospect candidate intake URL');
+}
 if (!/Executive Chairman approval is required/i.test(form)) {
   findings.push('issue form must disclose chairman approval requirements');
 }

@@ -25,6 +25,9 @@ if (!revenueOfferIds.has(pipeline.primaryOfferId)) {
 if (!invoiceOfferIds.has(pipeline.primaryOfferId)) {
   findings.push('primaryOfferId must have an invoice template');
 }
+if (!/prospect-candidate-intake\.yml/i.test(pipeline.prospectIntakeUrl ?? '')) {
+  findings.push('prospectIntakeUrl must link to the prospect candidate issue form');
+}
 
 for (const field of ['firstClosedDealUsd', 'cycleClosedRevenueUsd', 'reserveTargetSats']) {
   if (!/^\d+$/.test(pipeline.target?.[field] ?? '')) {

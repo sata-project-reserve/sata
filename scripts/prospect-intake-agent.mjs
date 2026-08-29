@@ -26,6 +26,7 @@ function printPlan() {
         project: pipeline.project,
         mode: 'prospect-intake-importer',
         issueTemplate: '.github/ISSUE_TEMPLATE/prospect-candidate-intake.yml',
+        prospectIntakeUrl: pipeline.prospectIntakeUrl,
         requiredLeadFields: pipeline.requiredLeadFields,
         leadStages: pipeline.leadStages,
         nextOperatingAction:

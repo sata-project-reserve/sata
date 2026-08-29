@@ -72,6 +72,9 @@ export default function TransparencyAuditServicePage() {
             <a className="button-link" href="/sats-prospect-pipeline.json">
               View Prospect Pipeline
             </a>
+            <a className="button-link" href={prospectPipeline.prospectIntakeUrl}>
+              Suggest Prospect
+            </a>
             <a className="button-link" href="/transparency-audit-delivery-kit.json">
               View Delivery Kit
             </a>
@@ -136,6 +139,9 @@ export default function TransparencyAuditServicePage() {
           </a>
           <a className="button-link" href="/transparency-audit-delivery-kit.json">
             View Intake Schema
+          </a>
+          <a className="button-link" href={prospectPipeline.prospectIntakeUrl}>
+            Suggest Prospect
           </a>
         </div>
       </section>
@@ -216,6 +222,10 @@ export default function TransparencyAuditServicePage() {
           <div className="metric">
             <span>Outreach Limit</span>
             <strong>{prospectPipeline.dailyCadence.outreachLimit} approved contacts per day</strong>
+          </div>
+          <div className="metric">
+            <span>Candidate Intake</span>
+            <strong>Public evidence only, then chairman review before contact</strong>
           </div>
         </div>
       </section>

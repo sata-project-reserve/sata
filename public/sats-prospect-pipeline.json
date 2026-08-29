@@ -6,6 +6,7 @@
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
   "primaryOfferId": "transparency-audit",
+  "prospectIntakeUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=prospect-candidate-intake.yml",
   "target": {
     "firstClosedDealUsd": "50",
     "cycleClosedRevenueUsd": "300",

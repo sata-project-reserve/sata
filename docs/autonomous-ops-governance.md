@@ -139,7 +139,7 @@ Authority limits:
 9. Use `public/revenue-operating-plan.json` as the machine-readable plan for revenue-first reserve growth.
 10. Use `public/sats-generation-ledger.json` as the active pipeline, receipt, and allocation ledger for generating more sats.
 11. Use `public/sats-invoice-queue.json` for chairman-approved direct-reserve BTC invoices, and `npm run ops:invoice-quote-plan` for exact-sats draft quote preparation.
-12. Use `public/sats-prospect-pipeline.json` for evidence-backed service prospecting before outreach.
+12. Use `public/sats-prospect-pipeline.json` for evidence-backed service prospecting before outreach, and `npm run ops:outreach-plan` to render manual outreach packets from approved templates.
 13. Use `public/transparency-audit-delivery-kit.json` for paid audit intake, scope, delivery gates, and `npm run ops:audit-artifact-plan` for draft artifact preparation.
 14. Use `npm run ops:intake-plan` and `npm run ops:intake-check` to convert GitHub issue intake into reviewable draft records.
 15. Use the Audit Intake Review workflow and `npm run ops:intake-comment-check` to acknowledge service-intake issues with safe chairman-review comments.
@@ -171,6 +171,8 @@ Invoice controls are tracked in `public/sats-invoice-queue.json`. Run `npm run o
 Invoice quote preparation is handled by `scripts/sats-invoice-quote-agent.mjs`. Run `npm run ops:invoice-quote-plan` to view quoting boundaries, and `node scripts/sats-invoice-quote-agent.mjs quote-template --offer transparency-audit --customer "<customer>" --btcUsd "<manual-rate>" --source "<quote-source>"` to draft exact-sats invoice fields for chairman approval.
 
 Prospect controls are tracked in `public/sats-prospect-pipeline.json`. Run `npm run ops:prospect-plan` to view buyer segments and daily cadence, and `npm run ops:prospect-check` to validate outreach boundaries.
+
+Manual outreach packets are handled by `scripts/service-outreach-packet-agent.mjs`. Run `npm run ops:outreach-plan` to view approved templates, and `node scripts/service-outreach-packet-agent.mjs render --template transparency-audit-first-contact --prospect "<name>" --profile "<public-url>" --projectUrl "<project-url>"` to draft a compliant message for chairman approval.
 
 Audit delivery controls are tracked in `public/transparency-audit-delivery-kit.json`. Run `npm run ops:delivery-plan` to view intake and delivery rules, and `npm run ops:delivery-check` to validate scope boundaries.
 

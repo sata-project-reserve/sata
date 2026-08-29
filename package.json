@@ -34,6 +34,8 @@
     "ops:invoice-quote-plan": "node scripts/sats-invoice-quote-agent.mjs plan",
     "ops:prospect-check": "node scripts/validate-sats-prospect-pipeline.mjs",
     "ops:prospect-plan": "node scripts/sats-prospect-agent.mjs plan",
+    "ops:outreach-check": "node scripts/validate-service-outreach-packets.mjs",
+    "ops:outreach-plan": "node scripts/service-outreach-packet-agent.mjs plan",
     "ops:delivery-check": "node scripts/validate-transparency-audit-delivery-kit.mjs",
     "ops:delivery-plan": "node scripts/transparency-audit-delivery-agent.mjs plan",
     "ops:audit-artifact-check": "node scripts/validate-transparency-audit-artifact.mjs",

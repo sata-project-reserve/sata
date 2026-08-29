@@ -1,6 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { buildExecutiveApprovalPlan } from './lib/executive-approval-plan.mjs';
+import {
+  approvalPhrase,
+  assertChairmanDecisionConfirmation,
+  buildExecutiveApprovalPlan,
+  rejectionPhrase
+} from './lib/executive-approval-plan.mjs';
 
 const queue = JSON.parse(readFileSync(join('public', 'executive-approval-queue.json'), 'utf8'));
 const plan = buildExecutiveApprovalPlan(queue);
@@ -18,11 +23,11 @@ if (plan.chairmanReview.length !== readyItems.length) {
 }
 
 for (const item of plan.chairmanReview) {
-  if (item.approveCommand !== `npm run ops:approve -- ${item.id}`) {
-    findings.push(`${item.id}: approve command must be explicit`);
+  if (!item.approveCommand.includes(`--confirm-chairman-approval "${approvalPhrase(item.id)}"`)) {
+    findings.push(`${item.id}: approve command must include explicit chairman approval phrase`);
   }
-  if (item.rejectCommand !== `npm run ops:reject -- ${item.id}`) {
-    findings.push(`${item.id}: reject command must be explicit`);
+  if (!item.rejectCommand.includes(`--confirm-chairman-rejection "${rejectionPhrase(item.id)}"`)) {
+    findings.push(`${item.id}: reject command must include explicit chairman rejection phrase`);
   }
   if (!/does not execute a transaction/i.test(item.executionBoundary ?? '')) {
     findings.push(`${item.id}: execution boundary must reject transaction execution`);
@@ -37,6 +42,30 @@ if (prospectReview && !/sats-prospect-stage-agent\.mjs advance/i.test(prospectRe
   findings.push('prospect review approval must point to the bounded prospect stage transition');
 }
 
+assertRejects('missing approval confirmation', /Missing explicit chairman confirmation/i, () =>
+  assertChairmanDecisionConfirmation({
+    status: 'approved-by-chairman',
+    itemId: 'prospect-review-batch-20260829',
+    options: {}
+  })
+);
+assertRejects('wrong rejection confirmation', /Missing explicit chairman confirmation/i, () =>
+  assertChairmanDecisionConfirmation({
+    status: 'rejected',
+    itemId: 'prospect-review-batch-20260829',
+    options: {
+      'confirm-chairman-rejection': 'reject it'
+    }
+  })
+);
+assertChairmanDecisionConfirmation({
+  status: 'approved-by-chairman',
+  itemId: 'prospect-review-batch-20260829',
+  options: {
+    'confirm-chairman-approval': approvalPhrase('prospect-review-batch-20260829')
+  }
+});
+
 if (findings.length > 0) {
   console.error('Executive approval plan check failed:');
   for (const finding of findings) console.error(`- ${finding}`);
@@ -44,3 +73,15 @@ if (findings.length > 0) {
 }
 
 console.log('Executive approval plan check passed: chairman decisions expose explicit commands and execution boundaries.');
+
+function assertRejects(name, expected, fn) {
+  try {
+    fn();
+  } catch (error) {
+    if (!expected.test(error.message)) {
+      throw new Error(`${name}: expected ${expected}, received ${error.message}`);
+    }
+    return;
+  }
+  throw new Error(`${name}: expected rejection.`);
+}

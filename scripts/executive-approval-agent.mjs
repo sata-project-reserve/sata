@@ -3,7 +3,10 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import net from 'node:net';
 import { join } from 'node:path';
 import tls from 'node:tls';
-import { buildExecutiveApprovalPlan } from './lib/executive-approval-plan.mjs';
+import {
+  assertChairmanDecisionConfirmation,
+  buildExecutiveApprovalPlan,
+} from './lib/executive-approval-plan.mjs';
 
 const QUEUE_PATH = join('public', 'executive-approval-queue.json');
 const NOTIFICATION_LOG_PATH = join('artifacts', 'executive-approval-notifications.json');
@@ -23,10 +26,10 @@ switch (command) {
     await notifyChairman({ testMode: true });
     break;
   case 'approve':
-    await decideItem('approved-by-chairman', args[0]);
+    await decideItem('approved-by-chairman', args);
     break;
   case 'reject':
-    await decideItem('rejected', args[0]);
+    await decideItem('rejected', args);
     break;
   default:
     throw new Error(
@@ -84,10 +87,12 @@ async function notifyChairman({ testMode }) {
   );
 }
 
-async function decideItem(status, itemId) {
+async function decideItem(status, args) {
+  const [itemId, ...optionArgs] = args;
   if (!itemId) {
     throw new Error(`Missing item id. Use: ${command} <id>`);
   }
+  const options = parseDecisionOptions(optionArgs);
 
   const item = (queue.items ?? []).find((candidate) => candidate.id === itemId);
   if (!item) {
@@ -98,6 +103,7 @@ async function decideItem(status, itemId) {
       `${itemId} is ${item.status}; only ready-for-chairman-review items can be approved or rejected.`
     );
   }
+  requireChairmanConfirmation({ status, itemId, options });
 
   item.status = status;
   if (status === 'approved-by-chairman') {
@@ -112,6 +118,26 @@ async function decideItem(status, itemId) {
 
   await writeFile(QUEUE_PATH, `${JSON.stringify(queue, null, 2)}\n`);
   console.log(`${itemId} marked ${status}.`);
+}
+
+function parseDecisionOptions(values) {
+  const options = {};
+  for (let index = 0; index < values.length; index += 1) {
+    const key = values[index];
+    if (!key?.startsWith('--')) throw new Error('Decision options must be provided as --key value pairs.');
+    const collected = [];
+    while (values[index + 1] && !values[index + 1].startsWith('--')) {
+      collected.push(values[index + 1]);
+      index += 1;
+    }
+    if (collected.length === 0) throw new Error(`Missing value for ${key}.`);
+    options[key.slice(2)] = collected.join(' ');
+  }
+  return options;
+}
+
+function requireChairmanConfirmation({ status, itemId, options }) {
+  assertChairmanDecisionConfirmation({ status, itemId, options });
 }
 
 function formatNotificationDigest(items) {

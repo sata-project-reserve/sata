@@ -85,11 +85,11 @@ so repeated notifier runs do not send duplicate texts for the same approval item
 
 After the chairman replies in Codex or another approved control channel, record the decision:
 
-`npm run ops:approve -- <item-id>`
+`npm run ops:approve -- <item-id> --confirm-chairman-approval "I am Executive Chairman and approve <item-id>"`
 
 or:
 
-`npm run ops:reject -- <item-id>`
+`npm run ops:reject -- <item-id> --confirm-chairman-rejection "I am Executive Chairman and reject <item-id>"`
 
 Run:
 

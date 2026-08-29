@@ -21,8 +21,8 @@ export function buildExecutiveApprovalPlan(queue) {
       category: item.category,
       execution: item.execution,
       proposedAction: item.proposedAction,
-      approveCommand: `npm run ops:approve -- ${item.id}`,
-      rejectCommand: `npm run ops:reject -- ${item.id}`,
+      approveCommand: `npm run ops:approve -- ${item.id} --confirm-chairman-approval "${approvalPhrase(item.id)}"`,
+      rejectCommand: `npm run ops:reject -- ${item.id} --confirm-chairman-rejection "${rejectionPhrase(item.id)}"`,
       nextCommandAfterApproval: inferNextCommandAfterApproval(item),
       evidenceCount: (item.evidence ?? []).length,
       riskControlCount: (item.riskReview ?? []).length,
@@ -32,6 +32,35 @@ export function buildExecutiveApprovalPlan(queue) {
     operatingBoundary:
       'Agents prepare and validate work. The Executive Chairman approves final transactions, proposals, promotions, partnerships, and public commitments.'
   };
+}
+
+export function approvalPhrase(itemId) {
+  return `I am Executive Chairman and approve ${itemId}`;
+}
+
+export function rejectionPhrase(itemId) {
+  return `I am Executive Chairman and reject ${itemId}`;
+}
+
+export function assertChairmanDecisionConfirmation({ status, itemId, options }) {
+  const key = confirmationOptionName(status);
+  const expected = expectedConfirmationPhrase({ status, itemId });
+  if (options?.[key] !== expected) {
+    throw new Error(`Missing explicit chairman confirmation. Expected --${key} "${expected}"`);
+  }
+  return true;
+}
+
+export function confirmationOptionName(status) {
+  if (status === 'approved-by-chairman') return 'confirm-chairman-approval';
+  if (status === 'rejected') return 'confirm-chairman-rejection';
+  throw new Error(`Unsupported chairman decision status: ${status}`);
+}
+
+export function expectedConfirmationPhrase({ status, itemId }) {
+  if (status === 'approved-by-chairman') return approvalPhrase(itemId);
+  if (status === 'rejected') return rejectionPhrase(itemId);
+  throw new Error(`Unsupported chairman decision status: ${status}`);
 }
 
 function inferNextCommandAfterApproval(item) {

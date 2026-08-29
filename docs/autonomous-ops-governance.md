@@ -139,7 +139,7 @@ Authority limits:
 9. Use `public/revenue-operating-plan.json` as the machine-readable plan for revenue-first reserve growth, and `npm run ops:cycle-plan` as the current operating dashboard for the revenue-to-reserve loop.
 10. Use `public/sats-generation-ledger.json` as the active pipeline, receipt, and allocation ledger for generating more sats.
 11. Use `public/sats-invoice-queue.json` for chairman-approved direct-reserve BTC invoices, `npm run ops:invoice-quote-plan` for exact-sats draft quote preparation, `npm run ops:invoice-payment-plan` for approved customer payment packets, and `npm run ops:receipt-plan` for confirmed receipt allocation proposals.
-12. Use `public/sats-prospect-pipeline.json` for evidence-backed service prospecting before outreach, and `npm run ops:outreach-plan` to render manual outreach packets from approved templates.
+12. Use `public/sats-prospect-pipeline.json` for evidence-backed service prospecting before outreach, `npm run ops:prospect-candidate-plan` to draft identified prospect records, and `npm run ops:outreach-plan` to render manual outreach packets from approved templates.
 13. Use `public/transparency-audit-delivery-kit.json` for paid audit intake, scope, delivery gates, and `npm run ops:audit-artifact-plan` for draft artifact preparation.
 14. Use `npm run ops:intake-plan` and `npm run ops:intake-check` to convert GitHub issue intake into reviewable draft records.
 15. Use the Audit Intake Review workflow and `npm run ops:intake-comment-check` to acknowledge service-intake issues with safe chairman-review comments.
@@ -177,6 +177,8 @@ Approved customer payment packets are handled by `scripts/sats-invoice-payment-p
 Confirmed receipt allocation proposals are handled by `scripts/sats-receipt-allocation-agent.mjs`. Run `npm run ops:receipt-plan` to view confirmed direct-reserve invoice receipts awaiting allocation records, and `node scripts/sats-receipt-allocation-agent.mjs render <receipt-id>` only after the transaction has been independently confirmed at the published reserve address.
 
 Prospect controls are tracked in `public/sats-prospect-pipeline.json`. Run `npm run ops:prospect-plan` to view buyer segments and daily cadence, and `npm run ops:prospect-check` to validate outreach boundaries.
+
+Prospect candidate drafts are handled by `scripts/sats-prospect-candidate-agent.mjs`. Run `npm run ops:prospect-candidate-plan` for the required fields, and use `node scripts/sats-prospect-candidate-agent.mjs draft --id "<prospect>" --publicProfileUrl "<https-url>" --projectUrl "<https-url>" --observedClaim "<public evidence gap>" --evidence "<https-url-or-note>"` to prepare an identified-stage record before chairman review.
 
 Manual outreach packets are handled by `scripts/service-outreach-packet-agent.mjs`. Run `npm run ops:outreach-plan` to view approved templates, and `node scripts/service-outreach-packet-agent.mjs render --template transparency-audit-first-contact --prospect "<name>" --profile "<public-url>" --projectUrl "<project-url>"` to draft a compliant message for chairman approval.
 

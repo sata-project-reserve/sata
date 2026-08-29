@@ -40,6 +40,8 @@
     "ops:receipt-plan": "node scripts/sats-receipt-allocation-agent.mjs plan",
     "ops:prospect-check": "node scripts/validate-sats-prospect-pipeline.mjs",
     "ops:prospect-plan": "node scripts/sats-prospect-agent.mjs plan",
+    "ops:prospect-candidate-check": "node scripts/validate-sats-prospect-candidates.mjs",
+    "ops:prospect-candidate-plan": "node scripts/sats-prospect-candidate-agent.mjs plan",
     "ops:outreach-check": "node scripts/validate-service-outreach-packets.mjs",
     "ops:outreach-plan": "node scripts/service-outreach-packet-agent.mjs plan",
     "ops:delivery-check": "node scripts/validate-transparency-audit-delivery-kit.mjs",

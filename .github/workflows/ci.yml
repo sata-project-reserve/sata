@@ -68,6 +68,9 @@ jobs:
       - name: Validate sats prospect pipeline
         run: npm run ops:prospect-check
 
+      - name: Validate sats prospect candidates
+        run: npm run ops:prospect-candidate-check
+
       - name: Validate service outreach packets
         run: npm run ops:outreach-check
 

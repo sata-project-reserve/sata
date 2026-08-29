@@ -385,6 +385,20 @@ label {
   overflow-wrap: anywhere;
 }
 
+.command-list {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.25rem;
+}
+
+.command-list code {
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #f8fafc;
+  padding: 0.45rem 0.55rem;
+}
+
 .progress-block {
   display: grid;
   gap: 0.5rem;

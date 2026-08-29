@@ -30,6 +30,31 @@ function countByStage(items: Prospect[]) {
   }, {});
 }
 
+function approvalPhrase(id: string) {
+  return `I am Executive Chairman and approve ${id}`;
+}
+
+function rejectionPhrase(id: string) {
+  return `I am Executive Chairman and reject ${id}`;
+}
+
+function approvalCommand(item: ApprovalItem) {
+  return `npm run ops:approve -- ${item.id} --confirm-chairman-approval "${approvalPhrase(item.id)}"`;
+}
+
+function rejectionCommand(item: ApprovalItem) {
+  return `npm run ops:reject -- ${item.id} --confirm-chairman-rejection "${rejectionPhrase(item.id)}"`;
+}
+
+function nextCommandAfterApproval(item: ApprovalItem) {
+  if (item.id === 'prospect-review-batch-20260829') {
+    return `npm run ops:prospect-stage-plan, then node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${item.id} --prospects "<chairman-selected-prospect-ids>"`;
+  }
+  if (item.id === 'reserve-growth-operating-policy') return 'npm run ops:reserve-plan';
+  if (item.id === 'standard-promoter-intake-policy') return 'npm run ops:plan';
+  return 'npm run ops:cycle-plan';
+}
+
 export default function OperationsPage() {
   const approvalCounts = countByStatus(approvalQueue.items);
   const prospectCounts = countByStage(prospectPipeline.prospects);
@@ -109,6 +134,14 @@ export default function OperationsPage() {
               <strong>{item.title}</strong>
               <code>{item.id}</code>
               <p>{item.proposedAction}</p>
+              <div className="command-list">
+                <span>Approve</span>
+                <code>{approvalCommand(item)}</code>
+                <span>Reject</span>
+                <code>{rejectionCommand(item)}</code>
+                <span>After approval</span>
+                <code>{nextCommandAfterApproval(item)}</code>
+              </div>
             </div>
           ))}
         </div>

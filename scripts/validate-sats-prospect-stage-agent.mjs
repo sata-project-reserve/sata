@@ -14,6 +14,17 @@ const plan = buildProspectStagePlan({ pipeline, approvalQueue, approvalId });
 if (plan.mode !== 'chairman-gated-prospect-stage-transition') {
   findings.push('plan mode must be chairman-gated-prospect-stage-transition');
 }
+if (plan.eligibleProspects.length > pipeline.dailyCadence.chairmanReviewBatchSize) {
+  findings.push('plan must respect chairmanReviewBatchSize');
+}
+const expectedBacklog = Math.max(
+  pipeline.prospects.filter((prospect) => prospect.stage === 'identified').length -
+    pipeline.dailyCadence.chairmanReviewBatchSize,
+  0
+);
+if (plan.backlogProspects !== expectedBacklog) {
+  findings.push('plan must report identified prospect backlog beyond the next review batch');
+}
 if (approvalQueue.items.find((item) => item.id === approvalId)?.status !== 'approved-by-chairman') {
   if (plan.blocked !== true) findings.push('plan must be blocked while approval is not approved');
   if (!/Executive Chairman/i.test(plan.blockedReason ?? '')) {
@@ -78,6 +89,14 @@ assertRejects('unknown prospect', /Prospect not found/i, () =>
     approvalQueue: approvedQueue,
     approvalId,
     prospectIds: ['missing-prospect']
+  })
+);
+assertRejects('oversized transition batch', /exceeds chairman review batch size/i, () =>
+  applyProspectStageTransition({
+    pipeline,
+    approvalQueue: approvedQueue,
+    approvalId,
+    prospectIds: ['arnold-solana', 'npc-meme', 'black-bull-ansem', 'roach-solana']
   })
 );
 

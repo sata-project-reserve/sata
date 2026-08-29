@@ -6,13 +6,17 @@ export function buildProspectStagePlan({
   assertInputs({ pipeline, approvalQueue });
   const approval = findApproval(approvalQueue, approvalId);
   const identified = (pipeline.prospects ?? []).filter((prospect) => prospect.stage === 'identified');
+  const reviewBatchSize = getReviewBatchSize(pipeline);
+  const eligibleProspects = identified.slice(0, reviewBatchSize);
 
   return {
     project: pipeline.project,
     mode: 'chairman-gated-prospect-stage-transition',
     approvalId,
     approvalStatus: approval?.status ?? 'missing',
-    eligibleProspects: identified.map((prospect) => ({
+    reviewBatchSize,
+    backlogProspects: Math.max(identified.length - eligibleProspects.length, 0),
+    eligibleProspects: eligibleProspects.map((prospect) => ({
       id: prospect.id,
       currentStage: prospect.stage,
       proposedStage: 'chairman-review',
@@ -47,6 +51,10 @@ export function applyProspectStageTransition({
   }
 
   const ids = normalizeIds(prospectIds);
+  const reviewBatchSize = getReviewBatchSize(pipeline);
+  if (ids.size > reviewBatchSize) {
+    throw new Error(`Prospect stage transition exceeds chairman review batch size of ${reviewBatchSize}.`);
+  }
   const prospects = (pipeline.prospects ?? []).map((prospect) => {
     if (!ids.has(prospect.id)) return prospect;
     if (prospect.stage !== 'identified') {
@@ -90,4 +98,12 @@ function normalizeIds(value) {
   const cleaned = ids.map((id) => String(id).trim()).filter(Boolean);
   if (cleaned.length === 0) throw new Error('At least one prospect id is required.');
   return new Set(cleaned);
+}
+
+function getReviewBatchSize(pipeline) {
+  const size = Number(pipeline.dailyCadence?.chairmanReviewBatchSize ?? 3);
+  if (!Number.isSafeInteger(size) || size < 1) {
+    throw new Error('dailyCadence.chairmanReviewBatchSize must be an integer >= 1.');
+  }
+  return size;
 }

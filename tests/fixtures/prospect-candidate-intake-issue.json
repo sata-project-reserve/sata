@@ -1,0 +1,6 @@
+{
+  "number": 202,
+  "title": "[Prospect]: Example Liquidity Claim Token",
+  "url": "https://github.com/sata-project-reserve/sata/issues/202",
+  "body": "### Prospect name\nExample Liquidity Claim Token\n\n### Public profile URL\nhttps://x.com/exampleliquidity\n\n### Project URL\nhttps://example-liquidity.invalid\n\n### Observed public claim or evidence gap\nThe project publishes liquidity-lock claims but does not provide an obvious public lock proof or authority disclosure page.\n\n### Recommended offer\ntransparency-audit\n\n### Evidence links\nhttps://x.com/exampleliquidity/status/1\nhttps://example-liquidity.invalid/liquidity\n"
+}

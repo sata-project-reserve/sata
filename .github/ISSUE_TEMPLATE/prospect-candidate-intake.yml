@@ -1,0 +1,67 @@
+name: Prospect Candidate Intake
+description: Submit a public-evidence prospect candidate for SATA transparency services.
+title: "[Prospect]: "
+labels: ["prospect-candidate", "prospect-intake"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to suggest a possible transparency audit or reporting setup prospect from public evidence.
+
+        Do not use this form for paid promotion, investor targeting, fake engagement, bots, raids, market-making, or price-prediction requests.
+  - type: input
+    id: prospectName
+    attributes:
+      label: Prospect name
+      description: Public project, token, team, or organization name.
+    validations:
+      required: true
+  - type: input
+    id: publicProfileUrl
+    attributes:
+      label: Public profile URL
+      description: X, GitHub, announcement channel, or other public profile.
+    validations:
+      required: true
+  - type: input
+    id: projectUrl
+    attributes:
+      label: Project URL
+      description: Website, docs, token page, repository, or public proof page.
+    validations:
+      required: true
+  - type: textarea
+    id: observedClaim
+    attributes:
+      label: Observed public claim or evidence gap
+      description: Describe the authority, liquidity, reserve, ownership, or disclosure claim that could benefit from a public-evidence review.
+    validations:
+      required: true
+  - type: dropdown
+    id: recommendedOffer
+    attributes:
+      label: Recommended offer
+      options:
+        - transparency-audit
+        - transparency-report-setup
+        - full-proof-dashboard
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence links
+      description: Add public links only. Include posts, explorers, repositories, docs, token pages, or public proof pages.
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      options:
+        - label: This is a prospect candidate only, not outreach approval.
+          required: true
+        - label: I understand Executive Chairman approval is required before contact, invoice, payment request, paid work, token grant, or public commitment.
+          required: true
+        - label: I did not include price-promotion, investor-targeting, fake-engagement, bot, raid, market-making, or guaranteed-result requests.
+          required: true

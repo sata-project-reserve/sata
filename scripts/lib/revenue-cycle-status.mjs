@@ -118,7 +118,7 @@ function chooseNextAction({
   }
   const chairmanReview = prospects.find((prospect) => prospect.stage === 'chairman-review');
   if (chairmanReview) {
-    return `Prepare chairman review for prospect ${chairmanReview.id}.`;
+    return `Draft contact-only outreach approval packet for chairman-reviewed prospect ${chairmanReview.id}.`;
   }
   const identified = prospects.find((prospect) => prospect.stage === 'identified');
   if (identified) {

@@ -198,6 +198,8 @@ Prospect stage transitions are handled by `scripts/sats-prospect-stage-agent.mjs
 
 Prospect-specific outreach packets must use `node scripts/service-outreach-packet-agent.mjs render-approved --prospectId "<id>"`. The approved render path rejects any prospect that is not already `outreach-approved`; generic render output remains a draft helper only.
 
+Outreach approval packets are handled by `scripts/sats-outreach-approval-agent.mjs`. Run `npm run ops:outreach-approval-plan` to list prospects eligible for contact approval, and use `node scripts/sats-outreach-approval-agent.mjs draft --prospects "<id,id>"` only for records already in `chairman-review`. This drafts contact approval only; exact-sats invoices and payment instructions remain separate approval items.
+
 ## Public Target Language
 
 Allowed:

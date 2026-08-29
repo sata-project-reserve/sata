@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-08-26T12:45:00Z",
+  "updatedAtUtc": "2026-08-29T08:20:00Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -242,6 +242,36 @@
         {
           "type": "reserve-growth-plan",
           "url": "https://sata-project-reserve.github.io/sata/reserve-growth-plan.json"
+        }
+      ]
+    },
+    {
+      "id": "prospect-review-batch-20260829",
+      "title": "Review first public-evidence prospect batch",
+      "category": "revenue-action",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-08-29T08:20:00Z",
+      "preparedBy": "codex-ops",
+      "summary": "Review the first ten identified transparency-audit prospects and decide which candidates should move into a later explicit outreach decision.",
+      "rationale": "The revenue cycle needs qualified service prospects before it can generate chairman-approved invoices and confirmed reserve sats.",
+      "proposedAction": "Use npm run ops:prospect-review-plan to review the next batch of identified candidates. If acceptable, separately approve which records may move to chairman-review. This item does not approve contact, invoices, payment requests, paid work, token grants, or asset movement.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Candidates are recorded from public pages only and remain at identified stage.",
+        "No outreach occurs from this approval item.",
+        "No invoice, payment instruction, paid work, or token grant is approved by this item.",
+        "Observed claims are treated as public claims to review, not accusations or endorsements."
+      ],
+      "publicDisclosure": "SATA may sell transparency tooling and public-reporting services. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment.",
+      "evidence": [
+        {
+          "type": "prospect-pipeline",
+          "url": "https://sata-project-reserve.github.io/sata/sats-prospect-pipeline.json"
+        },
+        {
+          "type": "service-page",
+          "url": "https://sata-project-reserve.github.io/sata/services/transparency-audit"
         }
       ]
     }

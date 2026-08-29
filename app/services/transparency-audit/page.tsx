@@ -30,6 +30,21 @@ const checks = [
   'Risk wording and paid-promotion disclosure review'
 ];
 
+const intakeLabels: Record<string, string> = {
+  projectName: 'Project name',
+  network: 'Network',
+  tokenOrContractAddress: 'Token or contract address',
+  publicProjectUrl: 'Public project URL',
+  publicProfileUrl: 'Public profile URL',
+  claimsToReview: 'Claims to review',
+  requestedDeliverableVisibility: 'Deliverable visibility',
+  paymentStatus: 'Payment status'
+};
+
+const intakeRequirements = deliveryKit.requiredClientIntake.map(
+  (field) => intakeLabels[field] ?? field
+);
+
 export default function TransparencyAuditServicePage() {
   return (
     <main className="public-page service-page">
@@ -86,6 +101,42 @@ export default function TransparencyAuditServicePage() {
             <span>LP Lock Status</span>
             <strong>{report.liquidity.lockStatus}</strong>
           </div>
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Start Here</h2>
+          <p>Submit public evidence first. Payment is requested only after scope and invoice approval.</p>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Step 1</span>
+            <strong>Open the audit intake with public links and claims to review</strong>
+          </div>
+          <div className="metric">
+            <span>Step 2</span>
+            <strong>Receive a chairman-approved invoice with exact sats and expiration</strong>
+          </div>
+          <div className="metric">
+            <span>Step 3</span>
+            <strong>Delivery starts after BTC confirmation or approved escrow terms</strong>
+          </div>
+        </div>
+        <div className="service-checklist">
+          {intakeRequirements.map((requirement) => (
+            <div className="proof-block" key={requirement}>
+              <strong>{requirement}</strong>
+            </div>
+          ))}
+        </div>
+        <div className="inline-actions">
+          <a className="button-link" href={deliveryKit.intakeUrl}>
+            Open Audit Intake
+          </a>
+          <a className="button-link" href="/transparency-audit-delivery-kit.json">
+            View Intake Schema
+          </a>
         </div>
       </section>
 

@@ -102,6 +102,9 @@ jobs:
       - name: Validate sats invoice quoter
         run: npm run ops:invoice-quote-check
 
+      - name: Validate sats invoice requests
+        run: npm run ops:invoice-request-check
+
       - name: Validate sats invoice payment packets
         run: npm run ops:invoice-payment-check
 

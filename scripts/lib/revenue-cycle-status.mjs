@@ -112,6 +112,14 @@ function chooseNextAction({
   if (approvedInvoices.length > 0) {
     return `Render approved customer payment packet for ${approvedInvoices[0].id} before the quote expires.`;
   }
+  const invoiceRequested = prospects.find((prospect) => prospect.stage === 'invoice-requested');
+  if (invoiceRequested) {
+    return `Prepare exact-sats invoice quote inputs for invoice-requested prospect ${invoiceRequested.id}.`;
+  }
+  const contacted = prospects.find((prospect) => prospect.stage === 'contacted');
+  if (contacted) {
+    return `Wait for ${contacted.id} to request an invoice before quote preparation.`;
+  }
   const outreachApproved = prospects.find((prospect) => prospect.stage === 'outreach-approved');
   if (outreachApproved) {
     return `Render manual outreach packet for approved prospect ${outreachApproved.id}.`;

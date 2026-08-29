@@ -34,6 +34,8 @@
     "ops:invoice-plan": "node scripts/sats-invoice-agent.mjs plan",
     "ops:invoice-quote-check": "node scripts/validate-sats-invoice-quoter.mjs",
     "ops:invoice-quote-plan": "node scripts/sats-invoice-quote-agent.mjs plan",
+    "ops:invoice-request-check": "node scripts/validate-sats-invoice-request.mjs",
+    "ops:invoice-request-plan": "node scripts/sats-invoice-request-agent.mjs plan",
     "ops:invoice-payment-check": "node scripts/validate-sats-invoice-payment-packets.mjs",
     "ops:invoice-payment-plan": "node scripts/sats-invoice-payment-packet-agent.mjs plan",
     "ops:receipt-check": "node scripts/validate-sats-receipt-allocation-proposals.mjs",

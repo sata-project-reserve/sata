@@ -200,6 +200,8 @@ Prospect-specific outreach packets must use `node scripts/service-outreach-packe
 
 Outreach approval packets are handled by `scripts/sats-outreach-approval-agent.mjs`. Run `npm run ops:outreach-approval-plan` to list prospects eligible for contact approval, and use `node scripts/sats-outreach-approval-agent.mjs draft --prospects "<id,id>"` only for records already in `chairman-review`. This drafts contact approval only; exact-sats invoices and payment instructions remain separate approval items.
 
+Prospect response transitions are handled by `scripts/sats-prospect-response-agent.mjs`. Run `npm run ops:prospect-response-plan` after approved outreach exists. Use `record-contacted` only after the approved message was actually sent and contact evidence is available. Use `record-invoice-request` only after the contacted prospect explicitly asks for an invoice and `--confirmedCustomerRequestedInvoice true` is provided. These commands record evidence only; they do not approve outreach, invoices, payment instructions, paid work, token grants, custody changes, or asset movement.
+
 Invoice request packets are handled by `scripts/sats-invoice-request-agent.mjs`. Run `npm run ops:invoice-request-plan` to list prospects that have explicitly requested an invoice, and use `node scripts/sats-invoice-request-agent.mjs render --prospects "<id,id>"` only for records already in `invoice-requested`. This prepares quote inputs only; the exact sats amount and invoice still require chairman approval before payment instructions are sent.
 
 ## Public Target Language

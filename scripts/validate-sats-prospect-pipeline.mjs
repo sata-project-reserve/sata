@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { validateProspectResponseEvidence } from './lib/prospect-response-transition.mjs';
 
 const pipeline = JSON.parse(readFileSync(join('public', 'sats-prospect-pipeline.json'), 'utf8'));
 const revenuePlan = JSON.parse(readFileSync(join('public', 'revenue-operating-plan.json'), 'utf8'));
@@ -163,6 +164,12 @@ for (const prospect of pipeline.prospects ?? []) {
   if (!Array.isArray(prospect.evidence) || prospect.evidence.length === 0) {
     findings.push(`${prospect.id}: evidence must include at least one link or note`);
   }
+}
+
+try {
+  validateProspectResponseEvidence({ pipeline });
+} catch (error) {
+  findings.push(error.message);
 }
 
 if (!/Identify ten crypto teams/i.test(pipeline.nextOperatingAction ?? '')) {

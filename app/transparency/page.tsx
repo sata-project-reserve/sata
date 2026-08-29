@@ -104,6 +104,9 @@ export default function TransparencyPage() {
             <a className="button-link" href={`${PUBLIC_BASE_URL}/health.json`}>
               Health JSON
             </a>
+            <a className="button-link" href={`${PUBLIC_BASE_URL}/operations`}>
+              Operations Queue
+            </a>
             <a className="button-link" href={`${PUBLIC_BASE_URL}/project-profile.json`}>
               Project Profile
             </a>

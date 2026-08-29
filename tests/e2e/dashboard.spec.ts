@@ -55,3 +55,13 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
   await expect(page.getByText('No price guarantee')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Contact @SATAReserve' })).toBeVisible();
 });
+
+test('operations page surfaces chairman queue and prospect batch', async ({ page }) => {
+  await page.goto('/operations');
+  await expect(page.getByRole('heading', { name: 'Reserve growth queue.' })).toBeVisible();
+  await expect(page.getByText('500000 sats')).toBeVisible();
+  await expect(page.getByText('prospect-review-batch-20260829')).toBeVisible();
+  await expect(page.getByText('arnold-solana')).toBeVisible();
+  await expect(page.getByText('npc-meme')).toBeVisible();
+  await expect(page.getByText('No price guarantee')).toBeVisible();
+});

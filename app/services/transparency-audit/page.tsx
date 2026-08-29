@@ -66,6 +66,9 @@ export default function TransparencyAuditServicePage() {
             <a className="button-link" href="/sats-generation-ledger.json">
               View Sats Ledger
             </a>
+            <a className="button-link" href="/operations">
+              View Operations
+            </a>
             <a className="button-link" href="/sats-invoice-queue.json">
               View Invoice Queue
             </a>

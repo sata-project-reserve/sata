@@ -138,7 +138,7 @@ Authority limits:
 8. Use `public/reserve-growth-plan.json` as the machine-readable operating plan for the 1,000,000,000 sats target.
 9. Use `public/revenue-operating-plan.json` as the machine-readable plan for revenue-first reserve growth.
 10. Use `public/sats-generation-ledger.json` as the active pipeline, receipt, and allocation ledger for generating more sats.
-11. Use `public/sats-invoice-queue.json` for chairman-approved direct-reserve BTC invoices, and `npm run ops:invoice-quote-plan` for exact-sats draft quote preparation.
+11. Use `public/sats-invoice-queue.json` for chairman-approved direct-reserve BTC invoices, `npm run ops:invoice-quote-plan` for exact-sats draft quote preparation, and `npm run ops:invoice-payment-plan` for approved customer payment packets.
 12. Use `public/sats-prospect-pipeline.json` for evidence-backed service prospecting before outreach, and `npm run ops:outreach-plan` to render manual outreach packets from approved templates.
 13. Use `public/transparency-audit-delivery-kit.json` for paid audit intake, scope, delivery gates, and `npm run ops:audit-artifact-plan` for draft artifact preparation.
 14. Use `npm run ops:intake-plan` and `npm run ops:intake-check` to convert GitHub issue intake into reviewable draft records.
@@ -169,6 +169,8 @@ Sats generation is tracked in `public/sats-generation-ledger.json`. Run `npm run
 Invoice controls are tracked in `public/sats-invoice-queue.json`. Run `npm run ops:invoice-plan` to view invoice templates and `npm run ops:invoice-check` to validate quote and custody rules.
 
 Invoice quote preparation is handled by `scripts/sats-invoice-quote-agent.mjs`. Run `npm run ops:invoice-quote-plan` to view quoting boundaries, and `node scripts/sats-invoice-quote-agent.mjs quote-template --offer transparency-audit --customer "<customer>" --btcUsd "<manual-rate>" --source "<quote-source>"` to draft exact-sats invoice fields for chairman approval.
+
+Approved customer payment packets are handled by `scripts/sats-invoice-payment-packet-agent.mjs`. Run `npm run ops:invoice-payment-plan` to view approved invoices, and `node scripts/sats-invoice-payment-packet-agent.mjs render <invoice-id>` only after the invoice record is `approved-by-chairman` with exact sats and an unexpired quote.
 
 Prospect controls are tracked in `public/sats-prospect-pipeline.json`. Run `npm run ops:prospect-plan` to view buyer segments and daily cadence, and `npm run ops:prospect-check` to validate outreach boundaries.
 

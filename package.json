@@ -15,6 +15,7 @@
     "codex:notify:init": "node scripts/codex-terminal-notifier.mjs init",
     "codex:notify:list": "node scripts/codex-terminal-notifier.mjs list",
     "ops:check": "node scripts/validate-executive-approvals.mjs",
+    "ops:approval-plan-check": "node scripts/validate-executive-approval-plan.mjs",
     "ops:plan": "node scripts/executive-approval-agent.mjs plan",
     "ops:notify": "node scripts/executive-approval-agent.mjs notify",
     "ops:notify:test": "node scripts/executive-approval-agent.mjs notify-test",

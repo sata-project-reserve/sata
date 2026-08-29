@@ -158,7 +158,7 @@ Human approval is always required for:
 - wallet migration;
 - security incidents.
 
-The approval flow is documented in `docs/executive-approval-runbook.md`. Run `npm run ops:plan` to view items awaiting chairman review and `npm run ops:check` to validate the queue.
+The approval flow is documented in `docs/executive-approval-runbook.md`. Run `npm run ops:plan` to view items awaiting chairman review and `npm run ops:check` to validate the queue. The plan output includes `approveCommand`, `rejectCommand`, and `nextCommandAfterApproval` so chairman decisions remain explicit and separate from execution.
 
 Reserve growth is documented in `docs/bitcoin-treasury-policy.md`. Run `npm run ops:reserve-plan` to view progress toward the 1,000,000,000 sats target.
 

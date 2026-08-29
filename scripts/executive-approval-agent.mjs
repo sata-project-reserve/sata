@@ -3,6 +3,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import net from 'node:net';
 import { join } from 'node:path';
 import tls from 'node:tls';
+import { buildExecutiveApprovalPlan } from './lib/executive-approval-plan.mjs';
 
 const QUEUE_PATH = join('public', 'executive-approval-queue.json');
 const NOTIFICATION_LOG_PATH = join('artifacts', 'executive-approval-notifications.json');
@@ -34,34 +35,7 @@ switch (command) {
 }
 
 function printPlan() {
-  const counts = {};
-  for (const item of queue.items ?? []) {
-    counts[item.status] = (counts[item.status] ?? 0) + 1;
-  }
-  const reviewItems = (queue.items ?? []).filter(
-    (item) => item.status === 'ready-for-chairman-review'
-  );
-  console.log(
-    JSON.stringify(
-      {
-        project: queue.project,
-        mode: queue.mode,
-        executiveChairman: queue.executiveChairman,
-        counts,
-        chairmanReview: reviewItems.map((item) => ({
-          id: item.id,
-          title: item.title,
-          category: item.category,
-          execution: item.execution,
-          proposedAction: item.proposedAction
-        })),
-        operatingBoundary:
-          'Agents prepare and validate work. The Executive Chairman approves final transactions, proposals, promotions, partnerships, and public commitments.'
-      },
-      null,
-      2
-    )
-  );
+  console.log(JSON.stringify(buildExecutiveApprovalPlan(queue), null, 2));
 }
 
 async function notifyChairman({ testMode }) {

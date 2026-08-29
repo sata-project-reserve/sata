@@ -44,6 +44,8 @@
     "ops:prospect-candidate-plan": "node scripts/sats-prospect-candidate-agent.mjs plan",
     "ops:prospect-review-check": "node scripts/validate-sats-prospect-review-packets.mjs",
     "ops:prospect-review-plan": "node scripts/sats-prospect-review-agent.mjs plan",
+    "ops:prospect-stage-check": "node scripts/validate-sats-prospect-stage-agent.mjs",
+    "ops:prospect-stage-plan": "node scripts/sats-prospect-stage-agent.mjs plan",
     "ops:prospect-intake-check": "node scripts/validate-prospect-intake-workflow.mjs",
     "ops:prospect-intake-plan": "node scripts/prospect-intake-agent.mjs plan",
     "ops:prospect-intake-comment-check": "node scripts/validate-prospect-intake-commenter.mjs",

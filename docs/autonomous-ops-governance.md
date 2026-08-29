@@ -194,6 +194,8 @@ Audit intake issue comments are handled by `scripts/audit-intake-comment-agent.m
 
 Prospect review packets are handled by `scripts/sats-prospect-review-agent.mjs`. Run `npm run ops:prospect-review-plan` to produce the next bounded chairman review batch from identified prospects, or `node scripts/sats-prospect-review-agent.mjs render` for a Markdown packet. This does not approve outreach, invoices, payment requests, token grants, or commitments.
 
+Prospect stage transitions are handled by `scripts/sats-prospect-stage-agent.mjs`. Run `npm run ops:prospect-stage-plan` to see whether the current approval gate allows advancement, and use `node scripts/sats-prospect-stage-agent.mjs advance --approvalId "<approval-id>" --prospects "<id,id>"` only after the matching approval queue item is `approved-by-chairman`. This can move records to chairman-review only; outreach still needs a later explicit decision.
+
 ## Public Target Language
 
 Allowed:

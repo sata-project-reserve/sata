@@ -74,6 +74,9 @@ jobs:
       - name: Validate sats prospect review packets
         run: npm run ops:prospect-review-check
 
+      - name: Validate sats prospect stage agent
+        run: npm run ops:prospect-stage-check
+
       - name: Validate prospect intake workflow
         run: npm run ops:prospect-intake-check
 

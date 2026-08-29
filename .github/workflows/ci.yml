@@ -47,6 +47,9 @@ jobs:
       - name: Validate revenue operating plan
         run: npm run ops:revenue-check
 
+      - name: Validate revenue cycle status
+        run: npm run ops:cycle-check
+
       - name: Validate sats generation ledger
         run: npm run ops:sats-check
 

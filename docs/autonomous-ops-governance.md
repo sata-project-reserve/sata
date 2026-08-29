@@ -136,7 +136,7 @@ Authority limits:
 6. Maintain a public register for treasury, liquidity, and paid promotion decisions.
 7. Use `public/executive-approval-queue.json` as the public approval queue for agent-prepared work.
 8. Use `public/reserve-growth-plan.json` as the machine-readable operating plan for the 1,000,000,000 sats target.
-9. Use `public/revenue-operating-plan.json` as the machine-readable plan for revenue-first reserve growth.
+9. Use `public/revenue-operating-plan.json` as the machine-readable plan for revenue-first reserve growth, and `npm run ops:cycle-plan` as the current operating dashboard for the revenue-to-reserve loop.
 10. Use `public/sats-generation-ledger.json` as the active pipeline, receipt, and allocation ledger for generating more sats.
 11. Use `public/sats-invoice-queue.json` for chairman-approved direct-reserve BTC invoices, `npm run ops:invoice-quote-plan` for exact-sats draft quote preparation, `npm run ops:invoice-payment-plan` for approved customer payment packets, and `npm run ops:receipt-plan` for confirmed receipt allocation proposals.
 12. Use `public/sats-prospect-pipeline.json` for evidence-backed service prospecting before outreach, and `npm run ops:outreach-plan` to render manual outreach packets from approved templates.
@@ -163,6 +163,8 @@ The approval flow is documented in `docs/executive-approval-runbook.md`. Run `np
 Reserve growth is documented in `docs/bitcoin-treasury-policy.md`. Run `npm run ops:reserve-plan` to view progress toward the 1,000,000,000 sats target.
 
 Revenue operations are defined in `public/revenue-operating-plan.json`. Run `npm run ops:revenue-plan` to view the active revenue cycle and `npm run ops:revenue-check` to validate the operating rules.
+
+The revenue cycle dashboard is handled by `scripts/revenue-cycle-agent.mjs`. Run `npm run ops:cycle-plan` to view reserve progress, prospect/invoice/receipt/allocation counts, social readiness, current blockers, and the next action for the revenue-to-reserve loop.
 
 Sats generation is tracked in `public/sats-generation-ledger.json`. Run `npm run ops:sats-plan` to view the current sat-positive pipeline and `npm run ops:sats-check` to validate receipt and allocation records.
 

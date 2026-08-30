@@ -10,6 +10,7 @@ import {
   getAddressEncoder,
   getProgramDerivedAddress
 } from '@solana/kit';
+import { buildRevenueCycleStatus, validateRevenueCycleStatus } from './lib/revenue-cycle-status.mjs';
 
 await loadLocalEnvFile('.env.local');
 
@@ -280,6 +281,7 @@ export async function generateTransparencyReport() {
       transparencyPage: `${PUBLIC_BASE_URL}/transparency`,
       latestJson: `${PUBLIC_BASE_URL}/transparency/latest.json`,
       historyJson: `${PUBLIC_BASE_URL}/transparency/history.json`,
+      revenueCycleStatusJson: `${PUBLIC_BASE_URL}/revenue-cycle-status.json`,
       healthJson: `${PUBLIC_BASE_URL}/health.json`
     },
     network: 'mainnet-beta',
@@ -734,6 +736,7 @@ async function writeReports(report) {
   ]);
   const history = await buildHistoryLedger(report, publicDir);
   const health = buildHealthReport(report, history);
+  const revenueCycleStatus = await buildPublishedRevenueCycleStatus(report);
   const sitemap = buildSitemap(report);
   const robots = buildRobots();
   const json = `${JSON.stringify(report, null, 2)}\n`;
@@ -741,6 +744,7 @@ async function writeReports(report) {
   const historyJson = `${JSON.stringify(history, null, 2)}\n`;
   const historyMarkdown = buildHistoryMarkdown(history);
   const healthJson = `${JSON.stringify(health, null, 2)}\n`;
+  const revenueCycleStatusJson = `${JSON.stringify(revenueCycleStatus, null, 2)}\n`;
   await Promise.all([
     writeFile(join(artifactDir, `sata-transparency-${slug}.json`), json, 'utf8'),
     writeFile(join(artifactDir, `sata-transparency-${slug}.md`), markdown, 'utf8'),
@@ -752,6 +756,7 @@ async function writeReports(report) {
     writeFile(join(publicDir, 'latest.md'), markdown, 'utf8'),
     writeFile(join(publicDir, 'history.json'), historyJson, 'utf8'),
     writeFile(join(publicDir, 'history.md'), historyMarkdown, 'utf8'),
+    writeFile(join('public', 'revenue-cycle-status.json'), revenueCycleStatusJson, 'utf8'),
     writeFile(join('public', 'health.json'), healthJson, 'utf8'),
     writeFile(join('public', 'sitemap.xml'), sitemap, 'utf8'),
     writeFile(join('public', 'robots.txt'), robots, 'utf8')
@@ -762,8 +767,23 @@ async function writeReports(report) {
     publicJson: join(publicDir, 'latest.json'),
     publicMarkdown: join(publicDir, 'latest.md'),
     publicHistoryJson: join(publicDir, 'history.json'),
+    publicRevenueCycleStatusJson: join('public', 'revenue-cycle-status.json'),
     publicHealthJson: join('public', 'health.json')
   };
+}
+
+async function buildPublishedRevenueCycleStatus(report) {
+  const status = buildRevenueCycleStatus({
+    report,
+    revenuePlan: await readRequiredJson(join('public', 'revenue-operating-plan.json')),
+    ledger: await readRequiredJson(join('public', 'sats-generation-ledger.json')),
+    invoiceQueue: await readRequiredJson(join('public', 'sats-invoice-queue.json')),
+    prospectPipeline: await readRequiredJson(join('public', 'sats-prospect-pipeline.json')),
+    socialQueue: await readRequiredJson(join('public', 'social-agent-content-queue.json')),
+    env: {}
+  });
+  validateRevenueCycleStatus(status);
+  return status;
 }
 
 async function buildHistoryLedger(report, publicDir) {
@@ -861,6 +881,7 @@ function buildSitemap(report) {
     `${PUBLIC_BASE_URL}/executive-approval-queue.json`,
     `${PUBLIC_BASE_URL}/reserve-growth-plan.json`,
     `${PUBLIC_BASE_URL}/revenue-operating-plan.json`,
+    report.source.revenueCycleStatusJson,
     `${PUBLIC_BASE_URL}/sats-generation-ledger.json`,
     `${PUBLIC_BASE_URL}/sats-invoice-queue.json`,
     `${PUBLIC_BASE_URL}/sats-prospect-pipeline.json`,
@@ -1042,6 +1063,12 @@ async function readJsonIfExists(path) {
   } catch {
     return null;
   }
+}
+
+async function readRequiredJson(path) {
+  const value = await readJsonIfExists(path);
+  if (!value) throw new Error(`Required JSON file is missing or invalid: ${path}`);
+  return value;
 }
 
 function hashJson(value) {

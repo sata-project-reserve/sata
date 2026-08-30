@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { buildRevenueCycleStatus, validateRevenueCycleStatus } from './lib/revenue-cycle-status.mjs';
 
 const reserveAddress = 'bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk';
@@ -143,6 +145,12 @@ assertRejects('unsafe next action', /avoid prohibited routes/, () =>
   })
 );
 
+const publicInputs = await readPublicInputs();
+const expectedPublicStatus = buildRevenueCycleStatus({ ...publicInputs, env: {} });
+validateRevenueCycleStatus(expectedPublicStatus);
+const publishedPublicStatus = await readJson(join('public', 'revenue-cycle-status.json'));
+assertDeepEqual(publishedPublicStatus, expectedPublicStatus, 'public revenue-cycle-status.json');
+
 console.log('Revenue cycle status check passed: the operating dashboard preserves revenue-first reserve gates.');
 
 function assertEqual(actual, expected) {
@@ -152,6 +160,14 @@ function assertEqual(actual, expected) {
 function assertIncludes(value, expected) {
   const haystack = Array.isArray(value) ? value.join('\n') : String(value);
   if (!haystack.includes(expected)) throw new Error(`Expected value to include: ${expected}`);
+}
+
+function assertDeepEqual(actual, expected, label) {
+  const actualJson = JSON.stringify(actual);
+  const expectedJson = JSON.stringify(expected);
+  if (actualJson !== expectedJson) {
+    throw new Error(`${label} must match the generated revenue cycle status.`);
+  }
 }
 
 function assertRejects(name, expected, fn) {
@@ -164,4 +180,19 @@ function assertRejects(name, expected, fn) {
     return;
   }
   throw new Error(`${name}: expected rejection.`);
+}
+
+async function readPublicInputs() {
+  return {
+    report: await readJson(join('public', 'transparency', 'latest.json')),
+    revenuePlan: await readJson(join('public', 'revenue-operating-plan.json')),
+    ledger: await readJson(join('public', 'sats-generation-ledger.json')),
+    invoiceQueue: await readJson(join('public', 'sats-invoice-queue.json')),
+    prospectPipeline: await readJson(join('public', 'sats-prospect-pipeline.json')),
+    socialQueue: await readJson(join('public', 'social-agent-content-queue.json'))
+  };
+}
+
+async function readJson(path) {
+  return JSON.parse(await readFile(path, 'utf8'));
 }

@@ -1,0 +1,36 @@
+{
+  "project": "SATA Reserve Token",
+  "cycleId": "revenue-cycle-001",
+  "objective": "Generate legitimate operating revenue from existing SATA transparency infrastructure and allocate approved proceeds toward the 1,000,000,000 sats reserve target.",
+  "currentReserve": {
+    "confirmedSats": "500000",
+    "confirmedBtc": "0.005",
+    "targetSats": "1000000000",
+    "remainingSats": "999500000",
+    "remainingBtc": "9.995",
+    "latestReportGeneratedAtUtc": "2026-08-30T12:27:29.328Z"
+  },
+  "funnel": {
+    "prospects": 10,
+    "identifiedProspects": 10,
+    "chairmanReviewProspects": 0,
+    "outreachApprovedProspects": 0,
+    "approvedInvoices": 0,
+    "confirmedReceipts": 0,
+    "receiptsAwaitingAllocation": 0,
+    "recordedAllocations": 0
+  },
+  "social": {
+    "queueMode": "approved-only-automation",
+    "approvedPosts": 1,
+    "readyForReviewPosts": 4,
+    "livePostingEnabled": false
+  },
+  "blockers": [
+    "No chairman-approved exact-sats invoice is ready to send.",
+    "No confirmed direct-reserve BTC receipt is recorded.",
+    "Approved social content exists, but live X posting credentials are not enabled in this runtime."
+  ],
+  "nextAction": "Render prospect review packet for the next identified candidates before any outreach.",
+  "boundary": "Agents may prepare records, packets, and proposals. The Executive Chairman approves outreach, invoices, transactions, allocations, paid promotion, token grants, and any asset movement."
+}

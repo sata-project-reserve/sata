@@ -179,7 +179,7 @@ jobs:
           git config user.email "sata-report-bot@users.noreply.github.com"
 
           base_sha="$(git rev-parse HEAD)"
-          git add public/transparency public/health.json public/sitemap.xml public/robots.txt
+          git add public/transparency public/revenue-cycle-status.json public/health.json public/sitemap.xml public/robots.txt
 
           if git diff --cached --quiet; then
             echo "No public report changes to commit."
@@ -224,6 +224,7 @@ jobs:
             artifacts/transparency/history.json
             artifacts/transparency/history.md
             public/health.json
+            public/revenue-cycle-status.json
             public/sitemap.xml
             public/robots.txt
 

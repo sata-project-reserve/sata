@@ -60,6 +60,11 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await page.goto('/operations');
   await expect(page.getByRole('heading', { name: 'Reserve growth queue.' })).toBeVisible();
   await expect(page.getByText('500000 sats')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Cycle Status' })).toBeVisible();
+  await expect(page.getByText('999,500,000 sats')).toBeVisible();
+  await expect(
+    page.getByText('Render prospect review packet for the next identified candidates before any outreach.')
+  ).toBeVisible();
   await expect(page.getByText('prospect-review-batch-20260829', { exact: true })).toBeVisible();
   await expect(
     page.getByText(/npm run ops:approve -- prospect-review-batch-20260829 --confirm-chairman-approval/)

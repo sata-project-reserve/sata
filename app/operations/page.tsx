@@ -1,5 +1,9 @@
 import approvalQueue from '@/public/executive-approval-queue.json';
+import ledger from '@/public/sats-generation-ledger.json';
 import prospectPipeline from '@/public/sats-prospect-pipeline.json';
+import revenuePlan from '@/public/revenue-operating-plan.json';
+import invoiceQueue from '@/public/sats-invoice-queue.json';
+import socialQueue from '@/public/social-agent-content-queue.json';
 import report from '@/public/transparency/latest.json';
 
 export const metadata = {
@@ -15,6 +19,7 @@ const PUBLIC_BASE_URL = 'https://sata-project-reserve.github.io/sata';
 
 type ApprovalItem = (typeof approvalQueue.items)[number];
 type Prospect = (typeof prospectPipeline.prospects)[number];
+type StatusRecord = { id?: string; status?: string; receiptId?: string };
 
 function countByStatus(items: ApprovalItem[]) {
   return items.reduce<Record<string, number>>((counts, item) => {
@@ -55,6 +60,17 @@ function nextCommandAfterApproval(item: ApprovalItem) {
   return 'npm run ops:cycle-plan';
 }
 
+function formatSats(sats: string) {
+  return BigInt(sats).toLocaleString('en-US');
+}
+
+function formatSatsAsBtc(sats: string) {
+  const value = BigInt(sats);
+  const whole = value / 100_000_000n;
+  const fraction = (value % 100_000_000n).toString().padStart(8, '0').replace(/0+$/, '');
+  return fraction ? `${whole}.${fraction}` : whole.toString();
+}
+
 export default function OperationsPage() {
   const approvalCounts = countByStatus(approvalQueue.items);
   const prospectCounts = countByStage(prospectPipeline.prospects);
@@ -64,6 +80,36 @@ export default function OperationsPage() {
   const reviewBatch = prospectPipeline.prospects
     .filter((prospect) => prospect.stage === 'identified')
     .slice(0, prospectPipeline.dailyCadence.chairmanReviewBatchSize);
+  const targetSats = BigInt(ledger.target.targetSats);
+  const confirmedSats = BigInt(report.bitcoinReserve.confirmedReserveSats);
+  const remainingSats = targetSats > confirmedSats ? targetSats - confirmedSats : 0n;
+  const invoices = invoiceQueue.invoices as StatusRecord[];
+  const receipts = ledger.receipts as StatusRecord[];
+  const allocations = ledger.allocations as StatusRecord[];
+  const socialPosts = socialQueue.posts as StatusRecord[];
+  const approvedInvoices = invoices.filter((invoice) => invoice.status === 'approved-by-chairman');
+  const confirmedReceipts = receipts.filter((receipt) => receipt.status === 'confirmed');
+  const allocationReceiptIds = new Set(allocations.map((allocation) => allocation.receiptId));
+  const receiptsAwaitingAllocation = confirmedReceipts.filter(
+    (receipt) => receipt.id && !allocationReceiptIds.has(receipt.id)
+  );
+  const approvedPosts = socialPosts.filter((post) => post.status === 'approved');
+  const readyPosts = socialPosts.filter((post) => post.status === 'ready-for-review');
+  const cycleBlockers = [
+    ...(approvedInvoices.length === 0
+      ? ['No chairman-approved exact-sats invoice is ready to send.']
+      : []),
+    ...(confirmedReceipts.length === 0
+      ? ['No confirmed direct-reserve BTC receipt is recorded.']
+      : []),
+    ...(approvedPosts.length > 0
+      ? ['Approved social content exists, but live X posting credentials are not enabled in this runtime.']
+      : [])
+  ];
+  const nextCycleAction =
+    prospectPipeline.prospects.some((prospect) => prospect.stage === 'identified')
+      ? 'Render prospect review packet for the next identified candidates before any outreach.'
+      : prospectPipeline.nextOperatingAction;
 
   return (
     <main className="public-page">
@@ -111,6 +157,51 @@ export default function OperationsPage() {
             <span>Chairman Review Items</span>
             <strong>{reviewItems.length}</strong>
           </div>
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Cycle Status</h2>
+          <p>{revenuePlan.objective}</p>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Remaining To Target</span>
+            <strong>{formatSats(remainingSats.toString())} sats</strong>
+          </div>
+          <div className="metric">
+            <span>Remaining BTC</span>
+            <strong>{formatSatsAsBtc(remainingSats.toString())} BTC</strong>
+          </div>
+          <div className="metric">
+            <span>Approved Invoices</span>
+            <strong>{approvedInvoices.length}</strong>
+          </div>
+          <div className="metric">
+            <span>Receipts Awaiting Allocation</span>
+            <strong>{receiptsAwaitingAllocation.length}</strong>
+          </div>
+          <div className="metric">
+            <span>Approved Posts</span>
+            <strong>{approvedPosts.length}</strong>
+          </div>
+          <div className="metric">
+            <span>Ready Posts</span>
+            <strong>{readyPosts.length}</strong>
+          </div>
+        </div>
+        <div className="notice">
+          <strong>Next Action</strong>
+          <span>{nextCycleAction}</span>
+        </div>
+        <div className="warning-list">
+          {cycleBlockers.map((blocker) => (
+            <div className="proof-block" key={blocker}>
+              <span>blocker</span>
+              <strong>{blocker}</strong>
+            </div>
+          ))}
         </div>
       </section>
 

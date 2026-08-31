@@ -8,13 +8,13 @@
     "targetSats": "1000000000",
     "remainingSats": "999500000",
     "remainingBtc": "9.995",
-    "latestReportGeneratedAtUtc": "2026-08-31T12:15:51.073Z"
+    "latestReportGeneratedAtUtc": "2026-08-31T15:51:34.968Z"
   },
   "funnel": {
     "prospects": 10,
     "identifiedProspects": 7,
-    "chairmanReviewProspects": 3,
-    "outreachApprovedProspects": 0,
+    "chairmanReviewProspects": 0,
+    "outreachApprovedProspects": 3,
     "approvedInvoices": 0,
     "confirmedReceipts": 0,
     "receiptsAwaitingAllocation": 0,
@@ -31,6 +31,6 @@
     "No confirmed direct-reserve BTC receipt is recorded.",
     "Approved social content exists, but live X posting credentials are not enabled in this runtime."
   ],
-  "nextAction": "Draft contact-only outreach approval packet for chairman-reviewed prospect arnold-solana.",
+  "nextAction": "Render manual outreach packet for approved prospect arnold-solana.",
   "boundary": "Agents may prepare records, packets, and proposals. The Executive Chairman approves outreach, invoices, transactions, allocations, paid promotion, token grants, and any asset movement."
 }

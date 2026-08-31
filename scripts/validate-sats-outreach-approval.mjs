@@ -1,4 +1,6 @@
 import {
+  applyOutreachApprovalTransition,
+  buildOutreachApprovalTransitionPlan,
   buildOutreachApprovalPacket,
   renderOutreachApprovalPacket
 } from './lib/prospect-outreach-approval.mjs';
@@ -24,6 +26,17 @@ const packet = buildOutreachApprovalPacket({
   prospectIds: 'reviewed-team',
   generatedAtUtc: '2026-08-29T09:30:00.000Z'
 });
+const approvedQueue = {
+  items: [
+    {
+      ...packet.approvalItem,
+      status: 'approved-by-chairman',
+      approvedBy: 'executive-chairman',
+      approvedAtUtc: '2026-08-29T09:35:00.000Z'
+    }
+  ]
+};
+const pendingQueue = { items: [packet.approvalItem] };
 const rendered = renderOutreachApprovalPacket({
   pipeline,
   prospectIds: 'reviewed-team',
@@ -47,6 +60,34 @@ if (!/does not approve invoices/i.test(packet.boundary)) {
 }
 if (!/separate chairman-approved exact-sats invoice/i.test(packet.approvalItem.riskReview.join('\n'))) {
   findings.push('approval item must require separate exact-sats invoice approval');
+}
+
+const transitionPlan = buildOutreachApprovalTransitionPlan({
+  pipeline,
+  approvalQueue: approvedQueue,
+  approvalId: packet.approvalItem.id
+});
+if (transitionPlan.mode !== 'chairman-gated-outreach-stage-transition') {
+  findings.push('transition plan must be chairman-gated outreach stage transition');
+}
+if (transitionPlan.eligibleProspects[0]?.proposedStage !== 'outreach-approved') {
+  findings.push('transition plan must propose outreach-approved stage');
+}
+
+const transitioned = applyOutreachApprovalTransition({
+  pipeline,
+  approvalQueue: approvedQueue,
+  approvalId: packet.approvalItem.id,
+  prospectIds: 'reviewed-team',
+  transitionedAtUtc: '2026-08-29T09:40:00.000Z'
+});
+const moved = transitioned.prospects.find((prospect) => prospect.id === 'reviewed-team');
+if (moved?.stage !== 'outreach-approved') findings.push('approved transition must move to outreach-approved');
+if (moved?.outreachApprovalId !== packet.approvalItem.id) {
+  findings.push('approved transition must record outreach approval id');
+}
+if (!/does not approve invoices/i.test(transitionPlan.boundary)) {
+  findings.push('transition boundary must reject invoice approval');
 }
 
 for (const required of [
@@ -94,6 +135,46 @@ assertRejects('outreach limit', /exceeds daily outreach limit/, () =>
   buildOutreachApprovalPacket({
     pipeline: tooManyPipeline,
     prospectIds: 'reviewed-team,second-reviewed-team'
+  })
+);
+assertRejects('pending approval transition', /not approved by the Executive Chairman/, () =>
+  applyOutreachApprovalTransition({
+    pipeline,
+    approvalQueue: pendingQueue,
+    approvalId: packet.approvalItem.id,
+    prospectIds: 'reviewed-team'
+  })
+);
+assertRejects('prospect not approved by item', /not included/, () =>
+  applyOutreachApprovalTransition({
+    pipeline,
+    approvalQueue: approvedQueue,
+    approvalId: packet.approvalItem.id,
+    prospectIds: 'second-reviewed-team'
+  })
+);
+assertRejects('unscoped outreach approval', /must explicitly name/, () =>
+  applyOutreachApprovalTransition({
+    pipeline,
+    approvalQueue: {
+      items: [
+        {
+          ...approvedQueue.items[0],
+          id: 'outreach-approval-20260829-unscoped',
+          title: 'Approve factual outreach'
+        }
+      ]
+    },
+    approvalId: 'outreach-approval-20260829-unscoped',
+    prospectIds: 'reviewed-team'
+  })
+);
+assertRejects('reused outreach approval id', /already been used/, () =>
+  applyOutreachApprovalTransition({
+    pipeline: transitioned,
+    approvalQueue: approvedQueue,
+    approvalId: packet.approvalItem.id,
+    prospectIds: 'reviewed-team'
   })
 );
 

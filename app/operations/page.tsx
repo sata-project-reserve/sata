@@ -54,7 +54,22 @@ function nextCommandAfterApproval(item: ApprovalItem, reviewBatch: Prospect[]) {
   }
   if (item.id === 'reserve-growth-operating-policy') return 'npm run ops:reserve-plan';
   if (item.id === 'standard-promoter-intake-policy') return 'npm run ops:plan';
+  if (item.id.startsWith('outreach-approval-')) {
+    const prospectIds = outreachProspectIdsFromTitle(item.title);
+    return `node scripts/sats-outreach-approval-agent.mjs transition-plan --approvalId ${item.id}, then node scripts/sats-outreach-approval-agent.mjs advance --approvalId ${item.id} --prospects ${prospectIds || '<chairman-approved-prospect-ids>'}`;
+  }
   return 'npm run ops:cycle-plan';
+}
+
+function outreachProspectIdsFromTitle(title: string) {
+  const match = /^Approve factual outreach to (?<ids>.+)$/.exec(title);
+  const ids = match?.groups?.ids;
+  if (!ids) return '';
+  return ids
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean)
+    .join(',');
 }
 
 export default function OperationsPage() {

@@ -54,6 +54,21 @@ if (
   findings.push('prospect review approval must include the first bounded prospect batch');
 }
 
+const outreachReview = plan.chairmanReview.find((item) =>
+  item.id.startsWith('outreach-approval-20260831')
+);
+if (outreachReview && !/sats-outreach-approval-agent\.mjs advance/i.test(outreachReview.nextCommandAfterApproval)) {
+  findings.push('outreach approval must point to the bounded outreach transition');
+}
+if (
+  outreachReview &&
+  !outreachReview.nextCommandAfterApproval.includes(
+    '--prospects arnold-solana,npc-meme,black-bull-ansem'
+  )
+) {
+  findings.push('outreach approval must include the chairman-reviewed prospect ids');
+}
+
 assertRejects('missing approval confirmation', /Missing explicit chairman confirmation/i, () =>
   assertChairmanDecisionConfirmation({
     status: 'approved-by-chairman',

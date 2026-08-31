@@ -63,8 +63,9 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByRole('heading', { name: 'Cycle Status' })).toBeVisible();
   await expect(page.getByText('999,500,000 sats')).toBeVisible();
   await expect(
-    page.getByText('Draft contact-only outreach approval packet for chairman-reviewed prospect arnold-solana.')
+    page.getByText('Render manual outreach packet for approved prospect arnold-solana.')
   ).toBeVisible();
+  await expect(page.getByText('outreach-approved').locator('..').getByText('3')).toBeVisible();
   await expect(page.getByText('roach-solana', { exact: true })).toBeVisible();
   await expect(page.getByText('tradiecoin', { exact: true })).toBeVisible();
   await expect(page.getByText('No price guarantee')).toBeVisible();

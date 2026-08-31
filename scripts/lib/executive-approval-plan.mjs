@@ -74,6 +74,14 @@ export function buildProspectReviewAdvanceCommand({ approvalId, prospectPipeline
   return `node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${approvalId} --prospects ${eligibleIds.join(',')}`;
 }
 
+export function buildOutreachApprovalAdvanceCommand({ approvalId, title }) {
+  const ids = prospectIdsFromOutreachApprovalTitle(title);
+  if (ids.length === 0) {
+    return `node scripts/sats-outreach-approval-agent.mjs advance --approvalId ${approvalId} --prospects "<chairman-approved-prospect-ids>"`;
+  }
+  return `node scripts/sats-outreach-approval-agent.mjs advance --approvalId ${approvalId} --prospects ${ids.join(',')}`;
+}
+
 function inferNextCommandAfterApproval(item, { prospectPipeline }) {
   if (item.id === 'prospect-review-batch-20260829') {
     return `npm run ops:prospect-stage-plan, then ${buildProspectReviewAdvanceCommand({
@@ -87,5 +95,22 @@ function inferNextCommandAfterApproval(item, { prospectPipeline }) {
   if (item.id === 'standard-promoter-intake-policy') {
     return 'npm run ops:plan';
   }
+  if (item.id.startsWith('outreach-approval-')) {
+    return `node scripts/sats-outreach-approval-agent.mjs transition-plan --approvalId ${item.id}, then ${buildOutreachApprovalAdvanceCommand(
+      {
+        approvalId: item.id,
+        title: item.title
+      }
+    )}`;
+  }
   return 'npm run ops:cycle-plan';
+}
+
+function prospectIdsFromOutreachApprovalTitle(title) {
+  const match = /^Approve factual outreach to (?<ids>.+)$/.exec(title ?? '');
+  if (!match?.groups?.ids) return [];
+  return match.groups.ids
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean);
 }

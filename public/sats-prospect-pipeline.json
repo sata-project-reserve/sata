@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-08-31T11:10:35.377Z",
+  "updatedAtUtc": "2026-08-31T15:51:10.572Z",
   "mode": "service-revenue-prospect-pipeline",
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
@@ -61,7 +61,7 @@
   "prospects": [
     {
       "id": "arnold-solana",
-      "stage": "chairman-review",
+      "stage": "outreach-approved",
       "source": "manual-public-review-2026-08-29",
       "publicProfileUrl": "https://www.arnoldrothstein.com/",
       "projectUrl": "https://www.arnoldrothstein.com/",
@@ -72,13 +72,15 @@
         "https://www.arnoldrothstein.com/"
       ],
       "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
-      "stageUpdatedAtUtc": "2026-08-31T11:10:35.377Z",
+      "stageUpdatedAtUtc": "2026-08-31T15:51:10.572Z",
       "stageApprovalId": "prospect-review-batch-20260829",
-      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
+      "stageNotes": "Approved for one factual transparency-audit outreach message. Invoices, payment instructions, paid work, token grants, and asset movement still require separate chairman approval.",
+      "outreachApprovedAtUtc": "2026-08-31T15:51:10.572Z",
+      "outreachApprovalId": "outreach-approval-20260831-arnold-solana-npc-meme-black-bull-ansem"
     },
     {
       "id": "npc-meme",
-      "stage": "chairman-review",
+      "stage": "outreach-approved",
       "source": "manual-public-review-2026-08-29",
       "publicProfileUrl": "https://npcmeme.fun/",
       "projectUrl": "https://npcmeme.fun/",
@@ -89,13 +91,15 @@
         "https://npcmeme.fun/"
       ],
       "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
-      "stageUpdatedAtUtc": "2026-08-31T11:10:35.377Z",
+      "stageUpdatedAtUtc": "2026-08-31T15:51:10.572Z",
       "stageApprovalId": "prospect-review-batch-20260829",
-      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
+      "stageNotes": "Approved for one factual transparency-audit outreach message. Invoices, payment instructions, paid work, token grants, and asset movement still require separate chairman approval.",
+      "outreachApprovedAtUtc": "2026-08-31T15:51:10.572Z",
+      "outreachApprovalId": "outreach-approval-20260831-arnold-solana-npc-meme-black-bull-ansem"
     },
     {
       "id": "black-bull-ansem",
-      "stage": "chairman-review",
+      "stage": "outreach-approved",
       "source": "manual-public-review-2026-08-29",
       "publicProfileUrl": "https://theblackbull.fun/",
       "projectUrl": "https://theblackbull.fun/",
@@ -106,9 +110,11 @@
         "https://theblackbull.fun/"
       ],
       "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
-      "stageUpdatedAtUtc": "2026-08-31T11:10:35.377Z",
+      "stageUpdatedAtUtc": "2026-08-31T15:51:10.572Z",
       "stageApprovalId": "prospect-review-batch-20260829",
-      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
+      "stageNotes": "Approved for one factual transparency-audit outreach message. Invoices, payment instructions, paid work, token grants, and asset movement still require separate chairman approval.",
+      "outreachApprovedAtUtc": "2026-08-31T15:51:10.572Z",
+      "outreachApprovalId": "outreach-approval-20260831-arnold-solana-npc-meme-black-bull-ansem"
     },
     {
       "id": "roach-solana",

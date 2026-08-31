@@ -85,6 +85,96 @@ export function renderOutreachApprovalPacket({ pipeline, prospectIds, generatedA
   return lines.join('\n');
 }
 
+export function buildOutreachApprovalTransitionPlan({ pipeline, approvalQueue, approvalId }) {
+  assertInputs({ pipeline, approvalQueue });
+  const approval = findApproval(approvalQueue, approvalId);
+  const prospectIds = prospectIdsFromApproval(approval);
+  const approvalHasProspectScope = prospectIds.size > 0;
+  const approvalConsumed = (pipeline.prospects ?? []).some(
+    (prospect) => prospect.outreachApprovalId === approvalId
+  );
+  const eligibleProspects =
+    approval?.status === 'approved-by-chairman' && approvalHasProspectScope && !approvalConsumed
+      ? selectProspects({ pipeline, prospectIds })
+      : [];
+
+  return {
+    project: pipeline.project,
+    mode: 'chairman-gated-outreach-stage-transition',
+    approvalId,
+    approvalStatus: approval?.status ?? 'missing',
+    eligibleProspects: eligibleProspects.map((prospect) => ({
+      id: prospect.id,
+      currentStage: prospect.stage,
+      proposedStage: 'outreach-approved',
+      publicProfileUrl: prospect.publicProfileUrl,
+      projectUrl: prospect.projectUrl
+    })),
+    blocked: approval?.status !== 'approved-by-chairman' || !approvalHasProspectScope || approvalConsumed,
+    blockedReason:
+      approval?.status !== 'approved-by-chairman'
+        ? 'Prospects cannot move to outreach-approved until the matching outreach approval is approved by the Executive Chairman.'
+        : !approvalHasProspectScope
+          ? `${approvalId} must explicitly name the approved prospect ids.`
+          : approvalConsumed
+            ? `${approvalId} has already been used for an outreach approval transition.`
+            : null,
+    boundary:
+      'This transition approves one factual outreach message only. It does not approve invoices, payment requests, paid work, token grants, commitments, or asset movement.'
+  };
+}
+
+export function applyOutreachApprovalTransition({
+  pipeline,
+  approvalQueue,
+  approvalId,
+  prospectIds,
+  transitionedAtUtc = new Date().toISOString()
+}) {
+  assertInputs({ pipeline, approvalQueue });
+  const approval = findApproval(approvalQueue, approvalId);
+  if (approval?.status !== 'approved-by-chairman') {
+    throw new Error(`${approvalId} is not approved by the Executive Chairman.`);
+  }
+  if ((pipeline.prospects ?? []).some((prospect) => prospect.outreachApprovalId === approvalId)) {
+    throw new Error(`${approvalId} has already been used for an outreach approval transition.`);
+  }
+  const ids = normalizeIds(prospectIds);
+  const approvedIds = prospectIdsFromApproval(approval);
+  if (approvedIds.size === 0) {
+    throw new Error(`${approvalId} must explicitly name the approved prospect ids.`);
+  }
+  for (const id of ids) {
+    if (!approvedIds.has(id)) {
+      throw new Error(`${id}: prospect is not included in ${approvalId}.`);
+    }
+  }
+  const selected = selectProspects({ pipeline, prospectIds: [...ids] });
+  const outreachLimit = Number(pipeline.dailyCadence?.outreachLimit ?? 3);
+  if (selected.length > outreachLimit) {
+    throw new Error(`Outreach approval transition exceeds daily outreach limit of ${outreachLimit}.`);
+  }
+
+  const prospects = (pipeline.prospects ?? []).map((prospect) => {
+    if (!ids.has(prospect.id)) return prospect;
+    return {
+      ...prospect,
+      stage: 'outreach-approved',
+      stageUpdatedAtUtc: transitionedAtUtc,
+      outreachApprovedAtUtc: transitionedAtUtc,
+      outreachApprovalId: approvalId,
+      stageNotes:
+        'Approved for one factual transparency-audit outreach message. Invoices, payment instructions, paid work, token grants, and asset movement still require separate chairman approval.'
+    };
+  });
+
+  return {
+    ...pipeline,
+    updatedAtUtc: transitionedAtUtc,
+    prospects
+  };
+}
+
 function selectProspects({ pipeline, prospectIds }) {
   const prospects = pipeline.prospects ?? [];
   const ids = normalizeIds(prospectIds);
@@ -109,6 +199,20 @@ function selectProspects({ pipeline, prospectIds }) {
     }
   }
   return selected;
+}
+
+function assertInputs({ pipeline, approvalQueue }) {
+  if (!pipeline || typeof pipeline !== 'object') throw new Error('Missing prospect pipeline.');
+  if (!approvalQueue || typeof approvalQueue !== 'object') throw new Error('Missing approval queue.');
+}
+
+function findApproval(approvalQueue, approvalId) {
+  return (approvalQueue.items ?? []).find((item) => item.id === approvalId);
+}
+
+function prospectIdsFromApproval(approval) {
+  const match = /^Approve factual outreach to (?<ids>.+)$/.exec(approval?.title ?? '');
+  return normalizeIds(match?.groups?.ids ?? '');
 }
 
 function buildApprovalItem({ prospects, generatedAtUtc }) {
@@ -145,6 +249,7 @@ function buildApprovalItem({ prospects, generatedAtUtc }) {
 }
 
 function normalizeIds(value) {
+  if (value instanceof Set) return new Set([...value].map((id) => String(id).trim()).filter(Boolean));
   if (value === undefined || value === null || value === '') return new Set();
   const ids = Array.isArray(value) ? value : String(value).split(',');
   return new Set(ids.map((id) => String(id).trim()).filter(Boolean));

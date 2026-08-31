@@ -1,13 +1,19 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
+  applyOutreachApprovalTransition,
+  buildOutreachApprovalTransitionPlan,
   buildOutreachApprovalPacket,
   renderOutreachApprovalPacket
 } from './lib/prospect-outreach-approval.mjs';
 
 const PIPELINE_PATH = join('public', 'sats-prospect-pipeline.json');
+const APPROVAL_QUEUE_PATH = join('public', 'executive-approval-queue.json');
 const [, , command = 'plan', ...args] = process.argv;
-const pipeline = await readJson(PIPELINE_PATH);
+const [pipeline, approvalQueue] = await Promise.all([
+  readJson(PIPELINE_PATH),
+  readJson(APPROVAL_QUEUE_PATH)
+]);
 
 switch (command) {
   case 'plan':
@@ -19,8 +25,16 @@ switch (command) {
   case 'render':
     printRender(args);
     break;
+  case 'transition-plan':
+    printTransitionPlan(args);
+    break;
+  case 'advance':
+    await advance(args);
+    break;
   default:
-    throw new Error(`Unknown sats-outreach-approval command: ${command}. Use plan, draft, or render.`);
+    throw new Error(
+      `Unknown sats-outreach-approval command: ${command}. Use plan, draft, render, transition-plan, or advance.`
+    );
 }
 
 function printPlan() {
@@ -70,6 +84,35 @@ function printRender(args) {
       pipeline,
       prospectIds: options.prospects ?? options.prospect
     })
+  );
+}
+
+function printTransitionPlan(args) {
+  const options = parseOptions(args);
+  console.log(
+    JSON.stringify(
+      buildOutreachApprovalTransitionPlan({
+        pipeline,
+        approvalQueue,
+        approvalId: options.approvalId
+      }),
+      null,
+      2
+    )
+  );
+}
+
+async function advance(args) {
+  const options = parseOptions(args);
+  const updated = applyOutreachApprovalTransition({
+    pipeline,
+    approvalQueue,
+    approvalId: options.approvalId,
+    prospectIds: options.prospects ?? options.prospect
+  });
+  await writeFile(PIPELINE_PATH, `${JSON.stringify(updated, null, 2)}\n`);
+  console.log(
+    `Advanced ${String(options.prospects ?? options.prospect).split(',').length} prospect(s) to outreach-approved.`
   );
 }
 

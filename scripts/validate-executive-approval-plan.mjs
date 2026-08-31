@@ -49,7 +49,7 @@ if (prospectReview && prospectReview.nextCommandAfterApproval.includes('<chairma
 }
 if (
   prospectReview &&
-  !prospectReview.nextCommandAfterApproval.includes('arnold-solana,npc-meme,black-bull-ansem')
+  !prospectReview.nextCommandAfterApproval.includes('--prospects arnold-solana,npc-meme,black-bull-ansem')
 ) {
   findings.push('prospect review approval must include the first bounded prospect batch');
 }

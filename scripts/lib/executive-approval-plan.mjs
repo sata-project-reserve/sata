@@ -71,7 +71,7 @@ export function buildProspectReviewAdvanceCommand({ approvalId, prospectPipeline
   if (eligibleIds.length === 0) {
     return `node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${approvalId} --prospects "<chairman-selected-prospect-ids>"`;
   }
-  return `node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${approvalId} --prospects "${eligibleIds.join(',')}"`;
+  return `node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${approvalId} --prospects ${eligibleIds.join(',')}`;
 }
 
 function inferNextCommandAfterApproval(item, { prospectPipeline }) {

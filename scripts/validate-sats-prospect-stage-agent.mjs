@@ -9,6 +9,26 @@ const pipeline = JSON.parse(readFileSync(join('public', 'sats-prospect-pipeline.
 const approvalQueue = JSON.parse(readFileSync(join('public', 'executive-approval-queue.json'), 'utf8'));
 const approvalId = 'prospect-review-batch-20260829';
 const findings = [];
+const transitionFixture = {
+  ...pipeline,
+  prospects: pipeline.prospects.map((prospect) =>
+    prospect.stageApprovalId === approvalId
+      ? {
+          ...prospect,
+          stageApprovalId: undefined,
+          stageUpdatedAtUtc: undefined,
+          stageNotes: undefined
+        }
+      : prospect
+  )
+};
+const firstIdentified = pipeline.prospects.find((prospect) => prospect.stage === 'identified');
+const secondIdentified = pipeline.prospects.find(
+  (prospect) => prospect.stage === 'identified' && prospect.id !== firstIdentified?.id
+);
+if (!firstIdentified || !secondIdentified) {
+  findings.push('test fixture must include at least two identified prospects');
+}
 
 const plan = buildProspectStagePlan({ pipeline, approvalQueue, approvalId });
 if (plan.mode !== 'chairman-gated-prospect-stage-transition') {
@@ -17,9 +37,10 @@ if (plan.mode !== 'chairman-gated-prospect-stage-transition') {
 if (plan.eligibleProspects.length > pipeline.dailyCadence.chairmanReviewBatchSize) {
   findings.push('plan must respect chairmanReviewBatchSize');
 }
+const approvalConsumed = pipeline.prospects.some((prospect) => prospect.stageApprovalId === approvalId);
 const expectedBacklog = Math.max(
   pipeline.prospects.filter((prospect) => prospect.stage === 'identified').length -
-    pipeline.dailyCadence.chairmanReviewBatchSize,
+    (approvalConsumed ? 0 : pipeline.dailyCadence.chairmanReviewBatchSize),
   0
 );
 if (plan.backlogProspects !== expectedBacklog) {
@@ -35,12 +56,26 @@ if (!/does not approve outreach/i.test(plan.boundary ?? '')) {
   findings.push('plan boundary must reject implied outreach approval');
 }
 
+const unapprovedQueue = {
+  ...approvalQueue,
+  items: approvalQueue.items.map((item) =>
+    item.id === approvalId
+      ? {
+          ...item,
+          status: 'ready-for-chairman-review',
+          approvedBy: undefined,
+          approvedAtUtc: undefined
+        }
+      : item
+  )
+};
+
 assertRejects('unapproved advancement', /not approved by the Executive Chairman/i, () =>
   applyProspectStageTransition({
-    pipeline,
-    approvalQueue,
+    pipeline: transitionFixture,
+    approvalQueue: unapprovedQueue,
     approvalId,
-    prospectIds: ['arnold-solana']
+    prospectIds: [firstIdentified?.id]
   })
 );
 
@@ -58,13 +93,13 @@ const approvedQueue = {
   )
 };
 const updated = applyProspectStageTransition({
-  pipeline,
+  pipeline: transitionFixture,
   approvalQueue: approvedQueue,
   approvalId,
-  prospectIds: ['arnold-solana'],
+  prospectIds: [firstIdentified?.id],
   transitionedAtUtc: '2026-08-29T08:45:00.000Z'
 });
-const moved = updated.prospects.find((prospect) => prospect.id === 'arnold-solana');
+const moved = updated.prospects.find((prospect) => prospect.id === firstIdentified?.id);
 if (moved?.stage !== 'chairman-review') findings.push('approved transition must move to chairman-review');
 if (moved?.chairmanApprovedBeforeOutreach !== true) {
   findings.push('approved transition must record pre-outreach chairman approval');
@@ -76,16 +111,16 @@ if (/outreach approved/i.test(moved?.stageNotes ?? '')) {
 
 assertRejects('wrong target stage', /Only chairman-review transitions/i, () =>
   applyProspectStageTransition({
-    pipeline,
+    pipeline: transitionFixture,
     approvalQueue: approvedQueue,
     approvalId,
-    prospectIds: ['arnold-solana'],
+    prospectIds: [firstIdentified?.id],
     targetStage: 'outreach-approved'
   })
 );
 assertRejects('unknown prospect', /Prospect not found/i, () =>
   applyProspectStageTransition({
-    pipeline,
+    pipeline: transitionFixture,
     approvalQueue: approvedQueue,
     approvalId,
     prospectIds: ['missing-prospect']
@@ -93,10 +128,18 @@ assertRejects('unknown prospect', /Prospect not found/i, () =>
 );
 assertRejects('oversized transition batch', /exceeds chairman review batch size/i, () =>
   applyProspectStageTransition({
-    pipeline,
+    pipeline: transitionFixture,
     approvalQueue: approvedQueue,
     approvalId,
     prospectIds: ['arnold-solana', 'npc-meme', 'black-bull-ansem', 'roach-solana']
+  })
+);
+assertRejects('reused approval id', /already been used/i, () =>
+  applyProspectStageTransition({
+    pipeline: updated,
+    approvalQueue: approvedQueue,
+    approvalId,
+    prospectIds: [secondIdentified?.id]
   })
 );
 

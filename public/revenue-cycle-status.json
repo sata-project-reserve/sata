@@ -12,8 +12,8 @@
   },
   "funnel": {
     "prospects": 10,
-    "identifiedProspects": 10,
-    "chairmanReviewProspects": 0,
+    "identifiedProspects": 7,
+    "chairmanReviewProspects": 3,
     "outreachApprovedProspects": 0,
     "approvedInvoices": 0,
     "confirmedReceipts": 0,
@@ -31,6 +31,6 @@
     "No confirmed direct-reserve BTC receipt is recorded.",
     "Approved social content exists, but live X posting credentials are not enabled in this runtime."
   ],
-  "nextAction": "Render prospect review packet for the next identified candidates before any outreach.",
+  "nextAction": "Draft contact-only outreach approval packet for chairman-reviewed prospect arnold-solana.",
   "boundary": "Agents may prepare records, packets, and proposals. The Executive Chairman approves outreach, invoices, transactions, allocations, paid promotion, token grants, and any asset movement."
 }

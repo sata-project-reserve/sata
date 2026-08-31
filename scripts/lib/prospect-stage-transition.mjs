@@ -6,8 +6,11 @@ export function buildProspectStagePlan({
   assertInputs({ pipeline, approvalQueue });
   const approval = findApproval(approvalQueue, approvalId);
   const identified = (pipeline.prospects ?? []).filter((prospect) => prospect.stage === 'identified');
+  const approvalConsumed = (pipeline.prospects ?? []).some(
+    (prospect) => prospect.stageApprovalId === approvalId
+  );
   const reviewBatchSize = getReviewBatchSize(pipeline);
-  const eligibleProspects = identified.slice(0, reviewBatchSize);
+  const eligibleProspects = approvalConsumed ? [] : identified.slice(0, reviewBatchSize);
 
   return {
     project: pipeline.project,
@@ -23,11 +26,13 @@ export function buildProspectStagePlan({
       publicProfileUrl: prospect.publicProfileUrl,
       projectUrl: prospect.projectUrl
     })),
-    blocked: approval?.status !== 'approved-by-chairman',
+    blocked: approval?.status !== 'approved-by-chairman' || approvalConsumed,
     blockedReason:
-      approval?.status === 'approved-by-chairman'
-        ? null
-        : 'Prospects cannot move beyond identified until the matching approval item is approved by the Executive Chairman.',
+      approval?.status !== 'approved-by-chairman'
+        ? 'Prospects cannot move beyond identified until the matching approval item is approved by the Executive Chairman.'
+        : approvalConsumed
+          ? `${approvalId} has already been used for a prospect stage transition. Create a new approval item before advancing another batch.`
+          : null,
     boundary:
       'This transition does not approve outreach, invoices, payment requests, paid work, token grants, or asset movement.'
   };
@@ -48,6 +53,9 @@ export function applyProspectStageTransition({
   const approval = findApproval(approvalQueue, approvalId);
   if (approval?.status !== 'approved-by-chairman') {
     throw new Error(`${approvalId} is not approved by the Executive Chairman.`);
+  }
+  if ((pipeline.prospects ?? []).some((prospect) => prospect.stageApprovalId === approvalId)) {
+    throw new Error(`${approvalId} has already been used for a prospect stage transition.`);
   }
 
   const ids = normalizeIds(prospectIds);

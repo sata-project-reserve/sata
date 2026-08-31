@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { recordProspectContact } from './lib/prospect-response-transition.mjs';
 
 const PIPELINE_PATH = join('public', 'sats-prospect-pipeline.json');
 const DELIVERY_KIT_PATH = join('public', 'transparency-audit-delivery-kit.json');
@@ -27,9 +28,12 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     case 'write-approved':
       await writeApprovedPacket(pipeline, deliveryKit, packetQueue, args);
       break;
+    case 'mark-sent':
+      await markPacketSent(pipeline, packetQueue, args);
+      break;
     default:
       throw new Error(
-        `Unknown service outreach command: ${command}. Use plan, render, render-approved, or write-approved.`
+        `Unknown service outreach command: ${command}. Use plan, render, render-approved, write-approved, or mark-sent.`
       );
   }
 }
@@ -94,6 +98,22 @@ async function writeApprovedPacket(pipeline, deliveryKit, packetQueue, args) {
   await writeFile(OUTREACH_PACKET_QUEUE_PATH, `${JSON.stringify(queue, null, 2)}\n`);
   const packet = queue.packets.at(-1);
   console.log(JSON.stringify(packet, null, 2));
+}
+
+async function markPacketSent(pipeline, packetQueue, args) {
+  const options = parseOptions(args);
+  const result = markOutreachPacketSent({
+    queue: packetQueue,
+    pipeline,
+    packetId: options.packet,
+    contactEvidence: options.evidence,
+    contactChannel: options.channel
+  });
+  await Promise.all([
+    writeFile(OUTREACH_PACKET_QUEUE_PATH, `${JSON.stringify(result.queue, null, 2)}\n`),
+    writeFile(PIPELINE_PATH, `${JSON.stringify(result.pipeline, null, 2)}\n`)
+  ]);
+  console.log(JSON.stringify(result.packet, null, 2));
 }
 
 export function renderApprovedProspectOutreachPacket({
@@ -181,9 +201,52 @@ export function buildApprovedProspectOutreachPacketRecord({
     message,
     sendInstructions:
       'Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.',
-    recordContactCommand: `node scripts/sats-prospect-response-agent.mjs record-contacted --prospect ${prospect.id} --channel ${template.channel} --evidence "<contact-evidence-url-or-reference>"`,
+    recordContactCommand: `node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-${dateId}-${prospect.id}-${template.id} --evidence "<contact-evidence-url-or-reference>"`,
     boundary:
       'This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement.'
+  };
+}
+
+export function markOutreachPacketSent({
+  queue,
+  pipeline,
+  packetId,
+  contactEvidence,
+  contactChannel,
+  sentAtUtc = new Date().toISOString()
+}) {
+  const current = normalizeQueue(queue, pipeline);
+  const evidence = requireEvidence(contactEvidence, 'Contact evidence is required.');
+  const id = cleanLine(packetId);
+  if (!id) throw new Error('Packet id is required.');
+  const packet = current.packets.find((item) => item.id === id);
+  if (!packet) throw new Error(`Outreach packet not found: ${id}`);
+  if (packet.status !== 'ready-for-manual-send') {
+    throw new Error(`${id}: only ready-for-manual-send packets can be marked sent.`);
+  }
+  const channel = cleanLine(contactChannel ?? packet.channel);
+  const pipelineAfterContact = recordProspectContact({
+    pipeline,
+    prospectId: packet.prospectId,
+    contactEvidence: evidence,
+    contactChannel: channel,
+    contactedAtUtc: sentAtUtc
+  });
+  const sentPacket = {
+    ...packet,
+    status: 'sent',
+    sentAtUtc,
+    contactEvidence: evidence,
+    contactChannel: channel
+  };
+  return {
+    queue: {
+      ...current,
+      updatedAtUtc: sentAtUtc,
+      packets: current.packets.map((item) => (item.id === id ? sentPacket : item))
+    },
+    pipeline: pipelineAfterContact,
+    packet: sentPacket
   };
 }
 
@@ -244,8 +307,13 @@ export function validateOutreachPacketQueue({ queue, pipeline }) {
     if (!cleanLine(packet.outreachApprovalId)) {
       findings.push(`${packet.id}: outreachApprovalId is required`);
     }
-    if (!/record-contacted/i.test(packet.recordContactCommand ?? '')) {
-      findings.push(`${packet.id}: recordContactCommand must record contact evidence`);
+    if (!/mark-sent/i.test(packet.recordContactCommand ?? '')) {
+      findings.push(`${packet.id}: recordContactCommand must mark sent with contact evidence`);
+    }
+    if (packet.status === 'sent') {
+      for (const field of ['sentAtUtc', 'contactEvidence', 'contactChannel']) {
+        if (!cleanLine(packet[field])) findings.push(`${packet.id}: sent packet missing ${field}`);
+      }
     }
     if (/\b(pump|guaranteed buyers|fake engagement|bots|raids|price prediction)\b/i.test(packet.message ?? '')) {
       findings.push(`${packet.id}: message contains prohibited promotion wording`);
@@ -293,6 +361,12 @@ function normalizeQueue(queue, pipeline) {
       'Packets are approved factual outreach drafts only. Sending, contact evidence, invoices, payments, paid work, token grants, and asset movement remain separately gated.',
     packets: queue?.packets ?? []
   };
+}
+
+function requireEvidence(value, message) {
+  const evidence = cleanLine(value);
+  if (evidence.length < 8) throw new Error(message);
+  return evidence;
 }
 
 function parseOptions(values) {

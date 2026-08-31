@@ -20,7 +20,7 @@
       },
       "message": "Hi arnold-solana,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://www.arnoldrothstein.com/\nProject page reviewed: https://www.arnoldrothstein.com/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nThis is draft outreach. Executive Chairman approval is required before contact, invoice, paid work, token grant, or payment instruction.",
       "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
-      "recordContactCommand": "node scripts/sats-prospect-response-agent.mjs record-contacted --prospect arnold-solana --channel public-dm-or-email --evidence \"<contact-evidence-url-or-reference>\"",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
       "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
     }
   ]

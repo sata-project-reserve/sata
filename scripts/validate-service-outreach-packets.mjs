@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import {
   appendApprovedProspectOutreachPacket,
   buildApprovedProspectOutreachPacketRecord,
+  markOutreachPacketSent,
   renderApprovedProspectOutreachPacket,
   renderOutreachPacket,
   validateOutreachPacketQueue
@@ -94,10 +95,27 @@ if (approvedRecord.status !== 'ready-for-manual-send') {
 if (approvedRecord.outreachApprovalId !== 'outreach-approval-20260831-approved-team') {
   findings.push('approved outreach record must include outreach approval id');
 }
-if (!/record-contacted/i.test(approvedRecord.recordContactCommand)) {
+if (!/mark-sent/i.test(approvedRecord.recordContactCommand)) {
   findings.push('approved outreach record must include contact evidence command');
 }
 validateOutreachPacketQueue({ queue: packetQueue, pipeline: approvedPipeline });
+const sentResult = markOutreachPacketSent({
+  queue: packetQueue,
+  pipeline: approvedPipeline,
+  packetId: approvedRecord.id,
+  contactEvidence: 'https://x.com/example/status/contact',
+  sentAtUtc: '2026-08-31T16:50:00.000Z'
+});
+const sentPacket = sentResult.queue.packets.find((item) => item.id === approvedRecord.id);
+const contactedProspect = sentResult.pipeline.prospects.find((item) => item.id === 'approved-team');
+if (sentPacket?.status !== 'sent') findings.push('mark-sent must set packet status to sent');
+if (sentPacket?.contactEvidence !== 'https://x.com/example/status/contact') {
+  findings.push('mark-sent must record contact evidence on the packet');
+}
+if (contactedProspect?.stage !== 'contacted') {
+  findings.push('mark-sent must record contact on the prospect pipeline');
+}
+validateOutreachPacketQueue({ queue: sentResult.queue, pipeline: sentResult.pipeline });
 
 const publicQueue = readOptionalJson(join('public', 'service-outreach-packet-queue.json'));
 if (publicQueue) validateOutreachPacketQueue({ queue: publicQueue, pipeline });
@@ -122,6 +140,22 @@ assertRejects('duplicate active packet', /active outreach packet already exists/
     pipeline: approvedPipeline,
     deliveryKit,
     prospectId: 'approved-team'
+  })
+);
+assertRejects('mark sent missing evidence', /Contact evidence is required/i, () =>
+  markOutreachPacketSent({
+    queue: packetQueue,
+    pipeline: approvedPipeline,
+    packetId: approvedRecord.id,
+    contactEvidence: 'short'
+  })
+);
+assertRejects('mark sent unknown packet', /Outreach packet not found/i, () =>
+  markOutreachPacketSent({
+    queue: packetQueue,
+    pipeline: approvedPipeline,
+    packetId: 'missing-packet',
+    contactEvidence: 'https://x.com/example/status/contact'
   })
 );
 

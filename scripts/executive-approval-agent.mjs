@@ -9,11 +9,13 @@ import {
 } from './lib/executive-approval-plan.mjs';
 
 const QUEUE_PATH = join('public', 'executive-approval-queue.json');
+const PROSPECT_PIPELINE_PATH = join('public', 'sats-prospect-pipeline.json');
 const NOTIFICATION_LOG_PATH = join('artifacts', 'executive-approval-notifications.json');
 const [, , command = 'plan', ...args] = process.argv;
 
 loadLocalEnv();
 const queue = JSON.parse(await readFile(QUEUE_PATH, 'utf8'));
+const prospectPipeline = JSON.parse(await readFile(PROSPECT_PIPELINE_PATH, 'utf8'));
 
 switch (command) {
   case 'plan':
@@ -38,7 +40,7 @@ switch (command) {
 }
 
 function printPlan() {
-  console.log(JSON.stringify(buildExecutiveApprovalPlan(queue), null, 2));
+  console.log(JSON.stringify(buildExecutiveApprovalPlan(queue, { prospectPipeline }), null, 2));
 }
 
 async function notifyChairman({ testMode }) {

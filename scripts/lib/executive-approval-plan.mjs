@@ -1,4 +1,4 @@
-export function buildExecutiveApprovalPlan(queue) {
+export function buildExecutiveApprovalPlan(queue, { prospectPipeline = null } = {}) {
   if (!queue || typeof queue !== 'object') throw new Error('Missing executive approval queue.');
 
   const counts = {};
@@ -23,7 +23,7 @@ export function buildExecutiveApprovalPlan(queue) {
       proposedAction: item.proposedAction,
       approveCommand: `npm run ops:approve -- ${item.id} --confirm-chairman-approval "${approvalPhrase(item.id)}"`,
       rejectCommand: `npm run ops:reject -- ${item.id} --confirm-chairman-rejection "${rejectionPhrase(item.id)}"`,
-      nextCommandAfterApproval: inferNextCommandAfterApproval(item),
+      nextCommandAfterApproval: inferNextCommandAfterApproval(item, { prospectPipeline }),
       evidenceCount: (item.evidence ?? []).length,
       riskControlCount: (item.riskReview ?? []).length,
       executionBoundary:
@@ -63,9 +63,23 @@ export function expectedConfirmationPhrase({ status, itemId }) {
   throw new Error(`Unsupported chairman decision status: ${status}`);
 }
 
-function inferNextCommandAfterApproval(item) {
+export function buildProspectReviewAdvanceCommand({ approvalId, prospectPipeline }) {
+  const eligibleIds = (prospectPipeline?.prospects ?? [])
+    .filter((prospect) => prospect.stage === 'identified')
+    .slice(0, Number(prospectPipeline?.dailyCadence?.chairmanReviewBatchSize ?? 3))
+    .map((prospect) => prospect.id);
+  if (eligibleIds.length === 0) {
+    return `node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${approvalId} --prospects "<chairman-selected-prospect-ids>"`;
+  }
+  return `node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${approvalId} --prospects "${eligibleIds.join(',')}"`;
+}
+
+function inferNextCommandAfterApproval(item, { prospectPipeline }) {
   if (item.id === 'prospect-review-batch-20260829') {
-    return `npm run ops:prospect-stage-plan, then node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${item.id} --prospects "<chairman-selected-prospect-ids>"`;
+    return `npm run ops:prospect-stage-plan, then ${buildProspectReviewAdvanceCommand({
+      approvalId: item.id,
+      prospectPipeline
+    })}`;
   }
   if (item.id === 'reserve-growth-operating-policy') {
     return 'npm run ops:reserve-plan';

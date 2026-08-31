@@ -8,7 +8,10 @@ import {
 } from './lib/executive-approval-plan.mjs';
 
 const queue = JSON.parse(readFileSync(join('public', 'executive-approval-queue.json'), 'utf8'));
-const plan = buildExecutiveApprovalPlan(queue);
+const prospectPipeline = JSON.parse(
+  readFileSync(join('public', 'sats-prospect-pipeline.json'), 'utf8')
+);
+const plan = buildExecutiveApprovalPlan(queue, { prospectPipeline });
 const findings = [];
 const readyItems = (queue.items ?? []).filter((item) => item.status === 'ready-for-chairman-review');
 
@@ -40,6 +43,15 @@ for (const item of plan.chairmanReview) {
 const prospectReview = plan.chairmanReview.find((item) => item.id === 'prospect-review-batch-20260829');
 if (prospectReview && !/sats-prospect-stage-agent\.mjs advance/i.test(prospectReview.nextCommandAfterApproval)) {
   findings.push('prospect review approval must point to the bounded prospect stage transition');
+}
+if (prospectReview && prospectReview.nextCommandAfterApproval.includes('<chairman-selected-prospect-ids>')) {
+  findings.push('prospect review approval must include concrete current batch prospect ids');
+}
+if (
+  prospectReview &&
+  !prospectReview.nextCommandAfterApproval.includes('arnold-solana,npc-meme,black-bull-ansem')
+) {
+  findings.push('prospect review approval must include the first bounded prospect batch');
 }
 
 assertRejects('missing approval confirmation', /Missing explicit chairman confirmation/i, () =>

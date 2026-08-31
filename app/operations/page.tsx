@@ -47,9 +47,10 @@ function rejectionCommand(item: ApprovalItem) {
   return `npm run ops:reject -- ${item.id} --confirm-chairman-rejection "${rejectionPhrase(item.id)}"`;
 }
 
-function nextCommandAfterApproval(item: ApprovalItem) {
+function nextCommandAfterApproval(item: ApprovalItem, reviewBatch: Prospect[]) {
   if (item.id === 'prospect-review-batch-20260829') {
-    return `npm run ops:prospect-stage-plan, then node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${item.id} --prospects "<chairman-selected-prospect-ids>"`;
+    const prospectIds = reviewBatch.map((prospect) => prospect.id).join(',');
+    return `npm run ops:prospect-stage-plan, then node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${item.id} --prospects "${prospectIds}"`;
   }
   if (item.id === 'reserve-growth-operating-policy') return 'npm run ops:reserve-plan';
   if (item.id === 'standard-promoter-intake-policy') return 'npm run ops:plan';
@@ -186,7 +187,7 @@ export default function OperationsPage() {
                 <span>Reject</span>
                 <code>{rejectionCommand(item)}</code>
                 <span>After approval</span>
-                <code>{nextCommandAfterApproval(item)}</code>
+                <code>{nextCommandAfterApproval(item, reviewBatch)}</code>
               </div>
             </div>
           ))}

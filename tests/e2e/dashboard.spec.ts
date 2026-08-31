@@ -68,7 +68,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     )
   ).toBeVisible();
   await expect(page.getByText('outreach-approved').locator('..').getByText('3')).toBeVisible();
-  await expect(page.getByText('Ready Outreach Packets').locator('..').getByText('1')).toBeVisible();
+  await expect(page.getByText('Ready Outreach Packets').locator('..').getByText('3')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Manual Outreach Packets' })).toBeVisible();
   await expect(
     page.getByText('outreach-packet-20260831-arnold-solana-transparency-audit-first-contact', {

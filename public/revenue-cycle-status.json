@@ -8,7 +8,7 @@
     "targetSats": "1000000000",
     "remainingSats": "999500000",
     "remainingBtc": "9.995",
-    "latestReportGeneratedAtUtc": "2026-08-31T16:54:49.097Z"
+    "latestReportGeneratedAtUtc": "2026-08-31T17:10:59.990Z"
   },
   "funnel": {
     "prospects": 10,
@@ -19,7 +19,7 @@
     "confirmedReceipts": 0,
     "receiptsAwaitingAllocation": 0,
     "recordedAllocations": 0,
-    "readyOutreachPackets": 1
+    "readyOutreachPackets": 3
   },
   "social": {
     "queueMode": "approved-only-automation",

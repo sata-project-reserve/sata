@@ -3,14 +3,15 @@
   "status": "TRANSPARENCY_VERIFIED_WITH_DISCLOSURES",
   "project": "SATA",
   "slogan": "Proof over promises.",
-  "generatedAtUtc": "2026-08-30T16:19:20.743Z",
+  "generatedAtUtc": "2026-08-31T04:31:26.373Z",
   "reportCadence": "scheduled every 12 hours when GitHub Actions is enabled",
   "source": {
-    "commit": "84e0b9ba17dac6021035fed3364ec28432d6e0b2",
+    "commit": "8c6f3b5c1eafa66b55bf4ff8e4882fe93a71b53b",
     "repository": "https://github.com/sata-project-reserve/sata",
     "transparencyPage": "https://sata-project-reserve.github.io/sata/transparency",
     "latestJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
     "historyJson": "https://sata-project-reserve.github.io/sata/transparency/history.json",
+    "revenueCycleStatusJson": "https://sata-project-reserve.github.io/sata/revenue-cycle-status.json",
     "healthJson": "https://sata-project-reserve.github.io/sata/health.json"
   },
   "network": "mainnet-beta",
@@ -111,7 +112,7 @@
       "method": "published-register-match",
       "detail": "proof fields match the public transparency register; independent cryptographic verification should still be performed with Bitcoin tooling"
     },
-    "lastCheckedUtc": "2026-08-30T16:19:22.755Z",
+    "lastCheckedUtc": "2026-08-31T04:31:27.305Z",
     "plannedReserveSats": "500000",
     "plannedReserveBtc": "0.005",
     "metricsBasis": "actual-confirmed-chain",

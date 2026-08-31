@@ -77,6 +77,10 @@ Process queued requests:
 
 `npm run codex:approval:process`
 
+Continuously watch and process queued requests:
+
+`npm run codex:approval:watch -- --interval-ms 10000`
+
 List queued, attention, and completed requests:
 
 `npm run codex:approval:list`

@@ -80,6 +80,9 @@ switch (command) {
   case 'process':
     await processPendingRequests({ dryRun: args.includes('--dry-run') });
     break;
+  case 'watch':
+    await watchPendingRequests(parseArgs(args));
+    break;
   case 'list':
     await listRequests();
     break;
@@ -170,6 +173,15 @@ async function processPendingRequests({ dryRun }) {
   }
 }
 
+async function watchPendingRequests(options) {
+  const intervalMs = parsePositiveInteger(options.intervalMs ?? '10000', '--interval-ms');
+  console.log(`Watching Codex approval requests every ${intervalMs}ms. Press Ctrl+C to stop.`);
+  while (true) {
+    await processPendingRequests({ dryRun: false });
+    await delay(intervalMs);
+  }
+}
+
 async function listRequests() {
   for (const [status, dir] of [
     ['pending', PENDING_DIR],
@@ -179,6 +191,20 @@ async function listRequests() {
     const files = existsSync(dir) ? (await readdir(dir)).filter((file) => file.endsWith('.json')) : [];
     console.log(JSON.stringify({ status, count: files.length, files }, null, 2));
   }
+}
+
+function delay(ms) {
+  return new Promise((resolveDelay) => {
+    setTimeout(resolveDelay, ms);
+  });
+}
+
+function parsePositiveInteger(value, label) {
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed < 1000) {
+    throw new Error(`${label} must be an integer of at least 1000.`);
+  }
+  return parsed;
 }
 
 function classifyRequest(request) {
@@ -423,5 +449,6 @@ function printHelp() {
   node scripts/codex-approval-supervisor.mjs submit --label codex-terminal-1 --command "git commit -m message" --reason "Codex is waiting"
   node scripts/codex-approval-supervisor.mjs process
   node scripts/codex-approval-supervisor.mjs process --dry-run
+  node scripts/codex-approval-supervisor.mjs watch --interval-ms 10000
   node scripts/codex-approval-supervisor.mjs list`);
 }

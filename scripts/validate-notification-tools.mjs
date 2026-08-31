@@ -3,6 +3,7 @@ import { join } from 'node:path';
 
 const approvalAgent = readFileSync(join('scripts', 'executive-approval-agent.mjs'), 'utf8');
 const terminalNotifier = readFileSync(join('scripts', 'codex-terminal-notifier.mjs'), 'utf8');
+const approvalSupervisor = readFileSync(join('scripts', 'codex-approval-supervisor.mjs'), 'utf8');
 const envExample = readFileSync('.env.example', 'utf8');
 const runbook = readFileSync(join('docs', 'executive-approval-runbook.md'), 'utf8');
 const terminalDocs = readFileSync(join('docs', 'codex-terminal-notifications.md'), 'utf8');
@@ -38,6 +39,28 @@ if (!/collected\.join\(' '\)/.test(terminalNotifier)) {
 }
 if (!/Topic names like secrets|Treat topic names like secrets/i.test(terminalDocs)) {
   findings.push('codex terminal notification docs must warn that topics are secret-like');
+}
+for (const requiredSupervisorText of [
+  'SAFE_NPM_SCRIPTS',
+  'needs-chairman-attention',
+  'normalizeCwd',
+  'cwd must stay inside',
+  'unsupported executable',
+  'unknown installs',
+  'wallet actions'
+]) {
+  if (!approvalSupervisor.includes(requiredSupervisorText) && !terminalDocs.includes(requiredSupervisorText)) {
+    findings.push(`approval supervisor missing boundary text: ${requiredSupervisorText}`);
+  }
+}
+if (!/execFileSync\([\s\S]+stdio: \['ignore', 'pipe', 'pipe'\]/.test(approvalSupervisor)) {
+  findings.push('approval supervisor must execute safe commands with execFileSync and without shell');
+}
+if (/shell:\s*true/.test(approvalSupervisor)) {
+  findings.push('approval supervisor must not execute requests through a shell');
+}
+if (!/codex:approval:submit/.test(readFileSync('package.json', 'utf8'))) {
+  findings.push('package.json missing codex approval queue scripts');
 }
 
 if (findings.length > 0) {

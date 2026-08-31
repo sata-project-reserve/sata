@@ -4,10 +4,19 @@ export function buildRevenueCycleStatus({
   ledger,
   invoiceQueue,
   prospectPipeline,
+  outreachPacketQueue = { packets: [] },
   socialQueue,
   env = process.env
 }) {
-  assertInputs({ report, revenuePlan, ledger, invoiceQueue, prospectPipeline, socialQueue });
+  assertInputs({
+    report,
+    revenuePlan,
+    ledger,
+    invoiceQueue,
+    prospectPipeline,
+    outreachPacketQueue,
+    socialQueue
+  });
 
   const targetSats = BigInt(ledger.target?.targetSats ?? revenuePlan.nextCycle?.targetSats ?? '1000000000');
   const currentReserveSats = BigInt(report.bitcoinReserve?.confirmedReserveSats ?? ledger.target?.currentReserveSats ?? '0');
@@ -20,6 +29,9 @@ export function buildRevenueCycleStatus({
   const confirmedReceipts = receipts.filter((receipt) => receipt.status === 'confirmed');
   const allocationReceiptIds = new Set(allocations.map((allocation) => allocation.receiptId));
   const receiptsAwaitingAllocation = confirmedReceipts.filter((receipt) => !allocationReceiptIds.has(receipt.id));
+  const readyOutreachPackets = (outreachPacketQueue.packets ?? []).filter(
+    (packet) => packet.status === 'ready-for-manual-send'
+  );
   const approvedPosts = (socialQueue.posts ?? []).filter((post) => post.status === 'approved');
   const readyPosts = (socialQueue.posts ?? []).filter((post) => post.status === 'ready-for-review');
   const livePostingEnabled = env.SATA_X_AGENT_ENABLE_POSTING === 'true' && Boolean(env.X_ACCESS_TOKEN);
@@ -52,7 +64,8 @@ export function buildRevenueCycleStatus({
       approvedInvoices: approvedInvoices.length,
       confirmedReceipts: confirmedReceipts.length,
       receiptsAwaitingAllocation: receiptsAwaitingAllocation.length,
-      recordedAllocations: allocations.length
+      recordedAllocations: allocations.length,
+      readyOutreachPackets: readyOutreachPackets.length
     },
     social: {
       queueMode: socialQueue.mode,
@@ -65,6 +78,7 @@ export function buildRevenueCycleStatus({
       prospects,
       approvedInvoices,
       receiptsAwaitingAllocation,
+      readyOutreachPackets,
       approvedPosts,
       livePostingEnabled,
       prospectPipeline
@@ -102,6 +116,7 @@ function chooseNextAction({
   prospects,
   approvedInvoices,
   receiptsAwaitingAllocation,
+  readyOutreachPackets,
   approvedPosts,
   livePostingEnabled,
   prospectPipeline
@@ -111,6 +126,9 @@ function chooseNextAction({
   }
   if (approvedInvoices.length > 0) {
     return `Render approved customer payment packet for ${approvedInvoices[0].id} before the quote expires.`;
+  }
+  if (readyOutreachPackets.length > 0) {
+    return `Send ready manual outreach packet ${readyOutreachPackets[0].id} and record contact evidence.`;
   }
   const invoiceRequested = prospects.find((prospect) => prospect.stage === 'invoice-requested');
   if (invoiceRequested) {
@@ -141,8 +159,24 @@ function chooseNextAction({
   return 'Continue qualifying evidence-backed prospects and prepare chairman-review records.';
 }
 
-function assertInputs({ report, revenuePlan, ledger, invoiceQueue, prospectPipeline, socialQueue }) {
-  const required = { report, revenuePlan, ledger, invoiceQueue, prospectPipeline, socialQueue };
+function assertInputs({
+  report,
+  revenuePlan,
+  ledger,
+  invoiceQueue,
+  prospectPipeline,
+  outreachPacketQueue,
+  socialQueue
+}) {
+  const required = {
+    report,
+    revenuePlan,
+    ledger,
+    invoiceQueue,
+    prospectPipeline,
+    outreachPacketQueue,
+    socialQueue
+  };
   for (const [label, value] of Object.entries(required)) {
     if (!value || typeof value !== 'object') throw new Error(`Missing ${label}.`);
   }

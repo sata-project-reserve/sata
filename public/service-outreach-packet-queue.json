@@ -1,0 +1,27 @@
+{
+  "project": "SATA Reserve Token",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-08-31T16:29:30.433Z",
+  "mode": "manual-service-outreach-packet-queue",
+  "boundary": "Packets are approved factual outreach drafts only. Sending, contact evidence, invoices, payments, paid work, token grants, and asset movement remain separately gated.",
+  "packets": [
+    {
+      "id": "outreach-packet-20260831-arnold-solana-transparency-audit-first-contact",
+      "prospectId": "arnold-solana",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-08-31T16:29:30.433Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260831-arnold-solana-npc-meme-black-bull-ansem",
+      "destination": {
+        "publicProfileUrl": "https://www.arnoldrothstein.com/",
+        "projectUrl": "https://www.arnoldrothstein.com/"
+      },
+      "message": "Hi arnold-solana,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://www.arnoldrothstein.com/\nProject page reviewed: https://www.arnoldrothstein.com/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nThis is draft outreach. Executive Chairman approval is required before contact, invoice, paid work, token grant, or payment instruction.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/sats-prospect-response-agent.mjs record-contacted --prospect arnold-solana --channel public-dm-or-email --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    }
+  ]
+}

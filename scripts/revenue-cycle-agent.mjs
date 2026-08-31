@@ -10,6 +10,7 @@ const paths = {
   ledger: join('public', 'sats-generation-ledger.json'),
   invoiceQueue: join('public', 'sats-invoice-queue.json'),
   prospectPipeline: join('public', 'sats-prospect-pipeline.json'),
+  outreachPacketQueue: join('public', 'service-outreach-packet-queue.json'),
   socialQueue: join('public', 'social-agent-content-queue.json')
 };
 

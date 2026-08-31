@@ -282,6 +282,7 @@ export async function generateTransparencyReport() {
       latestJson: `${PUBLIC_BASE_URL}/transparency/latest.json`,
       historyJson: `${PUBLIC_BASE_URL}/transparency/history.json`,
       revenueCycleStatusJson: `${PUBLIC_BASE_URL}/revenue-cycle-status.json`,
+      serviceOutreachPacketQueueJson: `${PUBLIC_BASE_URL}/service-outreach-packet-queue.json`,
       healthJson: `${PUBLIC_BASE_URL}/health.json`
     },
     network: 'mainnet-beta',
@@ -779,6 +780,7 @@ async function buildPublishedRevenueCycleStatus(report) {
     ledger: await readRequiredJson(join('public', 'sats-generation-ledger.json')),
     invoiceQueue: await readRequiredJson(join('public', 'sats-invoice-queue.json')),
     prospectPipeline: await readRequiredJson(join('public', 'sats-prospect-pipeline.json')),
+    outreachPacketQueue: await readRequiredJson(join('public', 'service-outreach-packet-queue.json')),
     socialQueue: await readRequiredJson(join('public', 'social-agent-content-queue.json')),
     env: {}
   });
@@ -885,6 +887,7 @@ function buildSitemap(report) {
     `${PUBLIC_BASE_URL}/sats-generation-ledger.json`,
     `${PUBLIC_BASE_URL}/sats-invoice-queue.json`,
     `${PUBLIC_BASE_URL}/sats-prospect-pipeline.json`,
+    report.source.serviceOutreachPacketQueueJson,
     `${PUBLIC_BASE_URL}/transparency-audit-delivery-kit.json`,
     report.source.healthJson,
     `${PUBLIC_BASE_URL}/mainnet/sata-metadata.json`

@@ -42,6 +42,9 @@ const baseInputs = {
     nextOperatingAction:
       'Identify ten crypto teams with public but weakly evidenced authority, liquidity, reserve, or disclosure claims; record only evidence-backed prospects for chairman review.'
   },
+  outreachPacketQueue: {
+    packets: []
+  },
   socialQueue: {
     mode: 'approved-only-automation',
     posts: [
@@ -111,6 +114,31 @@ const receiptStatus = buildRevenueCycleStatus({
 validateRevenueCycleStatus(receiptStatus);
 assertIncludes(receiptStatus.nextAction, 'Render receipt allocation proposal for receipt-1');
 assertEqual(receiptStatus.funnel.receiptsAwaitingAllocation, 1);
+
+const readyOutreachPacketStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  prospectPipeline: {
+    ...baseInputs.prospectPipeline,
+    prospects: [
+      {
+        id: 'prospect-1',
+        stage: 'outreach-approved'
+      }
+    ]
+  },
+  outreachPacketQueue: {
+    packets: [
+      {
+        id: 'outreach-packet-1',
+        status: 'ready-for-manual-send'
+      }
+    ]
+  },
+  env: {}
+});
+validateRevenueCycleStatus(readyOutreachPacketStatus);
+assertEqual(readyOutreachPacketStatus.funnel.readyOutreachPackets, 1);
+assertIncludes(readyOutreachPacketStatus.nextAction, 'Send ready manual outreach packet outreach-packet-1');
 
 assertRejects('wrong reserve address', /Invoice reserve address/, () =>
   buildRevenueCycleStatus({
@@ -189,6 +217,7 @@ async function readPublicInputs() {
     ledger: await readJson(join('public', 'sats-generation-ledger.json')),
     invoiceQueue: await readJson(join('public', 'sats-invoice-queue.json')),
     prospectPipeline: await readJson(join('public', 'sats-prospect-pipeline.json')),
+    outreachPacketQueue: await readJson(join('public', 'service-outreach-packet-queue.json')),
     socialQueue: await readJson(join('public', 'social-agent-content-queue.json'))
   };
 }

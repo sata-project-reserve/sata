@@ -1,4 +1,5 @@
 import approvalQueue from '@/public/executive-approval-queue.json';
+import outreachPacketQueue from '@/public/service-outreach-packet-queue.json';
 import prospectPipeline from '@/public/sats-prospect-pipeline.json';
 import cycleStatus from '@/public/revenue-cycle-status.json';
 import report from '@/public/transparency/latest.json';
@@ -109,6 +110,9 @@ export default function OperationsPage() {
             <a className="button-link" href="/sats-prospect-pipeline.json">
               Prospect JSON
             </a>
+            <a className="button-link" href="/service-outreach-packet-queue.json">
+              Outreach Queue
+            </a>
           </div>
         </div>
         <div className="proof-stack">
@@ -152,6 +156,10 @@ export default function OperationsPage() {
           <div className="metric">
             <span>Receipts Awaiting Allocation</span>
             <strong>{cycleStatus.funnel.receiptsAwaitingAllocation}</strong>
+          </div>
+          <div className="metric">
+            <span>Ready Outreach Packets</span>
+            <strong>{cycleStatus.funnel.readyOutreachPackets}</strong>
           </div>
           <div className="metric">
             <span>Approved Posts</span>
@@ -203,6 +211,27 @@ export default function OperationsPage() {
                 <code>{rejectionCommand(item)}</code>
                 <span>After approval</span>
                 <code>{nextCommandAfterApproval(item, reviewBatch)}</code>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Manual Outreach Packets</h2>
+          <p>Approved factual messages waiting for human send and contact evidence.</p>
+        </div>
+        <div className="warning-list">
+          {outreachPacketQueue.packets.map((packet) => (
+            <div className="proof-block" key={packet.id}>
+              <span>{packet.status}</span>
+              <strong>{packet.prospectId}</strong>
+              <code>{packet.id}</code>
+              <p>{packet.sendInstructions}</p>
+              <div className="command-list">
+                <span>Record Contact</span>
+                <code>{packet.recordContactCommand}</code>
               </div>
             </div>
           ))}

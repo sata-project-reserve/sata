@@ -1,8 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
+  appendApprovedProspectOutreachPacket,
+  buildApprovedProspectOutreachPacketRecord,
   renderApprovedProspectOutreachPacket,
-  renderOutreachPacket
+  renderOutreachPacket,
+  validateOutreachPacketQueue
 } from './service-outreach-packet-agent.mjs';
 
 const pipeline = readJson(join('public', 'sats-prospect-pipeline.json'));
@@ -27,7 +30,8 @@ const approvedPipeline = {
       observedClaim: 'Public transparency claims need an evidence review.',
       recommendedOfferId: 'transparency-audit',
       chairmanApprovedBeforeOutreach: true,
-      evidence: ['https://approved.invalid']
+      evidence: ['https://approved.invalid'],
+      outreachApprovalId: 'outreach-approval-20260831-approved-team'
     },
     {
       id: 'identified-team',
@@ -46,6 +50,19 @@ const approvedPacket = renderApprovedProspectOutreachPacket({
   pipeline: approvedPipeline,
   deliveryKit,
   prospectId: 'approved-team'
+});
+const approvedRecord = buildApprovedProspectOutreachPacketRecord({
+  pipeline: approvedPipeline,
+  deliveryKit,
+  prospectId: 'approved-team',
+  generatedAtUtc: '2026-08-31T16:45:00.000Z'
+});
+const packetQueue = appendApprovedProspectOutreachPacket({
+  queue: null,
+  pipeline: approvedPipeline,
+  deliveryKit,
+  prospectId: 'approved-team',
+  generatedAtUtc: '2026-08-31T16:45:00.000Z'
 });
 const findings = [];
 
@@ -71,6 +88,20 @@ for (const required of [
   if (!required.test(approvedPacket)) findings.push(`approved outreach packet missing ${required}`);
 }
 
+if (approvedRecord.status !== 'ready-for-manual-send') {
+  findings.push('approved outreach record must be ready-for-manual-send');
+}
+if (approvedRecord.outreachApprovalId !== 'outreach-approval-20260831-approved-team') {
+  findings.push('approved outreach record must include outreach approval id');
+}
+if (!/record-contacted/i.test(approvedRecord.recordContactCommand)) {
+  findings.push('approved outreach record must include contact evidence command');
+}
+validateOutreachPacketQueue({ queue: packetQueue, pipeline: approvedPipeline });
+
+const publicQueue = readOptionalJson(join('public', 'service-outreach-packet-queue.json'));
+if (publicQueue) validateOutreachPacketQueue({ queue: publicQueue, pipeline });
+
 assertRejects('identified prospect render', /requires outreach-approved stage/i, () =>
   renderApprovedProspectOutreachPacket({
     pipeline: approvedPipeline,
@@ -83,6 +114,14 @@ assertRejects('unknown prospect render', /Prospect not found/i, () =>
     pipeline: approvedPipeline,
     deliveryKit,
     prospectId: 'missing-team'
+  })
+);
+assertRejects('duplicate active packet', /active outreach packet already exists/i, () =>
+  appendApprovedProspectOutreachPacket({
+    queue: packetQueue,
+    pipeline: approvedPipeline,
+    deliveryKit,
+    prospectId: 'approved-team'
   })
 );
 
@@ -113,6 +152,15 @@ console.log('Service outreach packet check passed: manual outreach drafts are bo
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
+}
+
+function readOptionalJson(path) {
+  try {
+    return readJson(path);
+  } catch (error) {
+    if (error.code === 'ENOENT') return null;
+    throw error;
+  }
 }
 
 function assertRejects(name, expected, fn) {

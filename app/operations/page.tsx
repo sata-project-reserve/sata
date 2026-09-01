@@ -82,6 +82,9 @@ export default function OperationsPage() {
   const reviewBatch = prospectPipeline.prospects
     .filter((prospect) => prospect.stage === 'identified')
     .slice(0, prospectPipeline.dailyCadence.chairmanReviewBatchSize);
+  const chairmanReviewProspects = prospectPipeline.prospects.filter(
+    (prospect) => prospect.stage === 'chairman-review'
+  );
 
   return (
     <main className="public-page">
@@ -256,6 +259,23 @@ export default function OperationsPage() {
               <a href={prospectPipeline.prospectIntakeUrl}>GitHub issue form</a>
             </strong>
           </div>
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Chairman Review Prospects</h2>
+          <p>Approved for prospect review only. Outreach still requires a separate explicit decision.</p>
+        </div>
+        <div className="warning-list">
+          {chairmanReviewProspects.map((prospect) => (
+            <div className="proof-block" key={prospect.id}>
+              <span>{prospect.recommendedOfferId}</span>
+              <strong>{prospect.id}</strong>
+              <p>{prospect.observedClaim}</p>
+              <code>{prospect.stageApprovalId}</code>
+            </div>
+          ))}
         </div>
       </section>
 

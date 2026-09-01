@@ -15,13 +15,28 @@ const [pipeline, approvalQueue] = await Promise.all([
 
 switch (command) {
   case 'plan':
-    console.log(JSON.stringify(buildProspectStagePlan({ pipeline, approvalQueue }), null, 2));
+    printPlan(args);
     break;
   case 'advance':
     await advance(args);
     break;
   default:
     throw new Error(`Unknown sats-prospect-stage command: ${command}. Use plan or advance.`);
+}
+
+function printPlan(args) {
+  const options = parseOptions(args);
+  console.log(
+    JSON.stringify(
+      buildProspectStagePlan({
+        pipeline,
+        approvalQueue,
+        approvalId: options.approvalId ?? 'prospect-review-batch-20260829'
+      }),
+      null,
+      2
+    )
+  );
 }
 
 async function advance(args) {

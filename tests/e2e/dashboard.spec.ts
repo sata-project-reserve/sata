@@ -75,6 +75,11 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
       exact: true
     })
   ).toBeVisible();
+  await expect(
+    page.getByText('prospect-review-batch-20260831-roach-solana-tradiecoin-fyborg', {
+      exact: true
+    })
+  ).toBeVisible();
   await expect(page.getByText('roach-solana', { exact: true })).toBeVisible();
   await expect(page.getByText('tradiecoin', { exact: true })).toBeVisible();
   await expect(page.getByText('No price guarantee')).toBeVisible();

@@ -40,7 +40,7 @@ for (const item of plan.chairmanReview) {
   }
 }
 
-const prospectReview = plan.chairmanReview.find((item) => item.id === 'prospect-review-batch-20260829');
+const prospectReview = plan.chairmanReview.find((item) => item.id.startsWith('prospect-review-batch-'));
 if (prospectReview && !/sats-prospect-stage-agent\.mjs advance/i.test(prospectReview.nextCommandAfterApproval)) {
   findings.push('prospect review approval must point to the bounded prospect stage transition');
 }
@@ -49,9 +49,9 @@ if (prospectReview && prospectReview.nextCommandAfterApproval.includes('<chairma
 }
 if (
   prospectReview &&
-  !prospectReview.nextCommandAfterApproval.includes('--prospects arnold-solana,npc-meme,black-bull-ansem')
+  !prospectReview.nextCommandAfterApproval.includes('--prospects roach-solana,tradiecoin,fyborg')
 ) {
-  findings.push('prospect review approval must include the first bounded prospect batch');
+  findings.push('prospect review approval must include the current bounded prospect batch');
 }
 
 const outreachReview = plan.chairmanReview.find((item) =>

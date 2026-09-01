@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-08-31T15:50:51.199Z",
+  "updatedAtUtc": "2026-08-31T18:03:21.136Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -316,6 +316,38 @@
       ],
       "approvedBy": "executive-chairman",
       "approvedAtUtc": "2026-08-31T15:50:51.198Z"
+    },
+    {
+      "id": "prospect-review-batch-20260831-roach-solana-tradiecoin-fyborg",
+      "title": "Review next public-evidence prospect batch",
+      "category": "revenue-action",
+      "status": "approved-by-chairman",
+      "createdAtUtc": "2026-08-31T17:41:32.104Z",
+      "preparedBy": "codex-ops",
+      "summary": "Review roach-solana, tradiecoin, and fyborg as the next identified transparency-audit prospects.",
+      "rationale": "The first outreach batch is ready for manual sending. A fresh review approval lets the next prospect batch advance only after a separate chairman decision.",
+      "proposedAction": "Review roach-solana, tradiecoin, and fyborg using npm run ops:prospect-review-plan. If acceptable, approve this item to allow only those records to move to chairman-review. This item does not approve contact, invoices, payment requests, paid work, token grants, or asset movement.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Candidates are recorded from public pages only and remain at identified stage until this item is approved.",
+        "No outreach occurs from this approval item.",
+        "No invoice, payment instruction, paid work, or token grant is approved by this item.",
+        "Observed claims are treated as public claims to review, not accusations or endorsements."
+      ],
+      "publicDisclosure": "SATA may sell transparency tooling and public-reporting services. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment.",
+      "evidence": [
+        {
+          "type": "prospect-pipeline",
+          "url": "https://sata-project-reserve.github.io/sata/sats-prospect-pipeline.json"
+        },
+        {
+          "type": "service-page",
+          "url": "https://sata-project-reserve.github.io/sata/services/transparency-audit"
+        }
+      ],
+      "approvedBy": "executive-chairman",
+      "approvedAtUtc": "2026-08-31T18:03:21.136Z"
     }
   ]
 }

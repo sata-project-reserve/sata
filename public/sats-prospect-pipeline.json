@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-08-31T15:51:10.572Z",
+  "updatedAtUtc": "2026-09-01T00:31:48.597Z",
   "mode": "service-revenue-prospect-pipeline",
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
@@ -118,45 +118,54 @@
     },
     {
       "id": "roach-solana",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-08-29",
       "publicProfileUrl": "https://cockroachcoin.fun/",
       "projectUrl": "https://cockroachcoin.fun/",
       "observedClaim": "Public site presents fixed supply, burned liquidity, revoked mint authority, zero-tax, and community-ownership claims suitable for evidence review.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://cockroachcoin.fun/"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-01T00:31:48.597Z",
+      "stageApprovalId": "prospect-review-batch-20260831-roach-solana-tradiecoin-fyborg",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "tradiecoin",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-08-29",
       "publicProfileUrl": "https://www.tradiecoin.org/tokenomics",
       "projectUrl": "https://www.tradiecoin.org/tokenomics",
       "observedClaim": "Public tokenomics page lists revoked mint authority, disabled freeze authority, locked tokens, contract, and founder address disclosures.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://www.tradiecoin.org/tokenomics"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-01T00:31:48.597Z",
+      "stageApprovalId": "prospect-review-batch-20260831-roach-solana-tradiecoin-fyborg",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "fyborg",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-08-29",
       "publicProfileUrl": "https://fyborg.com/",
       "projectUrl": "https://fyborg.com/",
       "observedClaim": "Public site presents token allocation, team lock, LP lock, burn, audit, KYC, and ownership claims that could be organized into a public evidence report.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://fyborg.com/"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-01T00:31:48.597Z",
+      "stageApprovalId": "prospect-review-batch-20260831-roach-solana-tradiecoin-fyborg",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "ssqueeze",

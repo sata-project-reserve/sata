@@ -83,8 +83,8 @@ export function buildOutreachApprovalAdvanceCommand({ approvalId, title }) {
 }
 
 function inferNextCommandAfterApproval(item, { prospectPipeline }) {
-  if (item.id === 'prospect-review-batch-20260829') {
-    return `npm run ops:prospect-stage-plan, then ${buildProspectReviewAdvanceCommand({
+  if (item.id.startsWith('prospect-review-batch-')) {
+    return `node scripts/sats-prospect-stage-agent.mjs plan --approvalId ${item.id}, then ${buildProspectReviewAdvanceCommand({
       approvalId: item.id,
       prospectPipeline
     })}`;

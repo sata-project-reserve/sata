@@ -49,9 +49,9 @@ function rejectionCommand(item: ApprovalItem) {
 }
 
 function nextCommandAfterApproval(item: ApprovalItem, reviewBatch: Prospect[]) {
-  if (item.id === 'prospect-review-batch-20260829') {
+  if (item.id.startsWith('prospect-review-batch-')) {
     const prospectIds = reviewBatch.map((prospect) => prospect.id).join(',');
-    return `npm run ops:prospect-stage-plan, then node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${item.id} --prospects ${prospectIds}`;
+    return `node scripts/sats-prospect-stage-agent.mjs plan --approvalId ${item.id}, then node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${item.id} --prospects ${prospectIds}`;
   }
   if (item.id === 'reserve-growth-operating-policy') return 'npm run ops:reserve-plan';
   if (item.id === 'standard-promoter-intake-policy') return 'npm run ops:plan';

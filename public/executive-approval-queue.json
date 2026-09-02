@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-02T12:11:56.968Z",
+  "updatedAtUtc": "2026-09-02T20:38:39.442Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -414,6 +414,70 @@
       ],
       "approvedBy": "executive-chairman",
       "approvedAtUtc": "2026-09-02T12:11:56.968Z"
+    },
+    {
+      "id": "outreach-approval-20260902-ssqueeze-foxclub-lastshift",
+      "title": "Approve factual outreach to ssqueeze, foxclub, lastshift",
+      "category": "revenue-action",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-09-02T20:38:39.442Z",
+      "preparedBy": "codex-ops",
+      "summary": "Approve contact-only outreach for chairman-reviewed transparency-audit prospects using repository-approved templates.",
+      "rationale": "Qualified service prospects are needed before SATA can request exact-sats invoices and generate confirmed reserve receipts.",
+      "proposedAction": "Approve one factual transparency-audit outreach message per listed prospect. This does not approve invoices, payment instructions, paid work, token grants, or asset movement.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Outreach is limited to prospects already in chairman-review stage.",
+        "Messages must use approved transparency-audit templates.",
+        "No price, return, liquidity, revenue, buyer, or market-support claim is approved.",
+        "Any invoice or payment instruction requires a separate chairman-approved exact-sats invoice."
+      ],
+      "publicDisclosure": "SATA may sell transparency tooling and public-reporting services. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment.",
+      "evidence": [
+        {
+          "type": "prospect-evidence",
+          "url": "https://ssqueeze.com/"
+        },
+        {
+          "type": "prospect-evidence",
+          "url": "https://foxclub.trade/"
+        },
+        {
+          "type": "prospect-evidence",
+          "url": "https://www.lastshiftcoin.com/"
+        }
+      ]
+    },
+    {
+      "id": "prospect-review-batch-20260902-kerythos-kyrt",
+      "title": "Review final public-evidence prospect candidate",
+      "category": "revenue-action",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-09-02T20:38:39.442Z",
+      "preparedBy": "codex-ops",
+      "summary": "Review kerythos-kyrt as the final identified transparency-audit prospect in the current batch.",
+      "rationale": "Moving the last evidence-backed candidate into chairman review keeps the service revenue pipeline prepared while outreach and invoice approvals remain separately gated.",
+      "proposedAction": "Review kerythos-kyrt using npm run ops:prospect-review-plan. If acceptable, approve this item to allow only that record to move to chairman-review. This item does not approve contact, invoices, payment requests, paid work, token grants, or asset movement.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Candidate is recorded from public pages only and remains at identified stage until this item is approved.",
+        "No outreach occurs from this approval item.",
+        "No invoice, payment instruction, paid work, or token grant is approved by this item.",
+        "Observed claims are treated as public claims to review, not accusations or endorsements."
+      ],
+      "publicDisclosure": "SATA may sell transparency tooling and public-reporting services. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment.",
+      "evidence": [
+        {
+          "type": "prospect-pipeline",
+          "url": "https://sata-project-reserve.github.io/sata/sats-prospect-pipeline.json"
+        },
+        {
+          "type": "service-page",
+          "url": "https://sata-project-reserve.github.io/sata/services/transparency-audit"
+        }
+      ]
     }
   ]
 }

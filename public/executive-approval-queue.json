@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-02T07:13:48.624Z",
+  "updatedAtUtc": "2026-09-02T12:11:56.968Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -382,6 +382,38 @@
           "url": "https://fyborg.com/"
         }
       ]
+    },
+    {
+      "id": "prospect-review-batch-20260902-ssqueeze-foxclub-lastshift",
+      "title": "Review next public-evidence prospect batch",
+      "category": "revenue-action",
+      "status": "approved-by-chairman",
+      "createdAtUtc": "2026-09-02T12:00:47.768Z",
+      "preparedBy": "codex-ops",
+      "summary": "Review ssqueeze, foxclub, and lastshift as the next identified transparency-audit prospects.",
+      "rationale": "The second outreach approval item is ready for chairman review. A fresh review approval keeps the remaining prospect pipeline moving behind a separate chairman decision.",
+      "proposedAction": "Review ssqueeze, foxclub, and lastshift using npm run ops:prospect-review-plan. If acceptable, approve this item to allow only those records to move to chairman-review. This item does not approve contact, invoices, payment requests, paid work, token grants, or asset movement.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Candidates are recorded from public pages only and remain at identified stage until this item is approved.",
+        "No outreach occurs from this approval item.",
+        "No invoice, payment instruction, paid work, or token grant is approved by this item.",
+        "Observed claims are treated as public claims to review, not accusations or endorsements."
+      ],
+      "publicDisclosure": "SATA may sell transparency tooling and public-reporting services. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment.",
+      "evidence": [
+        {
+          "type": "prospect-pipeline",
+          "url": "https://sata-project-reserve.github.io/sata/sats-prospect-pipeline.json"
+        },
+        {
+          "type": "service-page",
+          "url": "https://sata-project-reserve.github.io/sata/services/transparency-audit"
+        }
+      ],
+      "approvedBy": "executive-chairman",
+      "approvedAtUtc": "2026-09-02T12:11:56.968Z"
     }
   ]
 }

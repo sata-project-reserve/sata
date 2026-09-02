@@ -47,26 +47,29 @@ if (prospectReview && !/sats-prospect-stage-agent\.mjs advance/i.test(prospectRe
 if (prospectReview && prospectReview.nextCommandAfterApproval.includes('<chairman-selected-prospect-ids>')) {
   findings.push('prospect review approval must include concrete current batch prospect ids');
 }
-if (
-  prospectReview &&
-  !prospectReview.nextCommandAfterApproval.includes('--prospects roach-solana,tradiecoin,fyborg')
-) {
-  findings.push('prospect review approval must include the current bounded prospect batch');
+if (prospectReview) {
+  const expectedProspectIds = (prospectPipeline.prospects ?? [])
+    .filter((prospect) => prospect.stage === 'identified')
+    .slice(0, Number(prospectPipeline.dailyCadence?.chairmanReviewBatchSize ?? 3))
+    .map((prospect) => prospect.id)
+    .join(',');
+  if (expectedProspectIds && !prospectReview.nextCommandAfterApproval.includes(`--prospects ${expectedProspectIds}`)) {
+    findings.push('prospect review approval must include the current bounded prospect batch');
+  }
 }
 
-const outreachReview = plan.chairmanReview.find((item) =>
-  item.id.startsWith('outreach-approval-20260831')
-);
-if (outreachReview && !/sats-outreach-approval-agent\.mjs advance/i.test(outreachReview.nextCommandAfterApproval)) {
-  findings.push('outreach approval must point to the bounded outreach transition');
-}
-if (
-  outreachReview &&
-  !outreachReview.nextCommandAfterApproval.includes(
-    '--prospects arnold-solana,npc-meme,black-bull-ansem'
-  )
-) {
-  findings.push('outreach approval must include the chairman-reviewed prospect ids');
+const outreachReviews = plan.chairmanReview.filter((item) => item.id.startsWith('outreach-approval-'));
+for (const outreachReview of outreachReviews) {
+  if (!/sats-outreach-approval-agent\.mjs advance/i.test(outreachReview.nextCommandAfterApproval)) {
+    findings.push(`${outreachReview.id}: outreach approval must point to the bounded outreach transition`);
+  }
+  const expectedProspectIds = prospectIdsFromOutreachApprovalTitle(outreachReview.title).join(',');
+  if (
+    expectedProspectIds &&
+    !outreachReview.nextCommandAfterApproval.includes(`--prospects ${expectedProspectIds}`)
+  ) {
+    findings.push(`${outreachReview.id}: outreach approval must include the chairman-reviewed prospect ids`);
+  }
 }
 
 assertRejects('missing approval confirmation', /Missing explicit chairman confirmation/i, () =>
@@ -111,4 +114,13 @@ function assertRejects(name, expected, fn) {
     return;
   }
   throw new Error(`${name}: expected rejection.`);
+}
+
+function prospectIdsFromOutreachApprovalTitle(title) {
+  const match = /^Approve factual outreach to (?<ids>.+)$/.exec(title ?? '');
+  if (!match?.groups?.ids) return [];
+  return match.groups.ids
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean);
 }

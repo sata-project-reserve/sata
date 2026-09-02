@@ -85,6 +85,15 @@ export default function OperationsPage() {
   const chairmanReviewProspects = prospectPipeline.prospects.filter(
     (prospect) => prospect.stage === 'chairman-review'
   );
+  const outreachApprovedProspects = prospectPipeline.prospects.filter(
+    (prospect) => prospect.stage === 'outreach-approved'
+  );
+  const contactedProspects = prospectPipeline.prospects.filter(
+    (prospect) => prospect.stage === 'contacted'
+  );
+  const invoiceRequestedProspects = prospectPipeline.prospects.filter(
+    (prospect) => prospect.stage === 'invoice-requested'
+  );
 
   return (
     <main className="public-page">
@@ -265,6 +274,67 @@ export default function OperationsPage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Reply Conversion</h2>
+          <p>Evidence commands for turning approved outreach into invoice-ready revenue records.</p>
+        </div>
+        <div className="warning-list">
+          {outreachApprovedProspects.map((prospect) => (
+            <div className="proof-block" key={`contact-${prospect.id}`}>
+              <span>after approved outreach is sent</span>
+              <strong>{prospect.id}</strong>
+              <p>Record durable contact evidence before treating the prospect as contacted.</p>
+              <div className="command-list">
+                <span>Record Contacted</span>
+                <code>
+                  node scripts/sats-prospect-response-agent.mjs record-contacted --prospect{' '}
+                  {prospect.id} --evidence &quot;&lt;contact-evidence-url-or-reference&gt;&quot;
+                  --channel &quot;manual-dm-or-email&quot;
+                </code>
+              </div>
+            </div>
+          ))}
+          {contactedProspects.map((prospect) => (
+            <div className="proof-block" key={`invoice-request-${prospect.id}`}>
+              <span>after customer asks for invoice</span>
+              <strong>{prospect.id}</strong>
+              <p>Record the customer invoice request before preparing exact-sats quote inputs.</p>
+              <div className="command-list">
+                <span>Record Invoice Request</span>
+                <code>
+                  node scripts/sats-prospect-response-agent.mjs record-invoice-request --prospect{' '}
+                  {prospect.id} --offer {prospect.recommendedOfferId} --evidence
+                  &quot;&lt;invoice-request-evidence-url-or-reference&gt;&quot;
+                  --confirmedCustomerRequestedInvoice true
+                </code>
+              </div>
+            </div>
+          ))}
+          {invoiceRequestedProspects.map((prospect) => (
+            <div className="proof-block" key={`quote-${prospect.id}`}>
+              <span>invoice request recorded</span>
+              <strong>{prospect.id}</strong>
+              <p>Prepare quote inputs, then submit the exact-sats invoice for chairman approval.</p>
+              <div className="command-list">
+                <span>Quote Plan</span>
+                <code>npm run ops:invoice-quote-plan</code>
+                <span>Invoice Request Packet</span>
+                <code>
+                  node scripts/sats-invoice-request-agent.mjs render --prospect {prospect.id}
+                </code>
+              </div>
+            </div>
+          ))}
+          {contactedProspects.length === 0 && invoiceRequestedProspects.length === 0 ? (
+            <div className="notice">
+              <strong>Current Reply State</strong>
+              <span>No contacted prospects or invoice requests are recorded yet.</span>
+            </div>
+          ) : null}
         </div>
       </section>
 

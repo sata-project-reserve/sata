@@ -86,6 +86,14 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
       .filter({ hasText: 'Hi arnold-solana' })
       .filter({ hasText: 'SATA runs a small transparency audit service for crypto teams.' })
   ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Reply Conversion' })).toBeVisible();
+  await expect(page.getByText('after approved outreach is sent')).toHaveCount(3);
+  await expect(
+    page.getByText(
+      'node scripts/sats-prospect-response-agent.mjs record-contacted --prospect arnold-solana'
+    )
+  ).toBeVisible();
+  await expect(page.getByText('No contacted prospects or invoice requests are recorded yet.')).toBeVisible();
   await expect(
     page
       .locator('.summary-grid .metric')

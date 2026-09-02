@@ -75,10 +75,13 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
       exact: true
     })
   ).toBeVisible();
-  await expect(page.getByText('chairman-review').locator('..').getByText('3')).toBeVisible();
+  await expect(page.getByText('chairman-review').locator('..').getByText('6')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Chairman Review Prospects' })).toBeVisible();
   await expect(page.getByText('roach-solana', { exact: true })).toBeVisible();
   await expect(page.getByText('tradiecoin', { exact: true })).toBeVisible();
   await expect(page.getByText('fyborg', { exact: true })).toBeVisible();
+  await expect(page.getByText('ssqueeze', { exact: true })).toBeVisible();
+  await expect(page.getByText('foxclub', { exact: true })).toBeVisible();
+  await expect(page.getByText('lastshift', { exact: true })).toBeVisible();
   await expect(page.getByText('No price guarantee')).toBeVisible();
 });

@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-01T00:31:48.597Z",
+  "updatedAtUtc": "2026-09-02T12:12:18.103Z",
   "mode": "service-revenue-prospect-pipeline",
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
@@ -169,45 +169,54 @@
     },
     {
       "id": "ssqueeze",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-08-29",
       "publicProfileUrl": "https://ssqueeze.com/",
       "projectUrl": "https://ssqueeze.com/",
       "observedClaim": "Public site presents locked liquidity, revoked mint authority, roadmap, tax, and risk-language claims that could use a concise public audit.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://ssqueeze.com/"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-02T12:12:18.103Z",
+      "stageApprovalId": "prospect-review-batch-20260902-ssqueeze-foxclub-lastshift",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "foxclub",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-08-29",
       "publicProfileUrl": "https://foxclub.trade/",
       "projectUrl": "https://foxclub.trade/",
       "observedClaim": "Public site presents Solana verification, permanently burned or locked liquidity, and revoked mint authority claims suitable for independent evidence review.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://foxclub.trade/"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-02T12:12:18.103Z",
+      "stageApprovalId": "prospect-review-batch-20260902-ssqueeze-foxclub-lastshift",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "lastshift",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-08-29",
       "publicProfileUrl": "https://www.lastshiftcoin.com/",
       "projectUrl": "https://www.lastshiftcoin.com/",
       "observedClaim": "Public site presents wallet map, burn, authority, LP lock, treasury, and operations disclosures that could be packaged into a reviewable proof report.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://www.lastshiftcoin.com/"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-02T12:12:18.103Z",
+      "stageApprovalId": "prospect-review-batch-20260902-ssqueeze-foxclub-lastshift",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "kerythos-kyrt",

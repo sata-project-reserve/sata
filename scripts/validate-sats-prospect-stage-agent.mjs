@@ -9,21 +9,34 @@ const pipeline = JSON.parse(readFileSync(join('public', 'sats-prospect-pipeline.
 const approvalQueue = JSON.parse(readFileSync(join('public', 'executive-approval-queue.json'), 'utf8'));
 const approvalId = 'prospect-review-batch-20260829';
 const findings = [];
+const fixtureProspects = pipeline.prospects.slice(0, 2).map((prospect) => ({
+  ...prospect,
+  stage: 'identified',
+  chairmanApprovedBeforeOutreach: false,
+  stageApprovalId: undefined,
+  stageUpdatedAtUtc: undefined,
+  stageNotes: undefined,
+  outreachApprovalId: undefined,
+  outreachApprovedAtUtc: undefined
+}));
 const transitionFixture = {
   ...pipeline,
-  prospects: pipeline.prospects.map((prospect) =>
-    prospect.stageApprovalId === approvalId
-      ? {
-          ...prospect,
-          stageApprovalId: undefined,
-          stageUpdatedAtUtc: undefined,
-          stageNotes: undefined
-        }
-      : prospect
-  )
+  prospects: [
+    ...fixtureProspects,
+    ...pipeline.prospects.slice(2).map((prospect) =>
+      prospect.stageApprovalId === approvalId
+        ? {
+            ...prospect,
+            stageApprovalId: undefined,
+            stageUpdatedAtUtc: undefined,
+            stageNotes: undefined
+          }
+        : prospect
+    )
+  ]
 };
-const firstIdentified = pipeline.prospects.find((prospect) => prospect.stage === 'identified');
-const secondIdentified = pipeline.prospects.find(
+const firstIdentified = transitionFixture.prospects.find((prospect) => prospect.stage === 'identified');
+const secondIdentified = transitionFixture.prospects.find(
   (prospect) => prospect.stage === 'identified' && prospect.id !== firstIdentified?.id
 );
 if (!firstIdentified || !secondIdentified) {

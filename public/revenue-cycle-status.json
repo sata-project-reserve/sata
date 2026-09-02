@@ -12,8 +12,8 @@
   },
   "funnel": {
     "prospects": 10,
-    "identifiedProspects": 4,
-    "chairmanReviewProspects": 3,
+    "identifiedProspects": 1,
+    "chairmanReviewProspects": 6,
     "outreachApprovedProspects": 3,
     "approvedInvoices": 0,
     "confirmedReceipts": 0,

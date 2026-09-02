@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-02T20:38:39.442Z",
+  "updatedAtUtc": "2026-09-02T20:41:52.258Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -453,7 +453,7 @@
       "id": "prospect-review-batch-20260902-kerythos-kyrt",
       "title": "Review final public-evidence prospect candidate",
       "category": "revenue-action",
-      "status": "ready-for-chairman-review",
+      "status": "approved-by-chairman",
       "createdAtUtc": "2026-09-02T20:38:39.442Z",
       "preparedBy": "codex-ops",
       "summary": "Review kerythos-kyrt as the final identified transparency-audit prospect in the current batch.",
@@ -477,7 +477,9 @@
           "type": "service-page",
           "url": "https://sata-project-reserve.github.io/sata/services/transparency-audit"
         }
-      ]
+      ],
+      "approvedBy": "executive-chairman",
+      "approvedAtUtc": "2026-09-02T20:41:52.258Z"
     }
   ]
 }

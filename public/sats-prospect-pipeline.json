@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-02T12:12:18.103Z",
+  "updatedAtUtc": "2026-09-02T20:42:02.734Z",
   "mode": "service-revenue-prospect-pipeline",
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
@@ -220,17 +220,20 @@
     },
     {
       "id": "kerythos-kyrt",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-08-29",
       "publicProfileUrl": "https://kerythos.org/en/",
       "projectUrl": "https://kerythos.org/en/",
       "observedClaim": "Public site presents fixed supply, authority revocation, LP lock, allocation, vesting, utility, buyback, and burn claims that could benefit from a public evidence summary.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://kerythos.org/en/"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-02T20:42:02.734Z",
+      "stageApprovalId": "prospect-review-batch-20260902-kerythos-kyrt",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     }
   ],
   "approvedOutreachTemplates": [

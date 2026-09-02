@@ -42,14 +42,28 @@ for (const candidate of packet.candidates) {
   }
 }
 
-for (const required of [
+const alwaysRequiredRenderedText = [
   /SATA Prospect Review Packet/i,
-  /Observed public claim/i,
-  /Proposed next stage: chairman-review/i,
-  /Executive Chairman must approve/i,
   /does not approve contact/i,
   /asset movement/i
-]) {
+];
+const candidateRequiredRenderedText = [
+  /Observed public claim/i,
+  /Proposed next stage: chairman-review/i,
+  /Executive Chairman must approve/i
+];
+
+for (const required of alwaysRequiredRenderedText) {
+  if (!required.test(rendered)) findings.push(`rendered packet missing ${required}`);
+}
+
+if (packet.candidateCount === 0) {
+  if (!/No identified candidates are available for review/i.test(rendered)) {
+    findings.push('rendered packet must state when no identified candidates are available');
+  }
+}
+
+for (const required of packet.candidateCount > 0 ? candidateRequiredRenderedText : []) {
   if (!required.test(rendered)) findings.push(`rendered packet missing ${required}`);
 }
 

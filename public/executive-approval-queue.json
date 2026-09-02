@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-08-31T18:03:21.136Z",
+  "updatedAtUtc": "2026-09-02T07:13:48.624Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -348,6 +348,40 @@
       ],
       "approvedBy": "executive-chairman",
       "approvedAtUtc": "2026-08-31T18:03:21.136Z"
+    },
+    {
+      "id": "outreach-approval-20260902-roach-solana-tradiecoin-fyborg",
+      "title": "Approve factual outreach to roach-solana, tradiecoin, fyborg",
+      "category": "revenue-action",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-09-02T07:13:48.624Z",
+      "preparedBy": "codex-ops",
+      "summary": "Approve contact-only outreach for chairman-reviewed transparency-audit prospects using repository-approved templates.",
+      "rationale": "Qualified service prospects are needed before SATA can request exact-sats invoices and generate confirmed reserve receipts.",
+      "proposedAction": "Approve one factual transparency-audit outreach message per listed prospect. This does not approve invoices, payment instructions, paid work, token grants, or asset movement.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Outreach is limited to prospects already in chairman-review stage.",
+        "Messages must use approved transparency-audit templates.",
+        "No price, return, liquidity, revenue, buyer, or market-support claim is approved.",
+        "Any invoice or payment instruction requires a separate chairman-approved exact-sats invoice."
+      ],
+      "publicDisclosure": "SATA may sell transparency tooling and public-reporting services. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment.",
+      "evidence": [
+        {
+          "type": "prospect-evidence",
+          "url": "https://cockroachcoin.fun/"
+        },
+        {
+          "type": "prospect-evidence",
+          "url": "https://www.tradiecoin.org/tokenomics"
+        },
+        {
+          "type": "prospect-evidence",
+          "url": "https://fyborg.com/"
+        }
+      ]
     }
   ]
 }

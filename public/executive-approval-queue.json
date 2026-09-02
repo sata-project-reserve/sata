@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-02T20:54:53.706Z",
+  "updatedAtUtc": "2026-09-02T22:22:00.000Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -504,6 +504,40 @@
         {
           "type": "prospect-evidence",
           "url": "https://kerythos.org/en/"
+        }
+      ]
+    },
+    {
+      "id": "prospect-review-batch-20260902-lilmeme-modest-money-funtom",
+      "title": "Review next public-evidence prospect batch",
+      "category": "revenue-action",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-09-02T22:22:00.000Z",
+      "preparedBy": "codex-ops",
+      "summary": "Review lilmeme, modest-money, and funtom as the next identified transparency-audit prospects.",
+      "rationale": "The service revenue pipeline needs fresh chairman-reviewed prospects behind the already prepared outreach queue so qualified leads can keep moving toward exact-sats invoices.",
+      "proposedAction": "Review lilmeme, modest-money, and funtom using npm run ops:prospect-review-plan. If acceptable, approve this item to allow only those records to move to chairman-review. This item does not approve contact, invoices, payment requests, paid work, token grants, or asset movement.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Candidates are recorded from public pages only and remain at identified stage until this item is approved.",
+        "No outreach occurs from this approval item.",
+        "No invoice, payment instruction, paid work, or token grant is approved by this item.",
+        "Observed claims are treated as public claims to review, not accusations or endorsements."
+      ],
+      "publicDisclosure": "SATA may sell transparency tooling and public-reporting services. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment.",
+      "evidence": [
+        {
+          "type": "prospect-evidence",
+          "url": "https://lilmeme.fun/"
+        },
+        {
+          "type": "prospect-evidence",
+          "url": "https://modestycoin.com/"
+        },
+        {
+          "type": "prospect-evidence",
+          "url": "https://funtom.net/"
         }
       ]
     }

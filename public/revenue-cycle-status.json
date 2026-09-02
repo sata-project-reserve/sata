@@ -11,8 +11,8 @@
     "latestReportGeneratedAtUtc": "2026-09-02T21:34:23.757Z"
   },
   "funnel": {
-    "prospects": 10,
-    "identifiedProspects": 0,
+    "prospects": 17,
+    "identifiedProspects": 7,
     "chairmanReviewProspects": 7,
     "outreachApprovedProspects": 3,
     "approvedInvoices": 0,
@@ -94,8 +94,18 @@
       "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
     },
     {
-      "id": "publish-social-transparency-service-offer",
+      "id": "render-next-prospect-review",
       "priority": 7,
+      "type": "prospect-review-packet",
+      "title": "Render prospect review packet for the next identified candidates before any outreach.",
+      "requiredActor": "agent prepares review packet; Executive Chairman approves prospect review",
+      "command": "npm run ops:prospect-review-plan",
+      "evidenceRequired": "Evidence-backed prospect candidates.",
+      "boundary": "Prospects cannot move beyond identified without chairman review."
+    },
+    {
+      "id": "publish-social-transparency-service-offer",
+      "priority": 8,
       "type": "manual-social-publish",
       "title": "Manually publish approved post transparency-service-offer, or enable approved-only X credentials after chairman approval.",
       "requiredActor": "Executive Chairman or authorized human",

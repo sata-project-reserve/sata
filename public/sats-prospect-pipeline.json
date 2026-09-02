@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-02T20:42:02.734Z",
+  "updatedAtUtc": "2026-09-02T21:43:00.000Z",
   "mode": "service-revenue-prospect-pipeline",
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
@@ -234,6 +234,105 @@
       "stageUpdatedAtUtc": "2026-09-02T20:42:02.734Z",
       "stageApprovalId": "prospect-review-batch-20260902-kerythos-kyrt",
       "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
+    },
+    {
+      "id": "lilmeme",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-02",
+      "publicProfileUrl": "https://lilmeme.fun/",
+      "projectUrl": "https://lilmeme.fun/",
+      "observedClaim": "Public site presents official mint, Raydium pool, authority revocation, LP lock, vesting, and treasury-float claims that could benefit from an independent evidence summary.",
+      "recommendedOfferId": "transparency-audit",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://lilmeme.fun/",
+        "https://dexscreener.com/solana/X13wg49phGPHYW1pM8BRWCMCwyjJosFHDxLTATF5P4y"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "modest-money",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-02",
+      "publicProfileUrl": "https://modestycoin.com/",
+      "projectUrl": "https://modestycoin.com/",
+      "observedClaim": "Public site presents supply, standard SPL design, revoked mint authority, revoked freeze authority, launch-readiness, and no-payment-before-launch claims suitable for evidence review.",
+      "recommendedOfferId": "transparency-audit",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://modestycoin.com/"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "funtom",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-02",
+      "publicProfileUrl": "https://funtom.net/",
+      "projectUrl": "https://funtom.net/",
+      "observedClaim": "Public site presents live token status, total supply, locked liquidity, three revoked authorities, on-chain verification, and contract-address claims that could be organized into a public proof report.",
+      "recommendedOfferId": "transparency-audit",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://funtom.net/"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "spcx",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-02",
+      "publicProfileUrl": "https://www.spcxmeme.com/",
+      "projectUrl": "https://www.spcxmeme.com/",
+      "observedClaim": "Public site presents fixed supply, circulating-supply, mint revocation, freeze revocation, LP burn, market telemetry, and audit claims that could be checked in a concise transparency audit.",
+      "recommendedOfferId": "transparency-audit",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://www.spcxmeme.com/"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "ansem-season",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-02",
+      "publicProfileUrl": "https://ansem-season.lovable.app/",
+      "projectUrl": "https://ansem-season.lovable.app/",
+      "observedClaim": "Public site presents supply, liquidity, tax, LP burn, mint and freeze revocation, launch route, and contract-address claims suitable for public evidence review.",
+      "recommendedOfferId": "transparency-audit",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://ansem-season.lovable.app/"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "meor",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-02",
+      "publicProfileUrl": "https://meor.app/",
+      "projectUrl": "https://meor.app/",
+      "observedClaim": "Public site presents supply, mint-authority, holder, liquidity-lock, reserve treasury, multisig custody, market telemetry, and contract-address claims that could use independent proof packaging.",
+      "recommendedOfferId": "transparency-audit",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://meor.app/"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "solana-mint-forge",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-02",
+      "publicProfileUrl": "https://www.solanamintforge.com/",
+      "projectUrl": "https://www.solanamintforge.com/",
+      "observedClaim": "Public site presents contract addresses, supply, buy-and-burn mechanics, freeze-authority revocation, mint revocation, and app utility claims that could benefit from a structured public report.",
+      "recommendedOfferId": "transparency-report-setup",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://www.solanamintforge.com/"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
     }
   ],
   "approvedOutreachTemplates": [

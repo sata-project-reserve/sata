@@ -108,5 +108,9 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByText('foxclub', { exact: true })).toBeVisible();
   await expect(page.getByText('lastshift', { exact: true })).toBeVisible();
   await expect(page.getByText('kerythos-kyrt', { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Next Review Batch' })).toBeVisible();
+  await expect(page.getByText('lilmeme', { exact: true })).toBeVisible();
+  await expect(page.getByText('modest-money', { exact: true })).toBeVisible();
+  await expect(page.getByText('funtom', { exact: true })).toBeVisible();
   await expect(page.getByText('No price guarantee')).toBeVisible();
 });

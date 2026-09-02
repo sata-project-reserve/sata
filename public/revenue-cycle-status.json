@@ -32,6 +32,78 @@
     "No confirmed direct-reserve BTC receipt is recorded.",
     "Approved social content exists, but live X posting credentials are not enabled in this runtime."
   ],
+  "actionQueue": [
+    {
+      "id": "send-outreach-packet-20260831-arnold-solana-transparency-audit-first-contact",
+      "priority": 1,
+      "type": "manual-outreach-send",
+      "title": "Send ready manual outreach packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260831-npc-meme-transparency-audit-first-contact",
+      "priority": 2,
+      "type": "manual-outreach-send",
+      "title": "Send ready manual outreach packet outreach-packet-20260831-npc-meme-transparency-audit-first-contact and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-npc-meme-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact",
+      "priority": 3,
+      "type": "manual-outreach-send",
+      "title": "Send ready manual outreach packet outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "approve-outreach-approval-20260902-roach-solana-tradiecoin-fyborg",
+      "priority": 4,
+      "type": "chairman-approval-needed",
+      "title": "Chairman decision needed for outreach-approval-20260902-roach-solana-tradiecoin-fyborg: Approve factual outreach to roach-solana, tradiecoin, fyborg.",
+      "requiredActor": "Executive Chairman",
+      "command": "npm run ops:approve -- outreach-approval-20260902-roach-solana-tradiecoin-fyborg --confirm-chairman-approval \"I am Executive Chairman and approve outreach-approval-20260902-roach-solana-tradiecoin-fyborg\"",
+      "evidenceRequired": "3 evidence record(s) in executive approval queue.",
+      "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
+    },
+    {
+      "id": "approve-outreach-approval-20260902-ssqueeze-foxclub-lastshift",
+      "priority": 5,
+      "type": "chairman-approval-needed",
+      "title": "Chairman decision needed for outreach-approval-20260902-ssqueeze-foxclub-lastshift: Approve factual outreach to ssqueeze, foxclub, lastshift.",
+      "requiredActor": "Executive Chairman",
+      "command": "npm run ops:approve -- outreach-approval-20260902-ssqueeze-foxclub-lastshift --confirm-chairman-approval \"I am Executive Chairman and approve outreach-approval-20260902-ssqueeze-foxclub-lastshift\"",
+      "evidenceRequired": "3 evidence record(s) in executive approval queue.",
+      "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
+    },
+    {
+      "id": "approve-outreach-approval-20260902-kerythos-kyrt",
+      "priority": 6,
+      "type": "chairman-approval-needed",
+      "title": "Chairman decision needed for outreach-approval-20260902-kerythos-kyrt: Approve factual outreach to kerythos-kyrt.",
+      "requiredActor": "Executive Chairman",
+      "command": "npm run ops:approve -- outreach-approval-20260902-kerythos-kyrt --confirm-chairman-approval \"I am Executive Chairman and approve outreach-approval-20260902-kerythos-kyrt\"",
+      "evidenceRequired": "1 evidence record(s) in executive approval queue.",
+      "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
+    },
+    {
+      "id": "publish-social-transparency-service-offer",
+      "priority": 7,
+      "type": "manual-social-publish",
+      "title": "Manually publish approved post transparency-service-offer, or enable approved-only X credentials after chairman approval.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "npm run social:agent:dry-run",
+      "evidenceRequired": "Published post URL or approved-only posting credentials.",
+      "boundary": "Only chairman-approved factual posts may be published."
+    }
+  ],
   "nextAction": "Send ready manual outreach packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact and record contact evidence.",
   "boundary": "Agents may prepare records, packets, and proposals. The Executive Chairman approves outreach, invoices, transactions, allocations, paid promotion, token grants, and any asset movement."
 }

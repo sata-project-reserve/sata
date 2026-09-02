@@ -189,6 +189,32 @@ export default function OperationsPage() {
 
       <section className="public-band">
         <div className="section-heading">
+          <h2>Priority Action Queue</h2>
+          <p>Executable revenue-cycle actions, ordered by current operating priority.</p>
+        </div>
+        <div className="warning-list">
+          {cycleStatus.actionQueue.map((action) => (
+            <div className="proof-block" key={action.id}>
+              <span>
+                #{action.priority} {action.type}
+              </span>
+              <strong>{action.title}</strong>
+              <p>{action.boundary}</p>
+              <div className="command-list">
+                <span>Required Actor</span>
+                <code>{action.requiredActor}</code>
+                <span>Evidence Required</span>
+                <code>{action.evidenceRequired}</code>
+                <span>Command</span>
+                <code>{action.command}</code>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
           <h2>Approval Queue</h2>
           <p>Current proposal states from the public executive approval queue.</p>
         </div>
@@ -232,6 +258,7 @@ export default function OperationsPage() {
               <strong>{packet.prospectId}</strong>
               <code>{packet.id}</code>
               <p>{packet.sendInstructions}</p>
+              <pre className="preview">{packet.message}</pre>
               <div className="command-list">
                 <span>Record Contact</span>
                 <code>{packet.recordContactCommand}</code>

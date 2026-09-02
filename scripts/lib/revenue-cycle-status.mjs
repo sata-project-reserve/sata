@@ -5,6 +5,7 @@ export function buildRevenueCycleStatus({
   invoiceQueue,
   prospectPipeline,
   outreachPacketQueue = { packets: [] },
+  approvalQueue = { items: [] },
   socialQueue,
   env = process.env
 }) {
@@ -15,6 +16,7 @@ export function buildRevenueCycleStatus({
     invoiceQueue,
     prospectPipeline,
     outreachPacketQueue,
+    approvalQueue,
     socialQueue
   });
 
@@ -43,6 +45,17 @@ export function buildRevenueCycleStatus({
   if (approvedPosts.length > 0 && !livePostingEnabled) {
     blockers.push('Approved social content exists, but live X posting credentials are not enabled in this runtime.');
   }
+
+  const actionQueue = buildActionQueue({
+    prospects,
+    approvedInvoices,
+    receiptsAwaitingAllocation,
+    readyOutreachPackets,
+    approvedPosts,
+    livePostingEnabled,
+    prospectPipeline,
+    approvalQueue
+  });
 
   return {
     project: revenuePlan.project,
@@ -74,15 +87,8 @@ export function buildRevenueCycleStatus({
       livePostingEnabled
     },
     blockers,
-    nextAction: chooseNextAction({
-      prospects,
-      approvedInvoices,
-      receiptsAwaitingAllocation,
-      readyOutreachPackets,
-      approvedPosts,
-      livePostingEnabled,
-      prospectPipeline
-    }),
+    actionQueue,
+    nextAction: actionQueue[0]?.title ?? prospectPipeline.nextOperatingAction,
     boundary:
       'Agents may prepare records, packets, and proposals. The Executive Chairman approves outreach, invoices, transactions, allocations, paid promotion, token grants, and any asset movement.'
   };
@@ -103,6 +109,23 @@ export function validateRevenueCycleStatus(status) {
   if (!status.nextAction || /pump|guarantee|wash|fake engagement|private key|seed phrase/i.test(status.nextAction)) {
     findings.push('nextAction must be present and avoid prohibited routes');
   }
+  if (!Array.isArray(status.actionQueue) || status.actionQueue.length === 0) {
+    findings.push('actionQueue must include at least one executable operating item');
+  }
+  for (const item of status.actionQueue ?? []) {
+    if (!item.id || !item.type || !item.title) {
+      findings.push('actionQueue items require id, type, and title');
+    }
+    if (!Number.isInteger(item.priority) || item.priority < 1) {
+      findings.push(`${item.id ?? '<missing-id>'}: actionQueue priority must be a positive integer`);
+    }
+    if (/pump|guarantee|wash|fake engagement|private key|seed phrase/i.test(item.title ?? '')) {
+      findings.push(`${item.id ?? '<missing-id>'}: actionQueue title contains prohibited wording`);
+    }
+    if (!/Chairman|authorized human|agent|customer/i.test(item.requiredActor ?? '')) {
+      findings.push(`${item.id ?? '<missing-id>'}: actionQueue requiredActor must name the responsible boundary`);
+    }
+  }
   if (!/Executive Chairman approves/i.test(status.boundary ?? '')) {
     findings.push('boundary must preserve chairman approval authority');
   }
@@ -112,51 +135,224 @@ export function validateRevenueCycleStatus(status) {
   return true;
 }
 
-function chooseNextAction({
+function buildActionQueue({
   prospects,
   approvedInvoices,
   receiptsAwaitingAllocation,
   readyOutreachPackets,
   approvedPosts,
   livePostingEnabled,
-  prospectPipeline
+  prospectPipeline,
+  approvalQueue
 }) {
-  if (receiptsAwaitingAllocation.length > 0) {
-    return `Render receipt allocation proposal for ${receiptsAwaitingAllocation[0].id}.`;
+  const actions = [];
+  const approvalItems = approvalQueue.items ?? [];
+  const pendingChairmanApprovals = approvalItems.filter(
+    (item) => item.status === 'ready-for-chairman-review'
+  );
+  const approvedOutreachApprovals = approvalItems.filter(
+    (item) => item.status === 'approved-by-chairman' && item.id?.startsWith('outreach-approval-')
+  );
+  const pendingOutreachProspectIds = new Set(
+    pendingChairmanApprovals
+      .filter((item) => item.id?.startsWith('outreach-approval-'))
+      .flatMap((item) => outreachProspectIdsFromTitle(item.title))
+  );
+
+  for (const receipt of receiptsAwaitingAllocation) {
+    actions.push({
+      id: `allocate-${receipt.id}`,
+      priority: actions.length + 1,
+      type: 'receipt-allocation-proposal',
+      title: `Render receipt allocation proposal for ${receipt.id}.`,
+      requiredActor: 'agent prepares proposal; Executive Chairman approves allocation',
+      command: `node scripts/sats-receipt-allocation-agent.mjs render --receipt ${receipt.id}`,
+      evidenceRequired: 'Confirmed direct-reserve BTC receipt and chairman allocation approval.',
+      boundary: 'No reserve accounting change is final until the Executive Chairman approves it.'
+    });
   }
-  if (approvedInvoices.length > 0) {
-    return `Render approved customer payment packet for ${approvedInvoices[0].id} before the quote expires.`;
+
+  for (const invoice of approvedInvoices) {
+    actions.push({
+      id: `payment-packet-${invoice.id}`,
+      priority: actions.length + 1,
+      type: 'approved-invoice-payment-packet',
+      title: `Render approved customer payment packet for ${invoice.id} before the quote expires.`,
+      requiredActor: 'agent prepares packet; authorized human sends it',
+      command: `node scripts/sats-invoice-payment-packet-agent.mjs render --invoice ${invoice.id}`,
+      evidenceRequired: 'Chairman-approved exact-sats invoice record.',
+      boundary: 'Payment instructions must route only to the published reserve address.'
+    });
   }
-  if (readyOutreachPackets.length > 0) {
-    return `Send ready manual outreach packet ${readyOutreachPackets[0].id} and record contact evidence.`;
+
+  for (const packet of readyOutreachPackets) {
+    actions.push({
+      id: `send-${packet.id}`,
+      priority: actions.length + 1,
+      type: 'manual-outreach-send',
+      title: `Send ready manual outreach packet ${packet.id} and record contact evidence.`,
+      requiredActor: 'Executive Chairman or authorized human',
+      command: packet.recordContactCommand,
+      evidenceRequired: 'Contact URL, message permalink, email record, or other durable send evidence.',
+      boundary: 'Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims.'
+    });
   }
+
+  for (const item of pendingChairmanApprovals) {
+    actions.push({
+      id: `approve-${item.id}`,
+      priority: actions.length + 1,
+      type: 'chairman-approval-needed',
+      title: `Chairman decision needed for ${item.id}: ${item.title}.`,
+      requiredActor: 'Executive Chairman',
+      command: approvalCommand(item),
+      evidenceRequired: `${item.evidence?.length ?? 0} evidence record(s) in executive approval queue.`,
+      boundary:
+        'Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments.'
+    });
+  }
+
+  for (const item of approvedOutreachApprovals) {
+    const prospectIds = outreachProspectIdsFromTitle(item.title).filter((prospectId) => {
+      const prospect = prospects.find((candidate) => candidate.id === prospectId);
+      return prospect?.stage === 'chairman-review';
+    });
+    if (prospectIds.length === 0) continue;
+    actions.push({
+      id: `advance-${item.id}`,
+      priority: actions.length + 1,
+      type: 'advance-approved-outreach',
+      title: `Advance chairman-approved outreach prospects for ${item.id}.`,
+      requiredActor: 'agent',
+      command: `node scripts/sats-outreach-approval-agent.mjs advance --approvalId ${item.id} --prospects ${prospectIds.join(',')}`,
+      evidenceRequired: 'Approved outreach approval item and matching chairman-review prospects.',
+      boundary: 'Advancing prospect state does not send outreach.'
+    });
+  }
+
   const invoiceRequested = prospects.find((prospect) => prospect.stage === 'invoice-requested');
   if (invoiceRequested) {
-    return `Prepare exact-sats invoice quote inputs for invoice-requested prospect ${invoiceRequested.id}.`;
+    actions.push({
+      id: `quote-${invoiceRequested.id}`,
+      priority: actions.length + 1,
+      type: 'invoice-quote-inputs',
+      title: `Prepare exact-sats invoice quote inputs for invoice-requested prospect ${invoiceRequested.id}.`,
+      requiredActor: 'agent prepares quote inputs; Executive Chairman approves invoice',
+      command: `node scripts/sats-invoice-quote-agent.mjs plan --prospect ${invoiceRequested.id}`,
+      evidenceRequired: 'Customer request for invoice and public reserve address match.',
+      boundary: 'No invoice or payment instruction may be sent before chairman approval.'
+    });
   }
+
   const contacted = prospects.find((prospect) => prospect.stage === 'contacted');
   if (contacted) {
-    return `Wait for ${contacted.id} to request an invoice before quote preparation.`;
+    actions.push({
+      id: `wait-invoice-request-${contacted.id}`,
+      priority: actions.length + 1,
+      type: 'await-customer-invoice-request',
+      title: `Wait for ${contacted.id} to request an invoice before quote preparation.`,
+      requiredActor: 'customer',
+      command: 'npm run ops:prospect-response-plan',
+      evidenceRequired: 'Customer reply requesting an invoice.',
+      boundary: 'Do not push payment instructions without a customer invoice request.'
+    });
   }
+
   const outreachApproved = prospects.find((prospect) => prospect.stage === 'outreach-approved');
-  if (outreachApproved) {
-    return `Render manual outreach packet for approved prospect ${outreachApproved.id}.`;
+  const queuedProspectIds = new Set(readyOutreachPackets.map((packet) => packet.prospectId));
+  if (outreachApproved && !queuedProspectIds.has(outreachApproved.id)) {
+    actions.push({
+      id: `render-outreach-${outreachApproved.id}`,
+      priority: actions.length + 1,
+      type: 'render-approved-outreach-packet',
+      title: `Render manual outreach packet for approved prospect ${outreachApproved.id}.`,
+      requiredActor: 'agent',
+      command: `node scripts/service-outreach-packet-agent.mjs write-approved --prospect ${outreachApproved.id}`,
+      evidenceRequired: 'Outreach-approved prospect record.',
+      boundary: 'Rendering a packet does not send the outreach.'
+    });
   }
+
   const chairmanReview = prospects.find((prospect) => prospect.stage === 'chairman-review');
-  if (chairmanReview) {
-    return `Draft contact-only outreach approval packet for chairman-reviewed prospect ${chairmanReview.id}.`;
+  if (chairmanReview && !pendingOutreachProspectIds.has(chairmanReview.id)) {
+    actions.push({
+      id: `draft-outreach-approval-${chairmanReview.id}`,
+      priority: actions.length + 1,
+      type: 'draft-outreach-approval',
+      title: `Draft contact-only outreach approval packet for chairman-reviewed prospect ${chairmanReview.id}.`,
+      requiredActor: 'agent prepares approval item; Executive Chairman approves outreach',
+      command: `node scripts/sats-outreach-approval-agent.mjs draft --prospects ${chairmanReview.id}`,
+      evidenceRequired: 'Chairman-reviewed prospect record.',
+      boundary: 'Draft approval does not authorize contact until the Executive Chairman approves it.'
+    });
   }
+
   const identified = prospects.find((prospect) => prospect.stage === 'identified');
   if (identified) {
-    return 'Render prospect review packet for the next identified candidates before any outreach.';
+    actions.push({
+      id: 'render-next-prospect-review',
+      priority: actions.length + 1,
+      type: 'prospect-review-packet',
+      title: 'Render prospect review packet for the next identified candidates before any outreach.',
+      requiredActor: 'agent prepares review packet; Executive Chairman approves prospect review',
+      command: 'npm run ops:prospect-review-plan',
+      evidenceRequired: 'Evidence-backed prospect candidates.',
+      boundary: 'Prospects cannot move beyond identified without chairman review.'
+    });
   }
+
   if (prospects.length === 0) {
-    return prospectPipeline.nextOperatingAction;
+    actions.push({
+      id: 'identify-evidence-backed-prospects',
+      priority: actions.length + 1,
+      type: 'prospect-discovery',
+      title: prospectPipeline.nextOperatingAction,
+      requiredActor: 'agent',
+      command: 'npm run ops:prospect-candidate-plan',
+      evidenceRequired: 'Public source evidence for each prospect.',
+      boundary: 'Only factual, evidence-backed prospects may enter the pipeline.'
+    });
   }
+
   if (approvedPosts.length > 0 && !livePostingEnabled) {
-    return `Manually publish approved post ${approvedPosts[0].id}, or enable approved-only X credentials after chairman approval.`;
+    actions.push({
+      id: `publish-social-${approvedPosts[0].id}`,
+      priority: actions.length + 1,
+      type: 'manual-social-publish',
+      title: `Manually publish approved post ${approvedPosts[0].id}, or enable approved-only X credentials after chairman approval.`,
+      requiredActor: 'Executive Chairman or authorized human',
+      command: 'npm run social:agent:dry-run',
+      evidenceRequired: 'Published post URL or approved-only posting credentials.',
+      boundary: 'Only chairman-approved factual posts may be published.'
+    });
   }
-  return 'Continue qualifying evidence-backed prospects and prepare chairman-review records.';
+
+  if (actions.length === 0) {
+    actions.push({
+      id: 'continue-prospect-qualification',
+      priority: 1,
+      type: 'prospect-qualification',
+      title: 'Continue qualifying evidence-backed prospects and prepare chairman-review records.',
+      requiredActor: 'agent',
+      command: 'npm run ops:prospect-plan',
+      evidenceRequired: 'Public source evidence for each prospect.',
+      boundary: 'No outreach, invoice, paid work, or asset movement without the required approval gate.'
+    });
+  }
+
+  return actions.map((action, index) => ({ ...action, priority: index + 1 }));
+}
+
+function approvalCommand(item) {
+  return `npm run ops:approve -- ${item.id} --confirm-chairman-approval "I am Executive Chairman and approve ${item.id}"`;
+}
+
+function outreachProspectIdsFromTitle(title) {
+  const match = /^Approve factual outreach to (?<ids>.+)$/.exec(title ?? '');
+  return (match?.groups?.ids ?? '')
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean);
 }
 
 function assertInputs({
@@ -166,6 +362,7 @@ function assertInputs({
   invoiceQueue,
   prospectPipeline,
   outreachPacketQueue,
+  approvalQueue,
   socialQueue
 }) {
   const required = {
@@ -175,6 +372,7 @@ function assertInputs({
     invoiceQueue,
     prospectPipeline,
     outreachPacketQueue,
+    approvalQueue,
     socialQueue
   };
   for (const [label, value] of Object.entries(required)) {

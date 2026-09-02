@@ -45,6 +45,9 @@ const baseInputs = {
   outreachPacketQueue: {
     packets: []
   },
+  approvalQueue: {
+    items: []
+  },
   socialQueue: {
     mode: 'approved-only-automation',
     posts: [
@@ -62,6 +65,7 @@ validateRevenueCycleStatus(status);
 assertEqual(status.currentReserve.remainingSats, '999500000');
 assertEqual(status.funnel.prospects, 0);
 assertEqual(status.social.livePostingEnabled, false);
+assertEqual(status.actionQueue[0]?.type, 'prospect-discovery');
 assertIncludes(status.blockers, 'No evidence-backed prospects are recorded.');
 assertIncludes(
   status.nextAction,
@@ -138,7 +142,42 @@ const readyOutreachPacketStatus = buildRevenueCycleStatus({
 });
 validateRevenueCycleStatus(readyOutreachPacketStatus);
 assertEqual(readyOutreachPacketStatus.funnel.readyOutreachPackets, 1);
+assertEqual(readyOutreachPacketStatus.actionQueue[0]?.type, 'manual-outreach-send');
 assertIncludes(readyOutreachPacketStatus.nextAction, 'Send ready manual outreach packet outreach-packet-1');
+
+const pendingApprovalStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  prospectPipeline: {
+    ...baseInputs.prospectPipeline,
+    prospects: [
+      {
+        id: 'prospect-1',
+        stage: 'chairman-review'
+      }
+    ]
+  },
+  approvalQueue: {
+    items: [
+      {
+        id: 'outreach-approval-1',
+        status: 'ready-for-chairman-review',
+        title: 'Approve factual outreach to prospect-1',
+        evidence: [{ url: 'https://example.com' }]
+      }
+    ]
+  },
+  env: {}
+});
+validateRevenueCycleStatus(pendingApprovalStatus);
+assertEqual(pendingApprovalStatus.actionQueue[0]?.type, 'chairman-approval-needed');
+assertIncludes(pendingApprovalStatus.nextAction, 'Chairman decision needed for outreach-approval-1');
+if (
+  pendingApprovalStatus.actionQueue.some(
+    (item) => item.id === 'draft-outreach-approval-prospect-1'
+  )
+) {
+  throw new Error('Pending outreach approvals must not produce duplicate draft actions.');
+}
 
 assertRejects('wrong reserve address', /Invoice reserve address/, () =>
   buildRevenueCycleStatus({
@@ -218,6 +257,7 @@ async function readPublicInputs() {
     invoiceQueue: await readJson(join('public', 'sats-invoice-queue.json')),
     prospectPipeline: await readJson(join('public', 'sats-prospect-pipeline.json')),
     outreachPacketQueue: await readJson(join('public', 'service-outreach-packet-queue.json')),
+    approvalQueue: await readJson(join('public', 'executive-approval-queue.json')),
     socialQueue: await readJson(join('public', 'social-agent-content-queue.json'))
   };
 }

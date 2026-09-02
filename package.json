@@ -32,6 +32,7 @@
     "ops:revenue-check": "node scripts/validate-revenue-operating-plan.mjs",
     "ops:revenue-plan": "node scripts/revenue-agent.mjs plan",
     "ops:cycle-check": "node scripts/validate-revenue-cycle-status.mjs",
+    "ops:cycle-write": "node scripts/revenue-cycle-agent.mjs write",
     "ops:cycle-plan": "node scripts/revenue-cycle-agent.mjs status",
     "ops:sats-check": "node scripts/validate-sats-generation-ledger.mjs",
     "ops:sats-plan": "node scripts/sats-generation-agent.mjs plan",

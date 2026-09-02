@@ -62,18 +62,29 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByText('500000 sats')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Cycle Status' })).toBeVisible();
   await expect(page.getByText('999,500,000 sats')).toBeVisible();
-  await expect(
-    page.getByText(
-      'Send ready manual outreach packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact and record contact evidence.'
-    )
-  ).toBeVisible();
+  await expect(page.locator('.notice').filter({ hasText: 'Next Action' })).toContainText(
+    'Send ready manual outreach packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact and record contact evidence.'
+  );
   await expect(page.getByText('outreach-approved').locator('..').getByText('3')).toBeVisible();
   await expect(page.getByText('Ready Outreach Packets').locator('..').getByText('3')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Priority Action Queue' })).toBeVisible();
+  await expect(page.getByText('#1 manual-outreach-send')).toBeVisible();
+  await expect(
+    page.getByText(
+      'Chairman decision needed for outreach-approval-20260902-kerythos-kyrt: Approve factual outreach to kerythos-kyrt.'
+    )
+  ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Manual Outreach Packets' })).toBeVisible();
   await expect(
     page.getByText('outreach-packet-20260831-arnold-solana-transparency-audit-first-contact', {
       exact: true
     })
+  ).toBeVisible();
+  await expect(
+    page
+      .locator('.preview')
+      .filter({ hasText: 'Hi arnold-solana' })
+      .filter({ hasText: 'SATA runs a small transparency audit service for crypto teams.' })
   ).toBeVisible();
   await expect(
     page

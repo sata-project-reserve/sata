@@ -781,6 +781,7 @@ async function buildPublishedRevenueCycleStatus(report) {
     invoiceQueue: await readRequiredJson(join('public', 'sats-invoice-queue.json')),
     prospectPipeline: await readRequiredJson(join('public', 'sats-prospect-pipeline.json')),
     outreachPacketQueue: await readRequiredJson(join('public', 'service-outreach-packet-queue.json')),
+    approvalQueue: await readRequiredJson(join('public', 'executive-approval-queue.json')),
     socialQueue: await readRequiredJson(join('public', 'social-agent-content-queue.json')),
     env: {}
   });

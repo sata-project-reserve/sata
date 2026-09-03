@@ -3,6 +3,7 @@ import { join } from 'node:path';
 
 const queue = JSON.parse(readFileSync(join('public', 'sats-invoice-queue.json'), 'utf8'));
 const report = JSON.parse(readFileSync(join('public', 'transparency', 'latest.json'), 'utf8'));
+const revenuePlan = JSON.parse(readFileSync(join('public', 'revenue-operating-plan.json'), 'utf8'));
 const findings = [];
 
 if (queue.schemaVersion !== 1) findings.push('schemaVersion must be 1');
@@ -27,6 +28,17 @@ if (!/No agent may receive funds|hold keys|redirect payments/i.test(queue.paymen
 
 const invoices = queue.invoices ?? [];
 if (invoices.length === 0) findings.push('invoices must include at least one template or invoice');
+const templateByOffer = new Map(
+  invoices.filter((invoice) => invoice.status === 'template').map((invoice) => [invoice.offerId, invoice])
+);
+for (const stream of revenuePlan.revenueStreams ?? []) {
+  const template = templateByOffer.get(stream.id);
+  if (!template) {
+    findings.push(`${stream.id}: missing invoice template for revenue stream`);
+  } else if (template.usdPrice !== stream.priceUsd) {
+    findings.push(`${stream.id}: invoice template price must match revenue stream`);
+  }
+}
 for (const invoice of invoices) {
   const label = invoice.id ?? '<missing-id>';
   for (const field of [

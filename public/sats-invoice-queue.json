@@ -33,6 +33,50 @@
         "regenerate transparency report so confirmed reserve sats update publicly"
       ],
       "publicDisclosure": "Service revenue may be paid directly into the BTC reserve. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment."
+    },
+    {
+      "id": "invoice-template-transparency-report-setup-150",
+      "status": "template",
+      "offerId": "transparency-report-setup",
+      "customer": "to-be-filled-after-qualified-lead",
+      "usdPrice": "150",
+      "settlementCurrency": "BTC",
+      "paymentAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
+      "amountSats": "quote-required-before-sending",
+      "quoteSource": "quote-required-before-sending",
+      "quoteCreatedAtUtc": "quote-required-before-sending",
+      "quoteExpiresAtUtc": "quote-required-before-sending",
+      "chairmanApprovalRequired": true,
+      "deliverable": "Repo-based public report template, disclosure checklist, and deployment instructions for a client project.",
+      "postPaymentActions": [
+        "wait for Bitcoin transaction confirmation",
+        "record transaction id in sats-generation-ledger.json receipts",
+        "deliver report setup artifact",
+        "prepare any requested public summary only after customer and chairman approval"
+      ],
+      "publicDisclosure": "Service revenue may be paid directly into the BTC reserve. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment."
+    },
+    {
+      "id": "invoice-template-full-proof-dashboard-300",
+      "status": "template",
+      "offerId": "full-proof-dashboard",
+      "customer": "to-be-filled-after-qualified-lead",
+      "usdPrice": "300",
+      "settlementCurrency": "BTC",
+      "paymentAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
+      "amountSats": "quote-required-before-sending",
+      "quoteSource": "quote-required-before-sending",
+      "quoteCreatedAtUtc": "quote-required-before-sending",
+      "quoteExpiresAtUtc": "quote-required-before-sending",
+      "chairmanApprovalRequired": true,
+      "deliverable": "Automated public report workflow, proof dashboard, public JSON endpoints, and operating runbook.",
+      "postPaymentActions": [
+        "wait for Bitcoin transaction confirmation",
+        "record transaction id in sats-generation-ledger.json receipts",
+        "deliver dashboard and workflow setup artifact",
+        "record deployment, repo, or handoff evidence before marking work complete"
+      ],
+      "publicDisclosure": "Service revenue may be paid directly into the BTC reserve. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment."
     }
   ],
   "prohibitedInvoicePatterns": [

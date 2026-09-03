@@ -70,6 +70,9 @@ jobs:
       - name: Validate revenue attribution
         run: npm run ops:attribution-check
 
+      - name: Validate sats target planner
+        run: npm run ops:sats-target-check
+
       - name: Commit approved follow-through state
         run: |
           set -euo pipefail

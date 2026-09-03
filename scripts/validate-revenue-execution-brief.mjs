@@ -25,11 +25,23 @@ try {
   findings.push(error.message);
 }
 
-if (brief.topActions[0]?.type !== 'paid-promotion-verification') {
-  findings.push('paid promotion verification must be the first top action while a campaign is unverified');
-}
-if (!brief.topActions[0]?.command?.includes('record-live --campaign diana-crypto-20260903-transparency-tweet')) {
-  findings.push('first top action must expose the exact paid-promotion live evidence command');
+if (status.funnel.paidPromotionsAwaitingVerification > 0) {
+  if (brief.topActions[0]?.type !== 'paid-promotion-verification') {
+    findings.push('paid promotion verification must be the first top action while a campaign is unverified');
+  }
+  if (!brief.topActions[0]?.command?.includes('record-live --campaign diana-crypto-20260903-transparency-tweet')) {
+    findings.push('first top action must expose the exact paid-promotion live evidence command');
+  }
+} else {
+  if (brief.topActions.some((action) => action.type === 'paid-promotion-verification')) {
+    findings.push('live-verified campaigns must not keep verification in the top actions');
+  }
+  if (brief.topActions[0]?.type !== 'manual-outreach-send') {
+    findings.push('manual outreach must become the first top action after paid promotion verification');
+  }
+  if (!brief.constraints.some((constraint) => /24-hour conversion evidence/i.test(constraint))) {
+    findings.push('live-verified campaigns must preserve the 24-hour conversion evidence constraint');
+  }
 }
 if (brief.manualSendBatch.length !== 5) {
   findings.push('manual send batch must default to the first five ready outreach packets');

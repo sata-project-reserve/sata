@@ -47,6 +47,8 @@ export function buildPaidPromotionPlan({ ledger, generatedAtUtc = new Date().toI
     })),
     nextAction:
       awaitingVerification[0]?.nextAction ??
+      liveVerified[0]?.nextAction ??
+      completed[0]?.nextAction ??
       ledger.nextAction ??
       'Wait for verified live evidence and measured conversion before repeating paid promotion.',
     boundary:

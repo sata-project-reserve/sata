@@ -106,7 +106,11 @@ export function buildRevenueExecutionBrief({
     funnel: status.funnel,
     constraints: [
       'No confirmed revenue receipts are recorded yet.',
-      'Paid promotion remains uncounted until live evidence is recorded.',
+      paidPromotionPlan.totals.awaitingVerification > 0
+        ? 'Paid promotion remains uncounted until live evidence is recorded.'
+        : paidPromotionPlan.totals.liveVerified > 0
+          ? 'Live paid promotion must wait for 24-hour conversion evidence before repeat spend.'
+          : 'No paid promotion verification is currently pending.',
       'Manual outreach packets must be sent by a human and then marked with durable evidence.'
     ],
     unitEconomics: {

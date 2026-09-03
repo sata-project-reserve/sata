@@ -2,6 +2,7 @@ import approvalQueue from '@/public/executive-approval-queue.json';
 import outreachPacketQueue from '@/public/service-outreach-packet-queue.json';
 import paidPromotionLedger from '@/public/paid-promotion-ledger.json';
 import prospectPipeline from '@/public/sats-prospect-pipeline.json';
+import revenuePlan from '@/public/revenue-operating-plan.json';
 import cycleStatus from '@/public/revenue-cycle-status.json';
 import report from '@/public/transparency/latest.json';
 
@@ -115,6 +116,16 @@ function cleanTrackingValue(value: string) {
     .slice(0, 96);
 }
 
+function satsFromUsd(usd: number, btcUsd: number) {
+  return BigInt(Math.floor((usd / btcUsd) * 100_000_000));
+}
+
+function dealsRequired(targetSats: bigint, satsPerDeal: bigint) {
+  if (targetSats <= 0n) return 0;
+  if (satsPerDeal <= 0n) return Number.MAX_SAFE_INTEGER;
+  return Number((targetSats + satsPerDeal - 1n) / satsPerDeal);
+}
+
 export default function OperationsPage() {
   const approvalCounts = countByStatus(approvalQueue.items);
   const prospectCounts = countByStage(prospectPipeline.prospects);
@@ -196,6 +207,27 @@ export default function OperationsPage() {
         utm_content: packet.prospectId
       })
     }));
+  const btcUsdPlanningAssumption = 100000;
+  const reserveAllocationPercent =
+    revenuePlan.allocationPolicy.postReceiptAllocationPercent.btcReserve;
+  const nextMilestoneAdditionalSats = BigInt(
+    Number(cycleStatus.currentReserve.confirmedSats) >= 1000000
+      ? 0
+      : 1000000 - Number(cycleStatus.currentReserve.confirmedSats)
+  );
+  const remainingSats = BigInt(cycleStatus.currentReserve.remainingSats);
+  const targetScenarios = revenuePlan.revenueStreams.map((stream) => {
+    const reserveUsdPerDeal = (Number(stream.priceUsd) * reserveAllocationPercent) / 100;
+    const reserveSatsPerDeal = satsFromUsd(reserveUsdPerDeal, btcUsdPlanningAssumption);
+    return {
+      id: stream.id,
+      label: stream.label,
+      priceUsd: stream.priceUsd,
+      reserveSatsPerDeal: reserveSatsPerDeal.toString(),
+      dealsToNextMilestone: dealsRequired(nextMilestoneAdditionalSats, reserveSatsPerDeal),
+      dealsToFullTarget: dealsRequired(remainingSats, reserveSatsPerDeal)
+    };
+  });
 
   return (
     <main className="public-page">
@@ -334,6 +366,51 @@ export default function OperationsPage() {
                 <code>{action.evidence}</code>
                 <span>Command</span>
                 <code>{action.command}</code>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Target Math</h2>
+          <p>Planning math for the 1,000,000,000 sats reserve target.</p>
+        </div>
+        <div className="notice">
+          <strong>Assumption</strong>
+          <span>
+            BTC/USD {btcUsdPlanningAssumption.toLocaleString('en-US')};{' '}
+            {reserveAllocationPercent}% of post-receipt revenue allocated to reserve. Actual sats
+            are recorded only after confirmed receipt or approved allocation.
+          </span>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Next Milestone Gap</span>
+            <strong>{nextMilestoneAdditionalSats.toString()} sats</strong>
+          </div>
+          <div className="metric">
+            <span>Full Target Gap</span>
+            <strong>{remainingSats.toString()} sats</strong>
+          </div>
+          <div className="metric">
+            <span>Terminal Plan</span>
+            <strong>npm run ops:sats-target-markdown</strong>
+          </div>
+        </div>
+        <div className="warning-list">
+          {targetScenarios.map((scenario) => (
+            <div className="proof-block" key={scenario.id}>
+              <span>${scenario.priceUsd}</span>
+              <strong>{scenario.label}</strong>
+              <div className="command-list">
+                <span>Planning Sats Per Deal</span>
+                <code>{scenario.reserveSatsPerDeal}</code>
+                <span>Deals To 1M Sats</span>
+                <code>{scenario.dealsToNextMilestone}</code>
+                <span>Deals To 1B Sats</span>
+                <code>{scenario.dealsToFullTarget}</code>
               </div>
             </div>
           ))}

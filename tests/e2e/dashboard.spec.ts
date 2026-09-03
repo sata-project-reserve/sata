@@ -64,29 +64,25 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
 test('operations page surfaces chairman queue and prospect batch', async ({ page }) => {
   await page.goto('/operations');
   await expect(page.getByRole('heading', { name: 'Reserve growth queue.' })).toBeVisible();
-  await expect(page.getByText('500000 sats')).toBeVisible();
+  await expect(page.getByText('500000 sats').first()).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Cycle Status' })).toBeVisible();
   await expect(page.getByText('999,500,000 sats')).toBeVisible();
-  await expect(
-    page
-      .getByText(
-        'Verify paid promotion campaign diana-crypto-20260903-transparency-tweet before counting it live or approving repeat spend.'
-      )
-      .first()
-  ).toBeVisible();
   await expect(page.getByText('Ready Outreach Packets')).toBeVisible();
   await expect(page.getByText('Due Follow-Ups')).toBeVisible();
   await expect(page.getByText('Paid Campaigns')).toBeVisible();
   await expect(page.getByText('Promo Verification')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Target Math' })).toBeVisible();
+  await expect(page.getByText('BTC/USD 100,000')).toBeVisible();
+  await expect(page.getByText('Deals To 1B Sats').first()).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Attribution Links' })).toBeVisible();
   await expect(page.getByText('utm_source=x_142c').first()).toBeVisible();
   await expect(page.getByText('utm_source=manual_outreach').first()).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Priority Action Queue' })).toBeVisible();
-  await expect(page.getByText('#1 paid-promotion-verification')).toBeVisible();
+  await expect(page.getByText('#1 manual-outreach-send')).toBeVisible();
   await expect(page.getByText('#2 manual-outreach-send')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Paid Promotion Control' })).toBeVisible();
   await expect(page.getByText('Diana Crypto @142C_')).toBeVisible();
-  await expect(page.getByText('post-reported-unverified')).toBeVisible();
+  await expect(page.getByText('live-verified').first()).toBeVisible();
   await expect(
     page.getByText('https://x.com/142C_/status/2086570576530010172', { exact: true })
   ).toBeVisible();

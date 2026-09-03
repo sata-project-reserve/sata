@@ -16,28 +16,60 @@ const plan = buildPaidPromotionPlan({ ledger, generatedAtUtc: '2026-09-03T19:00:
 if (plan.mode !== 'paid-promotion-control-plan') {
   findings.push('plan mode must be paid-promotion-control-plan');
 }
-if (plan.totals.awaitingVerification !== 1) {
-  findings.push('Diana test campaign must remain awaiting verification');
-}
 if (plan.totals.confirmedReceiptsSats !== '0') {
   findings.push('paid promotion must not fabricate confirmed reserve sats');
 }
 if (!/does not approve promotion/i.test(plan.boundary ?? '')) {
   findings.push('plan boundary must preserve no autonomous promotion approval');
 }
-if (!plan.awaitingVerification[0]?.reportedPostUrl?.includes('/status/2086570576530010172')) {
-  findings.push('plan must expose the user-supplied Diana status URL for verification');
-}
-if (
-  !/record-live --campaign diana-crypto-20260903-transparency-tweet/.test(
-    plan.awaitingVerification[0]?.recordLiveCommand ?? ''
-  )
-) {
-  findings.push('plan must expose live verification record command');
+const dianaCampaign = ledger.campaigns.find(
+  (campaign) => campaign.id === 'diana-crypto-20260903-transparency-tweet'
+);
+if (['paid-awaiting-post', 'post-reported-unverified'].includes(dianaCampaign?.status)) {
+  if (plan.totals.awaitingVerification !== 1) {
+    findings.push('Diana test campaign must remain awaiting verification until evidence is recorded');
+  }
+  if (!plan.awaitingVerification[0]?.reportedPostUrl?.includes('/status/2086570576530010172')) {
+    findings.push('plan must expose the user-supplied Diana status URL for verification');
+  }
+  if (
+    !/record-live --campaign diana-crypto-20260903-transparency-tweet/.test(
+      plan.awaitingVerification[0]?.recordLiveCommand ?? ''
+    )
+  ) {
+    findings.push('plan must expose live verification record command');
+  }
+} else if (dianaCampaign?.status === 'live-verified') {
+  if (plan.totals.awaitingVerification !== 0 || plan.totals.liveVerified !== 1) {
+    findings.push('Diana test campaign must be counted as live verified after evidence is recorded');
+  }
+  if (!/Wait 24 hours/i.test(plan.nextAction ?? '')) {
+    findings.push('plan must advance live-verified campaigns to conversion measurement');
+  }
+} else {
+  findings.push('Diana test campaign must be awaiting verification or live verified');
 }
 
+const transitionLedger = {
+  ...ledger,
+  campaigns: ledger.campaigns.map((campaign) =>
+    campaign.id === 'diana-crypto-20260903-transparency-tweet'
+      ? {
+          ...campaign,
+          status: 'post-reported-unverified',
+          verifiedPostUrl: undefined,
+          verification: {
+            ...campaign.verification,
+            status: 'needs-human-verification',
+            evidence: undefined
+          }
+        }
+      : campaign
+  )
+};
+
 const verified = recordPaidPromotionVerification({
-  ledger,
+  ledger: transitionLedger,
   campaignId: 'diana-crypto-20260903-transparency-tweet',
   verifiedPostUrl: 'https://x.com/142C_/status/2086570576530010172',
   evidence: 'signed-in-browser-screenshot-20260903',
@@ -120,7 +152,7 @@ assertRejects('fake sats conversion', /confirmedReceiptsSats/i, () =>
 
 assertRejects('conversion before verification', /live-verified status/i, () =>
   recordPaidPromotionConversion({
-    ledger,
+    ledger: transitionLedger,
     campaignId: 'diana-crypto-20260903-transparency-tweet',
     evidence: 'analytics-log',
     serviceInquiries: 0,

@@ -22,6 +22,9 @@ switch (command) {
   case 'draft':
     printDraft(args);
     break;
+  case 'write-draft':
+    await writeDraft(args);
+    break;
   case 'render':
     printRender(args);
     break;
@@ -33,7 +36,7 @@ switch (command) {
     break;
   default:
     throw new Error(
-      `Unknown sats-outreach-approval command: ${command}. Use plan, draft, render, transition-plan, or advance.`
+      `Unknown sats-outreach-approval command: ${command}. Use plan, draft, write-draft, render, transition-plan, or advance.`
     );
 }
 
@@ -74,6 +77,25 @@ function printDraft(args) {
     pipeline,
     prospectIds: options.prospects ?? options.prospect
   });
+  console.log(JSON.stringify(packet.approvalItem, null, 2));
+}
+
+async function writeDraft(args) {
+  const options = parseOptions(args);
+  const packet = buildOutreachApprovalPacket({
+    pipeline,
+    prospectIds: options.prospects ?? options.prospect
+  });
+  if ((approvalQueue.items ?? []).some((item) => item.id === packet.approvalItem.id)) {
+    throw new Error(`${packet.approvalItem.id} already exists in executive approval queue.`);
+  }
+
+  const updated = {
+    ...approvalQueue,
+    updatedAtUtc: packet.approvalItem.createdAtUtc,
+    items: [...(approvalQueue.items ?? []), packet.approvalItem]
+  };
+  await writeFile(APPROVAL_QUEUE_PATH, `${JSON.stringify(updated, null, 2)}\n`);
   console.log(JSON.stringify(packet.approvalItem, null, 2));
 }
 

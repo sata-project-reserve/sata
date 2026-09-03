@@ -3,6 +3,7 @@ import { join } from 'node:path';
 
 const queuePath = join('public', 'social-agent-content-queue.json');
 const queue = JSON.parse(readFileSync(queuePath, 'utf8'));
+const agent = readFileSync(join('scripts', 'x-social-agent.mjs'), 'utf8');
 
 const bannedPatterns = [
   /\bguaranteed (price|return|profit|upside|gain|yield)\b/i,
@@ -38,6 +39,16 @@ const allowedModes = ['draft-only-until-human-approval', 'approved-only-automati
 
 if (!allowedModes.includes(queue.mode)) {
   findings.push(`queue.mode must be one of: ${allowedModes.join(', ')}`);
+}
+for (const required of [
+  /case 'approve-post'/,
+  /case 'reject-post'/,
+  /I am Executive Chairman and approve social post/,
+  /I am Executive Chairman and reject social post/
+]) {
+  if (!required.test(agent)) {
+    findings.push(`x-social-agent approval flow missing ${required}`);
+  }
 }
 
 for (const post of queue.posts ?? []) {

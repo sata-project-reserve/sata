@@ -82,6 +82,13 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByRole('heading', { name: 'Priority Action Queue' })).toBeVisible();
   await expect(page.getByText('#1 manual-outreach-send')).toBeVisible();
   await expect(page.getByText('#2 manual-outreach-send')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Social Review Queue' })).toBeVisible();
+  await expect(page.getByText('service-upgrade-path', { exact: true })).toBeVisible();
+  await expect(
+    page.getByText(
+      'npm run social:agent -- approve-post --post service-upgrade-path --confirmChairmanApproval "I am Executive Chairman and approve social post service-upgrade-path"'
+    )
+  ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Paid Promotion Control' })).toBeVisible();
   await expect(page.getByText('Diana Crypto @142C_')).toBeVisible();
   await expect(page.getByText('live-verified').first()).toBeVisible();

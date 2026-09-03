@@ -82,6 +82,8 @@ Human approval is required before posting about:
 
 - `npm run social:agent:plan` prints current queue status and the latest report values.
 - `npm run social:agent -- draft-report-update` creates a ready-for-review transparency draft from the latest report.
+- `npm run social:agent -- approve-post --post <post-id> --confirmChairmanApproval "I am Executive Chairman and approve social post <post-id>"` moves one ready post into the approved-only lane.
+- `npm run social:agent -- reject-post --post <post-id> --confirmChairmanRejection "I am Executive Chairman and reject social post <post-id>"` rejects one ready post.
 - `npm run social:agent:dry-run` shows the next approved post without publishing.
 - `npm run social:agent:post` publishes one approved post only when approved-only automation and runtime credentials are enabled.
 

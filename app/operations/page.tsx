@@ -3,6 +3,7 @@ import outreachPacketQueue from '@/public/service-outreach-packet-queue.json';
 import paidPromotionLedger from '@/public/paid-promotion-ledger.json';
 import prospectPipeline from '@/public/sats-prospect-pipeline.json';
 import revenuePlan from '@/public/revenue-operating-plan.json';
+import socialQueue from '@/public/social-agent-content-queue.json';
 import cycleStatus from '@/public/revenue-cycle-status.json';
 import report from '@/public/transparency/latest.json';
 
@@ -19,6 +20,7 @@ const PUBLIC_BASE_URL = 'https://sata-project-reserve.github.io/sata';
 
 type ApprovalItem = (typeof approvalQueue.items)[number];
 type Prospect = (typeof prospectPipeline.prospects)[number];
+type SocialPost = (typeof socialQueue.posts)[number];
 
 const PROSPECT_STAGES = [
   'identified',
@@ -134,6 +136,14 @@ function recordInvoiceRequestCommand(prospect: Prospect) {
   return `node scripts/sats-prospect-response-agent.mjs record-invoice-request --prospect ${prospect.id} --offer ${prospect.recommendedOfferId} --evidence "<invoice-request-evidence-url-or-reference>" --confirmedCustomerRequestedInvoice true`;
 }
 
+function approveSocialPostCommand(post: SocialPost) {
+  return `npm run social:agent -- approve-post --post ${post.id} --confirmChairmanApproval "I am Executive Chairman and approve social post ${post.id}"`;
+}
+
+function rejectSocialPostCommand(post: SocialPost) {
+  return `npm run social:agent -- reject-post --post ${post.id} --confirmChairmanRejection "I am Executive Chairman and reject social post ${post.id}"`;
+}
+
 export default function OperationsPage() {
   const approvalCounts = countByStatus(approvalQueue.items);
   const prospectCounts = countByStage(prospectPipeline.prospects);
@@ -154,6 +164,9 @@ export default function OperationsPage() {
   );
   const invoiceRequestedProspects = prospectPipeline.prospects.filter(
     (prospect) => prospect.stage === 'invoice-requested'
+  );
+  const socialPostsReadyForReview = socialQueue.posts.filter(
+    (post) => post.status === 'ready-for-review'
   );
   const readyOutreachPackets = outreachPacketQueue.packets.filter(
     (packet) => packet.status === 'ready-for-manual-send'
@@ -494,6 +507,28 @@ export default function OperationsPage() {
                 <code>{action.evidenceRequired}</code>
                 <span>Command</span>
                 <code>{action.command}</code>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Social Review Queue</h2>
+          <p>Ready posts require chairman approval before approved-only automation can publish.</p>
+        </div>
+        <div className="warning-list">
+          {socialPostsReadyForReview.map((post) => (
+            <div className="proof-block" key={post.id}>
+              <span>{post.type}</span>
+              <strong>{post.id}</strong>
+              <pre className="preview">{post.text}</pre>
+              <div className="command-list">
+                <span>Approve</span>
+                <code>{approveSocialPostCommand(post)}</code>
+                <span>Reject</span>
+                <code>{rejectSocialPostCommand(post)}</code>
               </div>
             </div>
           ))}

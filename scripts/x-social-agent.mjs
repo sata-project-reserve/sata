@@ -11,6 +11,7 @@ const REVIEW_MODE = 'draft-only-until-human-approval';
 const MAX_POSTS_PER_RUN = 1;
 
 const [, , command = 'plan'] = process.argv;
+const options = parseOptions(process.argv.slice(3));
 
 const queue = await readJson(QUEUE_PATH);
 const monitoring = await readJson(MONITORING_PATH);
@@ -24,6 +25,12 @@ switch (command) {
   case 'draft-report-update':
     await draftReportUpdate();
     break;
+  case 'approve-post':
+    await approvePost();
+    break;
+  case 'reject-post':
+    await rejectPost();
+    break;
   case 'dry-run-post-next-approved':
     await postNextApproved({ dryRun: true });
     break;
@@ -32,7 +39,7 @@ switch (command) {
     break;
   default:
     throw new Error(
-      `Unknown x-social-agent command: ${command}. Use plan, draft-report-update, dry-run-post-next-approved, or post-next-approved.`
+      `Unknown x-social-agent command: ${command}. Use plan, draft-report-update, approve-post, reject-post, dry-run-post-next-approved, or post-next-approved.`
     );
 }
 
@@ -103,6 +110,44 @@ async function draftReportUpdate() {
   console.log(`Created ready-for-review draft: ${id}`);
 }
 
+async function approvePost() {
+  const postId = cleanLine(options.post);
+  const phrase = `I am Executive Chairman and approve social post ${postId}`;
+  if (cleanLine(options.confirmChairmanApproval) !== phrase) {
+    throw new Error(`Approval requires exact phrase: ${phrase}`);
+  }
+  const post = findPost(postId);
+  if (post.status !== 'ready-for-review') {
+    throw new Error(`${postId}: only ready-for-review posts can be approved.`);
+  }
+  validatePostForPublication({ ...post, status: 'approved', approvedBy: 'owner' });
+  post.status = 'approved';
+  post.approvedBy = 'owner';
+  post.approvalRole = 'executive-chairman';
+  post.approvedAtUtc = new Date().toISOString();
+  await writeJson(QUEUE_PATH, queue);
+  console.log(`Approved social post ${postId}.`);
+}
+
+async function rejectPost() {
+  const postId = cleanLine(options.post);
+  const phrase = `I am Executive Chairman and reject social post ${postId}`;
+  if (cleanLine(options.confirmChairmanRejection) !== phrase) {
+    throw new Error(`Rejection requires exact phrase: ${phrase}`);
+  }
+  const post = findPost(postId);
+  if (post.status !== 'ready-for-review') {
+    throw new Error(`${postId}: only ready-for-review posts can be rejected.`);
+  }
+  post.status = 'rejected';
+  post.rejectedBy = 'owner';
+  post.rejectionRole = 'executive-chairman';
+  post.rejectedAtUtc = new Date().toISOString();
+  post.rejectionReason = cleanLine(options.reason ?? 'not approved for publication');
+  await writeJson(QUEUE_PATH, queue);
+  console.log(`Rejected social post ${postId}.`);
+}
+
 async function postNextApproved({ dryRun }) {
   if (!assertPostingMode()) return;
   const posts = approvedPosts().slice(0, MAX_POSTS_PER_RUN);
@@ -142,6 +187,13 @@ async function postNextApproved({ dryRun }) {
 
 function approvedPosts() {
   return (queue.posts ?? []).filter((post) => post.status === 'approved');
+}
+
+function findPost(postId) {
+  if (!postId) throw new Error('Missing --post value.');
+  const post = (queue.posts ?? []).find((item) => item.id === postId);
+  if (!post) throw new Error(`Social post not found: ${postId}`);
+  return post;
 }
 
 function assertPostingMode() {
@@ -230,4 +282,26 @@ async function readJson(path) {
 
 async function writeJson(path, value) {
   await writeFile(path, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
+}
+
+function parseOptions(values) {
+  const parsed = {};
+  for (let index = 0; index < values.length; index += 1) {
+    const key = values[index];
+    if (!key?.startsWith('--')) continue;
+    const collected = [];
+    while (values[index + 1] && !values[index + 1].startsWith('--')) {
+      collected.push(values[index + 1]);
+      index += 1;
+    }
+    if (collected.length === 0) throw new Error(`Missing value for ${key}.`);
+    parsed[key.slice(2)] = collected.join(' ');
+  }
+  return parsed;
+}
+
+function cleanLine(value) {
+  return String(value ?? '')
+    .replace(/\s+/g, ' ')
+    .trim();
 }

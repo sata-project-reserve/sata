@@ -164,14 +164,14 @@
       "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
     },
     {
-      "id": "draft-outreach-approval-limelight-launchpad-troptionsmint-soltokenlab",
+      "id": "approve-outreach-approval-20260903-limelight-launchpad-troptionsmint-soltokenlab",
       "priority": 14,
-      "type": "draft-outreach-approval",
-      "title": "Draft contact-only outreach approval packet for chairman-reviewed prospects limelight-launchpad, troptionsmint, soltokenlab.",
-      "requiredActor": "agent prepares approval item; Executive Chairman approves outreach",
-      "command": "node scripts/sats-outreach-approval-agent.mjs write-draft --prospects limelight-launchpad,troptionsmint,soltokenlab",
-      "evidenceRequired": "Chairman-reviewed prospect record.",
-      "boundary": "Draft approval does not authorize contact until the Executive Chairman approves it."
+      "type": "chairman-approval-needed",
+      "title": "Chairman decision needed for outreach-approval-20260903-limelight-launchpad-troptionsmint-soltokenlab: Approve factual outreach to limelight-launchpad, troptionsmint, soltokenlab.",
+      "requiredActor": "Executive Chairman",
+      "command": "npm run ops:approve -- outreach-approval-20260903-limelight-launchpad-troptionsmint-soltokenlab --confirm-chairman-approval \"I am Executive Chairman and approve outreach-approval-20260903-limelight-launchpad-troptionsmint-soltokenlab\"",
+      "evidenceRequired": "3 evidence record(s) in executive approval queue.",
+      "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
     },
     {
       "id": "publish-social-transparency-service-offer",

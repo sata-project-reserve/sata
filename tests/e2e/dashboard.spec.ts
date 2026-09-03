@@ -101,13 +101,13 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     page
       .locator('.summary-grid .metric')
       .filter({ has: page.getByText('identified', { exact: true }) })
-      .filter({ has: page.getByText('3', { exact: true }) })
+      .filter({ has: page.getByText('0', { exact: true }) })
   ).toBeVisible();
   await expect(
     page
       .locator('.summary-grid .metric')
       .filter({ has: page.getByText('chairman-review', { exact: true }) })
-      .filter({ has: page.getByText('24', { exact: true }) })
+      .filter({ has: page.getByText('27', { exact: true }) })
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Chairman Review Prospects' })).toBeVisible();
   await expect(page.getByText('roach-solana', { exact: true })).toBeVisible();

@@ -276,7 +276,7 @@ export function renderOutreachPacket({
     `Service page: https://sata-project-reserve.github.io/sata/services/transparency-audit`,
     `Intake form: ${deliveryKit.intakeUrl}`,
     '',
-    'This is draft outreach. Executive Chairman approval is required before contact, invoice, paid work, token grant, or payment instruction.'
+    'Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.'
   ]
     .filter((line) => line !== null)
     .join('\n');
@@ -315,11 +315,14 @@ export function validateOutreachPacketQueue({ queue, pipeline }) {
         if (!cleanLine(packet[field])) findings.push(`${packet.id}: sent packet missing ${field}`);
       }
     }
+    if (/approval is required before contact/i.test(packet.message ?? '')) {
+      findings.push(`${packet.id}: outgoing message must not include stale pre-contact approval language`);
+    }
     if (/\b(pump|guaranteed buyers|fake engagement|bots|raids|price prediction)\b/i.test(packet.message ?? '')) {
       findings.push(`${packet.id}: message contains prohibited promotion wording`);
     }
     const paymentInstructionControl =
-      /approval is required before .*payment instruction/i.test(packet.message ?? '');
+      /payment instruction requires Executive Chairman approval/i.test(packet.message ?? '');
     if (/payment instruction/i.test(packet.message ?? '') && !paymentInstructionControl) {
       findings.push(`${packet.id}: message must not include payment instructions`);
     }

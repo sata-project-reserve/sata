@@ -170,7 +170,7 @@ for (const prohibited of [
 ]) {
   const allowedBoundary =
     /payment instruction/i.test(String(prohibited)) &&
-    /approval is required before .*payment instruction/i.test(packet);
+    /payment instruction requires Executive Chairman approval/i.test(packet);
   if (prohibited.test(packet) && !allowedBoundary) {
     findings.push(`outreach packet contains prohibited wording ${prohibited}`);
   }

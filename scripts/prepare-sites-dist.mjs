@@ -441,6 +441,9 @@ function buildServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit) {
       (offer) => `<div class="metric"><span>${escapeHtml(offer.label)}</span><strong>$${escapeHtml(offer.priceUsd)}</strong><p>${escapeHtml(offer.deliverable)}</p></div>`
     )
     .join('');
+  const upgradePath = (revenuePlan.upgradePolicy?.defaultPath ?? [])
+    .map((step) => `<div class="metric"><strong>${escapeHtml(step)}</strong></div>`)
+    .join('');
   const firstProfile = prospectPipeline.idealCustomerProfile[0];
   const primaryBuyerDescription =
     firstProfile?.description ?? 'Crypto teams that need public transparency evidence review.';
@@ -487,6 +490,11 @@ function buildServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit) {
   <section>
     <h2>Offer Menu</h2>
     <div class="grid">${offers}</div>
+  </section>
+  <section>
+    <h2>Upgrade Path</h2>
+    <p>${escapeHtml(revenuePlan.upgradePolicy?.objective ?? '')}</p>
+    <div class="grid">${upgradePath}</div>
   </section>
   <section class="metric">
     <h2>Sales Pipeline</h2>

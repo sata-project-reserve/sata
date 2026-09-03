@@ -18,6 +18,7 @@ const setupOffer = revenuePlan.revenueStreams.find(
 const dashboardOffer = revenuePlan.revenueStreams.find(
   (stream) => stream.id === 'full-proof-dashboard'
 );
+const upgradePolicy = revenuePlan.upgradePolicy;
 const primaryProfile = prospectPipeline.idealCustomerProfile[0];
 const primaryBuyerDescription =
   primaryProfile?.description ?? 'Crypto teams that need public transparency evidence review.';
@@ -171,6 +172,20 @@ export default function TransparencyAuditServicePage() {
             <strong>${dashboardOffer?.priceUsd}</strong>
             <p>{dashboardOffer?.deliverable}</p>
           </article>
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Upgrade Path</h2>
+          <p>{upgradePolicy.objective}</p>
+        </div>
+        <div className="service-checklist">
+          {upgradePolicy.defaultPath.map((step) => (
+            <div className="proof-block" key={step}>
+              <strong>{step}</strong>
+            </div>
+          ))}
         </div>
       </section>
 

@@ -50,6 +50,24 @@
       "paymentTiming": "milestone-based after chairman-approved scope"
     }
   ],
+  "upgradePolicy": {
+    "objective": "Increase average deal value by moving qualified customers from a starter audit into setup or dashboard work only when the customer needs implementation help.",
+    "defaultPath": [
+      "Start with the $50 transparency audit unless the customer already asks for a setup or dashboard.",
+      "Offer the $150 transparency report setup when the audit finds public-reporting gaps the customer wants fixed.",
+      "Offer the $300 full proof dashboard only when the customer wants recurring automated public reporting."
+    ],
+    "qualificationQuestions": [
+      "Do you only want the gap report, or do you want help setting up the public report?",
+      "Do you need a one-time report template or an automated dashboard/workflow?",
+      "Who will approve public wording, payment terms, and final deployment on your side?"
+    ],
+    "stopRules": [
+      "Do not pressure a customer into a larger scope.",
+      "Do not imply the work will improve SATA price, client token price, liquidity, trading volume, or buyer demand.",
+      "Do not start paid work or send payment instructions before chairman-approved scope and invoice."
+    ]
+  },
   "allocationPolicy": {
     "currencyPreference": ["BTC", "USDC on Solana", "SOL"],
     "requiresChairmanApprovalBeforeConversion": true,

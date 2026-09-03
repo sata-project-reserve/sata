@@ -35,6 +35,27 @@ for (const stream of streams) {
   }
 }
 
+const upgradePolicy = plan.upgradePolicy ?? {};
+if (!/Increase average deal value/i.test(upgradePolicy.objective ?? '')) {
+  findings.push('upgradePolicy.objective must define the average-deal-value goal');
+}
+if ((upgradePolicy.defaultPath ?? []).length < 3) {
+  findings.push('upgradePolicy.defaultPath must include starter, setup, and dashboard steps');
+}
+if (!(upgradePolicy.qualificationQuestions ?? []).some((question) => /automated dashboard/i.test(question))) {
+  findings.push('upgradePolicy.qualificationQuestions must qualify dashboard demand');
+}
+const upgradeStopRules = (upgradePolicy.stopRules ?? []).join('\n');
+for (const required of [
+  /Do not pressure/i,
+  /price|liquidity|trading volume|buyer demand/i,
+  /chairman-approved scope and invoice/i
+]) {
+  if (!required.test(upgradeStopRules)) {
+    findings.push(`upgradePolicy.stopRules missing ${required}`);
+  }
+}
+
 const allocation = plan.allocationPolicy?.postReceiptAllocationPercent ?? {};
 const allocationTotal =
   Number(allocation.btcReserve ?? 0) +

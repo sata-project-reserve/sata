@@ -57,6 +57,8 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
   await expect(page.getByRole('heading', { name: 'Delivery Kit' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'View Delivery Kit' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Request Audit' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Upgrade Path' })).toBeVisible();
+  await expect(page.getByText('Offer the $300 full proof dashboard only')).toBeVisible();
   await expect(page.getByText('No price guarantee')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Contact @SATAReserve' })).toBeVisible();
 });

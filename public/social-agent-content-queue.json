@@ -57,6 +57,13 @@
       "text": "SATA offers $50 transparency audits: authority, liquidity-lock, BTC reserve, and disclosure checks.\n\nThe BTC reserve is not a redemption promise or guaranteed price floor. Locked status must be verified.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit"
     },
     {
+      "id": "service-upgrade-path",
+      "status": "ready-for-review",
+      "type": "revenue",
+      "requiresHumanApproval": true,
+      "text": "SATA service path: $50 transparency audit first. If a team wants implementation help, scope can move to a $150 report setup or $300 proof dashboard.\n\nNo market outcome, volume, or buyer-demand claims.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit"
+    },
+    {
       "id": "gmgn-route-pending",
       "status": "hold-until-manual-verification",
       "type": "market-readiness",

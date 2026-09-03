@@ -56,6 +56,7 @@
     "ops:prospect-candidate-plan": "node scripts/sats-prospect-candidate-agent.mjs plan",
     "ops:prospect-review-check": "node scripts/validate-sats-prospect-review-packets.mjs",
     "ops:prospect-review-plan": "node scripts/sats-prospect-review-agent.mjs plan",
+    "ops:prospect-review-write": "node scripts/sats-prospect-review-agent.mjs write-draft",
     "ops:prospect-stage-check": "node scripts/validate-sats-prospect-stage-agent.mjs",
     "ops:prospect-stage-plan": "node scripts/sats-prospect-stage-agent.mjs plan",
     "ops:prospect-response-check": "node scripts/validate-sats-prospect-response-agent.mjs",

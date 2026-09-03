@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-03T18:08:00.000Z",
+  "updatedAtUtc": "2026-09-03T18:12:21.538Z",
   "mode": "service-revenue-prospect-pipeline",
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
@@ -444,45 +444,54 @@
     },
     {
       "id": "instar-meme-futures",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-09-03",
       "publicProfileUrl": "https://instarbrands.com/pages/meme-futures",
       "projectUrl": "https://instarbrands.com/pages/meme-futures",
       "observedClaim": "Public page presents token screening, escrow wallet, fixed SOL strike, locked-liquidity, revoked-authority, volume, and non-custodial contract claims that could benefit from independent public evidence packaging.",
       "recommendedOfferId": "transparency-report-setup",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://instarbrands.com/pages/meme-futures"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-03T18:12:21.538Z",
+      "stageApprovalId": "prospect-review-batch-20260903-instar-meme-futures-cia-token-kedol-token",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "cia-token",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-09-03",
       "publicProfileUrl": "https://docs.cia.com/technical/usdcia-token",
       "projectUrl": "https://docs.cia.com/technical/usdcia-token",
       "observedClaim": "Public technical documentation presents fixed supply, revoked mint authority, revoked freeze authority, revoked metadata authority, locked Raydium CPMM liquidity, multisig vesting, and market-making disclosures that could be summarized in a neutral transparency audit.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://docs.cia.com/technical/usdcia-token"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-03T18:12:21.538Z",
+      "stageApprovalId": "prospect-review-batch-20260903-instar-meme-futures-cia-token-kedol-token",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "kedol-token",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-09-03",
       "publicProfileUrl": "https://github.com/KedolikSwap/KEDOL-Token",
       "projectUrl": "https://github.com/KedolikSwap/KEDOL-Token",
       "observedClaim": "Public repository presents an audit-style transparency report with Solana token details, revoked authority claims, explorer links, and ecosystem disclosures that could benefit from a concise independent evidence review.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://github.com/KedolikSwap/KEDOL-Token"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-03T18:12:21.538Z",
+      "stageApprovalId": "prospect-review-batch-20260903-instar-meme-futures-cia-token-kedol-token",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "meme-launch",

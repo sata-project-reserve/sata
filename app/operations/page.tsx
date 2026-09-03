@@ -123,6 +123,28 @@ export default function OperationsPage() {
   const paidPromotionsAwaitingVerification = paidPromotionLedger.campaigns.filter((campaign) =>
     ['paid-awaiting-post', 'post-reported-unverified'].includes(campaign.status)
   );
+  const revenueExecutionActions = [
+    ...paidPromotionsAwaitingVerification.map((campaign) => ({
+      id: `verify-${campaign.id}`,
+      type: 'paid-promotion-verification',
+      title: `Verify ${campaign.id} before counting results.`,
+      reason: 'Paid attention cannot be measured or repeated until the live post evidence is recorded.',
+      command: `node scripts/paid-promotion-agent.mjs record-live --campaign ${campaign.id} --post ${campaign.reportedPostUrl} --evidence "<live-post-screenshot-or-exported-text>"`,
+      evidence:
+        'Signed-in screenshot or exported text showing disclosure, unchanged copy, timestamp, and post URL.'
+    })),
+    ...outreachPacketQueue.packets
+      .filter((packet) => packet.status === 'ready-for-manual-send')
+      .slice(0, 5)
+      .map((packet) => ({
+        id: `send-${packet.id}`,
+        type: 'manual-outreach-send',
+        title: `Send approved transparency-audit outreach to ${packet.prospectId}.`,
+        reason: 'The shortest direct path to reserve sats is a paid audit customer requesting an invoice.',
+        command: packet.recordContactCommand,
+        evidence: 'Message permalink, email record, or other durable contact proof.'
+      }))
+  ];
 
   return (
     <main className="public-page">
@@ -234,6 +256,34 @@ export default function OperationsPage() {
             <div className="proof-block" key={blocker}>
               <span>blocker</span>
               <strong>{blocker}</strong>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Revenue Execution Brief</h2>
+          <p>Today&apos;s narrow operating batch for turning attention into measurable sats.</p>
+        </div>
+        <div className="notice">
+          <strong>Terminal Brief</strong>
+          <span>Run npm run ops:execution-brief-markdown for the copy-ready execution plan.</span>
+        </div>
+        <div className="warning-list">
+          {revenueExecutionActions.map((action, index) => (
+            <div className="proof-block" key={action.id}>
+              <span>
+                #{index + 1} {action.type}
+              </span>
+              <strong>{action.title}</strong>
+              <p>{action.reason}</p>
+              <div className="command-list">
+                <span>Evidence Required</span>
+                <code>{action.evidence}</code>
+                <span>Command</span>
+                <code>{action.command}</code>
+              </div>
             </div>
           ))}
         </div>

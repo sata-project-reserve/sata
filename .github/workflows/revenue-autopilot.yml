@@ -64,6 +64,9 @@ jobs:
       - name: Validate revenue cycle status
         run: npm run ops:cycle-check
 
+      - name: Validate revenue execution brief
+        run: npm run ops:execution-brief-check
+
       - name: Commit approved follow-through state
         run: |
           set -euo pipefail

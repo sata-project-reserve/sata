@@ -67,6 +67,9 @@ jobs:
       - name: Validate revenue execution brief
         run: npm run ops:execution-brief-check
 
+      - name: Validate revenue attribution
+        run: npm run ops:attribution-check
+
       - name: Commit approved follow-through state
         run: |
           set -euo pipefail

@@ -78,6 +78,9 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByText('Due Follow-Ups')).toBeVisible();
   await expect(page.getByText('Paid Campaigns')).toBeVisible();
   await expect(page.getByText('Promo Verification')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Attribution Links' })).toBeVisible();
+  await expect(page.getByText('utm_source=x_142c').first()).toBeVisible();
+  await expect(page.getByText('utm_source=manual_outreach').first()).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Priority Action Queue' })).toBeVisible();
   await expect(page.getByText('#1 paid-promotion-verification')).toBeVisible();
   await expect(page.getByText('#2 manual-outreach-send')).toBeVisible();
@@ -92,7 +95,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(
     page.getByText('outreach-packet-20260831-arnold-solana-transparency-audit-first-contact', {
       exact: true
-    })
+    }).first()
   ).toBeVisible();
   await expect(
     page

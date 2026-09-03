@@ -99,6 +99,22 @@ function prospectIdsFromReviewSummary(summary: string) {
     .join(',');
 }
 
+function trackedPublicUrl(path: string, params: Record<string, string>) {
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    query.set(key, cleanTrackingValue(value));
+  }
+  return `${PUBLIC_BASE_URL}${path}?${query.toString()}`;
+}
+
+function cleanTrackingValue(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 96);
+}
+
 export default function OperationsPage() {
   const approvalCounts = countByStatus(approvalQueue.items);
   const prospectCounts = countByStage(prospectPipeline.prospects);
@@ -145,6 +161,41 @@ export default function OperationsPage() {
         evidence: 'Message permalink, email record, or other durable contact proof.'
       }))
   ];
+  const paidAttributionLinks = paidPromotionLedger.campaigns.map((campaign) => ({
+    id: campaign.id,
+    promoter: campaign.promoter.handle,
+    transparencyUrl: trackedPublicUrl('/transparency', {
+      utm_source: `x_${campaign.promoter.handle}`,
+      utm_medium: 'paid_promotion',
+      utm_campaign: campaign.id,
+      utm_content: 'transparency_report'
+    }),
+    serviceUrl: trackedPublicUrl('/services/transparency-audit', {
+      utm_source: `x_${campaign.promoter.handle}`,
+      utm_medium: 'paid_promotion',
+      utm_campaign: campaign.id,
+      utm_content: 'audit_service'
+    })
+  }));
+  const outreachAttributionLinks = outreachPacketQueue.packets
+    .filter((packet) => packet.status === 'ready-for-manual-send')
+    .slice(0, 5)
+    .map((packet) => ({
+      packetId: packet.id,
+      prospectId: packet.prospectId,
+      serviceUrl: trackedPublicUrl('/services/transparency-audit', {
+        utm_source: 'manual_outreach',
+        utm_medium: packet.channel,
+        utm_campaign: packet.id,
+        utm_content: packet.prospectId
+      }),
+      transparencyUrl: trackedPublicUrl('/transparency', {
+        utm_source: 'manual_outreach',
+        utm_medium: packet.channel,
+        utm_campaign: packet.id,
+        utm_content: packet.prospectId
+      })
+    }));
 
   return (
     <main className="public-page">
@@ -283,6 +334,50 @@ export default function OperationsPage() {
                 <code>{action.evidence}</code>
                 <span>Command</span>
                 <code>{action.command}</code>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Attribution Links</h2>
+          <p>Tracked URLs for measuring paid promotion and outreach conversion.</p>
+        </div>
+        <div className="notice">
+          <strong>Terminal Plan</strong>
+          <span>Run npm run ops:attribution-markdown for the full tracked-link packet.</span>
+        </div>
+        <div className="warning-list">
+          {paidAttributionLinks.map((link) => (
+            <div className="proof-block" key={link.id}>
+              <span>paid-promotion</span>
+              <strong>
+                {link.id} @{link.promoter}
+              </strong>
+              <p>
+                Current reported posts are untracked unless platform analytics, replies, invoice
+                requests, or receipts are recorded.
+              </p>
+              <div className="command-list">
+                <span>Transparency URL</span>
+                <code>{link.transparencyUrl}</code>
+                <span>Service URL</span>
+                <code>{link.serviceUrl}</code>
+              </div>
+            </div>
+          ))}
+          {outreachAttributionLinks.map((link) => (
+            <div className="proof-block" key={link.packetId}>
+              <span>manual-outreach</span>
+              <strong>{link.prospectId}</strong>
+              <code>{link.packetId}</code>
+              <div className="command-list">
+                <span>Service URL</span>
+                <code>{link.serviceUrl}</code>
+                <span>Transparency URL</span>
+                <code>{link.transparencyUrl}</code>
               </div>
             </div>
           ))}

@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-02T21:43:00.000Z",
+  "updatedAtUtc": "2026-09-02T22:25:03.153Z",
   "mode": "service-revenue-prospect-pipeline",
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
@@ -237,46 +237,55 @@
     },
     {
       "id": "lilmeme",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-09-02",
       "publicProfileUrl": "https://lilmeme.fun/",
       "projectUrl": "https://lilmeme.fun/",
       "observedClaim": "Public site presents official mint, Raydium pool, authority revocation, LP lock, vesting, and treasury-float claims that could benefit from an independent evidence summary.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://lilmeme.fun/",
         "https://dexscreener.com/solana/X13wg49phGPHYW1pM8BRWCMCwyjJosFHDxLTATF5P4y"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-02T22:25:03.153Z",
+      "stageApprovalId": "prospect-review-batch-20260902-lilmeme-modest-money-funtom",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "modest-money",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-09-02",
       "publicProfileUrl": "https://modestycoin.com/",
       "projectUrl": "https://modestycoin.com/",
       "observedClaim": "Public site presents supply, standard SPL design, revoked mint authority, revoked freeze authority, launch-readiness, and no-payment-before-launch claims suitable for evidence review.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://modestycoin.com/"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-02T22:25:03.153Z",
+      "stageApprovalId": "prospect-review-batch-20260902-lilmeme-modest-money-funtom",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "funtom",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-09-02",
       "publicProfileUrl": "https://funtom.net/",
       "projectUrl": "https://funtom.net/",
       "observedClaim": "Public site presents live token status, total supply, locked liquidity, three revoked authorities, on-chain verification, and contract-address claims that could be organized into a public proof report.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://funtom.net/"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-02T22:25:03.153Z",
+      "stageApprovalId": "prospect-review-batch-20260902-lilmeme-modest-money-funtom",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "spcx",

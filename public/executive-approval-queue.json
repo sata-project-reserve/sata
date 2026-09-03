@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-02T22:22:00.000Z",
+  "updatedAtUtc": "2026-09-02T22:24:48.437Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -511,7 +511,7 @@
       "id": "prospect-review-batch-20260902-lilmeme-modest-money-funtom",
       "title": "Review next public-evidence prospect batch",
       "category": "revenue-action",
-      "status": "ready-for-chairman-review",
+      "status": "approved-by-chairman",
       "createdAtUtc": "2026-09-02T22:22:00.000Z",
       "preparedBy": "codex-ops",
       "summary": "Review lilmeme, modest-money, and funtom as the next identified transparency-audit prospects.",
@@ -539,7 +539,9 @@
           "type": "prospect-evidence",
           "url": "https://funtom.net/"
         }
-      ]
+      ],
+      "approvedBy": "executive-chairman",
+      "approvedAtUtc": "2026-09-02T22:24:48.436Z"
     }
   ]
 }

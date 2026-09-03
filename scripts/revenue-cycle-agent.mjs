@@ -1,6 +1,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { buildRevenueCycleStatus, validateRevenueCycleStatus } from './lib/revenue-cycle-status.mjs';
+import {
+  buildRevenueCycleStatus,
+  validateRevenueCycleStatus
+} from './lib/revenue-cycle-status.mjs';
 
 const [, , command = 'status'] = process.argv;
 
@@ -45,8 +48,17 @@ function printStatus() {
 
 async function writeStatus() {
   const status = buildStatus();
-  await writeFile(join('public', 'revenue-cycle-status.json'), `${JSON.stringify(status, null, 2)}\n`);
-  console.log(JSON.stringify({ wrote: 'public/revenue-cycle-status.json', actions: status.actionQueue.length }, null, 2));
+  await writeFile(
+    join('public', 'revenue-cycle-status.json'),
+    `${JSON.stringify(status, null, 2)}\n`
+  );
+  console.log(
+    JSON.stringify(
+      { wrote: 'public/revenue-cycle-status.json', actions: status.actionQueue.length },
+      null,
+      2
+    )
+  );
 }
 
 async function readJson(path) {

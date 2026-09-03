@@ -53,7 +53,9 @@ if (!/public\/service-outreach-packet-queue\.json/.test(workflow)) {
   findings.push('revenue autopilot must commit generated service outreach packet queue state');
 }
 if (!/public\/paid-promotion-ledger\.json/.test(workflow)) {
-  findings.push('revenue autopilot must include paid promotion ledger in committed operating state');
+  findings.push(
+    'revenue autopilot must include paid promotion ledger in committed operating state'
+  );
 }
 if (/PRIVATE_KEY|SEED|MNEMONIC|WALLET_SECRET/.test(workflow)) {
   findings.push('revenue autopilot must not consume wallet secrets');

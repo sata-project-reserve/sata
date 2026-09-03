@@ -1,6 +1,9 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { buildRevenueCycleStatus, validateRevenueCycleStatus } from './lib/revenue-cycle-status.mjs';
+import {
+  buildRevenueCycleStatus,
+  validateRevenueCycleStatus
+} from './lib/revenue-cycle-status.mjs';
 
 const reserveAddress = 'bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk';
 
@@ -103,7 +106,10 @@ const readyInvoiceStatus = buildRevenueCycleStatus({
   }
 });
 validateRevenueCycleStatus(readyInvoiceStatus);
-assertIncludes(readyInvoiceStatus.nextAction, 'Render approved customer payment packet for invoice-ready-1');
+assertIncludes(
+  readyInvoiceStatus.nextAction,
+  'Render approved customer payment packet for invoice-ready-1'
+);
 assertEqual(readyInvoiceStatus.social.livePostingEnabled, true);
 
 const receiptStatus = buildRevenueCycleStatus({
@@ -148,7 +154,10 @@ const readyOutreachPacketStatus = buildRevenueCycleStatus({
 validateRevenueCycleStatus(readyOutreachPacketStatus);
 assertEqual(readyOutreachPacketStatus.funnel.readyOutreachPackets, 1);
 assertEqual(readyOutreachPacketStatus.actionQueue[0]?.type, 'manual-outreach-send');
-assertIncludes(readyOutreachPacketStatus.nextAction, 'Send ready manual outreach packet outreach-packet-1');
+assertIncludes(
+  readyOutreachPacketStatus.nextAction,
+  'Send ready manual outreach packet outreach-packet-1'
+);
 
 const paidPromotionStatus = buildRevenueCycleStatus({
   ...baseInputs,
@@ -210,11 +219,12 @@ const pendingApprovalStatus = buildRevenueCycleStatus({
 });
 validateRevenueCycleStatus(pendingApprovalStatus);
 assertEqual(pendingApprovalStatus.actionQueue[0]?.type, 'chairman-approval-needed');
-assertIncludes(pendingApprovalStatus.nextAction, 'Chairman decision needed for outreach-approval-1');
+assertIncludes(
+  pendingApprovalStatus.nextAction,
+  'Chairman decision needed for outreach-approval-1'
+);
 if (
-  pendingApprovalStatus.actionQueue.some(
-    (item) => item.id === 'draft-outreach-approval-prospect-1'
-  )
+  pendingApprovalStatus.actionQueue.some((item) => item.id === 'draft-outreach-approval-prospect-1')
 ) {
   throw new Error('Pending outreach approvals must not produce duplicate draft actions.');
 }
@@ -258,7 +268,9 @@ validateRevenueCycleStatus(expectedPublicStatus);
 const publishedPublicStatus = await readJson(join('public', 'revenue-cycle-status.json'));
 assertDeepEqual(publishedPublicStatus, expectedPublicStatus, 'public revenue-cycle-status.json');
 
-console.log('Revenue cycle status check passed: the operating dashboard preserves revenue-first reserve gates.');
+console.log(
+  'Revenue cycle status check passed: the operating dashboard preserves revenue-first reserve gates.'
+);
 
 function assertEqual(actual, expected) {
   if (actual !== expected) throw new Error(`Expected ${expected}, received ${actual}`);

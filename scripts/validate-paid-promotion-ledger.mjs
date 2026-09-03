@@ -1,6 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { buildPaidPromotionPlan, validatePaidPromotionLedger } from './lib/paid-promotion-ledger.mjs';
+import {
+  buildPaidPromotionPlan,
+  validatePaidPromotionLedger
+} from './lib/paid-promotion-ledger.mjs';
 
 const ledger = JSON.parse(readFileSync(join('public', 'paid-promotion-ledger.json'), 'utf8'));
 const findings = [];
@@ -87,7 +90,9 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('Paid promotion ledger check passed: paid campaigns are disclosed, evidence-gated, and conversion-tracked.');
+console.log(
+  'Paid promotion ledger check passed: paid campaigns are disclosed, evidence-gated, and conversion-tracked.'
+);
 
 function assertRejects(name, expected, fn) {
   try {

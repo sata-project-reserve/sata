@@ -50,7 +50,8 @@ function rejectionCommand(item: ApprovalItem) {
 
 function nextCommandAfterApproval(item: ApprovalItem, reviewBatch: Prospect[]) {
   if (item.id.startsWith('prospect-review-batch-')) {
-    const prospectIds = reviewBatch.map((prospect) => prospect.id).join(',');
+    const prospectIds =
+      prospectIdsFromReviewSummary(item.summary) || reviewBatch.map((prospect) => prospect.id).join(',');
     return `node scripts/sats-prospect-stage-agent.mjs plan --approvalId ${item.id}, then node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${item.id} --prospects ${prospectIds}`;
   }
   if (item.id === 'reserve-growth-operating-policy') return 'npm run ops:reserve-plan';
@@ -67,6 +68,18 @@ function outreachProspectIdsFromTitle(title: string) {
   const ids = match?.groups?.ids;
   if (!ids) return '';
   return ids
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean)
+    .join(',');
+}
+
+function prospectIdsFromReviewSummary(summary: string) {
+  const match = /^Review (?<ids>.+?) as /i.exec(summary);
+  const ids = match?.groups?.ids;
+  if (!ids) return '';
+  return ids
+    .replace(/\band\b/g, ',')
     .split(',')
     .map((id) => id.trim())
     .filter(Boolean)

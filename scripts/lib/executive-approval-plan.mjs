@@ -63,11 +63,11 @@ export function expectedConfirmationPhrase({ status, itemId }) {
   throw new Error(`Unsupported chairman decision status: ${status}`);
 }
 
-export function buildProspectReviewAdvanceCommand({ approvalId, prospectPipeline }) {
-  const eligibleIds = (prospectPipeline?.prospects ?? [])
-    .filter((prospect) => prospect.stage === 'identified')
-    .slice(0, Number(prospectPipeline?.dailyCadence?.chairmanReviewBatchSize ?? 3))
-    .map((prospect) => prospect.id);
+export function buildProspectReviewAdvanceCommand({ approvalId, prospectPipeline, approvalItem = null }) {
+  const eligibleIds = prospectIdsFromProspectReviewApproval({
+    approvalItem,
+    prospectPipeline
+  });
   if (eligibleIds.length === 0) {
     return `node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${approvalId} --prospects "<chairman-selected-prospect-ids>"`;
   }
@@ -86,6 +86,7 @@ function inferNextCommandAfterApproval(item, { prospectPipeline }) {
   if (item.id.startsWith('prospect-review-batch-')) {
     return `node scripts/sats-prospect-stage-agent.mjs plan --approvalId ${item.id}, then ${buildProspectReviewAdvanceCommand({
       approvalId: item.id,
+      approvalItem: item,
       prospectPipeline
     })}`;
   }
@@ -110,6 +111,37 @@ function prospectIdsFromOutreachApprovalTitle(title) {
   const match = /^Approve factual outreach to (?<ids>.+)$/.exec(title ?? '');
   if (!match?.groups?.ids) return [];
   return match.groups.ids
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean);
+}
+
+function prospectIdsFromProspectReviewApproval({ approvalItem, prospectPipeline }) {
+  const prospects = prospectPipeline?.prospects ?? [];
+  const idsFromSummary = prospectIdsFromReviewSummary(approvalItem?.summary);
+  if (idsFromSummary.length > 0) return idsFromSummary;
+
+  const evidenceUrls = new Set(
+    (approvalItem?.evidence ?? [])
+      .map((item) => item.url)
+      .filter(Boolean)
+  );
+  const idsFromEvidence = prospects
+    .filter((prospect) => (prospect.evidence ?? []).some((url) => evidenceUrls.has(url)))
+    .map((prospect) => prospect.id);
+  if (idsFromEvidence.length > 0) return idsFromEvidence;
+
+  return prospects
+    .filter((prospect) => prospect.stage === 'identified')
+    .slice(0, Number(prospectPipeline?.dailyCadence?.chairmanReviewBatchSize ?? 3))
+    .map((prospect) => prospect.id);
+}
+
+export function prospectIdsFromReviewSummary(summary) {
+  const match = /^Review (?<ids>.+?) as /i.exec(summary ?? '');
+  if (!match?.groups?.ids) return [];
+  return match.groups.ids
+    .replace(/\band\b/g, ',')
     .split(',')
     .map((id) => id.trim())
     .filter(Boolean);

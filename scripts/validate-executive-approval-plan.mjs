@@ -4,6 +4,7 @@ import {
   approvalPhrase,
   assertChairmanDecisionConfirmation,
   buildExecutiveApprovalPlan,
+  prospectIdsFromReviewSummary,
   rejectionPhrase
 } from './lib/executive-approval-plan.mjs';
 
@@ -40,21 +41,18 @@ for (const item of plan.chairmanReview) {
   }
 }
 
-const prospectReview = plan.chairmanReview.find((item) => item.id.startsWith('prospect-review-batch-'));
-if (prospectReview && !/sats-prospect-stage-agent\.mjs advance/i.test(prospectReview.nextCommandAfterApproval)) {
-  findings.push('prospect review approval must point to the bounded prospect stage transition');
-}
-if (prospectReview && prospectReview.nextCommandAfterApproval.includes('<chairman-selected-prospect-ids>')) {
-  findings.push('prospect review approval must include concrete current batch prospect ids');
-}
-if (prospectReview) {
-  const expectedProspectIds = (prospectPipeline.prospects ?? [])
-    .filter((prospect) => prospect.stage === 'identified')
-    .slice(0, Number(prospectPipeline.dailyCadence?.chairmanReviewBatchSize ?? 3))
-    .map((prospect) => prospect.id)
-    .join(',');
+const prospectReviews = plan.chairmanReview.filter((item) => item.id.startsWith('prospect-review-batch-'));
+for (const prospectReview of prospectReviews) {
+  if (!/sats-prospect-stage-agent\.mjs advance/i.test(prospectReview.nextCommandAfterApproval)) {
+    findings.push(`${prospectReview.id}: prospect review approval must point to the bounded prospect stage transition`);
+  }
+  if (prospectReview.nextCommandAfterApproval.includes('<chairman-selected-prospect-ids>')) {
+    findings.push(`${prospectReview.id}: prospect review approval must include concrete prospect ids`);
+  }
+  const sourceItem = readyItems.find((item) => item.id === prospectReview.id);
+  const expectedProspectIds = prospectIdsFromReviewSummary(sourceItem?.summary).join(',');
   if (expectedProspectIds && !prospectReview.nextCommandAfterApproval.includes(`--prospects ${expectedProspectIds}`)) {
-    findings.push('prospect review approval must include the current bounded prospect batch');
+    findings.push(`${prospectReview.id}: prospect review approval must include its approval-item prospect batch`);
   }
 }
 

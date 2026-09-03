@@ -16,6 +16,8 @@ const SAFE_NPM_SCRIPTS = new Set([
   'codex:notify:list',
   'format',
   'lint',
+  'ops:approval-followthrough-check',
+  'ops:approval-followthrough-plan',
   'ops:approval-plan-check',
   'ops:audit-artifact-check',
   'ops:audit-artifact-plan',

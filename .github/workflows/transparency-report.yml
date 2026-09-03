@@ -85,6 +85,9 @@ jobs:
       - name: Validate executive approval plan
         run: npm run ops:approval-plan-check
 
+      - name: Validate approved follow-through
+        run: npm run ops:approval-followthrough-check
+
       - name: Validate notification tools
         run: npm run ops:notification-check
 

@@ -12,8 +12,8 @@
   },
   "funnel": {
     "prospects": 22,
-    "identifiedProspects": 5,
-    "chairmanReviewProspects": 14,
+    "identifiedProspects": 0,
+    "chairmanReviewProspects": 19,
     "outreachApprovedProspects": 3,
     "approvedInvoices": 0,
     "confirmedReceipts": 0,
@@ -124,18 +124,28 @@
       "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
     },
     {
-      "id": "approve-prospect-review-batch-20260903-niulai-honk-solana-bonkwifhat-bif",
+      "id": "approve-outreach-approval-20260903-niulai-honk-solana-bonkwifhat-bif",
       "priority": 10,
       "type": "chairman-approval-needed",
-      "title": "Chairman decision needed for prospect-review-batch-20260903-niulai-honk-solana-bonkwifhat-bif: Review next public-evidence prospect batch.",
+      "title": "Chairman decision needed for outreach-approval-20260903-niulai-honk-solana-bonkwifhat-bif: Approve factual outreach to niulai, honk-solana, bonkwifhat-bif.",
       "requiredActor": "Executive Chairman",
-      "command": "npm run ops:approve -- prospect-review-batch-20260903-niulai-honk-solana-bonkwifhat-bif --confirm-chairman-approval \"I am Executive Chairman and approve prospect-review-batch-20260903-niulai-honk-solana-bonkwifhat-bif\"",
-      "evidenceRequired": "4 evidence record(s) in executive approval queue.",
+      "command": "npm run ops:approve -- outreach-approval-20260903-niulai-honk-solana-bonkwifhat-bif --confirm-chairman-approval \"I am Executive Chairman and approve outreach-approval-20260903-niulai-honk-solana-bonkwifhat-bif\"",
+      "evidenceRequired": "3 evidence record(s) in executive approval queue.",
+      "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
+    },
+    {
+      "id": "approve-outreach-approval-20260903-bitdust-sanctum-elysium-loam",
+      "priority": 11,
+      "type": "chairman-approval-needed",
+      "title": "Chairman decision needed for outreach-approval-20260903-bitdust-sanctum-elysium-loam: Approve factual outreach to bitdust, sanctum-elysium-loam.",
+      "requiredActor": "Executive Chairman",
+      "command": "npm run ops:approve -- outreach-approval-20260903-bitdust-sanctum-elysium-loam --confirm-chairman-approval \"I am Executive Chairman and approve outreach-approval-20260903-bitdust-sanctum-elysium-loam\"",
+      "evidenceRequired": "2 evidence record(s) in executive approval queue.",
       "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
     },
     {
       "id": "publish-social-transparency-service-offer",
-      "priority": 11,
+      "priority": 12,
       "type": "manual-social-publish",
       "title": "Manually publish approved post transparency-service-offer, or enable approved-only X credentials after chairman approval.",
       "requiredActor": "Executive Chairman or authorized human",

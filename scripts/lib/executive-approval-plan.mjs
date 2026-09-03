@@ -116,7 +116,7 @@ function prospectIdsFromOutreachApprovalTitle(title) {
     .filter(Boolean);
 }
 
-function prospectIdsFromProspectReviewApproval({ approvalItem, prospectPipeline }) {
+export function prospectIdsFromProspectReviewApproval({ approvalItem, prospectPipeline }) {
   const prospects = prospectPipeline?.prospects ?? [];
   const idsFromSummary = prospectIdsFromReviewSummary(approvalItem?.summary);
   if (idsFromSummary.length > 0) return idsFromSummary;

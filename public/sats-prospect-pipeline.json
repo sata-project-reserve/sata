@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-03T15:55:19.242Z",
+  "updatedAtUtc": "2026-09-03T16:22:00.000Z",
   "mode": "service-revenue-prospect-pipeline",
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
@@ -354,6 +354,78 @@
       "stageUpdatedAtUtc": "2026-09-03T15:55:19.242Z",
       "stageApprovalId": "prospect-review-batch-20260903-solana-mint-forge",
       "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
+    },
+    {
+      "id": "niulai",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-03",
+      "publicProfileUrl": "https://niulaicoin.com/",
+      "projectUrl": "https://niulaicoin.com/",
+      "observedClaim": "Public site presents fixed supply, no insider allocation, no freeze authority, revoked mint authority, Raydium liquidity, LP-burn transaction, and linked on-chain launch proofs suitable for independent proof packaging.",
+      "recommendedOfferId": "transparency-audit",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://niulaicoin.com/"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "honk-solana",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-03",
+      "publicProfileUrl": "https://www.geckoterminal.com/solana/pools/BZivKpJWgQvrA3yYe3ubomufeGVouoYoUhosmBEdqF9y",
+      "projectUrl": "https://www.geckoterminal.com/solana/pools/BZivKpJWgQvrA3yYe3ubomufeGVouoYoUhosmBEdqF9y",
+      "observedClaim": "Public market page presents liquidity, holder, tax, burned-liquidity, and revoked-mint-authority claims that could be checked and summarized in a concise transparency audit.",
+      "recommendedOfferId": "transparency-audit",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://www.geckoterminal.com/solana/pools/BZivKpJWgQvrA3yYe3ubomufeGVouoYoUhosmBEdqF9y"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "bonkwifhat-bif",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-03",
+      "publicProfileUrl": "https://www.geckoterminal.com/solana/pools/DCqKHMHb52ofY8XhyX7ofJ6nM6cQ1eGZfRp7iWSgay4w",
+      "projectUrl": "https://www.coingecko.com/en/coins/bonkwifhat",
+      "observedClaim": "Public market pages present fixed supply, liquidity-burn, zero-tax, and revoked-mint-authority claims that could benefit from clearer independent evidence packaging.",
+      "recommendedOfferId": "transparency-audit",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://www.geckoterminal.com/solana/pools/DCqKHMHb52ofY8XhyX7ofJ6nM6cQ1eGZfRp7iWSgay4w",
+        "https://www.coingecko.com/en/coins/bonkwifhat"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "bitdust",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-03",
+      "publicProfileUrl": "https://www.geckoterminal.com/solana/pools/7KcXVi6on67TnmfudJ7X61hdjccF7y62oN96zEoHyDDs",
+      "projectUrl": "https://www.geckoterminal.com/solana/pools/7KcXVi6on67TnmfudJ7X61hdjccF7y62oN96zEoHyDDs",
+      "observedClaim": "Public market page presents fixed supply, revoked mint authority, no emissions, and public ownership/supply verification claims that could be organized into a small transparency report.",
+      "recommendedOfferId": "transparency-report-setup",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://www.geckoterminal.com/solana/pools/7KcXVi6on67TnmfudJ7X61hdjccF7y62oN96zEoHyDDs"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "sanctum-elysium-loam",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-03",
+      "publicProfileUrl": "https://sanctumelysium.com/whitepaper.html",
+      "projectUrl": "https://sanctumelysium.com/whitepaper.html",
+      "observedClaim": "Public whitepaper presents Token-2022 supply, transfer-fee, liquidity, vesting, treasury-wallet, LAND Fund, BTC reserve, and monthly conversion claims that could use independent public-report review.",
+      "recommendedOfferId": "transparency-report-setup",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://sanctumelysium.com/whitepaper.html",
+        "https://sanctumelysium.com/readme.html"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
     }
   ],
   "approvedOutreachTemplates": [

@@ -289,7 +289,7 @@ function buildActionQueue({
       type: 'draft-outreach-approval',
       title: `Draft contact-only outreach approval packet for chairman-reviewed prospects ${nextChairmanReviewProspects.map((prospect) => prospect.id).join(', ')}.`,
       requiredActor: 'agent prepares approval item; Executive Chairman approves outreach',
-      command: `node scripts/sats-outreach-approval-agent.mjs draft --prospects ${prospectIds}`,
+      command: `node scripts/sats-outreach-approval-agent.mjs write-draft --prospects ${prospectIds}`,
       evidenceRequired: 'Chairman-reviewed prospect record.',
       boundary: 'Draft approval does not authorize contact until the Executive Chairman approves it.'
     });

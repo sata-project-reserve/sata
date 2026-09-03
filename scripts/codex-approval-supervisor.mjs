@@ -49,6 +49,8 @@ const SAFE_NPM_SCRIPTS = new Set([
   'ops:prospect-candidate-check',
   'ops:prospect-candidate-plan',
   'ops:prospect-check',
+  'ops:prospect-follow-up-check',
+  'ops:prospect-follow-up-plan',
   'ops:prospect-intake-check',
   'ops:prospect-intake-comment-check',
   'ops:prospect-intake-plan',
@@ -153,7 +155,9 @@ async function processPendingRequests({ dryRun }) {
     }
 
     if (dryRun) {
-      console.log(`${request.id}: would run ${classification.command} ${classification.args.join(' ')}`);
+      console.log(
+        `${request.id}: would run ${classification.command} ${classification.args.join(' ')}`
+      );
       continue;
     }
 
@@ -193,7 +197,9 @@ async function listRequests() {
     ['attention', ATTENTION_DIR],
     ['done', DONE_DIR]
   ]) {
-    const files = existsSync(dir) ? (await readdir(dir)).filter((file) => file.endsWith('.json')) : [];
+    const files = existsSync(dir)
+      ? (await readdir(dir)).filter((file) => file.endsWith('.json'))
+      : [];
     console.log(JSON.stringify({ status, count: files.length, files }, null, 2));
   }
 }
@@ -239,7 +245,8 @@ function classifyGit(tokens, cwd) {
       return !['--no-verify'].includes(token);
     });
     if (!message) return unsafe('git commit requires -m/--message');
-    if (unsupported.length > 0) return unsafe(`unsupported git commit args: ${unsupported.join(' ')}`);
+    if (unsupported.length > 0)
+      return unsafe(`unsupported git commit args: ${unsupported.join(' ')}`);
     return safe('git commit', 'git', ['-C', cwd, 'commit', '-m', message]);
   }
   if (subcommand === 'status') {
@@ -267,9 +274,12 @@ function classifyNode(tokens, cwd) {
   const normalizedScript = script.replace(/\\/g, '/');
   const scriptName = basename(normalizedScript);
   const scriptArgs = tokens.slice(2);
-  const planLike = ['plan', 'status', 'list', 'notify-test', 'help'].includes(scriptArgs[0] ?? 'help');
+  const planLike = ['plan', 'status', 'list', 'notify-test', 'help'].includes(
+    scriptArgs[0] ?? 'help'
+  );
   const validateScript = /^validate-[a-z0-9-]+\.mjs$/.test(scriptName);
-  const allowedUtility = scriptName === 'codex-terminal-notifier.mjs' && ['list', 'help'].includes(scriptArgs[0]);
+  const allowedUtility =
+    scriptName === 'codex-terminal-notifier.mjs' && ['list', 'help'].includes(scriptArgs[0]);
   if (!validateScript && !planLike && !allowedUtility) {
     return unsafe(`node script is not allowlisted for supervisor execution: ${scriptName}`);
   }
@@ -362,7 +372,9 @@ function unsafe(reason) {
 }
 
 function executableName(value) {
-  return basename(value).toLowerCase().replace(/\.(exe|cmd)$/i, '');
+  return basename(value)
+    .toLowerCase()
+    .replace(/\.(exe|cmd)$/i, '');
 }
 
 function unwrapShell(tokens) {

@@ -19,7 +19,8 @@
     "confirmedReceipts": 0,
     "receiptsAwaitingAllocation": 0,
     "recordedAllocations": 0,
-    "readyOutreachPackets": 3
+    "readyOutreachPackets": 3,
+    "followUpDueProspects": 0
   },
   "social": {
     "queueMode": "approved-only-automation",

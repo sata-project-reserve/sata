@@ -24,6 +24,7 @@ for (const requiredCommand of [
   'npm run ops:approval-plan-check',
   'npm run ops:approval-followthrough-check',
   'npm run ops:prospect-check',
+  'npm run ops:prospect-follow-up-check',
   'npm run ops:outreach-approval-check',
   'npm run ops:outreach-check',
   'npm run ops:cycle-check'
@@ -60,4 +61,6 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('Revenue autopilot workflow check passed: scheduled follow-through stays behind chairman approvals.');
+console.log(
+  'Revenue autopilot workflow check passed: scheduled follow-through stays behind chairman approvals.'
+);

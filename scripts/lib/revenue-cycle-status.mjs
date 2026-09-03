@@ -20,8 +20,12 @@ export function buildRevenueCycleStatus({
     socialQueue
   });
 
-  const targetSats = BigInt(ledger.target?.targetSats ?? revenuePlan.nextCycle?.targetSats ?? '1000000000');
-  const currentReserveSats = BigInt(report.bitcoinReserve?.confirmedReserveSats ?? ledger.target?.currentReserveSats ?? '0');
+  const targetSats = BigInt(
+    ledger.target?.targetSats ?? revenuePlan.nextCycle?.targetSats ?? '1000000000'
+  );
+  const currentReserveSats = BigInt(
+    report.bitcoinReserve?.confirmedReserveSats ?? ledger.target?.currentReserveSats ?? '0'
+  );
   const remainingSats = targetSats > currentReserveSats ? targetSats - currentReserveSats : 0n;
   const prospects = prospectPipeline.prospects ?? [];
   const invoices = invoiceQueue.invoices ?? [];
@@ -30,20 +34,32 @@ export function buildRevenueCycleStatus({
   const approvedInvoices = invoices.filter((invoice) => invoice.status === 'approved-by-chairman');
   const confirmedReceipts = receipts.filter((receipt) => receipt.status === 'confirmed');
   const allocationReceiptIds = new Set(allocations.map((allocation) => allocation.receiptId));
-  const receiptsAwaitingAllocation = confirmedReceipts.filter((receipt) => !allocationReceiptIds.has(receipt.id));
+  const receiptsAwaitingAllocation = confirmedReceipts.filter(
+    (receipt) => !allocationReceiptIds.has(receipt.id)
+  );
   const readyOutreachPackets = (outreachPacketQueue.packets ?? []).filter(
     (packet) => packet.status === 'ready-for-manual-send'
   );
+  const followUpAfterHours = Number(prospectPipeline.dailyCadence?.followUpAfterHours ?? 48);
+  const generatedAt = new Date(env.SATA_REVENUE_CYCLE_GENERATED_AT_UTC ?? new Date().toISOString());
+  const followUpDueProspects = prospects.filter((prospect) =>
+    isFollowUpDue({ prospect, generatedAt, dueAfterHours: followUpAfterHours })
+  );
   const approvedPosts = (socialQueue.posts ?? []).filter((post) => post.status === 'approved');
   const readyPosts = (socialQueue.posts ?? []).filter((post) => post.status === 'ready-for-review');
-  const livePostingEnabled = env.SATA_X_AGENT_ENABLE_POSTING === 'true' && Boolean(env.X_ACCESS_TOKEN);
+  const livePostingEnabled =
+    env.SATA_X_AGENT_ENABLE_POSTING === 'true' && Boolean(env.X_ACCESS_TOKEN);
 
   const blockers = [];
   if (prospects.length === 0) blockers.push('No evidence-backed prospects are recorded.');
-  if (approvedInvoices.length === 0) blockers.push('No chairman-approved exact-sats invoice is ready to send.');
-  if (confirmedReceipts.length === 0) blockers.push('No confirmed direct-reserve BTC receipt is recorded.');
+  if (approvedInvoices.length === 0)
+    blockers.push('No chairman-approved exact-sats invoice is ready to send.');
+  if (confirmedReceipts.length === 0)
+    blockers.push('No confirmed direct-reserve BTC receipt is recorded.');
   if (approvedPosts.length > 0 && !livePostingEnabled) {
-    blockers.push('Approved social content exists, but live X posting credentials are not enabled in this runtime.');
+    blockers.push(
+      'Approved social content exists, but live X posting credentials are not enabled in this runtime.'
+    );
   }
 
   const actionQueue = buildActionQueue({
@@ -51,6 +67,7 @@ export function buildRevenueCycleStatus({
     approvedInvoices,
     receiptsAwaitingAllocation,
     readyOutreachPackets,
+    followUpDueProspects,
     approvedPosts,
     livePostingEnabled,
     prospectPipeline,
@@ -72,13 +89,17 @@ export function buildRevenueCycleStatus({
     funnel: {
       prospects: prospects.length,
       identifiedProspects: prospects.filter((prospect) => prospect.stage === 'identified').length,
-      chairmanReviewProspects: prospects.filter((prospect) => prospect.stage === 'chairman-review').length,
-      outreachApprovedProspects: prospects.filter((prospect) => prospect.stage === 'outreach-approved').length,
+      chairmanReviewProspects: prospects.filter((prospect) => prospect.stage === 'chairman-review')
+        .length,
+      outreachApprovedProspects: prospects.filter(
+        (prospect) => prospect.stage === 'outreach-approved'
+      ).length,
       approvedInvoices: approvedInvoices.length,
       confirmedReceipts: confirmedReceipts.length,
       receiptsAwaitingAllocation: receiptsAwaitingAllocation.length,
       recordedAllocations: allocations.length,
-      readyOutreachPackets: readyOutreachPackets.length
+      readyOutreachPackets: readyOutreachPackets.length,
+      followUpDueProspects: followUpDueProspects.length
     },
     social: {
       queueMode: socialQueue.mode,
@@ -106,7 +127,10 @@ export function validateRevenueCycleStatus(status) {
   if (!/^\d+$/.test(status.currentReserve?.targetSats ?? '')) {
     findings.push('currentReserve.targetSats must be an integer string');
   }
-  if (!status.nextAction || /pump|guarantee|wash|fake engagement|private key|seed phrase/i.test(status.nextAction)) {
+  if (
+    !status.nextAction ||
+    /pump|guarantee|wash|fake engagement|private key|seed phrase/i.test(status.nextAction)
+  ) {
     findings.push('nextAction must be present and avoid prohibited routes');
   }
   if (!Array.isArray(status.actionQueue) || status.actionQueue.length === 0) {
@@ -117,13 +141,17 @@ export function validateRevenueCycleStatus(status) {
       findings.push('actionQueue items require id, type, and title');
     }
     if (!Number.isInteger(item.priority) || item.priority < 1) {
-      findings.push(`${item.id ?? '<missing-id>'}: actionQueue priority must be a positive integer`);
+      findings.push(
+        `${item.id ?? '<missing-id>'}: actionQueue priority must be a positive integer`
+      );
     }
     if (/pump|guarantee|wash|fake engagement|private key|seed phrase/i.test(item.title ?? '')) {
       findings.push(`${item.id ?? '<missing-id>'}: actionQueue title contains prohibited wording`);
     }
     if (!/Chairman|authorized human|agent|customer/i.test(item.requiredActor ?? '')) {
-      findings.push(`${item.id ?? '<missing-id>'}: actionQueue requiredActor must name the responsible boundary`);
+      findings.push(
+        `${item.id ?? '<missing-id>'}: actionQueue requiredActor must name the responsible boundary`
+      );
     }
   }
   if (!/Executive Chairman approves/i.test(status.boundary ?? '')) {
@@ -140,6 +168,7 @@ function buildActionQueue({
   approvedInvoices,
   receiptsAwaitingAllocation,
   readyOutreachPackets,
+  followUpDueProspects,
   approvedPosts,
   livePostingEnabled,
   prospectPipeline,
@@ -196,8 +225,25 @@ function buildActionQueue({
       title: `Send ready manual outreach packet ${packet.id} and record contact evidence.`,
       requiredActor: 'Executive Chairman or authorized human',
       command: packet.recordContactCommand,
-      evidenceRequired: 'Contact URL, message permalink, email record, or other durable send evidence.',
-      boundary: 'Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims.'
+      evidenceRequired:
+        'Contact URL, message permalink, email record, or other durable send evidence.',
+      boundary:
+        'Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims.'
+    });
+  }
+
+  for (const prospect of followUpDueProspects) {
+    actions.push({
+      id: `follow-up-${prospect.id}`,
+      priority: actions.length + 1,
+      type: 'manual-follow-up-send',
+      title: `Render and manually send due follow-up for contacted prospect ${prospect.id}.`,
+      requiredActor: 'authorized human',
+      command: `node scripts/sats-prospect-follow-up-agent.mjs render --prospect ${prospect.id}`,
+      evidenceRequired:
+        'Follow-up message permalink, email record, or other durable send evidence.',
+      boundary:
+        'Follow-up copy must not request payment, send payment instructions, or add price, return, buyer, liquidity, investment, or market-support claims.'
     });
   }
 
@@ -278,7 +324,8 @@ function buildActionQueue({
 
   const nextChairmanReviewProspects = prospects
     .filter(
-      (prospect) => prospect.stage === 'chairman-review' && !pendingOutreachProspectIds.has(prospect.id)
+      (prospect) =>
+        prospect.stage === 'chairman-review' && !pendingOutreachProspectIds.has(prospect.id)
     )
     .slice(0, Number(prospectPipeline.dailyCadence?.outreachLimit ?? 3));
   if (nextChairmanReviewProspects.length > 0) {
@@ -291,7 +338,8 @@ function buildActionQueue({
       requiredActor: 'agent prepares approval item; Executive Chairman approves outreach',
       command: `node scripts/sats-outreach-approval-agent.mjs write-draft --prospects ${prospectIds}`,
       evidenceRequired: 'Chairman-reviewed prospect record.',
-      boundary: 'Draft approval does not authorize contact until the Executive Chairman approves it.'
+      boundary:
+        'Draft approval does not authorize contact until the Executive Chairman approves it.'
     });
   }
 
@@ -301,7 +349,8 @@ function buildActionQueue({
       id: 'render-next-prospect-review',
       priority: actions.length + 1,
       type: 'prospect-review-packet',
-      title: 'Render prospect review packet for the next identified candidates before any outreach.',
+      title:
+        'Render prospect review packet for the next identified candidates before any outreach.',
       requiredActor: 'agent prepares review packet; Executive Chairman approves prospect review',
       command: 'npm run ops:prospect-review-plan',
       evidenceRequired: 'Evidence-backed prospect candidates.',
@@ -344,7 +393,8 @@ function buildActionQueue({
       requiredActor: 'agent',
       command: 'npm run ops:prospect-plan',
       evidenceRequired: 'Public source evidence for each prospect.',
-      boundary: 'No outreach, invoice, paid work, or asset movement without the required approval gate.'
+      boundary:
+        'No outreach, invoice, paid work, or asset movement without the required approval gate.'
     });
   }
 
@@ -361,6 +411,21 @@ function outreachProspectIdsFromTitle(title) {
     .split(',')
     .map((id) => id.trim())
     .filter(Boolean);
+}
+
+function isFollowUpDue({ prospect, generatedAt, dueAfterHours }) {
+  if (prospect.stage !== 'contacted') return false;
+  if (!prospect.contact?.contactedAtUtc) return false;
+  if (!Number.isSafeInteger(dueAfterHours) || dueAfterHours < 24) return false;
+  const lastFollowUpAt = [...(prospect.followUps ?? [])]
+    .map((followUp) => followUp.followedUpAtUtc)
+    .filter(Boolean)
+    .sort()
+    .at(-1);
+  const basis = new Date(lastFollowUpAt ?? prospect.contact.contactedAtUtc);
+  if (Number.isNaN(basis.getTime()) || Number.isNaN(generatedAt.getTime())) return false;
+  const dueAt = new Date(basis.getTime() + dueAfterHours * 60 * 60 * 1000);
+  return generatedAt >= dueAt;
 }
 
 function assertInputs({

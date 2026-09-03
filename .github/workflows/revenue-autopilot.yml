@@ -49,6 +49,9 @@ jobs:
       - name: Validate prospect pipeline
         run: npm run ops:prospect-check
 
+      - name: Validate prospect follow-up agent
+        run: npm run ops:prospect-follow-up-check
+
       - name: Validate outreach approval packets
         run: npm run ops:outreach-approval-check
 

@@ -61,6 +61,8 @@
     "ops:prospect-stage-plan": "node scripts/sats-prospect-stage-agent.mjs plan",
     "ops:prospect-response-check": "node scripts/validate-sats-prospect-response-agent.mjs",
     "ops:prospect-response-plan": "node scripts/sats-prospect-response-agent.mjs plan",
+    "ops:prospect-follow-up-check": "node scripts/validate-sats-prospect-follow-up.mjs",
+    "ops:prospect-follow-up-plan": "node scripts/sats-prospect-follow-up-agent.mjs plan",
     "ops:outreach-approval-check": "node scripts/validate-sats-outreach-approval.mjs",
     "ops:outreach-approval-plan": "node scripts/sats-outreach-approval-agent.mjs plan",
     "ops:prospect-intake-check": "node scripts/validate-prospect-intake-workflow.mjs",

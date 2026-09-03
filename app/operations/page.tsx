@@ -34,10 +34,13 @@ function countByStatus(items: ApprovalItem[]) {
 }
 
 function countByStage(items: Prospect[]) {
-  return items.reduce<Record<string, number>>((counts, item) => {
-    counts[item.stage] = (counts[item.stage] ?? 0) + 1;
-    return counts;
-  }, Object.fromEntries(PROSPECT_STAGES.map((stage) => [stage, 0])));
+  return items.reduce<Record<string, number>>(
+    (counts, item) => {
+      counts[item.stage] = (counts[item.stage] ?? 0) + 1;
+      return counts;
+    },
+    Object.fromEntries(PROSPECT_STAGES.map((stage) => [stage, 0]))
+  );
 }
 
 function approvalPhrase(id: string) {
@@ -59,7 +62,8 @@ function rejectionCommand(item: ApprovalItem) {
 function nextCommandAfterApproval(item: ApprovalItem, reviewBatch: Prospect[]) {
   if (item.id.startsWith('prospect-review-batch-')) {
     const prospectIds =
-      prospectIdsFromReviewSummary(item.summary) || reviewBatch.map((prospect) => prospect.id).join(',');
+      prospectIdsFromReviewSummary(item.summary) ||
+      reviewBatch.map((prospect) => prospect.id).join(',');
     return `node scripts/sats-prospect-stage-agent.mjs plan --approvalId ${item.id}, then node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${item.id} --prospects ${prospectIds}`;
   }
   if (item.id === 'reserve-growth-operating-policy') return 'npm run ops:reserve-plan';
@@ -176,7 +180,9 @@ export default function OperationsPage() {
         <div className="summary-grid">
           <div className="metric">
             <span>Remaining To Target</span>
-            <strong>{Number(cycleStatus.currentReserve.remainingSats).toLocaleString('en-US')} sats</strong>
+            <strong>
+              {Number(cycleStatus.currentReserve.remainingSats).toLocaleString('en-US')} sats
+            </strong>
           </div>
           <div className="metric">
             <span>Remaining BTC</span>
@@ -193,6 +199,10 @@ export default function OperationsPage() {
           <div className="metric">
             <span>Ready Outreach Packets</span>
             <strong>{cycleStatus.funnel.readyOutreachPackets}</strong>
+          </div>
+          <div className="metric">
+            <span>Due Follow-Ups</span>
+            <strong>{cycleStatus.funnel.followUpDueProspects}</strong>
           </div>
           <div className="metric">
             <span>Approved Posts</span>
@@ -362,7 +372,10 @@ export default function OperationsPage() {
       <section className="public-band">
         <div className="section-heading">
           <h2>Prospect Pipeline</h2>
-          <p>Evidence-backed candidates remain blocked until chairman review and later outreach approval.</p>
+          <p>
+            Evidence-backed candidates remain blocked until chairman review and later outreach
+            approval.
+          </p>
         </div>
         <div className="summary-grid">
           {Object.entries(prospectCounts).map(([stage, count]) => (
@@ -383,7 +396,9 @@ export default function OperationsPage() {
       <section className="public-band">
         <div className="section-heading">
           <h2>Chairman Review Prospects</h2>
-          <p>Approved for prospect review only. Outreach still requires a separate explicit decision.</p>
+          <p>
+            Approved for prospect review only. Outreach still requires a separate explicit decision.
+          </p>
         </div>
         <div className="warning-list">
           {chairmanReviewProspects.map((prospect) => (

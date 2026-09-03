@@ -2,11 +2,14 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { validateProspectStageApprovalIntegrity } from './lib/prospect-stage-transition.mjs';
 import { validateProspectResponseEvidence } from './lib/prospect-response-transition.mjs';
+import { validateProspectFollowUps } from './lib/prospect-follow-up.mjs';
 
 const pipeline = JSON.parse(readFileSync(join('public', 'sats-prospect-pipeline.json'), 'utf8'));
 const revenuePlan = JSON.parse(readFileSync(join('public', 'revenue-operating-plan.json'), 'utf8'));
 const invoiceQueue = JSON.parse(readFileSync(join('public', 'sats-invoice-queue.json'), 'utf8'));
-const approvalQueue = JSON.parse(readFileSync(join('public', 'executive-approval-queue.json'), 'utf8'));
+const approvalQueue = JSON.parse(
+  readFileSync(join('public', 'executive-approval-queue.json'), 'utf8')
+);
 const findings = [];
 
 if (pipeline.schemaVersion !== 1) findings.push('schemaVersion must be 1');
@@ -85,7 +88,8 @@ for (const field of [
 }
 
 const templates = pipeline.approvedOutreachTemplates ?? [];
-if (templates.length < 2) findings.push('approvedOutreachTemplates must include at least two templates');
+if (templates.length < 2)
+  findings.push('approvedOutreachTemplates must include at least two templates');
 for (const template of templates) {
   for (const field of ['id', 'offerId', 'channel', 'text']) {
     if (!template[field] || typeof template[field] !== 'string') {
@@ -161,7 +165,9 @@ for (const prospect of pipeline.prospects ?? []) {
     findings.push(`${prospect.id}: stage must be one of leadStages`);
   }
   if (prospect.chairmanApprovedBeforeOutreach !== true && prospect.stage !== 'identified') {
-    findings.push(`${prospect.id}: non-identified prospects require chairmanApprovedBeforeOutreach`);
+    findings.push(
+      `${prospect.id}: non-identified prospects require chairmanApprovedBeforeOutreach`
+    );
   }
   if (!Array.isArray(prospect.evidence) || prospect.evidence.length === 0) {
     findings.push(`${prospect.id}: evidence must include at least one link or note`);
@@ -180,6 +186,12 @@ try {
   findings.push(error.message);
 }
 
+try {
+  validateProspectFollowUps({ pipeline });
+} catch (error) {
+  findings.push(error.message);
+}
+
 if (!/Identify ten crypto teams/i.test(pipeline.nextOperatingAction ?? '')) {
   findings.push('nextOperatingAction must direct the next prospect-identification batch');
 }
@@ -190,4 +202,6 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('Sats prospect pipeline check passed: service-revenue prospecting is bounded and reviewable.');
+console.log(
+  'Sats prospect pipeline check passed: service-revenue prospecting is bounded and reviewable.'
+);

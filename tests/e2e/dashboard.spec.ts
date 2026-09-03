@@ -21,7 +21,9 @@ test('liquidity planner exposes permanent LP lock controls', async ({ page }) =>
     'placeholder',
     'LOCK SATA LP FOREVER'
   );
-  await expect(page.getByRole('button', { name: 'Prepare Raydium Burn & Earn LP Lock' })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Prepare Raydium Burn & Earn LP Lock' })
+  ).toBeVisible();
 });
 
 test('public transparency page publishes reserve proof status', async ({ page }) => {
@@ -70,6 +72,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   );
   await expect(page.getByText('outreach-approved').locator('..').getByText('3')).toBeVisible();
   await expect(page.getByText('Ready Outreach Packets').locator('..').getByText('3')).toBeVisible();
+  await expect(page.getByText('Due Follow-Ups').locator('..').getByText('0')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Priority Action Queue' })).toBeVisible();
   await expect(page.getByText('#1 manual-outreach-send')).toBeVisible();
   await expect(
@@ -96,7 +99,9 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
       'node scripts/sats-prospect-response-agent.mjs record-contacted --prospect arnold-solana'
     )
   ).toBeVisible();
-  await expect(page.getByText('No contacted prospects or invoice requests are recorded yet.')).toBeVisible();
+  await expect(
+    page.getByText('No contacted prospects or invoice requests are recorded yet.')
+  ).toBeVisible();
   await expect(
     page
       .locator('.summary-grid .metric')

@@ -45,6 +45,9 @@ const baseInputs = {
   outreachPacketQueue: {
     packets: []
   },
+  paidPromotionLedger: {
+    campaigns: []
+  },
   approvalQueue: {
     items: []
   },
@@ -64,6 +67,8 @@ const status = buildRevenueCycleStatus({ ...baseInputs, env: {} });
 validateRevenueCycleStatus(status);
 assertEqual(status.currentReserve.remainingSats, '999500000');
 assertEqual(status.funnel.prospects, 0);
+assertEqual(status.funnel.paidPromotionCampaigns, 0);
+assertEqual(status.funnel.paidPromotionsAwaitingVerification, 0);
 assertEqual(status.social.livePostingEnabled, false);
 assertEqual(status.actionQueue[0]?.type, 'prospect-discovery');
 assertIncludes(status.blockers, 'No evidence-backed prospects are recorded.');
@@ -144,6 +149,41 @@ validateRevenueCycleStatus(readyOutreachPacketStatus);
 assertEqual(readyOutreachPacketStatus.funnel.readyOutreachPackets, 1);
 assertEqual(readyOutreachPacketStatus.actionQueue[0]?.type, 'manual-outreach-send');
 assertIncludes(readyOutreachPacketStatus.nextAction, 'Send ready manual outreach packet outreach-packet-1');
+
+const paidPromotionStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  paidPromotionLedger: {
+    campaigns: [
+      {
+        id: 'campaign-1',
+        status: 'post-reported-unverified'
+      }
+    ]
+  },
+  prospectPipeline: {
+    ...baseInputs.prospectPipeline,
+    prospects: [
+      {
+        id: 'prospect-1',
+        stage: 'outreach-approved'
+      }
+    ]
+  },
+  outreachPacketQueue: {
+    packets: [
+      {
+        id: 'outreach-packet-1',
+        status: 'ready-for-manual-send'
+      }
+    ]
+  },
+  env: {}
+});
+validateRevenueCycleStatus(paidPromotionStatus);
+assertEqual(paidPromotionStatus.funnel.paidPromotionCampaigns, 1);
+assertEqual(paidPromotionStatus.funnel.paidPromotionsAwaitingVerification, 1);
+assertEqual(paidPromotionStatus.actionQueue[0]?.type, 'paid-promotion-verification');
+assertIncludes(paidPromotionStatus.nextAction, 'Verify paid promotion campaign campaign-1');
 
 const pendingApprovalStatus = buildRevenueCycleStatus({
   ...baseInputs,
@@ -257,6 +297,7 @@ async function readPublicInputs() {
     invoiceQueue: await readJson(join('public', 'sats-invoice-queue.json')),
     prospectPipeline: await readJson(join('public', 'sats-prospect-pipeline.json')),
     outreachPacketQueue: await readJson(join('public', 'service-outreach-packet-queue.json')),
+    paidPromotionLedger: await readJson(join('public', 'paid-promotion-ledger.json')),
     approvalQueue: await readJson(join('public', 'executive-approval-queue.json')),
     socialQueue: await readJson(join('public', 'social-agent-content-queue.json'))
   };

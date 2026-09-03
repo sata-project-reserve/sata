@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-08-31T17:10:48.988Z",
+  "updatedAtUtc": "2026-09-03T18:58:10.985Z",
   "mode": "manual-service-outreach-packet-queue",
   "boundary": "Packets are approved factual outreach drafts only. Sending, contact evidence, invoices, payments, paid work, token grants, and asset movement remain separately gated.",
   "packets": [
@@ -57,6 +57,492 @@
       "message": "Hi black-bull-ansem,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://theblackbull.fun/\nProject page reviewed: https://theblackbull.fun/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
       "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
       "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-roach-solana-transparency-audit-first-contact",
+      "prospectId": "roach-solana",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260902-roach-solana-tradiecoin-fyborg",
+      "destination": {
+        "publicProfileUrl": "https://cockroachcoin.fun/",
+        "projectUrl": "https://cockroachcoin.fun/"
+      },
+      "message": "Hi roach-solana,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://cockroachcoin.fun/\nProject page reviewed: https://cockroachcoin.fun/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-roach-solana-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-tradiecoin-transparency-audit-first-contact",
+      "prospectId": "tradiecoin",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260902-roach-solana-tradiecoin-fyborg",
+      "destination": {
+        "publicProfileUrl": "https://www.tradiecoin.org/tokenomics",
+        "projectUrl": "https://www.tradiecoin.org/tokenomics"
+      },
+      "message": "Hi tradiecoin,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://www.tradiecoin.org/tokenomics\nProject page reviewed: https://www.tradiecoin.org/tokenomics\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-tradiecoin-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-fyborg-transparency-audit-first-contact",
+      "prospectId": "fyborg",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260902-roach-solana-tradiecoin-fyborg",
+      "destination": {
+        "publicProfileUrl": "https://fyborg.com/",
+        "projectUrl": "https://fyborg.com/"
+      },
+      "message": "Hi fyborg,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://fyborg.com/\nProject page reviewed: https://fyborg.com/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-fyborg-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-ssqueeze-transparency-audit-first-contact",
+      "prospectId": "ssqueeze",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260902-ssqueeze-foxclub-lastshift",
+      "destination": {
+        "publicProfileUrl": "https://ssqueeze.com/",
+        "projectUrl": "https://ssqueeze.com/"
+      },
+      "message": "Hi ssqueeze,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://ssqueeze.com/\nProject page reviewed: https://ssqueeze.com/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-ssqueeze-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-foxclub-transparency-audit-first-contact",
+      "prospectId": "foxclub",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260902-ssqueeze-foxclub-lastshift",
+      "destination": {
+        "publicProfileUrl": "https://foxclub.trade/",
+        "projectUrl": "https://foxclub.trade/"
+      },
+      "message": "Hi foxclub,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://foxclub.trade/\nProject page reviewed: https://foxclub.trade/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-foxclub-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-lastshift-transparency-audit-first-contact",
+      "prospectId": "lastshift",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260902-ssqueeze-foxclub-lastshift",
+      "destination": {
+        "publicProfileUrl": "https://www.lastshiftcoin.com/",
+        "projectUrl": "https://www.lastshiftcoin.com/"
+      },
+      "message": "Hi lastshift,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://www.lastshiftcoin.com/\nProject page reviewed: https://www.lastshiftcoin.com/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-lastshift-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact",
+      "prospectId": "kerythos-kyrt",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260902-kerythos-kyrt",
+      "destination": {
+        "publicProfileUrl": "https://kerythos.org/en/",
+        "projectUrl": "https://kerythos.org/en/"
+      },
+      "message": "Hi kerythos-kyrt,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://kerythos.org/en/\nProject page reviewed: https://kerythos.org/en/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-lilmeme-transparency-audit-first-contact",
+      "prospectId": "lilmeme",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-lilmeme-modest-money-funtom",
+      "destination": {
+        "publicProfileUrl": "https://lilmeme.fun/",
+        "projectUrl": "https://lilmeme.fun/"
+      },
+      "message": "Hi lilmeme,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://lilmeme.fun/\nProject page reviewed: https://lilmeme.fun/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-lilmeme-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-modest-money-transparency-audit-first-contact",
+      "prospectId": "modest-money",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-lilmeme-modest-money-funtom",
+      "destination": {
+        "publicProfileUrl": "https://modestycoin.com/",
+        "projectUrl": "https://modestycoin.com/"
+      },
+      "message": "Hi modest-money,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://modestycoin.com/\nProject page reviewed: https://modestycoin.com/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-modest-money-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-funtom-transparency-audit-first-contact",
+      "prospectId": "funtom",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-lilmeme-modest-money-funtom",
+      "destination": {
+        "publicProfileUrl": "https://funtom.net/",
+        "projectUrl": "https://funtom.net/"
+      },
+      "message": "Hi funtom,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://funtom.net/\nProject page reviewed: https://funtom.net/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-funtom-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-spcx-transparency-audit-first-contact",
+      "prospectId": "spcx",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-spcx-ansem-season-meor",
+      "destination": {
+        "publicProfileUrl": "https://www.spcxmeme.com/",
+        "projectUrl": "https://www.spcxmeme.com/"
+      },
+      "message": "Hi spcx,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://www.spcxmeme.com/\nProject page reviewed: https://www.spcxmeme.com/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-spcx-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-ansem-season-transparency-audit-first-contact",
+      "prospectId": "ansem-season",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-spcx-ansem-season-meor",
+      "destination": {
+        "publicProfileUrl": "https://ansem-season.lovable.app/",
+        "projectUrl": "https://ansem-season.lovable.app/"
+      },
+      "message": "Hi ansem-season,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://ansem-season.lovable.app/\nProject page reviewed: https://ansem-season.lovable.app/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-ansem-season-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-meor-transparency-audit-first-contact",
+      "prospectId": "meor",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-spcx-ansem-season-meor",
+      "destination": {
+        "publicProfileUrl": "https://meor.app/",
+        "projectUrl": "https://meor.app/"
+      },
+      "message": "Hi meor,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://meor.app/\nProject page reviewed: https://meor.app/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meor-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact",
+      "prospectId": "solana-mint-forge",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-solana-mint-forge",
+      "destination": {
+        "publicProfileUrl": "https://www.solanamintforge.com/",
+        "projectUrl": "https://www.solanamintforge.com/"
+      },
+      "message": "Hi solana-mint-forge,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://www.solanamintforge.com/\nProject page reviewed: https://www.solanamintforge.com/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-niulai-transparency-audit-first-contact",
+      "prospectId": "niulai",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-niulai-honk-solana-bonkwifhat-bif",
+      "destination": {
+        "publicProfileUrl": "https://niulaicoin.com/",
+        "projectUrl": "https://niulaicoin.com/"
+      },
+      "message": "Hi niulai,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://niulaicoin.com/\nProject page reviewed: https://niulaicoin.com/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-niulai-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-honk-solana-transparency-audit-first-contact",
+      "prospectId": "honk-solana",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-niulai-honk-solana-bonkwifhat-bif",
+      "destination": {
+        "publicProfileUrl": "https://www.geckoterminal.com/solana/pools/BZivKpJWgQvrA3yYe3ubomufeGVouoYoUhosmBEdqF9y",
+        "projectUrl": "https://www.geckoterminal.com/solana/pools/BZivKpJWgQvrA3yYe3ubomufeGVouoYoUhosmBEdqF9y"
+      },
+      "message": "Hi honk-solana,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://www.geckoterminal.com/solana/pools/BZivKpJWgQvrA3yYe3ubomufeGVouoYoUhosmBEdqF9y\nProject page reviewed: https://www.geckoterminal.com/solana/pools/BZivKpJWgQvrA3yYe3ubomufeGVouoYoUhosmBEdqF9y\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-honk-solana-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact",
+      "prospectId": "bonkwifhat-bif",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-niulai-honk-solana-bonkwifhat-bif",
+      "destination": {
+        "publicProfileUrl": "https://www.geckoterminal.com/solana/pools/DCqKHMHb52ofY8XhyX7ofJ6nM6cQ1eGZfRp7iWSgay4w",
+        "projectUrl": "https://www.coingecko.com/en/coins/bonkwifhat"
+      },
+      "message": "Hi bonkwifhat-bif,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://www.geckoterminal.com/solana/pools/DCqKHMHb52ofY8XhyX7ofJ6nM6cQ1eGZfRp7iWSgay4w\nProject page reviewed: https://www.coingecko.com/en/coins/bonkwifhat\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-bitdust-transparency-audit-first-contact",
+      "prospectId": "bitdust",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-bitdust-sanctum-elysium-loam",
+      "destination": {
+        "publicProfileUrl": "https://www.geckoterminal.com/solana/pools/7KcXVi6on67TnmfudJ7X61hdjccF7y62oN96zEoHyDDs",
+        "projectUrl": "https://www.geckoterminal.com/solana/pools/7KcXVi6on67TnmfudJ7X61hdjccF7y62oN96zEoHyDDs"
+      },
+      "message": "Hi bitdust,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://www.geckoterminal.com/solana/pools/7KcXVi6on67TnmfudJ7X61hdjccF7y62oN96zEoHyDDs\nProject page reviewed: https://www.geckoterminal.com/solana/pools/7KcXVi6on67TnmfudJ7X61hdjccF7y62oN96zEoHyDDs\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-bitdust-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact",
+      "prospectId": "sanctum-elysium-loam",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-bitdust-sanctum-elysium-loam",
+      "destination": {
+        "publicProfileUrl": "https://sanctumelysium.com/whitepaper.html",
+        "projectUrl": "https://sanctumelysium.com/whitepaper.html"
+      },
+      "message": "Hi sanctum-elysium-loam,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://sanctumelysium.com/whitepaper.html\nProject page reviewed: https://sanctumelysium.com/whitepaper.html\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact",
+      "prospectId": "instar-meme-futures",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-instar-meme-futures-cia-token-kedol-token",
+      "destination": {
+        "publicProfileUrl": "https://instarbrands.com/pages/meme-futures",
+        "projectUrl": "https://instarbrands.com/pages/meme-futures"
+      },
+      "message": "Hi instar-meme-futures,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://instarbrands.com/pages/meme-futures\nProject page reviewed: https://instarbrands.com/pages/meme-futures\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-cia-token-transparency-audit-first-contact",
+      "prospectId": "cia-token",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-instar-meme-futures-cia-token-kedol-token",
+      "destination": {
+        "publicProfileUrl": "https://docs.cia.com/technical/usdcia-token",
+        "projectUrl": "https://docs.cia.com/technical/usdcia-token"
+      },
+      "message": "Hi cia-token,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://docs.cia.com/technical/usdcia-token\nProject page reviewed: https://docs.cia.com/technical/usdcia-token\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-kedol-token-transparency-audit-first-contact",
+      "prospectId": "kedol-token",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-instar-meme-futures-cia-token-kedol-token",
+      "destination": {
+        "publicProfileUrl": "https://github.com/KedolikSwap/KEDOL-Token",
+        "projectUrl": "https://github.com/KedolikSwap/KEDOL-Token"
+      },
+      "message": "Hi kedol-token,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://github.com/KedolikSwap/KEDOL-Token\nProject page reviewed: https://github.com/KedolikSwap/KEDOL-Token\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-kedol-token-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-meme-launch-transparency-audit-first-contact",
+      "prospectId": "meme-launch",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-meme-launch-pippin-smc",
+      "destination": {
+        "publicProfileUrl": "https://memelaunchs.com/results",
+        "projectUrl": "https://memelaunchs.com/results"
+      },
+      "message": "Hi meme-launch,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://memelaunchs.com/results\nProject page reviewed: https://memelaunchs.com/results\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-pippin-smc-transparency-audit-first-contact",
+      "prospectId": "pippin-smc",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-meme-launch-pippin-smc",
+      "destination": {
+        "publicProfileUrl": "https://smcresearchers.com/article/pippin-pippin",
+        "projectUrl": "https://smcresearchers.com/article/pippin-pippin"
+      },
+      "message": "Hi pippin-smc,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://smcresearchers.com/article/pippin-pippin\nProject page reviewed: https://smcresearchers.com/article/pippin-pippin\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-pippin-smc-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact",
+      "prospectId": "limelight-launchpad",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-limelight-launchpad-troptionsmint-soltokenlab",
+      "destination": {
+        "publicProfileUrl": "https://www.limelight.fun/docs",
+        "projectUrl": "https://www.limelight.fun/docs"
+      },
+      "message": "Hi limelight-launchpad,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://www.limelight.fun/docs\nProject page reviewed: https://www.limelight.fun/docs\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-troptionsmint-transparency-audit-first-contact",
+      "prospectId": "troptionsmint",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-limelight-launchpad-troptionsmint-soltokenlab",
+      "destination": {
+        "publicProfileUrl": "https://www.troptionsmint.com/safety",
+        "projectUrl": "https://www.troptionsmint.com/safety"
+      },
+      "message": "Hi troptionsmint,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://www.troptionsmint.com/safety\nProject page reviewed: https://www.troptionsmint.com/safety\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-troptionsmint-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
+    },
+    {
+      "id": "outreach-packet-20260903-soltokenlab-transparency-audit-first-contact",
+      "prospectId": "soltokenlab",
+      "templateId": "transparency-audit-first-contact",
+      "offerId": "transparency-audit",
+      "status": "ready-for-manual-send",
+      "createdAtUtc": "2026-09-03T18:58:10.985Z",
+      "channel": "public-dm-or-email",
+      "outreachApprovalId": "outreach-approval-20260903-limelight-launchpad-troptionsmint-soltokenlab",
+      "destination": {
+        "publicProfileUrl": "https://www.soltokenlab.com/",
+        "projectUrl": "https://www.soltokenlab.com/"
+      },
+      "message": "Hi soltokenlab,\n\nHey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://www.soltokenlab.com/\nProject page reviewed: https://www.soltokenlab.com/\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
+      "sendInstructions": "Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.",
+      "recordContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
       "boundary": "This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement."
     }
   ]

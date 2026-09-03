@@ -68,17 +68,30 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByRole('heading', { name: 'Cycle Status' })).toBeVisible();
   await expect(page.getByText('999,500,000 sats')).toBeVisible();
   await expect(page.locator('.notice').filter({ hasText: 'Next Action' })).toContainText(
-    'Send ready manual outreach packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact and record contact evidence.'
+    'Verify paid promotion campaign diana-crypto-20260903-transparency-tweet before counting it live or approving repeat spend.'
   );
-  await expect(page.getByText('outreach-approved').locator('..').getByText('3')).toBeVisible();
-  await expect(page.getByText('Ready Outreach Packets').locator('..').getByText('3')).toBeVisible();
+  await expect(page.getByText('outreach-approved').locator('..').getByText('30')).toBeVisible();
+  await expect(page.getByText('Ready Outreach Packets').locator('..').getByText('30')).toBeVisible();
   await expect(page.getByText('Due Follow-Ups').locator('..').getByText('0')).toBeVisible();
+  await expect(page.getByText('Paid Campaigns').locator('..').getByText('1')).toBeVisible();
+  await expect(page.getByText('Promo Verification').locator('..').getByText('1')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Priority Action Queue' })).toBeVisible();
-  await expect(page.getByText('#1 manual-outreach-send')).toBeVisible();
+  await expect(page.getByText('#1 paid-promotion-verification')).toBeVisible();
   await expect(
     page.getByText(
-      'Chairman decision needed for outreach-approval-20260902-kerythos-kyrt: Approve factual outreach to kerythos-kyrt.'
-    )
+      'Verify paid promotion campaign diana-crypto-20260903-transparency-tweet before counting it live or approving repeat spend.'
+    ).first()
+  ).toBeVisible();
+  await expect(page.getByText('#2 manual-outreach-send')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Paid Promotion Control' })).toBeVisible();
+  await expect(page.getByText('Diana Crypto @142C_')).toBeVisible();
+  await expect(page.getByText('post-reported-unverified')).toBeVisible();
+  await expect(page.getByText('2086570576530010172')).toBeVisible();
+  await expect(
+    page
+      .locator('.metric')
+      .filter({ hasText: 'Confirmed Promo Receipts' })
+      .filter({ hasText: '0 sats' })
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Manual Outreach Packets' })).toBeVisible();
   await expect(
@@ -93,7 +106,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
       .filter({ hasText: 'SATA runs a small transparency audit service for crypto teams.' })
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Reply Conversion' })).toBeVisible();
-  await expect(page.getByText('after approved outreach is sent')).toHaveCount(3);
+  await expect(page.getByText('after approved outreach is sent')).toHaveCount(30);
   await expect(
     page.getByText(
       'node scripts/sats-prospect-response-agent.mjs record-contacted --prospect arnold-solana'
@@ -112,36 +125,48 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     page
       .locator('.summary-grid .metric')
       .filter({ has: page.getByText('chairman-review', { exact: true }) })
-      .filter({ has: page.getByText('27', { exact: true }) })
+      .filter({ has: page.getByText('0', { exact: true }) })
   ).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Chairman Review Prospects' })).toBeVisible();
-  await expect(page.getByText('roach-solana', { exact: true })).toBeVisible();
-  await expect(page.getByText('tradiecoin', { exact: true })).toBeVisible();
-  await expect(page.getByText('fyborg', { exact: true })).toBeVisible();
-  await expect(page.getByText('ssqueeze', { exact: true })).toBeVisible();
-  await expect(page.getByText('foxclub', { exact: true })).toBeVisible();
-  await expect(page.getByText('lastshift', { exact: true })).toBeVisible();
-  await expect(page.getByText('kerythos-kyrt', { exact: true })).toBeVisible();
-  await expect(page.getByText('lilmeme', { exact: true })).toBeVisible();
-  await expect(page.getByText('modest-money', { exact: true })).toBeVisible();
-  await expect(page.getByText('funtom', { exact: true })).toBeVisible();
-  await expect(page.getByText('spcx', { exact: true })).toBeVisible();
-  await expect(page.getByText('ansem-season', { exact: true })).toBeVisible();
-  await expect(page.getByText('meor', { exact: true })).toBeVisible();
-  await expect(page.getByText('solana-mint-forge', { exact: true })).toBeVisible();
-  await expect(page.getByText('niulai', { exact: true })).toBeVisible();
-  await expect(page.getByText('honk-solana', { exact: true })).toBeVisible();
-  await expect(page.getByText('bonkwifhat-bif', { exact: true })).toBeVisible();
-  await expect(page.getByText('bitdust', { exact: true })).toBeVisible();
-  await expect(page.getByText('sanctum-elysium-loam', { exact: true })).toBeVisible();
+  await expect(
+    page
+      .locator('.summary-grid .metric')
+      .filter({ has: page.getByText('outreach-approved', { exact: true }) })
+      .filter({ has: page.getByText('30', { exact: true }) })
+  ).toBeVisible();
+  const manualOutreachSection = page.locator('section').filter({
+    has: page.getByRole('heading', { name: 'Manual Outreach Packets' })
+  });
+  for (const prospect of [
+    'roach-solana',
+    'tradiecoin',
+    'fyborg',
+    'ssqueeze',
+    'foxclub',
+    'lastshift',
+    'kerythos-kyrt',
+    'lilmeme',
+    'modest-money',
+    'funtom',
+    'spcx',
+    'ansem-season',
+    'meor',
+    'solana-mint-forge',
+    'niulai',
+    'honk-solana',
+    'bonkwifhat-bif',
+    'bitdust',
+    'sanctum-elysium-loam',
+    'instar-meme-futures',
+    'cia-token',
+    'kedol-token',
+    'meme-launch',
+    'pippin-smc',
+    'limelight-launchpad',
+    'troptionsmint',
+    'soltokenlab'
+  ]) {
+    await expect(manualOutreachSection.getByText(prospect, { exact: true })).toBeVisible();
+  }
   await expect(page.getByRole('heading', { name: 'Next Review Batch' })).toBeVisible();
-  await expect(page.getByText('instar-meme-futures', { exact: true })).toBeVisible();
-  await expect(page.getByText('cia-token', { exact: true })).toBeVisible();
-  await expect(page.getByText('kedol-token', { exact: true })).toBeVisible();
-  await expect(page.getByText('meme-launch', { exact: true })).toBeVisible();
-  await expect(page.getByText('pippin-smc', { exact: true })).toBeVisible();
-  await expect(page.getByText('limelight-launchpad', { exact: true })).toBeVisible();
-  await expect(page.getByText('troptionsmint', { exact: true })).toBeVisible();
-  await expect(page.getByText('soltokenlab', { exact: true })).toBeVisible();
   await expect(page.getByText('No price guarantee')).toBeVisible();
 });

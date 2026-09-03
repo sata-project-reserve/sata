@@ -58,6 +58,9 @@ jobs:
       - name: Validate service outreach packets
         run: npm run ops:outreach-check
 
+      - name: Validate paid promotion ledger
+        run: npm run ops:paid-promotion-check
+
       - name: Validate revenue cycle status
         run: npm run ops:cycle-check
 
@@ -70,6 +73,7 @@ jobs:
           base_sha="$(git rev-parse HEAD)"
           git add \
             public/executive-approval-queue.json \
+            public/paid-promotion-ledger.json \
             public/revenue-cycle-status.json \
             public/sats-prospect-pipeline.json \
             public/service-outreach-packet-queue.json

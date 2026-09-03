@@ -16,6 +16,7 @@ on:
       - 'public/executive-approval-queue.json'
       - 'public/reserve-growth-plan.json'
       - 'public/revenue-operating-plan.json'
+      - 'public/paid-promotion-ledger.json'
       - 'public/revenue-cycle-status.json'
       - 'public/sats-generation-ledger.json'
       - 'public/sats-invoice-queue.json'
@@ -100,6 +101,9 @@ jobs:
       - name: Validate revenue operating plan
         run: npm run ops:revenue-check
 
+      - name: Validate paid promotion ledger
+        run: npm run ops:paid-promotion-check
+
       - name: Validate revenue cycle status
         run: npm run ops:cycle-check
 
@@ -141,6 +145,9 @@ jobs:
 
       - name: Validate sats outreach approval packets
         run: npm run ops:outreach-approval-check
+
+      - name: Validate paid promotion ledger
+        run: npm run ops:paid-promotion-check
 
       - name: Validate prospect intake workflow
         run: npm run ops:prospect-intake-check

@@ -11,6 +11,7 @@ const paths = {
   invoiceQueue: join('public', 'sats-invoice-queue.json'),
   prospectPipeline: join('public', 'sats-prospect-pipeline.json'),
   outreachPacketQueue: join('public', 'service-outreach-packet-queue.json'),
+  paidPromotionLedger: join('public', 'paid-promotion-ledger.json'),
   approvalQueue: join('public', 'executive-approval-queue.json'),
   socialQueue: join('public', 'social-agent-content-queue.json')
 };

@@ -25,20 +25,12 @@ if (idlePlan.actions.some((action) => !action.type.endsWith('-skipped'))) {
   findings.push('current live state should not have unconsumed approved follow-through actions');
 }
 
-const reviewApprovalId = 'prospect-review-batch-20260903-niulai-honk-solana-bonkwifhat-bif';
-const outreachApprovalId = 'outreach-approval-20260902-roach-solana-tradiecoin-fyborg';
 const fixtureReviewApprovalId = 'prospect-review-batch-20260903-fixture-alpha-fixture-beta';
+const fixturePriorReviewApprovalId = 'prospect-review-batch-20260903-fixture-gamma-fixture-delta';
+const fixtureOutreachApprovalId = 'outreach-approval-20260903-fixture-gamma-fixture-delta';
 const approvedQueue = {
   ...approvalQueue,
-  items: (approvalQueue.items ?? []).map((item) => {
-    if (![reviewApprovalId, outreachApprovalId].includes(item.id)) return item;
-    return {
-      ...item,
-      status: 'approved-by-chairman',
-      approvedBy: 'executive-chairman',
-      approvedAtUtc: '2026-09-03T17:00:00.000Z'
-    };
-  })
+  items: [...(approvalQueue.items ?? [])]
 };
 approvedQueue.items.push({
   id: fixtureReviewApprovalId,
@@ -62,6 +54,33 @@ approvedQueue.items.push({
     {
       type: 'prospect-evidence',
       url: 'https://example.com/fixture-beta'
+    }
+  ],
+  approvedBy: 'executive-chairman',
+  approvedAtUtc: '2026-09-03T17:00:00.000Z'
+});
+approvedQueue.items.push({
+  id: fixtureOutreachApprovalId,
+  title: 'Approve factual outreach to fixture-gamma, fixture-delta',
+  category: 'revenue-action',
+  status: 'approved-by-chairman',
+  createdAtUtc: '2026-09-03T17:00:00.000Z',
+  preparedBy: 'codex-ops',
+  summary: 'Approve contact-only outreach for synthetic chairman-reviewed prospects.',
+  rationale: 'Synthetic validator fixture.',
+  proposedAction: 'Approve one factual transparency-audit outreach message per listed synthetic prospect.',
+  execution: 'manual-chairman-action',
+  requiredChairmanApproval: true,
+  riskReview: ['Synthetic validation only.'],
+  publicDisclosure: 'Synthetic validation only.',
+  evidence: [
+    {
+      type: 'prospect-evidence',
+      url: 'https://example.com/fixture-gamma'
+    },
+    {
+      type: 'prospect-evidence',
+      url: 'https://example.com/fixture-delta'
     }
   ],
   approvedBy: 'executive-chairman',
@@ -94,6 +113,32 @@ const fixturePipeline = {
       chairmanApprovedBeforeOutreach: false,
       evidence: ['https://example.com/fixture-beta'],
       notes: 'Synthetic validator only.'
+    },
+    {
+      id: 'fixture-gamma',
+      stage: 'chairman-review',
+      source: 'synthetic-validator',
+      publicProfileUrl: 'https://example.com/fixture-gamma',
+      projectUrl: 'https://example.com/fixture-gamma',
+      observedClaim: 'Synthetic validator prospect.',
+      recommendedOfferId: 'transparency-audit',
+      chairmanApprovedBeforeOutreach: true,
+      stageApprovalId: fixturePriorReviewApprovalId,
+      evidence: ['https://example.com/fixture-gamma'],
+      notes: 'Synthetic validator only.'
+    },
+    {
+      id: 'fixture-delta',
+      stage: 'chairman-review',
+      source: 'synthetic-validator',
+      publicProfileUrl: 'https://example.com/fixture-delta',
+      projectUrl: 'https://example.com/fixture-delta',
+      observedClaim: 'Synthetic validator prospect.',
+      recommendedOfferId: 'transparency-audit',
+      chairmanApprovedBeforeOutreach: true,
+      stageApprovalId: fixturePriorReviewApprovalId,
+      evidence: ['https://example.com/fixture-delta'],
+      notes: 'Synthetic validator only.'
     }
   ]
 };
@@ -105,16 +150,6 @@ const advanced = applyApprovedFollowthrough({
   packetQueue,
   generatedAtUtc: '2026-09-03T17:00:00.000Z'
 });
-
-for (const id of ['niulai', 'honk-solana', 'bonkwifhat-bif']) {
-  const prospect = advanced.pipeline.prospects.find((item) => item.id === id);
-  if (prospect?.stage !== 'chairman-review') {
-    findings.push(`${id}: approved prospect review follow-through must advance to chairman-review`);
-  }
-  if (prospect?.stageApprovalId !== reviewApprovalId) {
-    findings.push(`${id}: approved prospect review follow-through must preserve the approval id`);
-  }
-}
 
 for (const id of ['fixture-alpha', 'fixture-beta']) {
   const prospect = advanced.pipeline.prospects.find((item) => item.id === id);
@@ -136,27 +171,17 @@ if (
   findings.push('synthetic approved prospect review must draft a matching outreach approval gate');
 }
 
-for (const id of ['roach-solana', 'tradiecoin', 'fyborg']) {
+for (const id of ['fixture-gamma', 'fixture-delta']) {
   const prospect = advanced.pipeline.prospects.find((item) => item.id === id);
   if (prospect?.stage !== 'outreach-approved') {
     findings.push(`${id}: approved outreach follow-through must advance to outreach-approved`);
   }
-  if (prospect?.outreachApprovalId !== outreachApprovalId) {
+  if (prospect?.outreachApprovalId !== fixtureOutreachApprovalId) {
     findings.push(`${id}: approved outreach follow-through must preserve the outreach approval id`);
   }
   if (!advanced.packetQueue.packets.some((packet) => packet.prospectId === id)) {
     findings.push(`${id}: approved outreach follow-through must write a manual outreach packet`);
   }
-}
-
-if (
-  !advanced.approvalQueue.items.some(
-    (item) =>
-      item.id === 'outreach-approval-20260903-niulai-honk-solana-bonkwifhat-bif' &&
-      item.status === 'ready-for-chairman-review'
-  )
-) {
-  findings.push('approved prospect review follow-through must draft the next outreach approval gate');
 }
 
 if (advanced.actions.some((action) => /contact|invoice|asset|token/i.test(action.type))) {

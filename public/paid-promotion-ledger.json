@@ -1,0 +1,80 @@
+{
+  "project": "SATA Reserve Token",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-09-03T18:55:00.000Z",
+  "mode": "paid-promotion-control-ledger",
+  "objective": "Track paid or token-compensated promotion as disclosed experiments only, with live-post evidence and conversion measurement before any repeat spend.",
+  "policy": {
+    "chairmanApprovalRequired": true,
+    "requiredDisclosure": "Sponsored | Paid Partnership",
+    "preferredPaymentTiming": "after approved deliverable is live and unchanged",
+    "prohibitedClaims": [
+      "price guarantee",
+      "redemption promise",
+      "market-support commitment",
+      "guaranteed buyers",
+      "fake engagement",
+      "bots",
+      "raids",
+      "investment return"
+    ],
+    "repeatSpendRule": "Do not repeat paid promotion until live evidence, disclosure, unchanged copy, and conversion results are recorded."
+  },
+  "campaigns": [
+    {
+      "id": "diana-crypto-20260903-transparency-tweet",
+      "promoter": {
+        "displayName": "Diana Crypto",
+        "handle": "142C_",
+        "profileUrl": "https://x.com/142C_"
+      },
+      "channel": "x-post",
+      "status": "post-reported-unverified",
+      "approval": {
+        "approvedBy": "executive-chairman",
+        "approvalBasis": "manual DM negotiation and approved factual draft",
+        "requiredDisclosure": "Sponsored | Paid Partnership"
+      },
+      "compensation": {
+        "type": "cash",
+        "amountUsd": "50",
+        "asset": "USDC",
+        "network": "Solana",
+        "paymentStatus": "chairman-reported-paid",
+        "paymentEvidence": "transaction evidence not recorded in repository",
+        "paymentTimingRisk": "paid before repository-verified live post evidence"
+      },
+      "approvedContentRequirements": [
+        "must disclose Sponsored | Paid Partnership",
+        "must include SATA transparency report link",
+        "must include SATA X profile link",
+        "must include SATA contract address",
+        "must include no price guarantee, no redemption promise, no financial advice, and liquidity risk language",
+        "must not include pump, guaranteed buyers, fake engagement, investor targeting, price prediction, or market-support claims"
+      ],
+      "reportedPostUrl": "https://x.com/142C_/status/2086570576530010172",
+      "verification": {
+        "status": "needs-human-verification",
+        "checkedAtUtc": "2026-09-03T18:55:00.000Z",
+        "method": "public web open and search",
+        "result": "X public crawl did not expose tweet contents; treat the post URL as user-supplied until a signed-in browser screenshot, permalink, or exported text verifies the exact live post.",
+        "requiredEvidence": [
+          "live post URL",
+          "screenshot or exported text showing disclosure and unchanged approved copy",
+          "timestamp of verification",
+          "record of any edits or deletion"
+        ]
+      },
+      "conversion": {
+        "profileViewLift": "chairman-observed",
+        "trackedClicks": null,
+        "serviceInquiries": 0,
+        "invoiceRequests": 0,
+        "confirmedReceiptsSats": "0"
+      },
+      "nextAction": "Verify the X post from a signed-in browser or durable screenshot before counting the campaign as live or approving any repeat paid promotion."
+    }
+  ],
+  "nextAction": "Verify diana-crypto-20260903-transparency-tweet, then record conversion results after 24 hours without making price or market-support claims.",
+  "boundary": "This ledger tracks disclosed marketing experiments. It does not approve promotion, payment, token grants, asset movement, price claims, investor targeting, or repeat spend."
+}

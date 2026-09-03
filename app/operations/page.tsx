@@ -1,5 +1,6 @@
 import approvalQueue from '@/public/executive-approval-queue.json';
 import outreachPacketQueue from '@/public/service-outreach-packet-queue.json';
+import paidPromotionLedger from '@/public/paid-promotion-ledger.json';
 import prospectPipeline from '@/public/sats-prospect-pipeline.json';
 import cycleStatus from '@/public/revenue-cycle-status.json';
 import report from '@/public/transparency/latest.json';
@@ -119,6 +120,9 @@ export default function OperationsPage() {
   const invoiceRequestedProspects = prospectPipeline.prospects.filter(
     (prospect) => prospect.stage === 'invoice-requested'
   );
+  const paidPromotionsAwaitingVerification = paidPromotionLedger.campaigns.filter((campaign) =>
+    ['paid-awaiting-post', 'post-reported-unverified'].includes(campaign.status)
+  );
 
   return (
     <main className="public-page">
@@ -205,6 +209,14 @@ export default function OperationsPage() {
             <strong>{cycleStatus.funnel.followUpDueProspects}</strong>
           </div>
           <div className="metric">
+            <span>Paid Campaigns</span>
+            <strong>{cycleStatus.funnel.paidPromotionCampaigns}</strong>
+          </div>
+          <div className="metric">
+            <span>Promo Verification</span>
+            <strong>{cycleStatus.funnel.paidPromotionsAwaitingVerification}</strong>
+          </div>
+          <div className="metric">
             <span>Approved Posts</span>
             <strong>{cycleStatus.social.approvedPosts}</strong>
           </div>
@@ -247,6 +259,58 @@ export default function OperationsPage() {
                 <code>{action.evidenceRequired}</code>
                 <span>Command</span>
                 <code>{action.command}</code>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Paid Promotion Control</h2>
+          <p>Disclosed promotion experiments must be verified and measured before repeat spend.</p>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Total Campaigns</span>
+            <strong>{paidPromotionLedger.campaigns.length}</strong>
+          </div>
+          <div className="metric">
+            <span>Awaiting Verification</span>
+            <strong>{paidPromotionsAwaitingVerification.length}</strong>
+          </div>
+          <div className="metric">
+            <span>Confirmed Promo Receipts</span>
+            <strong>
+              {paidPromotionLedger.campaigns
+                .reduce(
+                  (total, campaign) => total + BigInt(campaign.conversion.confirmedReceiptsSats),
+                  0n
+                )
+                .toString()}{' '}
+              sats
+            </strong>
+          </div>
+        </div>
+        <div className="warning-list">
+          {paidPromotionLedger.campaigns.map((campaign) => (
+            <div className="proof-block" key={campaign.id}>
+              <span>{campaign.status}</span>
+              <strong>
+                {campaign.promoter.displayName} @{campaign.promoter.handle}
+              </strong>
+              <code>{campaign.id}</code>
+              <p>{campaign.nextAction}</p>
+              <div className="command-list">
+                <span>Reported Post</span>
+                <code>{campaign.reportedPostUrl}</code>
+                <span>Compensation</span>
+                <code>
+                  {campaign.compensation.amountUsd} USD {campaign.compensation.asset} on{' '}
+                  {campaign.compensation.network}
+                </code>
+                <span>Verification</span>
+                <code>{campaign.verification.status}</code>
               </div>
             </div>
           ))}

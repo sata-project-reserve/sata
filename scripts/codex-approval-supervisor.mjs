@@ -45,6 +45,8 @@ const SAFE_NPM_SCRIPTS = new Set([
   'ops:outreach-plan',
   'ops:outreach-approval-check',
   'ops:outreach-approval-plan',
+  'ops:paid-promotion-check',
+  'ops:paid-promotion-plan',
   'ops:plan',
   'ops:prospect-candidate-check',
   'ops:prospect-candidate-plan',

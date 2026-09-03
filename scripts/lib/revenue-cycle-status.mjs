@@ -5,6 +5,7 @@ export function buildRevenueCycleStatus({
   invoiceQueue,
   prospectPipeline,
   outreachPacketQueue = { packets: [] },
+  paidPromotionLedger = { campaigns: [] },
   approvalQueue = { items: [] },
   socialQueue,
   env = process.env
@@ -16,6 +17,7 @@ export function buildRevenueCycleStatus({
     invoiceQueue,
     prospectPipeline,
     outreachPacketQueue,
+    paidPromotionLedger,
     approvalQueue,
     socialQueue
   });
@@ -39,6 +41,10 @@ export function buildRevenueCycleStatus({
   );
   const readyOutreachPackets = (outreachPacketQueue.packets ?? []).filter(
     (packet) => packet.status === 'ready-for-manual-send'
+  );
+  const paidPromotionCampaigns = paidPromotionLedger.campaigns ?? [];
+  const paidPromotionsAwaitingVerification = paidPromotionCampaigns.filter((campaign) =>
+    ['paid-awaiting-post', 'post-reported-unverified'].includes(campaign.status)
   );
   const followUpAfterHours = Number(prospectPipeline.dailyCadence?.followUpAfterHours ?? 48);
   const generatedAt = new Date(env.SATA_REVENUE_CYCLE_GENERATED_AT_UTC ?? new Date().toISOString());
@@ -67,6 +73,7 @@ export function buildRevenueCycleStatus({
     approvedInvoices,
     receiptsAwaitingAllocation,
     readyOutreachPackets,
+    paidPromotionsAwaitingVerification,
     followUpDueProspects,
     approvedPosts,
     livePostingEnabled,
@@ -99,6 +106,8 @@ export function buildRevenueCycleStatus({
       receiptsAwaitingAllocation: receiptsAwaitingAllocation.length,
       recordedAllocations: allocations.length,
       readyOutreachPackets: readyOutreachPackets.length,
+      paidPromotionCampaigns: paidPromotionCampaigns.length,
+      paidPromotionsAwaitingVerification: paidPromotionsAwaitingVerification.length,
       followUpDueProspects: followUpDueProspects.length
     },
     social: {
@@ -168,6 +177,7 @@ function buildActionQueue({
   approvedInvoices,
   receiptsAwaitingAllocation,
   readyOutreachPackets,
+  paidPromotionsAwaitingVerification,
   followUpDueProspects,
   approvedPosts,
   livePostingEnabled,
@@ -214,6 +224,21 @@ function buildActionQueue({
       command: `node scripts/sats-invoice-payment-packet-agent.mjs render --invoice ${invoice.id}`,
       evidenceRequired: 'Chairman-approved exact-sats invoice record.',
       boundary: 'Payment instructions must route only to the published reserve address.'
+    });
+  }
+
+  for (const campaign of paidPromotionsAwaitingVerification) {
+    actions.push({
+      id: `verify-paid-promotion-${campaign.id}`,
+      priority: actions.length + 1,
+      type: 'paid-promotion-verification',
+      title: `Verify paid promotion campaign ${campaign.id} before counting it live or approving repeat spend.`,
+      requiredActor: 'Executive Chairman or authorized human',
+      command: 'npm run ops:paid-promotion-plan',
+      evidenceRequired:
+        'Live post URL plus screenshot or exported text showing disclosure, unchanged copy, timestamp, and any edits or deletion.',
+      boundary:
+        'Verification does not approve more paid promotion, token grants, payment, asset movement, price claims, or market-support claims.'
     });
   }
 
@@ -435,6 +460,7 @@ function assertInputs({
   invoiceQueue,
   prospectPipeline,
   outreachPacketQueue,
+  paidPromotionLedger,
   approvalQueue,
   socialQueue
 }) {
@@ -445,6 +471,7 @@ function assertInputs({
     invoiceQueue,
     prospectPipeline,
     outreachPacketQueue,
+    paidPromotionLedger,
     approvalQueue,
     socialQueue
   };

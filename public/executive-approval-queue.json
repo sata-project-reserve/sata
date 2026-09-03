@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-03T18:58:05.312Z",
+  "updatedAtUtc": "2026-09-03T19:48:54.104Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -101,7 +101,7 @@
       "id": "btc-reserve-custody-roadmap",
       "title": "Move BTC reserve custody toward multisig as the reserve grows",
       "category": "treasury-action",
-      "status": "draft",
+      "status": "approved-by-chairman",
       "createdAtUtc": "2026-08-25T15:00:00Z",
       "preparedBy": "codex-ops",
       "summary": "Prepare a staged custody roadmap before the reserve grows materially toward the 1,000,000,000 sats target.",
@@ -115,7 +115,9 @@
         "Reserve language must remain transparency-only, not a redemption promise or price floor."
       ],
       "publicDisclosure": "The BTC reserve is a transparency metric only. It is not a redemption promise, guaranteed price floor, yield product, or market-support commitment.",
-      "evidence": []
+      "evidence": [],
+      "approvedBy": "executive-chairman",
+      "approvedAtUtc": "2026-09-03T19:48:54.104Z"
     },
     {
       "id": "reserve-growth-operating-policy",
@@ -149,7 +151,7 @@
       "id": "recurring-reserve-tranche-program",
       "title": "Create chairman-approved recurring BTC reserve tranche program",
       "category": "treasury-action",
-      "status": "draft",
+      "status": "approved-by-chairman",
       "createdAtUtc": "2026-08-26T12:00:00Z",
       "preparedBy": "codex-ops",
       "summary": "Prepare a repeatable process for adding sats to the reserve in disclosed tranches.",
@@ -164,13 +166,15 @@
         "Cadence should be suspended if operating cash is needed for security, infrastructure, or legal review."
       ],
       "publicDisclosure": "Reserve additions are treasury transparency events only. No price guarantee, no redemption promise, and no market-support commitment.",
-      "evidence": []
+      "evidence": [],
+      "approvedBy": "executive-chairman",
+      "approvedAtUtc": "2026-09-03T19:48:54.104Z"
     },
     {
       "id": "dev-sata-conversion-policy",
       "title": "Require public approval before converting dev-held SATA for reserve growth",
       "category": "treasury-action",
-      "status": "draft",
+      "status": "approved-by-chairman",
       "createdAtUtc": "2026-08-26T12:00:00Z",
       "preparedBy": "codex-ops",
       "summary": "Define strict controls before any dev-held SATA is converted into SOL, BTC, liquidity, operating budget, or reserve assets.",
@@ -185,7 +189,9 @@
         "Post-execution report must disclose amount, route, received assets, and reserve or liquidity destination."
       ],
       "publicDisclosure": "Founder-held SATA movements are material events and must be disclosed. No price guarantee, no redemption promise, and liquidity can be thin and volatile.",
-      "evidence": []
+      "evidence": [],
+      "approvedBy": "executive-chairman",
+      "approvedAtUtc": "2026-09-03T19:48:54.104Z"
     },
     {
       "id": "reserve-tranche-to-1m-sats",

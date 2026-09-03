@@ -237,6 +237,24 @@ function assertBriefInputs({ status, paidPromotionLedger, outreachPacketQueue, m
   if (!Number.isSafeInteger(maxManualSends) || maxManualSends < 1 || maxManualSends > 20) {
     throw new Error('maxManualSends must be an integer from 1 to 20.');
   }
+
+  const campaigns = paidPromotionLedger.campaigns ?? [];
+  const awaitingVerification = campaigns.filter((campaign) =>
+    ['paid-awaiting-post', 'post-reported-unverified'].includes(campaign.status)
+  );
+  const readyPackets = (outreachPacketQueue.packets ?? []).filter(
+    (packet) => packet.status === 'ready-for-manual-send'
+  );
+
+  if (status.funnel?.paidPromotionCampaigns !== campaigns.length) {
+    throw new Error('revenue cycle paid promotion campaign count must match the ledger.');
+  }
+  if (status.funnel?.paidPromotionsAwaitingVerification !== awaitingVerification.length) {
+    throw new Error('revenue cycle paid promotion verification count must match the ledger.');
+  }
+  if (status.funnel?.readyOutreachPackets !== readyPackets.length) {
+    throw new Error('revenue cycle ready outreach packet count must match the packet queue.');
+  }
 }
 
 function usdToSatsEstimate({ usd, btcUsd }) {

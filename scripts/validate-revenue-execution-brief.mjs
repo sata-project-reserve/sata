@@ -50,7 +50,13 @@ if (/\b(private key|seed phrase|guaranteed buyers|fake engagement|bots|raids|pri
 const maintenanceBrief = buildRevenueExecutionBrief({
   status: {
     ...status,
-    nextAction: 'Continue qualifying evidence-backed prospects.'
+    nextAction: 'Continue qualifying evidence-backed prospects.',
+    funnel: {
+      ...status.funnel,
+      readyOutreachPackets: 0,
+      paidPromotionCampaigns: 0,
+      paidPromotionsAwaitingVerification: 0
+    }
   },
   paidPromotionLedger: {
     ...paidPromotionLedger,
@@ -66,6 +72,21 @@ if (maintenanceBrief.topActions[0]?.type !== 'revenue-cycle-maintenance') {
   findings.push('empty execution inputs must still produce a maintenance action');
 }
 
+assertRejects('stale paid promotion count', /paid promotion campaign count must match/i, () =>
+  buildRevenueExecutionBrief({
+    status: {
+      ...status,
+      funnel: {
+        ...status.funnel,
+        paidPromotionCampaigns: 0
+      }
+    },
+    paidPromotionLedger,
+    outreachPacketQueue,
+    generatedAtUtc: '2026-09-03T20:00:00.000Z'
+  })
+);
+
 if (findings.length > 0) {
   console.error('Revenue execution brief check failed:');
   for (const finding of findings) console.error(`- ${finding}`);
@@ -76,4 +97,16 @@ console.log('Revenue execution brief check passed: top actions are measurable, b
 
 async function readJson(path) {
   return JSON.parse(await readFile(path, 'utf8'));
+}
+
+function assertRejects(name, expected, fn) {
+  try {
+    fn();
+  } catch (error) {
+    if (!expected.test(error.message)) {
+      throw new Error(`${name}: expected ${expected}, received ${error.message}`);
+    }
+    return;
+  }
+  throw new Error(`${name}: expected rejection.`);
 }

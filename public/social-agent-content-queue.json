@@ -61,6 +61,12 @@
       "status": "hold-until-manual-verification",
       "type": "market-readiness",
       "text": "GMGN route status will be claimed only after current buy and sell routes are manually verified from the public interface.\n\nUntil then, use the transparency report as source of truth. Unlocked LP remains removable unless separately locked and verified."
+    },
+    {
+      "id": "transparency-20260903T162453Z",
+      "status": "ready-for-review",
+      "type": "transparency",
+      "text": "SATA transparency report updated.\n\nReserve: 500000 sats. Raydium LP lock status is publicly reported.\n\nNot a redemption promise or guaranteed price floor. Locked LP verified; unlocked LP disclosed separately.\nhttps://sata-project-reserve.github.io/sata/transparency"
     }
   ]
 }

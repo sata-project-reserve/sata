@@ -82,12 +82,11 @@ async function draftReportUpdate() {
   }
 
   const text = [
-    `SATA transparency report updated: ${report.status}.`,
+    'SATA transparency report updated.',
     '',
-    `Raydium pool: ${report.liquidity.sataReserveUi} SATA / ${report.liquidity.wsolReserveUi} WSOL.`,
-    `Locked LP: ${report.liquidity.totalLockedLpRaw}. Owner unlocked LP: ${report.liquidity.ownerUnlockedLpRaw}.`,
+    `Reserve: ${report.bitcoinReserve.reserveSats} sats. Raydium LP lock status is publicly reported.`,
     '',
-    'The BTC reserve is not a redemption promise or guaranteed price floor.',
+    'Not a redemption promise or guaranteed price floor. Locked LP verified; unlocked LP disclosed separately.',
     report.source.transparencyPage
   ].join('\n');
 

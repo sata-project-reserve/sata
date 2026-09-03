@@ -26,8 +26,8 @@
   },
   "social": {
     "queueMode": "approved-only-automation",
-    "approvedPosts": 1,
-    "readyForReviewPosts": 6,
+    "approvedPosts": 7,
+    "readyForReviewPosts": 0,
     "livePostingEnabled": false
   },
   "blockers": [
@@ -337,10 +337,10 @@
       "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
     },
     {
-      "id": "publish-social-transparency-service-offer",
+      "id": "publish-social-btc-reserve-first-tranche",
       "priority": 31,
       "type": "manual-social-publish",
-      "title": "Manually publish approved post transparency-service-offer, or enable approved-only X credentials after chairman approval.",
+      "title": "Manually publish approved post btc-reserve-first-tranche, or enable approved-only X credentials after chairman approval.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "npm run social:agent:dry-run",
       "evidenceRequired": "Published post URL or approved-only posting credentials.",

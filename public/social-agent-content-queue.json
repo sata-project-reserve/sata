@@ -25,27 +25,39 @@
     },
     {
       "id": "btc-reserve-first-tranche",
-      "status": "ready-for-review",
+      "status": "approved",
       "type": "transparency",
-      "text": "SATA has a dedicated Bitcoin reserve address with signed address-control proof. Current first tranche: 500,000 sats.\n\nThe BTC reserve is not a redemption promise or guaranteed price floor.\n\nhttps://sata-project-reserve.github.io/sata/transparency"
+      "text": "SATA has a dedicated Bitcoin reserve address with signed address-control proof. Current first tranche: 500,000 sats.\n\nThe BTC reserve is not a redemption promise or guaranteed price floor.\n\nhttps://sata-project-reserve.github.io/sata/transparency",
+      "approvedBy": "owner",
+      "approvalRole": "executive-chairman",
+      "approvedAtUtc": "2026-09-03T21:48:29.101Z"
     },
     {
       "id": "authority-revoked",
-      "status": "ready-for-review",
+      "status": "approved",
       "type": "education",
-      "text": "SATA mint and freeze authorities are revoked on Solana mainnet. That means no hidden minting path and no freeze authority when the public checks are passing.\n\nVerify from the public report:\nhttps://sata-project-reserve.github.io/sata/transparency"
+      "text": "SATA mint and freeze authorities are revoked on Solana mainnet. That means no hidden minting path and no freeze authority when the public checks are passing.\n\nVerify from the public report:\nhttps://sata-project-reserve.github.io/sata/transparency",
+      "approvedBy": "owner",
+      "approvalRole": "executive-chairman",
+      "approvedAtUtc": "2026-09-03T21:48:34.639Z"
     },
     {
       "id": "liquidity-disclosure",
-      "status": "ready-for-review",
+      "status": "approved",
       "type": "transparency",
-      "text": "The Raydium SATA/WSOL pool is live. Initial Burn & Earn LP lock is verified, and owner-held unlocked LP is disclosed separately.\n\nUnlocked LP remains removable unless separately locked and verified.\n\nhttps://sata-project-reserve.github.io/sata/transparency"
+      "text": "The Raydium SATA/WSOL pool is live. Initial Burn & Earn LP lock is verified, and owner-held unlocked LP is disclosed separately.\n\nUnlocked LP remains removable unless separately locked and verified.\n\nhttps://sata-project-reserve.github.io/sata/transparency",
+      "approvedBy": "owner",
+      "approvalRole": "executive-chairman",
+      "approvedAtUtc": "2026-09-03T21:48:39.845Z"
     },
     {
       "id": "ten-btc-target",
-      "status": "ready-for-review",
+      "status": "approved",
       "type": "roadmap",
-      "text": "Long-term SATA treasury target: 10 BTC.\n\nThe point is to move attention toward sats, custody, reserves, and proof over time. This is not a redemption path, price target, or market-support promise.\n\nProof over promises."
+      "text": "Long-term SATA treasury target: 10 BTC.\n\nThe point is to move attention toward sats, custody, reserves, and proof over time. This is not a redemption path, price target, or market-support promise.\n\nProof over promises.",
+      "approvedBy": "owner",
+      "approvalRole": "executive-chairman",
+      "approvedAtUtc": "2026-09-03T21:48:44.990Z"
     },
     {
       "id": "transparency-service-offer",
@@ -58,10 +70,13 @@
     },
     {
       "id": "service-upgrade-path",
-      "status": "ready-for-review",
+      "status": "approved",
       "type": "revenue",
       "requiresHumanApproval": true,
-      "text": "SATA service path: $50 transparency audit first. If a team wants implementation help, scope can move to a $150 report setup or $300 proof dashboard.\n\nNo market outcome, volume, or buyer-demand claims.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit"
+      "text": "SATA service path: $50 transparency audit first. If a team wants implementation help, scope can move to a $150 report setup or $300 proof dashboard.\n\nNo market outcome, volume, or buyer-demand claims.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit",
+      "approvedBy": "owner",
+      "approvalRole": "executive-chairman",
+      "approvedAtUtc": "2026-09-03T21:48:49.400Z"
     },
     {
       "id": "gmgn-route-pending",
@@ -71,9 +86,12 @@
     },
     {
       "id": "transparency-20260903T162453Z",
-      "status": "ready-for-review",
+      "status": "approved",
       "type": "transparency",
-      "text": "SATA transparency report updated.\n\nReserve: 500000 sats. Raydium LP lock status is publicly reported.\n\nNot a redemption promise or guaranteed price floor. Locked LP verified; unlocked LP disclosed separately.\nhttps://sata-project-reserve.github.io/sata/transparency"
+      "text": "SATA transparency report updated.\n\nReserve: 500000 sats. Raydium LP lock status is publicly reported.\n\nNot a redemption promise or guaranteed price floor. Locked LP verified; unlocked LP disclosed separately.\nhttps://sata-project-reserve.github.io/sata/transparency",
+      "approvedBy": "owner",
+      "approvalRole": "executive-chairman",
+      "approvedAtUtc": "2026-09-03T21:48:54.376Z"
     }
   ]
 }

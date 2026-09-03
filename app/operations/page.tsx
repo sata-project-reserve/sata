@@ -519,19 +519,26 @@ export default function OperationsPage() {
           <p>Ready posts require chairman approval before approved-only automation can publish.</p>
         </div>
         <div className="warning-list">
-          {socialPostsReadyForReview.map((post) => (
-            <div className="proof-block" key={post.id}>
-              <span>{post.type}</span>
-              <strong>{post.id}</strong>
-              <pre className="preview">{post.text}</pre>
-              <div className="command-list">
-                <span>Approve</span>
-                <code>{approveSocialPostCommand(post)}</code>
-                <span>Reject</span>
-                <code>{rejectSocialPostCommand(post)}</code>
-              </div>
+          {socialPostsReadyForReview.length === 0 ? (
+            <div className="proof-block">
+              <span>clear</span>
+              <strong>No social posts are waiting for chairman review.</strong>
             </div>
-          ))}
+          ) : (
+            socialPostsReadyForReview.map((post) => (
+              <div className="proof-block" key={post.id}>
+                <span>{post.type}</span>
+                <strong>{post.id}</strong>
+                <pre className="preview">{post.text}</pre>
+                <div className="command-list">
+                  <span>Approve</span>
+                  <code>{approveSocialPostCommand(post)}</code>
+                  <span>Reject</span>
+                  <code>{rejectSocialPostCommand(post)}</code>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </section>
 

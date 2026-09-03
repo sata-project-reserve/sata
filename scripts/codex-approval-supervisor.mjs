@@ -40,6 +40,8 @@ const SAFE_NPM_SCRIPTS = new Set([
   'ops:invoice-request-plan',
   'ops:notification-check',
   'ops:outreach-check',
+  'ops:outreach-dispatch-check',
+  'ops:outreach-dispatch-plan',
   'ops:outreach-plan',
   'ops:outreach-approval-check',
   'ops:outreach-approval-plan',

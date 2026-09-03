@@ -67,6 +67,8 @@
     "ops:prospect-intake-comment-check": "node scripts/validate-prospect-intake-commenter.mjs",
     "ops:outreach-check": "node scripts/validate-service-outreach-packets.mjs",
     "ops:outreach-plan": "node scripts/service-outreach-packet-agent.mjs plan",
+    "ops:outreach-dispatch-check": "node scripts/validate-outreach-dispatch-brief.mjs",
+    "ops:outreach-dispatch-plan": "node scripts/outreach-dispatch-brief-agent.mjs markdown",
     "ops:delivery-check": "node scripts/validate-transparency-audit-delivery-kit.mjs",
     "ops:delivery-plan": "node scripts/transparency-audit-delivery-agent.mjs plan",
     "ops:audit-artifact-check": "node scripts/validate-transparency-audit-artifact.mjs",

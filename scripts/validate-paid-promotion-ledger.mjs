@@ -2,6 +2,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   buildPaidPromotionPlan,
+  recordPaidPromotionConversion,
+  recordPaidPromotionVerification,
   validatePaidPromotionLedger
 } from './lib/paid-promotion-ledger.mjs';
 
@@ -25,6 +27,38 @@ if (!/does not approve promotion/i.test(plan.boundary ?? '')) {
 }
 if (!plan.awaitingVerification[0]?.reportedPostUrl?.includes('/status/2086570576530010172')) {
   findings.push('plan must expose the user-supplied Diana status URL for verification');
+}
+if (
+  !/record-live --campaign diana-crypto-20260903-transparency-tweet/.test(
+    plan.awaitingVerification[0]?.recordLiveCommand ?? ''
+  )
+) {
+  findings.push('plan must expose live verification record command');
+}
+
+const verified = recordPaidPromotionVerification({
+  ledger,
+  campaignId: 'diana-crypto-20260903-transparency-tweet',
+  verifiedPostUrl: 'https://x.com/142C_/status/2086570576530010172',
+  evidence: 'signed-in-browser-screenshot-20260903',
+  verifiedAtUtc: '2026-09-03T20:00:00.000Z'
+});
+if (verified.campaigns[0]?.status !== 'live-verified') {
+  findings.push('record-live must mark campaign live-verified');
+}
+const completed = recordPaidPromotionConversion({
+  ledger: verified,
+  campaignId: 'diana-crypto-20260903-transparency-tweet',
+  evidence: '24-hour-x-analytics-and-inquiry-log',
+  profileViewLift: 'profile views increased; exact analytics archived separately',
+  trackedClicks: 0,
+  serviceInquiries: 0,
+  invoiceRequests: 0,
+  confirmedReceiptsSats: '0',
+  measuredAtUtc: '2026-09-04T20:00:00.000Z'
+});
+if (completed.campaigns[0]?.status !== 'completed') {
+  findings.push('record-conversion must mark live-verified campaign completed');
 }
 
 assertRejects('missing chairman approval', /executive-chairman approval/i, () =>
@@ -81,6 +115,17 @@ assertRejects('fake sats conversion', /confirmedReceiptsSats/i, () =>
         }
       }
     ]
+  })
+);
+
+assertRejects('conversion before verification', /live-verified status/i, () =>
+  recordPaidPromotionConversion({
+    ledger,
+    campaignId: 'diana-crypto-20260903-transparency-tweet',
+    evidence: 'analytics-log',
+    serviceInquiries: 0,
+    invoiceRequests: 0,
+    confirmedReceiptsSats: '0'
   })
 );
 

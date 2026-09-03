@@ -42,7 +42,8 @@ export function buildPaidPromotionPlan({ ledger, generatedAtUtc = new Date().toI
       promoter: campaign.promoter?.handle,
       amountUsd: campaign.compensation?.amountUsd,
       reportedPostUrl: campaign.reportedPostUrl ?? null,
-      nextAction: campaign.nextAction
+      nextAction: campaign.nextAction,
+      recordLiveCommand: `node scripts/paid-promotion-agent.mjs record-live --campaign ${campaign.id} --post ${campaign.reportedPostUrl ?? '<x-status-url>'} --evidence "<live-post-screenshot-or-exported-text>"`
     })),
     nextAction:
       awaitingVerification[0]?.nextAction ??
@@ -51,6 +52,103 @@ export function buildPaidPromotionPlan({ ledger, generatedAtUtc = new Date().toI
     boundary:
       'Paid promotion remains chairman-controlled and evidence-gated. This plan does not approve promotion, payment, token grants, repeat spend, or asset movement.'
   };
+}
+
+export function recordPaidPromotionVerification({
+  ledger,
+  campaignId,
+  evidence,
+  verifiedPostUrl,
+  verifiedAtUtc = new Date().toISOString()
+}) {
+  validatePaidPromotionLedger(ledger);
+  const id = cleanLine(campaignId);
+  const proof = requireEvidence(evidence, 'Live post verification evidence is required.');
+  const postUrl = cleanLine(verifiedPostUrl);
+  if (!/^https:\/\/x\.com\/[^/]+\/status\/\d+/i.test(postUrl)) {
+    throw new Error('verifiedPostUrl must be an X status URL.');
+  }
+  parseDate(verifiedAtUtc, 'verifiedAtUtc');
+  let found = false;
+  const campaigns = (ledger.campaigns ?? []).map((campaign) => {
+    if (campaign.id !== id) return campaign;
+    found = true;
+    if (!['paid-awaiting-post', 'post-reported-unverified'].includes(campaign.status)) {
+      throw new Error(
+        `${id}: only paid-awaiting-post or post-reported-unverified campaigns can be verified.`
+      );
+    }
+    return {
+      ...campaign,
+      status: 'live-verified',
+      reportedPostUrl: campaign.reportedPostUrl ?? postUrl,
+      verifiedPostUrl: postUrl,
+      verification: {
+        ...campaign.verification,
+        status: 'live-verified',
+        checkedAtUtc: verifiedAtUtc,
+        evidence: proof,
+        result:
+          'Human verification recorded: post is live, disclosed, unchanged from approved requirements, and ready for conversion measurement.'
+      },
+      nextAction:
+        'Wait 24 hours from the verified post timestamp, then record profile views, clicks, inquiries, invoice requests, and confirmed receipts without approving repeat spend.'
+    };
+  });
+  if (!found) throw new Error(`Paid promotion campaign not found: ${id}`);
+  const nextLedger = { ...ledger, updatedAtUtc: verifiedAtUtc, campaigns };
+  validatePaidPromotionLedger(nextLedger);
+  return nextLedger;
+}
+
+export function recordPaidPromotionConversion({
+  ledger,
+  campaignId,
+  evidence,
+  profileViewLift,
+  trackedClicks,
+  serviceInquiries,
+  invoiceRequests,
+  confirmedReceiptsSats,
+  measuredAtUtc = new Date().toISOString()
+}) {
+  validatePaidPromotionLedger(ledger);
+  const id = cleanLine(campaignId);
+  const proof = requireEvidence(evidence, 'Conversion measurement evidence is required.');
+  parseDate(measuredAtUtc, 'measuredAtUtc');
+  const conversion = {
+    profileViewLift: cleanLine(profileViewLift || 'not-recorded'),
+    trackedClicks: nullableInteger(trackedClicks, 'trackedClicks'),
+    serviceInquiries: requiredInteger(serviceInquiries, 'serviceInquiries'),
+    invoiceRequests: requiredInteger(invoiceRequests, 'invoiceRequests'),
+    confirmedReceiptsSats: cleanIntegerString(
+      confirmedReceiptsSats ?? '0',
+      'confirmedReceiptsSats'
+    ),
+    evidence: proof,
+    measuredAtUtc
+  };
+  let found = false;
+  const campaigns = (ledger.campaigns ?? []).map((campaign) => {
+    if (campaign.id !== id) return campaign;
+    found = true;
+    if (campaign.status !== 'live-verified') {
+      throw new Error(`${id}: conversion recording requires live-verified status.`);
+    }
+    return {
+      ...campaign,
+      status: 'completed',
+      conversion,
+      nextAction:
+        BigInt(conversion.confirmedReceiptsSats) > 0n
+          ? 'Prepare receipt allocation proposal for confirmed sats before counting reserve progress.'
+          : 'Do not repeat paid promotion unless the Executive Chairman approves a new experiment using recorded conversion evidence.'
+    };
+  });
+  if (!found) throw new Error(`Paid promotion campaign not found: ${id}`);
+  const nextLedger = { ...ledger, updatedAtUtc: measuredAtUtc, campaigns };
+  validatePaidPromotionLedger(nextLedger);
+  return nextLedger;
 }
 
 export function validatePaidPromotionLedger(ledger) {
@@ -119,6 +217,9 @@ export function validatePaidPromotionLedger(ledger) {
     if (campaign.status === 'live-verified' && !cleanLine(campaign.verification?.evidence)) {
       findings.push(`${label}: live-verified campaigns require verification evidence`);
     }
+    if (campaign.status === 'completed' && !cleanLine(campaign.conversion?.evidence)) {
+      findings.push(`${label}: completed campaigns require conversion evidence`);
+    }
     if (
       campaign.reportedPostUrl &&
       !/^https:\/\/x\.com\/[^/]+\/status\/\d+/i.test(campaign.reportedPostUrl)
@@ -167,6 +268,38 @@ export function validatePaidPromotionLedger(ledger) {
     throw new Error(`Paid promotion ledger is invalid:\n- ${findings.join('\n- ')}`);
   }
   return true;
+}
+
+function requireEvidence(value, message) {
+  const evidence = cleanLine(value);
+  if (evidence.length < 8) throw new Error(message);
+  return evidence;
+}
+
+function parseDate(value, label) {
+  const date = new Date(value);
+  if (!value || Number.isNaN(date.getTime()))
+    throw new Error(`${label} must be a valid timestamp.`);
+  return date;
+}
+
+function nullableInteger(value, label) {
+  if (value === undefined || value === null || value === '') return null;
+  return requiredInteger(value, label);
+}
+
+function requiredInteger(value, label) {
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed < 0) {
+    throw new Error(`${label} must be a non-negative integer.`);
+  }
+  return parsed;
+}
+
+function cleanIntegerString(value, label) {
+  const clean = cleanLine(value);
+  if (!/^\d+$/.test(clean)) throw new Error(`${label} must be an integer string.`);
+  return clean;
 }
 
 function cleanLine(value) {

@@ -84,7 +84,9 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByRole('heading', { name: 'Paid Promotion Control' })).toBeVisible();
   await expect(page.getByText('Diana Crypto @142C_')).toBeVisible();
   await expect(page.getByText('post-reported-unverified')).toBeVisible();
-  await expect(page.getByText('2086570576530010172')).toBeVisible();
+  await expect(
+    page.getByText('https://x.com/142C_/status/2086570576530010172', { exact: true })
+  ).toBeVisible();
   await expect(page.getByText('Confirmed Promo Receipts')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Manual Outreach Packets' })).toBeVisible();
   await expect(

@@ -274,7 +274,7 @@ export default function OperationsPage() {
           {revenueExecutionActions.map((action, index) => (
             <div className="proof-block" key={action.id}>
               <span>
-                #{index + 1} {action.type}
+                Brief {index + 1} {action.type}
               </span>
               <strong>{action.title}</strong>
               <p>{action.reason}</p>

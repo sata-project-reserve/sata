@@ -19,6 +19,7 @@ const SAFE_NPM_SCRIPTS = new Set([
   'ops:approval-followthrough-check',
   'ops:approval-followthrough-plan',
   'ops:approval-plan-check',
+  'ops:autopilot-check',
   'ops:audit-artifact-check',
   'ops:audit-artifact-plan',
   'ops:check',

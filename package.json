@@ -23,6 +23,7 @@
     "ops:approval-followthrough-check": "node scripts/validate-approved-followthrough.mjs",
     "ops:approval-followthrough-plan": "node scripts/approved-followthrough-agent.mjs plan",
     "ops:approval-followthrough-write": "node scripts/approved-followthrough-agent.mjs write",
+    "ops:autopilot-check": "node scripts/validate-revenue-autopilot-workflow.mjs",
     "ops:plan": "node scripts/executive-approval-agent.mjs plan",
     "ops:notify": "node scripts/executive-approval-agent.mjs notify",
     "ops:notify:test": "node scripts/executive-approval-agent.mjs notify-test",

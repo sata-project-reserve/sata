@@ -1,0 +1,94 @@
+name: SATA Revenue Autopilot
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sata-revenue-autopilot
+  cancel-in-progress: false
+
+jobs:
+  approved-followthrough:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply approved follow-through
+        run: npm run ops:approval-followthrough-write
+
+      - name: Refresh revenue cycle status
+        run: npm run ops:cycle-write
+
+      - name: Validate approval queue
+        run: npm run ops:check
+
+      - name: Validate approval plan
+        run: npm run ops:approval-plan-check
+
+      - name: Validate approved follow-through
+        run: npm run ops:approval-followthrough-check
+
+      - name: Validate prospect pipeline
+        run: npm run ops:prospect-check
+
+      - name: Validate outreach approval packets
+        run: npm run ops:outreach-approval-check
+
+      - name: Validate service outreach packets
+        run: npm run ops:outreach-check
+
+      - name: Validate revenue cycle status
+        run: npm run ops:cycle-check
+
+      - name: Commit approved follow-through state
+        run: |
+          set -euo pipefail
+          git config user.name "sata-revenue-autopilot"
+          git config user.email "sata-revenue-autopilot@users.noreply.github.com"
+
+          base_sha="$(git rev-parse HEAD)"
+          git add \
+            public/executive-approval-queue.json \
+            public/revenue-cycle-status.json \
+            public/sats-prospect-pipeline.json \
+            public/service-outreach-packet-queue.json
+
+          if git diff --cached --quiet; then
+            echo "No approved follow-through changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: apply approved revenue followthrough"
+
+          if git push origin HEAD:main; then
+            exit 0
+          fi
+
+          git fetch origin main
+          remote_sha="$(git rev-parse origin/main)"
+
+          if [ "$remote_sha" != "$base_sha" ]; then
+            echo "::notice::Skipped stale approved follow-through commit because main advanced from ${base_sha} to ${remote_sha}."
+            exit 0
+          fi
+
+          echo "::error::Failed to push approved follow-through commit even though origin/main did not advance."
+          exit 1

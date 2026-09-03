@@ -88,6 +88,9 @@ jobs:
       - name: Validate approved follow-through
         run: npm run ops:approval-followthrough-check
 
+      - name: Validate revenue autopilot workflow
+        run: npm run ops:autopilot-check
+
       - name: Validate notification tools
         run: npm run ops:notification-check
 

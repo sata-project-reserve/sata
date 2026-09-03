@@ -126,6 +126,14 @@ function dealsRequired(targetSats: bigint, satsPerDeal: bigint) {
   return Number((targetSats + satsPerDeal - 1n) / satsPerDeal);
 }
 
+function recordContactedCommand(prospect: Prospect) {
+  return `node scripts/sats-prospect-response-agent.mjs record-contacted --prospect ${prospect.id} --evidence "<contact-evidence-url-or-reference>" --channel "manual-dm-or-email"`;
+}
+
+function recordInvoiceRequestCommand(prospect: Prospect) {
+  return `node scripts/sats-prospect-response-agent.mjs record-invoice-request --prospect ${prospect.id} --offer ${prospect.recommendedOfferId} --evidence "<invoice-request-evidence-url-or-reference>" --confirmedCustomerRequestedInvoice true`;
+}
+
 export default function OperationsPage() {
   const approvalCounts = countByStatus(approvalQueue.items);
   const prospectCounts = countByStage(prospectPipeline.prospects);
@@ -607,11 +615,7 @@ export default function OperationsPage() {
               <p>Record durable contact evidence before treating the prospect as contacted.</p>
               <div className="command-list">
                 <span>Record Contacted</span>
-                <code>
-                  node scripts/sats-prospect-response-agent.mjs record-contacted --prospect{' '}
-                  {prospect.id} --evidence &quot;&lt;contact-evidence-url-or-reference&gt;&quot;
-                  --channel &quot;manual-dm-or-email&quot;
-                </code>
+                <code>{recordContactedCommand(prospect)}</code>
               </div>
             </div>
           ))}
@@ -622,12 +626,7 @@ export default function OperationsPage() {
               <p>Record the customer invoice request before preparing exact-sats quote inputs.</p>
               <div className="command-list">
                 <span>Record Invoice Request</span>
-                <code>
-                  node scripts/sats-prospect-response-agent.mjs record-invoice-request --prospect{' '}
-                  {prospect.id} --offer {prospect.recommendedOfferId} --evidence
-                  &quot;&lt;invoice-request-evidence-url-or-reference&gt;&quot;
-                  --confirmedCustomerRequestedInvoice true
-                </code>
+                <code>{recordInvoiceRequestCommand(prospect)}</code>
               </div>
             </div>
           ))}

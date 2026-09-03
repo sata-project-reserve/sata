@@ -102,7 +102,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByRole('heading', { name: 'Reply Conversion' })).toBeVisible();
   await expect(
     page.getByText(
-      'node scripts/sats-prospect-response-agent.mjs record-contacted --prospect arnold-solana'
+      'node scripts/sats-prospect-response-agent.mjs record-contacted --prospect arnold-solana --evidence "<contact-evidence-url-or-reference>" --channel "manual-dm-or-email"'
     )
   ).toBeVisible();
   await expect(

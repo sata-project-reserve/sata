@@ -273,15 +273,20 @@ function buildActionQueue({
     });
   }
 
-  const chairmanReview = prospects.find((prospect) => prospect.stage === 'chairman-review');
-  if (chairmanReview && !pendingOutreachProspectIds.has(chairmanReview.id)) {
+  const nextChairmanReviewProspects = prospects
+    .filter(
+      (prospect) => prospect.stage === 'chairman-review' && !pendingOutreachProspectIds.has(prospect.id)
+    )
+    .slice(0, Number(prospectPipeline.dailyCadence?.outreachLimit ?? 3));
+  if (nextChairmanReviewProspects.length > 0) {
+    const prospectIds = nextChairmanReviewProspects.map((prospect) => prospect.id).join(',');
     actions.push({
-      id: `draft-outreach-approval-${chairmanReview.id}`,
+      id: `draft-outreach-approval-${nextChairmanReviewProspects.map((prospect) => prospect.id).join('-')}`,
       priority: actions.length + 1,
       type: 'draft-outreach-approval',
-      title: `Draft contact-only outreach approval packet for chairman-reviewed prospect ${chairmanReview.id}.`,
+      title: `Draft contact-only outreach approval packet for chairman-reviewed prospects ${nextChairmanReviewProspects.map((prospect) => prospect.id).join(', ')}.`,
       requiredActor: 'agent prepares approval item; Executive Chairman approves outreach',
-      command: `node scripts/sats-outreach-approval-agent.mjs draft --prospects ${chairmanReview.id}`,
+      command: `node scripts/sats-outreach-approval-agent.mjs draft --prospects ${prospectIds}`,
       evidenceRequired: 'Chairman-reviewed prospect record.',
       boundary: 'Draft approval does not authorize contact until the Executive Chairman approves it.'
     });

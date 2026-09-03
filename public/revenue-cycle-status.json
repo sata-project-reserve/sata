@@ -94,8 +94,18 @@
       "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
     },
     {
-      "id": "render-next-prospect-review",
+      "id": "approve-outreach-approval-20260903-lilmeme-modest-money-funtom",
       "priority": 7,
+      "type": "chairman-approval-needed",
+      "title": "Chairman decision needed for outreach-approval-20260903-lilmeme-modest-money-funtom: Approve factual outreach to lilmeme, modest-money, funtom.",
+      "requiredActor": "Executive Chairman",
+      "command": "npm run ops:approve -- outreach-approval-20260903-lilmeme-modest-money-funtom --confirm-chairman-approval \"I am Executive Chairman and approve outreach-approval-20260903-lilmeme-modest-money-funtom\"",
+      "evidenceRequired": "3 evidence record(s) in executive approval queue.",
+      "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
+    },
+    {
+      "id": "render-next-prospect-review",
+      "priority": 8,
       "type": "prospect-review-packet",
       "title": "Render prospect review packet for the next identified candidates before any outreach.",
       "requiredActor": "agent prepares review packet; Executive Chairman approves prospect review",
@@ -105,7 +115,7 @@
     },
     {
       "id": "publish-social-transparency-service-offer",
-      "priority": 8,
+      "priority": 9,
       "type": "manual-social-publish",
       "title": "Manually publish approved post transparency-service-offer, or enable approved-only X credentials after chairman approval.",
       "requiredActor": "Executive Chairman or authorized human",

@@ -97,6 +97,12 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(
     page
       .locator('.summary-grid .metric')
+      .filter({ has: page.getByText('identified', { exact: true }) })
+      .filter({ has: page.getByText('5', { exact: true }) })
+  ).toBeVisible();
+  await expect(
+    page
+      .locator('.summary-grid .metric')
       .filter({ has: page.getByText('chairman-review', { exact: true }) })
       .filter({ has: page.getByText('19', { exact: true }) })
   ).toBeVisible();
@@ -121,5 +127,13 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByText('bitdust', { exact: true })).toBeVisible();
   await expect(page.getByText('sanctum-elysium-loam', { exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Next Review Batch' })).toBeVisible();
+  await expect(page.getByText('instar-meme-futures', { exact: true })).toBeVisible();
+  await expect(page.getByText('cia-token', { exact: true })).toBeVisible();
+  await expect(page.getByText('kedol-token', { exact: true })).toBeVisible();
+  await expect(
+    page.getByText(
+      'Chairman decision needed for prospect-review-batch-20260903-instar-meme-futures-cia-token-kedol-token'
+    )
+  ).toBeVisible();
   await expect(page.getByText('No price guarantee')).toBeVisible();
 });

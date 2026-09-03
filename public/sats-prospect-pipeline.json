@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-03T17:44:13.348Z",
+  "updatedAtUtc": "2026-09-03T18:08:00.000Z",
   "mode": "service-revenue-prospect-pipeline",
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
@@ -441,6 +441,76 @@
       "stageUpdatedAtUtc": "2026-09-03T17:44:13.348Z",
       "stageApprovalId": "prospect-review-batch-20260903-bitdust-sanctum-elysium-loam",
       "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
+    },
+    {
+      "id": "instar-meme-futures",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-03",
+      "publicProfileUrl": "https://instarbrands.com/pages/meme-futures",
+      "projectUrl": "https://instarbrands.com/pages/meme-futures",
+      "observedClaim": "Public page presents token screening, escrow wallet, fixed SOL strike, locked-liquidity, revoked-authority, volume, and non-custodial contract claims that could benefit from independent public evidence packaging.",
+      "recommendedOfferId": "transparency-report-setup",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://instarbrands.com/pages/meme-futures"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "cia-token",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-03",
+      "publicProfileUrl": "https://docs.cia.com/technical/usdcia-token",
+      "projectUrl": "https://docs.cia.com/technical/usdcia-token",
+      "observedClaim": "Public technical documentation presents fixed supply, revoked mint authority, revoked freeze authority, revoked metadata authority, locked Raydium CPMM liquidity, multisig vesting, and market-making disclosures that could be summarized in a neutral transparency audit.",
+      "recommendedOfferId": "transparency-audit",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://docs.cia.com/technical/usdcia-token"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "kedol-token",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-03",
+      "publicProfileUrl": "https://github.com/KedolikSwap/KEDOL-Token",
+      "projectUrl": "https://github.com/KedolikSwap/KEDOL-Token",
+      "observedClaim": "Public repository presents an audit-style transparency report with Solana token details, revoked authority claims, explorer links, and ecosystem disclosures that could benefit from a concise independent evidence review.",
+      "recommendedOfferId": "transparency-audit",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://github.com/KedolikSwap/KEDOL-Token"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "meme-launch",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-03",
+      "publicProfileUrl": "https://memelaunchs.com/results",
+      "projectUrl": "https://memelaunchs.com/results",
+      "observedClaim": "Public results page presents live on-chain config, non-custodial launches, locked graduated pools, revoked mint claims, fee revenue, and safety-check disclosures that could be packaged into a clearer public proof report.",
+      "recommendedOfferId": "transparency-report-setup",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://memelaunchs.com/results"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+    },
+    {
+      "id": "pippin-smc",
+      "stage": "identified",
+      "source": "manual-public-review-2026-09-03",
+      "publicProfileUrl": "https://smcresearchers.com/article/pippin-pippin",
+      "projectUrl": "https://smcresearchers.com/article/pippin-pippin",
+      "observedClaim": "Public research page presents revoked mint and freeze authorities, zero taxes, renounced ownership, and permanently burned liquidity claims that could be independently organized into a compact proof review.",
+      "recommendedOfferId": "transparency-audit",
+      "chairmanApprovedBeforeOutreach": false,
+      "evidence": [
+        "https://smcresearchers.com/article/pippin-pippin"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
     }
   ],
   "approvedOutreachTemplates": [

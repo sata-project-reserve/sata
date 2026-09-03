@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-03T17:44:19.264Z",
+  "updatedAtUtc": "2026-09-03T18:07:45.823Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -842,6 +842,40 @@
         {
           "type": "prospect-evidence",
           "url": "https://sanctumelysium.com/whitepaper.html"
+        }
+      ]
+    },
+    {
+      "id": "prospect-review-batch-20260903-instar-meme-futures-cia-token-kedol-token",
+      "title": "Review next public-evidence prospect batch",
+      "category": "revenue-action",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-09-03T18:07:45.823Z",
+      "preparedBy": "codex-ops",
+      "summary": "Review instar-meme-futures, cia-token, kedol-token as the next identified transparency-audit prospects.",
+      "rationale": "The prospect-review packet is rendered and validated. A fresh approved review item lets exactly this batch advance while outreach, invoices, payment requests, paid work, token grants, and asset movement remain separately gated.",
+      "proposedAction": "Review instar-meme-futures, cia-token, kedol-token using npm run ops:prospect-review-plan. If acceptable, approve this item to allow only those records to move to chairman-review. This item does not approve contact, invoices, payment requests, paid work, token grants, or asset movement.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Candidates are recorded from public pages only and remain at identified stage until this item is approved.",
+        "No outreach occurs from this approval item.",
+        "No invoice, payment instruction, paid work, or token grant is approved by this item.",
+        "Observed claims are treated as public claims to review, not accusations or endorsements."
+      ],
+      "publicDisclosure": "SATA may sell transparency tooling and public-reporting services. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment.",
+      "evidence": [
+        {
+          "type": "prospect-evidence",
+          "url": "https://instarbrands.com/pages/meme-futures"
+        },
+        {
+          "type": "prospect-evidence",
+          "url": "https://docs.cia.com/technical/usdcia-token"
+        },
+        {
+          "type": "prospect-evidence",
+          "url": "https://github.com/KedolikSwap/KEDOL-Token"
         }
       ]
     }

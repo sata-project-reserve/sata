@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-03T18:12:21.538Z",
+  "updatedAtUtc": "2026-09-03T18:19:20.118Z",
   "mode": "service-revenue-prospect-pipeline",
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
@@ -495,31 +495,37 @@
     },
     {
       "id": "meme-launch",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-09-03",
       "publicProfileUrl": "https://memelaunchs.com/results",
       "projectUrl": "https://memelaunchs.com/results",
       "observedClaim": "Public results page presents live on-chain config, non-custodial launches, locked graduated pools, revoked mint claims, fee revenue, and safety-check disclosures that could be packaged into a clearer public proof report.",
       "recommendedOfferId": "transparency-report-setup",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://memelaunchs.com/results"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-03T18:19:20.118Z",
+      "stageApprovalId": "prospect-review-batch-20260903-meme-launch-pippin-smc",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "pippin-smc",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-09-03",
       "publicProfileUrl": "https://smcresearchers.com/article/pippin-pippin",
       "projectUrl": "https://smcresearchers.com/article/pippin-pippin",
       "observedClaim": "Public research page presents revoked mint and freeze authorities, zero taxes, renounced ownership, and permanently burned liquidity claims that could be independently organized into a compact proof review.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://smcresearchers.com/article/pippin-pippin"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-03T18:19:20.118Z",
+      "stageApprovalId": "prospect-review-batch-20260903-meme-launch-pippin-smc",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     }
   ],
   "approvedOutreachTemplates": [

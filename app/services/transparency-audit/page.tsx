@@ -21,6 +21,7 @@ const dashboardOffer = revenuePlan.revenueStreams.find(
 const primaryProfile = prospectPipeline.idealCustomerProfile[0];
 const primaryBuyerDescription =
   primaryProfile?.description ?? 'Crypto teams that need public transparency evidence review.';
+const starterTurnaroundHours = deliveryKit.deliveryCadence.starterAuditTurnaroundHours;
 
 const checks = [
   'Mint, freeze, and metadata authority review',
@@ -53,8 +54,9 @@ export default function TransparencyAuditServicePage() {
           <span className="eyebrow">SATA services</span>
           <h1>Transparency audits for crypto teams.</h1>
           <p>
-            SATA is packaging its own public reporting stack into compact audits and setup work
-            for teams that want clearer authority, liquidity, reserve, and disclosure evidence.
+            SATA turns public token, liquidity, authority, reserve, and disclosure evidence into
+            a buyer-readable audit. The starter audit is ${auditOffer?.priceUsd} with a{' '}
+            {starterTurnaroundHours}-hour target after approved payment or escrow terms.
           </p>
           <div className="inline-actions">
             <a className="button-link" href={deliveryKit.intakeUrl}>
@@ -62,27 +64,6 @@ export default function TransparencyAuditServicePage() {
             </a>
             <a className="button-link" href="https://x.com/SATAReserve">
               Contact @SATAReserve
-            </a>
-            <a className="button-link" href="/sats-generation-ledger.json">
-              View Sats Ledger
-            </a>
-            <a className="button-link" href="/operations">
-              View Operations
-            </a>
-            <a className="button-link" href="/sats-invoice-queue.json">
-              View Invoice Queue
-            </a>
-            <a className="button-link" href="/sats-prospect-pipeline.json">
-              View Prospect Pipeline
-            </a>
-            <a className="button-link" href={prospectPipeline.prospectIntakeUrl}>
-              Suggest Prospect
-            </a>
-            <a className="button-link" href="/transparency-audit-delivery-kit.json">
-              View Delivery Kit
-            </a>
-            <a className="button-link" href="/revenue-operating-plan.json">
-              View Operating Plan
             </a>
           </div>
         </div>
@@ -95,6 +76,11 @@ export default function TransparencyAuditServicePage() {
             height={180}
             priority
           />
+          <div className="metric service-primary-metric">
+            <span>Starter Audit</span>
+            <strong>${auditOffer?.priceUsd}</strong>
+            <p>{starterTurnaroundHours}-hour target after approved payment or escrow.</p>
+          </div>
           <div className="metric">
             <span>Current SATA Report</span>
             <strong>{report.status}</strong>
@@ -145,6 +131,21 @@ export default function TransparencyAuditServicePage() {
           </a>
           <a className="button-link" href={prospectPipeline.prospectIntakeUrl}>
             Suggest Prospect
+          </a>
+          <a className="button-link" href="/transparency-audit-delivery-kit.json">
+            View Delivery Kit
+          </a>
+          <a className="button-link" href="/sats-prospect-pipeline.json">
+            View Prospect Pipeline
+          </a>
+          <a className="button-link" href="/operations">
+            View Operations
+          </a>
+          <a className="button-link" href="/sats-invoice-queue.json">
+            View Invoice Queue
+          </a>
+          <a className="button-link" href="/revenue-operating-plan.json">
+            View Operating Plan
           </a>
         </div>
       </section>

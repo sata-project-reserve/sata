@@ -42,6 +42,9 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
   await expect(
     page.getByRole('heading', { name: 'Transparency audits for crypto teams.' })
   ).toBeVisible();
+  await expect(page.locator('.service-primary-metric')).toContainText('Starter Audit');
+  await expect(page.locator('.service-primary-metric')).toContainText('$50');
+  await expect(page.locator('.service-primary-metric')).toContainText('24-hour target');
   await expect(
     page.getByRole('article').filter({ hasText: 'Transparency audit for crypto teams' })
   ).toContainText('$50');
@@ -98,13 +101,13 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     page
       .locator('.summary-grid .metric')
       .filter({ has: page.getByText('identified', { exact: true }) })
-      .filter({ has: page.getByText('2', { exact: true }) })
+      .filter({ has: page.getByText('0', { exact: true }) })
   ).toBeVisible();
   await expect(
     page
       .locator('.summary-grid .metric')
       .filter({ has: page.getByText('chairman-review', { exact: true }) })
-      .filter({ has: page.getByText('22', { exact: true }) })
+      .filter({ has: page.getByText('24', { exact: true }) })
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Chairman Review Prospects' })).toBeVisible();
   await expect(page.getByText('roach-solana', { exact: true })).toBeVisible();

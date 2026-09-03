@@ -18,6 +18,14 @@ const PUBLIC_BASE_URL = 'https://sata-project-reserve.github.io/sata';
 type ApprovalItem = (typeof approvalQueue.items)[number];
 type Prospect = (typeof prospectPipeline.prospects)[number];
 
+const PROSPECT_STAGES = [
+  'identified',
+  'chairman-review',
+  'outreach-approved',
+  'contacted',
+  'invoice-requested'
+];
+
 function countByStatus(items: ApprovalItem[]) {
   return items.reduce<Record<string, number>>((counts, item) => {
     counts[item.status] = (counts[item.status] ?? 0) + 1;
@@ -29,7 +37,7 @@ function countByStage(items: Prospect[]) {
   return items.reduce<Record<string, number>>((counts, item) => {
     counts[item.stage] = (counts[item.stage] ?? 0) + 1;
     return counts;
-  }, {});
+  }, Object.fromEntries(PROSPECT_STAGES.map((stage) => [stage, 0])));
 }
 
 function approvalPhrase(id: string) {

@@ -489,6 +489,17 @@ label {
   background: var(--panel-muted);
 }
 
+.service-primary-metric {
+  background: #edf7ee;
+  border-color: #b9dec0;
+}
+
+.service-primary-metric p {
+  margin: 0.3rem 0 0;
+  color: #174b24;
+  line-height: 1.45;
+}
+
 .service-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

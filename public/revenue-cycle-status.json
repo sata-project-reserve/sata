@@ -12,8 +12,8 @@
   },
   "funnel": {
     "prospects": 27,
-    "identifiedProspects": 2,
-    "chairmanReviewProspects": 22,
+    "identifiedProspects": 0,
+    "chairmanReviewProspects": 24,
     "outreachApprovedProspects": 3,
     "approvedInvoices": 0,
     "confirmedReceipts": 0,
@@ -154,12 +154,12 @@
       "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
     },
     {
-      "id": "approve-prospect-review-batch-20260903-meme-launch-pippin-smc",
+      "id": "approve-outreach-approval-20260903-meme-launch-pippin-smc",
       "priority": 13,
       "type": "chairman-approval-needed",
-      "title": "Chairman decision needed for prospect-review-batch-20260903-meme-launch-pippin-smc: Review next public-evidence prospect batch.",
+      "title": "Chairman decision needed for outreach-approval-20260903-meme-launch-pippin-smc: Approve factual outreach to meme-launch, pippin-smc.",
       "requiredActor": "Executive Chairman",
-      "command": "npm run ops:approve -- prospect-review-batch-20260903-meme-launch-pippin-smc --confirm-chairman-approval \"I am Executive Chairman and approve prospect-review-batch-20260903-meme-launch-pippin-smc\"",
+      "command": "npm run ops:approve -- outreach-approval-20260903-meme-launch-pippin-smc --confirm-chairman-approval \"I am Executive Chairman and approve outreach-approval-20260903-meme-launch-pippin-smc\"",
       "evidenceRequired": "2 evidence record(s) in executive approval queue.",
       "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
     },

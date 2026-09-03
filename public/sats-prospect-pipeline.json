@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-03T15:30:49.824Z",
+  "updatedAtUtc": "2026-09-03T15:55:19.242Z",
   "mode": "service-revenue-prospect-pipeline",
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
@@ -340,17 +340,20 @@
     },
     {
       "id": "solana-mint-forge",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-09-02",
       "publicProfileUrl": "https://www.solanamintforge.com/",
       "projectUrl": "https://www.solanamintforge.com/",
       "observedClaim": "Public site presents contract addresses, supply, buy-and-burn mechanics, freeze-authority revocation, mint revocation, and app utility claims that could benefit from a structured public report.",
       "recommendedOfferId": "transparency-report-setup",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://www.solanamintforge.com/"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-03T15:55:19.242Z",
+      "stageApprovalId": "prospect-review-batch-20260903-solana-mint-forge",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     }
   ],
   "approvedOutreachTemplates": [

@@ -1,10 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { validateProspectStageApprovalIntegrity } from './lib/prospect-stage-transition.mjs';
 import { validateProspectResponseEvidence } from './lib/prospect-response-transition.mjs';
 
 const pipeline = JSON.parse(readFileSync(join('public', 'sats-prospect-pipeline.json'), 'utf8'));
 const revenuePlan = JSON.parse(readFileSync(join('public', 'revenue-operating-plan.json'), 'utf8'));
 const invoiceQueue = JSON.parse(readFileSync(join('public', 'sats-invoice-queue.json'), 'utf8'));
+const approvalQueue = JSON.parse(readFileSync(join('public', 'executive-approval-queue.json'), 'utf8'));
 const findings = [];
 
 if (pipeline.schemaVersion !== 1) findings.push('schemaVersion must be 1');
@@ -164,6 +166,12 @@ for (const prospect of pipeline.prospects ?? []) {
   if (!Array.isArray(prospect.evidence) || prospect.evidence.length === 0) {
     findings.push(`${prospect.id}: evidence must include at least one link or note`);
   }
+}
+
+try {
+  validateProspectStageApprovalIntegrity({ pipeline, approvalQueue });
+} catch (error) {
+  findings.push(error.message);
 }
 
 try {

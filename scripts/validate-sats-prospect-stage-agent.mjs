@@ -2,13 +2,25 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   applyProspectStageTransition,
-  buildProspectStagePlan
+  buildProspectStagePlan,
+  validateProspectStageApprovalIntegrity
 } from './lib/prospect-stage-transition.mjs';
 
 const pipeline = JSON.parse(readFileSync(join('public', 'sats-prospect-pipeline.json'), 'utf8'));
 const approvalQueue = JSON.parse(readFileSync(join('public', 'executive-approval-queue.json'), 'utf8'));
-const approvalId = 'prospect-review-batch-20260829';
+const approvalId = 'prospect-review-batch-stage-agent-fixture';
 const findings = [];
+const fixtureApproval = {
+  id: approvalId,
+  title: 'Review stage-agent fixture prospects',
+  category: 'revenue-action',
+  status: 'ready-for-chairman-review',
+  requiredChairmanApproval: true
+};
+const fixtureApprovalQueue = {
+  ...approvalQueue,
+  items: [...(approvalQueue.items ?? []).filter((item) => item.id !== approvalId), fixtureApproval]
+};
 const fixtureProspects = pipeline.prospects.slice(0, 2).map((prospect) => ({
   ...prospect,
   stage: 'identified',
@@ -21,19 +33,7 @@ const fixtureProspects = pipeline.prospects.slice(0, 2).map((prospect) => ({
 }));
 const transitionFixture = {
   ...pipeline,
-  prospects: [
-    ...fixtureProspects,
-    ...pipeline.prospects.slice(2).map((prospect) =>
-      prospect.stageApprovalId === approvalId
-        ? {
-            ...prospect,
-            stageApprovalId: undefined,
-            stageUpdatedAtUtc: undefined,
-            stageNotes: undefined
-          }
-        : prospect
-    )
-  ]
+  prospects: [...fixtureProspects, ...pipeline.prospects.slice(2)]
 };
 const firstIdentified = transitionFixture.prospects.find((prospect) => prospect.stage === 'identified');
 const secondIdentified = transitionFixture.prospects.find(
@@ -43,7 +43,7 @@ if (!firstIdentified || !secondIdentified) {
   findings.push('test fixture must include at least two identified prospects');
 }
 
-const plan = buildProspectStagePlan({ pipeline, approvalQueue, approvalId });
+const plan = buildProspectStagePlan({ pipeline, approvalQueue: fixtureApprovalQueue, approvalId });
 if (plan.mode !== 'chairman-gated-prospect-stage-transition') {
   findings.push('plan mode must be chairman-gated-prospect-stage-transition');
 }
@@ -59,7 +59,7 @@ const expectedBacklog = Math.max(
 if (plan.backlogProspects !== expectedBacklog) {
   findings.push('plan must report identified prospect backlog beyond the next review batch');
 }
-if (approvalQueue.items.find((item) => item.id === approvalId)?.status !== 'approved-by-chairman') {
+if (fixtureApprovalQueue.items.find((item) => item.id === approvalId)?.status !== 'approved-by-chairman') {
   if (plan.blocked !== true) findings.push('plan must be blocked while approval is not approved');
   if (!/Executive Chairman/i.test(plan.blockedReason ?? '')) {
     findings.push('blocked plan must name the Executive Chairman approval gate');
@@ -70,8 +70,8 @@ if (!/does not approve outreach/i.test(plan.boundary ?? '')) {
 }
 
 const unapprovedQueue = {
-  ...approvalQueue,
-  items: approvalQueue.items.map((item) =>
+  ...fixtureApprovalQueue,
+  items: fixtureApprovalQueue.items.map((item) =>
     item.id === approvalId
       ? {
           ...item,
@@ -93,8 +93,8 @@ assertRejects('unapproved advancement', /not approved by the Executive Chairman/
 );
 
 const approvedQueue = {
-  ...approvalQueue,
-  items: approvalQueue.items.map((item) =>
+  ...fixtureApprovalQueue,
+  items: fixtureApprovalQueue.items.map((item) =>
     item.id === approvalId
       ? {
           ...item,
@@ -121,6 +121,30 @@ if (moved?.stageApprovalId !== approvalId) findings.push('approved transition mu
 if (/outreach approved/i.test(moved?.stageNotes ?? '')) {
   findings.push('stage notes must not imply outreach approval');
 }
+try {
+  validateProspectStageApprovalIntegrity({ pipeline: updated, approvalQueue: approvedQueue });
+} catch (error) {
+  findings.push(`approved transition must preserve stage approval integrity: ${error.message}`);
+}
+
+assertRejects('unapproved stored stage approval', /must be approved-by-chairman/i, () =>
+  validateProspectStageApprovalIntegrity({
+    pipeline: {
+      ...transitionFixture,
+      prospects: transitionFixture.prospects.map((prospect) =>
+        prospect.id === firstIdentified?.id
+          ? {
+              ...prospect,
+              stage: 'chairman-review',
+              chairmanApprovedBeforeOutreach: true,
+              stageApprovalId: approvalId
+            }
+          : prospect
+      )
+    },
+    approvalQueue: unapprovedQueue
+  })
+);
 
 assertRejects('wrong target stage', /Only chairman-review transitions/i, () =>
   applyProspectStageTransition({

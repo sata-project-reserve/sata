@@ -92,6 +92,45 @@ export function applyProspectStageTransition({
   };
 }
 
+export function validateProspectStageApprovalIntegrity({ pipeline, approvalQueue }) {
+  assertInputs({ pipeline, approvalQueue });
+  const approvals = new Map((approvalQueue.items ?? []).map((item) => [item.id, item]));
+  const findings = [];
+
+  for (const prospect of pipeline.prospects ?? []) {
+    if (prospect.stage === 'identified') {
+      if (prospect.stageApprovalId) {
+        findings.push(`${prospect.id}: identified prospects must not carry a stageApprovalId`);
+      }
+      continue;
+    }
+
+    if (prospect.chairmanApprovedBeforeOutreach !== true) {
+      findings.push(`${prospect.id}: non-identified prospects require chairmanApprovedBeforeOutreach`);
+    }
+
+    if (!prospect.stageApprovalId) {
+      findings.push(`${prospect.id}: non-identified prospects require a stageApprovalId`);
+      continue;
+    }
+
+    const approval = approvals.get(prospect.stageApprovalId);
+    if (!approval) {
+      findings.push(`${prospect.id}: stageApprovalId ${prospect.stageApprovalId} is missing from executive approval queue`);
+      continue;
+    }
+    if (approval.status !== 'approved-by-chairman') {
+      findings.push(
+        `${prospect.id}: stageApprovalId ${prospect.stageApprovalId} must be approved-by-chairman before stage ${prospect.stage}`
+      );
+    }
+  }
+
+  if (findings.length > 0) {
+    throw new Error(findings.join('\n'));
+  }
+}
+
 function assertInputs({ pipeline, approvalQueue }) {
   if (!pipeline || typeof pipeline !== 'object') throw new Error('Missing prospect pipeline.');
   if (!approvalQueue || typeof approvalQueue !== 'object') throw new Error('Missing approval queue.');

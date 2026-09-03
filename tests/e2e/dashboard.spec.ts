@@ -98,7 +98,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     page
       .locator('.summary-grid .metric')
       .filter({ has: page.getByText('chairman-review', { exact: true }) })
-      .filter({ has: page.getByText('13', { exact: true }) })
+      .filter({ has: page.getByText('14', { exact: true }) })
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Chairman Review Prospects' })).toBeVisible();
   await expect(page.getByText('roach-solana', { exact: true })).toBeVisible();
@@ -114,7 +114,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByText('spcx', { exact: true })).toBeVisible();
   await expect(page.getByText('ansem-season', { exact: true })).toBeVisible();
   await expect(page.getByText('meor', { exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Next Review Batch' })).toBeVisible();
   await expect(page.getByText('solana-mint-forge', { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Next Review Batch' })).toBeVisible();
   await expect(page.getByText('No price guarantee')).toBeVisible();
 });

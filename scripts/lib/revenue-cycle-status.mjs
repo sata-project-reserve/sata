@@ -158,6 +158,9 @@ function buildActionQueue({
       .filter((item) => item.id?.startsWith('outreach-approval-'))
       .flatMap((item) => outreachProspectIdsFromTitle(item.title))
   );
+  const hasPendingProspectReview = pendingChairmanApprovals.some((item) =>
+    item.id?.startsWith('prospect-review-batch-')
+  );
 
   for (const receipt of receiptsAwaitingAllocation) {
     actions.push({
@@ -293,7 +296,7 @@ function buildActionQueue({
   }
 
   const identified = prospects.find((prospect) => prospect.stage === 'identified');
-  if (identified) {
+  if (identified && !hasPendingProspectReview) {
     actions.push({
       id: 'render-next-prospect-review',
       priority: actions.length + 1,

@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-02T22:25:03.153Z",
+  "updatedAtUtc": "2026-09-03T15:30:49.824Z",
   "mode": "service-revenue-prospect-pipeline",
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
@@ -289,45 +289,54 @@
     },
     {
       "id": "spcx",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-09-02",
       "publicProfileUrl": "https://www.spcxmeme.com/",
       "projectUrl": "https://www.spcxmeme.com/",
       "observedClaim": "Public site presents fixed supply, circulating-supply, mint revocation, freeze revocation, LP burn, market telemetry, and audit claims that could be checked in a concise transparency audit.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://www.spcxmeme.com/"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-03T15:30:49.824Z",
+      "stageApprovalId": "prospect-review-batch-20260903-spcx-ansem-season-meor",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "ansem-season",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-09-02",
       "publicProfileUrl": "https://ansem-season.lovable.app/",
       "projectUrl": "https://ansem-season.lovable.app/",
       "observedClaim": "Public site presents supply, liquidity, tax, LP burn, mint and freeze revocation, launch route, and contract-address claims suitable for public evidence review.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://ansem-season.lovable.app/"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-03T15:30:49.824Z",
+      "stageApprovalId": "prospect-review-batch-20260903-spcx-ansem-season-meor",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "meor",
-      "stage": "identified",
+      "stage": "chairman-review",
       "source": "manual-public-review-2026-09-02",
       "publicProfileUrl": "https://meor.app/",
       "projectUrl": "https://meor.app/",
       "observedClaim": "Public site presents supply, mint-authority, holder, liquidity-lock, reserve treasury, multisig custody, market telemetry, and contract-address claims that could use independent proof packaging.",
       "recommendedOfferId": "transparency-audit",
-      "chairmanApprovedBeforeOutreach": false,
+      "chairmanApprovedBeforeOutreach": true,
       "evidence": [
         "https://meor.app/"
       ],
-      "notes": "Draft candidate only. Executive Chairman approval is required before outreach."
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-03T15:30:49.824Z",
+      "stageApprovalId": "prospect-review-batch-20260903-spcx-ansem-season-meor",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     },
     {
       "id": "solana-mint-forge",

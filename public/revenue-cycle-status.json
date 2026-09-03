@@ -12,8 +12,8 @@
   },
   "funnel": {
     "prospects": 17,
-    "identifiedProspects": 4,
-    "chairmanReviewProspects": 10,
+    "identifiedProspects": 1,
+    "chairmanReviewProspects": 13,
     "outreachApprovedProspects": 3,
     "approvedInvoices": 0,
     "confirmedReceipts": 0,
@@ -104,18 +104,28 @@
       "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
     },
     {
-      "id": "render-next-prospect-review",
+      "id": "approve-outreach-approval-20260903-spcx-ansem-season-meor",
       "priority": 8,
-      "type": "prospect-review-packet",
-      "title": "Render prospect review packet for the next identified candidates before any outreach.",
-      "requiredActor": "agent prepares review packet; Executive Chairman approves prospect review",
-      "command": "npm run ops:prospect-review-plan",
-      "evidenceRequired": "Evidence-backed prospect candidates.",
-      "boundary": "Prospects cannot move beyond identified without chairman review."
+      "type": "chairman-approval-needed",
+      "title": "Chairman decision needed for outreach-approval-20260903-spcx-ansem-season-meor: Approve factual outreach to spcx, ansem-season, meor.",
+      "requiredActor": "Executive Chairman",
+      "command": "npm run ops:approve -- outreach-approval-20260903-spcx-ansem-season-meor --confirm-chairman-approval \"I am Executive Chairman and approve outreach-approval-20260903-spcx-ansem-season-meor\"",
+      "evidenceRequired": "3 evidence record(s) in executive approval queue.",
+      "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
+    },
+    {
+      "id": "approve-prospect-review-batch-20260903-solana-mint-forge",
+      "priority": 9,
+      "type": "chairman-approval-needed",
+      "title": "Chairman decision needed for prospect-review-batch-20260903-solana-mint-forge: Review final public-evidence prospect candidate.",
+      "requiredActor": "Executive Chairman",
+      "command": "npm run ops:approve -- prospect-review-batch-20260903-solana-mint-forge --confirm-chairman-approval \"I am Executive Chairman and approve prospect-review-batch-20260903-solana-mint-forge\"",
+      "evidenceRequired": "2 evidence record(s) in executive approval queue.",
+      "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
     },
     {
       "id": "publish-social-transparency-service-offer",
-      "priority": 9,
+      "priority": 10,
       "type": "manual-social-publish",
       "title": "Manually publish approved post transparency-service-offer, or enable approved-only X credentials after chairman approval.",
       "requiredActor": "Executive Chairman or authorized human",

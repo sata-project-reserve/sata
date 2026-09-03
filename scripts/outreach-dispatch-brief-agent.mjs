@@ -3,13 +3,19 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const [, , command = 'plan'] = process.argv;
+  const [, , command = 'plan', ...args] = process.argv;
+  const options = parseOptions(args);
   const [status, packetQueue, approvalQueue] = await Promise.all([
     readJson(join('public', 'revenue-cycle-status.json')),
     readJson(join('public', 'service-outreach-packet-queue.json')),
     readJson(join('public', 'executive-approval-queue.json'))
   ]);
-  const brief = buildOutreachDispatchBrief({ status, packetQueue, approvalQueue });
+  const brief = buildOutreachDispatchBrief({
+    status,
+    packetQueue,
+    approvalQueue,
+    maxManualSends: options.max ? Number(options.max) : undefined
+  });
 
   switch (command) {
     case 'plan':
@@ -24,7 +30,15 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   }
 }
 
-export function buildOutreachDispatchBrief({ status, packetQueue, approvalQueue }) {
+export function buildOutreachDispatchBrief({
+  status,
+  packetQueue,
+  approvalQueue,
+  maxManualSends = 5
+}) {
+  if (!Number.isSafeInteger(maxManualSends) || maxManualSends < 1 || maxManualSends > 20) {
+    throw new Error('maxManualSends must be an integer from 1 to 20.');
+  }
   const readyPackets = (packetQueue.packets ?? [])
     .filter((packet) => packet.status === 'ready-for-manual-send')
     .map((packet) => ({
@@ -36,6 +50,7 @@ export function buildOutreachDispatchBrief({ status, packetQueue, approvalQueue 
       recordContactCommand: packet.recordContactCommand,
       boundary: packet.boundary
     }));
+  const sprintPackets = readyPackets.slice(0, maxManualSends);
   const pendingOutreachApprovals = (approvalQueue.items ?? [])
     .filter(
       (item) =>
@@ -56,11 +71,16 @@ export function buildOutreachDispatchBrief({ status, packetQueue, approvalQueue 
     mode: 'manual-outreach-dispatch-brief',
     generatedAtUtc: new Date().toISOString(),
     reserve: status.currentReserve,
-    readyManualSends: readyPackets,
+    maxManualSends,
+    readyManualSendCount: readyPackets.length,
+    queuedRemainderCount: Math.max(readyPackets.length - sprintPackets.length, 0),
+    readyManualSends: sprintPackets,
     pendingOutreachApprovals,
+    dispatchRule:
+      'Run one focused manual sprint: send the listed packets exactly as approved, record evidence after each send, then stop and review replies before expanding the batch.',
     nextAction:
-      readyPackets[0]?.packetId
-        ? `Send ${readyPackets[0].packetId} exactly as approved, then record contact evidence.`
+      sprintPackets[0]?.packetId
+        ? `Send ${sprintPackets[0].packetId} exactly as approved, then record contact evidence.`
         : pendingOutreachApprovals[0]?.approvalId
           ? `Chairman decision needed for ${pendingOutreachApprovals[0].approvalId}.`
           : status.nextAction,
@@ -79,7 +99,10 @@ export function renderOutreachDispatchMarkdown(brief) {
     '## Boundary',
     brief.boundary,
     '',
-    '## Ready Manual Sends'
+    '## Ready Manual Sends',
+    `Sprint: ${brief.readyManualSends.length} of ${brief.readyManualSendCount} ready packets. Backlog after this sprint: ${brief.queuedRemainderCount}.`,
+    '',
+    brief.dispatchRule
   ];
   if (brief.readyManualSends.length === 0) {
     lines.push('No outreach packets are ready for manual send.');
@@ -135,4 +158,20 @@ function prospectIdsFromOutreachApprovalTitle(title) {
 
 async function readJson(path) {
   return JSON.parse(await readFile(path, 'utf8'));
+}
+
+function parseOptions(values) {
+  const options = {};
+  for (let index = 0; index < values.length; index += 1) {
+    const key = values[index];
+    if (!key?.startsWith('--')) throw new Error(`Unexpected argument: ${key}`);
+    const collected = [];
+    while (values[index + 1] && !values[index + 1].startsWith('--')) {
+      collected.push(values[index + 1]);
+      index += 1;
+    }
+    if (collected.length === 0) throw new Error(`Missing value for ${key}.`);
+    options[key.slice(2)] = collected.join(' ');
+  }
+  return options;
 }

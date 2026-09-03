@@ -18,8 +18,17 @@ if (!/does not approve outreach/i.test(brief.boundary ?? '')) {
 if (!/does not .*move assets/i.test(brief.boundary ?? '')) {
   findings.push('brief boundary must say it does not move assets');
 }
-if (brief.readyManualSends.length !== status.funnel.readyOutreachPackets) {
+if (brief.readyManualSendCount !== status.funnel.readyOutreachPackets) {
   findings.push('ready manual send count must match revenue cycle status');
+}
+if (brief.readyManualSends.length !== Math.min(brief.readyManualSendCount, brief.maxManualSends)) {
+  findings.push('ready manual sends must expose only the current bounded sprint');
+}
+if (brief.queuedRemainderCount !== Math.max(brief.readyManualSendCount - brief.readyManualSends.length, 0)) {
+  findings.push('queued remainder count must match ready backlog minus sprint size');
+}
+if (!/focused manual sprint/i.test(brief.dispatchRule ?? '')) {
+  findings.push('dispatch rule must require a focused manual sprint');
 }
 for (const packet of brief.readyManualSends) {
   if (!packet.message.includes('No price promotion')) {

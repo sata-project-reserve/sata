@@ -155,6 +155,14 @@ export default function OperationsPage() {
   const invoiceRequestedProspects = prospectPipeline.prospects.filter(
     (prospect) => prospect.stage === 'invoice-requested'
   );
+  const readyOutreachPackets = outreachPacketQueue.packets.filter(
+    (packet) => packet.status === 'ready-for-manual-send'
+  );
+  const outreachDispatchSprint = readyOutreachPackets.slice(0, 5);
+  const outreachDispatchRemainder = Math.max(
+    readyOutreachPackets.length - outreachDispatchSprint.length,
+    0
+  );
   const paidPromotionsAwaitingVerification = paidPromotionLedger.campaigns.filter((campaign) =>
     ['paid-awaiting-post', 'post-reported-unverified'].includes(campaign.status)
   );
@@ -168,17 +176,14 @@ export default function OperationsPage() {
       evidence:
         'Signed-in screenshot or exported text showing disclosure, unchanged copy, timestamp, and post URL.'
     })),
-    ...outreachPacketQueue.packets
-      .filter((packet) => packet.status === 'ready-for-manual-send')
-      .slice(0, 5)
-      .map((packet) => ({
-        id: `send-${packet.id}`,
-        type: 'manual-outreach-send',
-        title: `Send approved transparency-audit outreach to ${packet.prospectId}.`,
-        reason: 'The shortest direct path to reserve sats is a paid audit customer requesting an invoice.',
-        command: packet.recordContactCommand,
-        evidence: 'Message permalink, email record, or other durable contact proof.'
-      }))
+    ...outreachDispatchSprint.map((packet) => ({
+      id: `send-${packet.id}`,
+      type: 'manual-outreach-send',
+      title: `Send approved transparency-audit outreach to ${packet.prospectId}.`,
+      reason: 'The shortest direct path to reserve sats is a paid audit customer requesting an invoice.',
+      command: packet.recordContactCommand,
+      evidence: 'Message permalink, email record, or other durable contact proof.'
+    }))
   ];
   const paidAttributionLinks = paidPromotionLedger.campaigns.map((campaign) => ({
     id: campaign.id,
@@ -583,10 +588,18 @@ export default function OperationsPage() {
       <section className="public-band">
         <div className="section-heading">
           <h2>Manual Outreach Packets</h2>
-          <p>Approved factual messages waiting for human send and contact evidence.</p>
+          <p>Current five-packet dispatch sprint waiting for human send and contact evidence.</p>
+        </div>
+        <div className="notice">
+          <strong>Dispatch Sprint</strong>
+          <span>
+            Showing {outreachDispatchSprint.length} of {readyOutreachPackets.length} ready packets.
+            Backlog after this sprint: {outreachDispatchRemainder}. Run npm run
+            ops:outreach-dispatch-plan for copy-ready instructions.
+          </span>
         </div>
         <div className="warning-list">
-          {outreachPacketQueue.packets.map((packet) => (
+          {outreachDispatchSprint.map((packet) => (
             <div className="proof-block" key={packet.id}>
               <span>{packet.status}</span>
               <strong>{packet.prospectId}</strong>

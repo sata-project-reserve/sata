@@ -88,6 +88,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   ).toBeVisible();
   await expect(page.getByText('Confirmed Promo Receipts')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Manual Outreach Packets' })).toBeVisible();
+  await expect(page.getByText('Showing 5 of 30 ready packets.')).toBeVisible();
   await expect(
     page.getByText('outreach-packet-20260831-arnold-solana-transparency-audit-first-contact', {
       exact: true

@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-03T18:21:21.871Z",
+  "updatedAtUtc": "2026-09-03T18:28:34.927Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -976,6 +976,42 @@
           "url": "https://smcresearchers.com/article/pippin-pippin"
         }
       ]
+    },
+    {
+      "id": "prospect-review-batch-20260903-limelight-launchpad-troptionsmint-soltokenlab",
+      "title": "Review next public-evidence prospect batch",
+      "category": "revenue-action",
+      "status": "approved-by-chairman",
+      "createdAtUtc": "2026-09-03T18:27:38.573Z",
+      "preparedBy": "codex-ops",
+      "summary": "Review limelight-launchpad, troptionsmint, soltokenlab as the next identified transparency-audit prospects.",
+      "rationale": "The prospect-review packet is rendered and validated. A fresh approved review item lets exactly this batch advance while outreach, invoices, payment requests, paid work, token grants, and asset movement remain separately gated.",
+      "proposedAction": "Review limelight-launchpad, troptionsmint, soltokenlab using npm run ops:prospect-review-plan. If acceptable, approve this item to allow only those records to move to chairman-review. This item does not approve contact, invoices, payment requests, paid work, token grants, or asset movement.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Candidates are recorded from public pages only and remain at identified stage until this item is approved.",
+        "No outreach occurs from this approval item.",
+        "No invoice, payment instruction, paid work, or token grant is approved by this item.",
+        "Observed claims are treated as public claims to review, not accusations or endorsements."
+      ],
+      "publicDisclosure": "SATA may sell transparency tooling and public-reporting services. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment.",
+      "evidence": [
+        {
+          "type": "prospect-evidence",
+          "url": "https://www.limelight.fun/docs"
+        },
+        {
+          "type": "prospect-evidence",
+          "url": "https://www.troptionsmint.com/safety"
+        },
+        {
+          "type": "prospect-evidence",
+          "url": "https://www.soltokenlab.com/"
+        }
+      ],
+      "approvedBy": "executive-chairman",
+      "approvedAtUtc": "2026-09-03T18:28:34.926Z"
     }
   ]
 }

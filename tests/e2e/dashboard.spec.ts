@@ -101,7 +101,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     page
       .locator('.summary-grid .metric')
       .filter({ has: page.getByText('identified', { exact: true }) })
-      .filter({ has: page.getByText('0', { exact: true }) })
+      .filter({ has: page.getByText('3', { exact: true }) })
   ).toBeVisible();
   await expect(
     page
@@ -135,5 +135,8 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByText('kedol-token', { exact: true })).toBeVisible();
   await expect(page.getByText('meme-launch', { exact: true })).toBeVisible();
   await expect(page.getByText('pippin-smc', { exact: true })).toBeVisible();
+  await expect(page.getByText('limelight-launchpad', { exact: true })).toBeVisible();
+  await expect(page.getByText('troptionsmint', { exact: true })).toBeVisible();
+  await expect(page.getByText('soltokenlab', { exact: true })).toBeVisible();
   await expect(page.getByText('No price guarantee')).toBeVisible();
 });

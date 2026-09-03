@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-03T18:19:20.118Z",
+  "updatedAtUtc": "2026-09-03T18:28:46.747Z",
   "mode": "service-revenue-prospect-pipeline",
   "objective": "Generate legitimate service revenue that can become confirmed BTC reserve sats after chairman-approved receipt and allocation records.",
   "activeCycleId": "revenue-cycle-001",
@@ -525,6 +525,57 @@
       "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
       "stageUpdatedAtUtc": "2026-09-03T18:19:20.118Z",
       "stageApprovalId": "prospect-review-batch-20260903-meme-launch-pippin-smc",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
+    },
+    {
+      "id": "limelight-launchpad",
+      "stage": "chairman-review",
+      "source": "manual-public-review-2026-09-03",
+      "publicProfileUrl": "https://www.limelight.fun/docs",
+      "projectUrl": "https://www.limelight.fun/docs",
+      "observedClaim": "Public docs present Solana launch mechanics, permanent graduated-liquidity locks, revoked mint and freeze authority, creator vesting, fee routing, and self-verification instructions that could be independently packaged into a concise public proof review.",
+      "recommendedOfferId": "transparency-report-setup",
+      "chairmanApprovedBeforeOutreach": true,
+      "evidence": [
+        "https://www.limelight.fun/docs"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-03T18:28:46.747Z",
+      "stageApprovalId": "prospect-review-batch-20260903-limelight-launchpad-troptionsmint-soltokenlab",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
+    },
+    {
+      "id": "troptionsmint",
+      "stage": "chairman-review",
+      "source": "manual-public-review-2026-09-03",
+      "publicProfileUrl": "https://www.troptionsmint.com/safety",
+      "projectUrl": "https://www.troptionsmint.com/safety",
+      "observedClaim": "Public safety page presents authority revocation by default, IPFS-anchored metadata, locked liquidity, on-chain proof, and identified-operator claims that could benefit from an independent evidence summary.",
+      "recommendedOfferId": "transparency-report-setup",
+      "chairmanApprovedBeforeOutreach": true,
+      "evidence": [
+        "https://www.troptionsmint.com/safety"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-03T18:28:46.747Z",
+      "stageApprovalId": "prospect-review-batch-20260903-limelight-launchpad-troptionsmint-soltokenlab",
+      "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
+    },
+    {
+      "id": "soltokenlab",
+      "stage": "chairman-review",
+      "source": "manual-public-review-2026-09-03",
+      "publicProfileUrl": "https://www.soltokenlab.com/",
+      "projectUrl": "https://www.soltokenlab.com/",
+      "observedClaim": "Public tooling page presents token analysis, holder/liquidity/authority checks, LP locking or burning, authority revocation, and no-key-custody claims that could use a compact proof and disclosure review.",
+      "recommendedOfferId": "transparency-report-setup",
+      "chairmanApprovedBeforeOutreach": true,
+      "evidence": [
+        "https://www.soltokenlab.com/"
+      ],
+      "notes": "Draft candidate only. Executive Chairman approval is required before outreach.",
+      "stageUpdatedAtUtc": "2026-09-03T18:28:46.747Z",
+      "stageApprovalId": "prospect-review-batch-20260903-limelight-launchpad-troptionsmint-soltokenlab",
       "stageNotes": "Moved to chairman-review after Executive Chairman approval. Outreach still requires a separate explicit decision."
     }
   ],

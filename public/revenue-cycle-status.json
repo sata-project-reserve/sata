@@ -11,9 +11,9 @@
     "latestReportGeneratedAtUtc": "2026-09-03T18:25:55.523Z"
   },
   "funnel": {
-    "prospects": 27,
+    "prospects": 30,
     "identifiedProspects": 0,
-    "chairmanReviewProspects": 24,
+    "chairmanReviewProspects": 27,
     "outreachApprovedProspects": 3,
     "approvedInvoices": 0,
     "confirmedReceipts": 0,
@@ -164,8 +164,18 @@
       "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
     },
     {
-      "id": "publish-social-transparency-service-offer",
+      "id": "draft-outreach-approval-limelight-launchpad-troptionsmint-soltokenlab",
       "priority": 14,
+      "type": "draft-outreach-approval",
+      "title": "Draft contact-only outreach approval packet for chairman-reviewed prospects limelight-launchpad, troptionsmint, soltokenlab.",
+      "requiredActor": "agent prepares approval item; Executive Chairman approves outreach",
+      "command": "node scripts/sats-outreach-approval-agent.mjs write-draft --prospects limelight-launchpad,troptionsmint,soltokenlab",
+      "evidenceRequired": "Chairman-reviewed prospect record.",
+      "boundary": "Draft approval does not authorize contact until the Executive Chairman approves it."
+    },
+    {
+      "id": "publish-social-transparency-service-offer",
+      "priority": 15,
       "type": "manual-social-publish",
       "title": "Manually publish approved post transparency-service-offer, or enable approved-only X credentials after chairman approval.",
       "requiredActor": "Executive Chairman or authorized human",

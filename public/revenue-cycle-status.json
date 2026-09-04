@@ -348,18 +348,8 @@
       "boundary": "Measurement does not approve repeat spend, compensation, token grants, payment instructions, price claims, or market-support claims."
     },
     {
-      "id": "approve-post-receipt-referral-partner-policy",
-      "priority": 32,
-      "type": "chairman-approval-needed",
-      "title": "Chairman decision needed for post-receipt-referral-partner-policy: Approve post-receipt referral partner policy.",
-      "requiredActor": "Executive Chairman",
-      "command": "npm run ops:approve -- post-receipt-referral-partner-policy --confirm-chairman-approval \"I am Executive Chairman and approve post-receipt-referral-partner-policy\"",
-      "evidenceRequired": "1 evidence record(s) in executive approval queue.",
-      "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
-    },
-    {
       "id": "publish-social-btc-reserve-first-tranche",
-      "priority": 33,
+      "priority": 32,
       "type": "manual-social-publish",
       "title": "Manually publish approved post btc-reserve-first-tranche and record the live URL for attribution.",
       "requiredActor": "Executive Chairman or authorized human",

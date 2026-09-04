@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-03T19:48:54.104Z",
+  "updatedAtUtc": "2026-09-04T18:34:22.799Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -1079,7 +1079,7 @@
       "id": "post-receipt-referral-partner-policy",
       "title": "Approve post-receipt referral partner policy",
       "category": "promoter-offer",
-      "status": "ready-for-chairman-review",
+      "status": "approved-by-chairman",
       "createdAtUtc": "2026-09-03T22:20:00.000Z",
       "preparedBy": "codex-ops",
       "summary": "Allow referral partner discussions only under a post-receipt model: no upfront spend, no fake engagement, and no compensation until a referred customer pays.",
@@ -1099,7 +1099,9 @@
           "type": "policy-json",
           "url": "public/referral-partner-policy.json"
         }
-      ]
+      ],
+      "approvedBy": "executive-chairman",
+      "approvedAtUtc": "2026-09-04T18:34:22.798Z"
     }
   ]
 }

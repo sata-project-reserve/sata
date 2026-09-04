@@ -166,11 +166,17 @@ export default function TransparencyAuditServicePage() {
             <span>{setupOffer?.label}</span>
             <strong>${setupOffer?.priceUsd}</strong>
             <p>{setupOffer?.deliverable}</p>
+            <a className="button-link" href="/services/transparency-report-setup">
+              View Setup
+            </a>
           </article>
           <article className="service-offer">
             <span>{dashboardOffer?.label}</span>
             <strong>${dashboardOffer?.priceUsd}</strong>
             <p>{dashboardOffer?.deliverable}</p>
+            <a className="button-link" href="/services/full-proof-dashboard">
+              View Dashboard
+            </a>
           </article>
         </div>
       </section>

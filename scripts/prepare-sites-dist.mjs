@@ -68,6 +68,18 @@ const metadataPolicy = ${JSON.stringify(metadataPolicy)};
 const transparencyHtml = ${JSON.stringify(buildTransparencyHtml(report))};
 const historyHtml = ${JSON.stringify(buildHistoryHtml(history))};
 const serviceHtml = ${JSON.stringify(buildServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit))};
+const reportSetupServiceHtml = ${JSON.stringify(
+  buildHighValueServiceHtml(
+    report,
+    revenuePlan,
+    prospectPipeline,
+    deliveryKit,
+    'transparency-report-setup'
+  )
+)};
+const dashboardServiceHtml = ${JSON.stringify(
+  buildHighValueServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit, 'full-proof-dashboard')
+)};
 
 function buildMetadata(origin) {
   const assetBase = 'https://sata-project-reserve.github.io/sata';
@@ -176,6 +188,16 @@ export default {
     }
     if (url.pathname === '/services/transparency-audit') {
       return new Response(serviceHtml, {
+        headers: withCors({ 'content-type': 'text/html; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/services/transparency-report-setup') {
+      return new Response(reportSetupServiceHtml, {
+        headers: withCors({ 'content-type': 'text/html; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/services/full-proof-dashboard') {
+      return new Response(dashboardServiceHtml, {
         headers: withCors({ 'content-type': 'text/html; charset=utf-8' })
       });
     }
@@ -438,7 +460,7 @@ function buildHistoryHtml(history) {
 function buildServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit) {
   const offers = revenuePlan.revenueStreams
     .map(
-      (offer) => `<div class="metric"><span>${escapeHtml(offer.label)}</span><strong>$${escapeHtml(offer.priceUsd)}</strong><p>${escapeHtml(offer.deliverable)}</p></div>`
+      (offer) => `<div class="metric"><span>${escapeHtml(offer.label)}</span><strong>$${escapeHtml(offer.priceUsd)}</strong><p>${escapeHtml(offer.deliverable)}</p>${offer.id === 'transparency-report-setup' ? '<p><a href="/services/transparency-report-setup">View Setup</a></p>' : ''}${offer.id === 'full-proof-dashboard' ? '<p><a href="/services/full-proof-dashboard">View Dashboard</a></p>' : ''}</div>`
     )
     .join('');
   const upgradePath = (revenuePlan.upgradePolicy?.defaultPath ?? [])
@@ -505,6 +527,113 @@ function buildServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit) {
     <h2>Delivery Kit</h2>
     <p>${escapeHtml(deliveryKit.nextOperatingAction)}</p>
     <p><a href="/transparency-audit-delivery-kit.json">Delivery kit JSON</a></p>
+  </section>
+  <section class="metric">
+    <strong>Boundaries</strong>
+    <p>No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment. SATA does not sell fake engagement, raids, bots, or investor lists.</p>
+  </section>
+</main>
+</body>
+</html>`;
+}
+
+function buildHighValueServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit, offerId) {
+  const offer = revenuePlan.revenueStreams.find((stream) => stream.id === offerId);
+  if (!offer) {
+    throw new Error(`Missing revenue stream: ${offerId}`);
+  }
+  const isDashboard = offerId === 'full-proof-dashboard';
+  const title = isDashboard ? 'SATA Full Proof Dashboard Service' : 'SATA Transparency Report Setup Service';
+  const heading = isDashboard ? 'Full proof dashboard setup.' : 'Transparency report setup.';
+  const intro = isDashboard
+    ? 'SATA packages its proof dashboard pattern into a public reporting workflow with machine-readable endpoints and an operator runbook.'
+    : 'SATA turns public token, reserve, liquidity, authority, and disclosure evidence into a repo-backed transparency report template a client team can maintain.';
+  const bestFor = isDashboard
+    ? [
+        'Teams that want recurring automated public reporting',
+        'Projects that need human-readable pages plus public JSON evidence endpoints',
+        'Operators who can provide stable source data and approve final deployment wording'
+      ]
+    : [
+        'Teams that already know they need a public report instead of only a gap audit',
+        'Projects with authority, liquidity, or reserve claims that need clearer public evidence',
+        'Founders who can approve factual wording and maintain the report after delivery'
+      ];
+  const scope = isDashboard
+    ? [
+        'Automated public report workflow',
+        'Proof dashboard with reserve, authority, liquidity, and disclosure sections',
+        'Public JSON endpoints for independent verification',
+        'Operating runbook for updates, approvals, and evidence retention',
+        'Post-launch validation checklist with no trading, liquidity, or price promises'
+      ]
+    : [
+        'Public-report template and disclosure checklist',
+        'Authority, liquidity, reserve, and ownership sections mapped to client evidence',
+        'Deployment instructions for a static public report',
+        'Risk wording that avoids price guarantees, redemption promises, and market-support claims',
+        'One handoff checklist for future updates'
+      ];
+  const listItems = (items) =>
+    items.map((item) => `<div class="metric"><strong>${escapeHtml(item)}</strong></div>`).join('');
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${escapeHtml(title)}</title>
+  <style>
+    :root { color-scheme: light; --bg: #f6f7f9; --panel: #fff; --text: #111827; --muted: #5b6472; --line: #d9dee7; --accent: #0f766e; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { max-width: 1120px; margin: 0 auto; padding: 24px; display: grid; gap: 18px; }
+    h1 { margin: 0; font-size: clamp(38px, 7vw, 72px); line-height: 1; letter-spacing: 0; }
+    h2 { margin: 0; font-size: 24px; }
+    p { color: var(--muted); line-height: 1.6; }
+    a { color: #0b5f59; }
+    .hero { min-height: 54vh; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); gap: 18px; align-items: center; border-bottom: 1px solid var(--line); }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .metric { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 14px; }
+    .metric span { display: block; color: var(--muted); font-size: 13px; }
+    .metric strong { overflow-wrap: anywhere; }
+    .mark { width: min(180px, 48vw); aspect-ratio: 1; border: 1px solid var(--line); border-radius: 8px; object-fit: cover; background: #eef2f5; }
+    @media (max-width: 800px) { .hero, .grid { grid-template-columns: 1fr; } .hero { min-height: auto; padding-top: 16px; } }
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div>
+      <p><strong>SATA services</strong></p>
+      <h1>${escapeHtml(heading)}</h1>
+      <p>${escapeHtml(intro)} This offer is $${escapeHtml(offer.priceUsd)} and starts only after Executive Chairman approval of scope, invoice terms, and settlement path.</p>
+      <p><a href="${escapeHtml(deliveryKit.intakeUrl)}">${isDashboard ? 'Request Dashboard' : 'Request Setup'}</a> Â· <a href="/services/transparency-audit">Start With Audit</a> Â· <a href="https://x.com/SATAReserve">Contact @SATAReserve</a></p>
+    </div>
+    <div>
+      <img class="mark" src="/mainnet/sata-image.png" alt="SATA reserve token mark">
+      <div class="metric"><span>${escapeHtml(offer.label)}</span><strong>$${escapeHtml(offer.priceUsd)}</strong><p>${escapeHtml(offer.paymentTiming)}.</p></div>
+      <div class="metric"><span>Current SATA Report</span><strong>${escapeHtml(report.status)}</strong></div>
+      <div class="metric"><span>Reserve Proof Status</span><strong>${escapeHtml(report.bitcoinReserve.status)}</strong></div>
+    </div>
+  </section>
+  <section>
+    <h2>${isDashboard ? 'Full Proof Dashboard' : 'Report Setup'}</h2>
+    <p>${escapeHtml(offer.deliverable)}</p>
+    <div class="grid">${listItems(bestFor)}</div>
+  </section>
+  <section>
+    <h2>Scope</h2>
+    <p>Each engagement stays factual, evidence-backed, and easy for the public to inspect.</p>
+    <div class="grid">${listItems(scope)}</div>
+  </section>
+  <section class="metric">
+    <h2>Payment Gate</h2>
+    <p>Executive Chairman approves final scope and invoice before payment. BTC, USDC on Solana, or SOL settlement is handled only through a recorded invoice path. No agent receives funds, controls keys, or approves spending.</p>
+  </section>
+  <section class="metric">
+    <h2>Revenue Use</h2>
+    <p>${escapeHtml(revenuePlan.objective)}</p>
+    <p><strong>Target customer:</strong> ${escapeHtml(prospectPipeline.idealCustomerProfile[0]?.description ?? '')}</p>
   </section>
   <section class="metric">
     <strong>Boundaries</strong>

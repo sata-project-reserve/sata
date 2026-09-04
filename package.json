@@ -38,6 +38,7 @@
     "ops:paid-promotion-check": "node scripts/validate-paid-promotion-ledger.mjs",
     "ops:paid-promotion-plan": "node scripts/paid-promotion-agent.mjs plan",
     "ops:referral-policy-check": "node scripts/validate-referral-partner-policy.mjs",
+    "ops:service-pages-check": "node scripts/validate-service-pages.mjs",
     "ops:cycle-check": "node scripts/validate-revenue-cycle-status.mjs",
     "ops:cycle-write": "node scripts/revenue-cycle-agent.mjs write",
     "ops:cycle-plan": "node scripts/revenue-cycle-agent.mjs status",

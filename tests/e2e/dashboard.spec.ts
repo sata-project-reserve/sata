@@ -59,8 +59,38 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
   await expect(page.getByRole('link', { name: 'Request Audit' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Upgrade Path' })).toBeVisible();
   await expect(page.getByText('Offer the $300 full proof dashboard only')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'View Setup' })).toHaveAttribute(
+    'href',
+    '/services/transparency-report-setup'
+  );
+  await expect(page.getByRole('link', { name: 'View Dashboard' })).toHaveAttribute(
+    'href',
+    '/services/full-proof-dashboard'
+  );
   await expect(page.getByText('No price guarantee')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Contact @SATAReserve' })).toBeVisible();
+});
+
+test('higher-value service pages publish gates and boundaries', async ({ page }) => {
+  await page.goto('/services/transparency-report-setup');
+  await expect(page.getByRole('heading', { name: 'Transparency report setup.' })).toBeVisible();
+  await expect(page.locator('.service-primary-metric')).toContainText('$150');
+  await expect(page.getByRole('heading', { name: 'Payment Gate' })).toBeVisible();
+  await expect(page.getByText('Executive Chairman approves final scope and invoice')).toBeVisible();
+  await expect(page.getByText('No agent receives funds, controls keys, or approves spending')).toBeVisible();
+  await expect(page.getByText('No price guarantee')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Start With Audit' })).toHaveAttribute(
+    'href',
+    '/services/transparency-audit'
+  );
+
+  await page.goto('/services/full-proof-dashboard');
+  await expect(page.getByRole('heading', { name: 'Full proof dashboard setup.' })).toBeVisible();
+  await expect(page.locator('.service-primary-metric')).toContainText('$300');
+  await expect(page.getByText('Public JSON endpoints for independent verification')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Revenue Use' })).toBeVisible();
+  await expect(page.getByText('No market-support')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Request Dashboard' })).toBeVisible();
 });
 
 test('operations page surfaces chairman queue and prospect batch', async ({ page }) => {

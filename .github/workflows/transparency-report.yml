@@ -109,6 +109,9 @@ jobs:
       - name: Validate referral partner policy
         run: npm run ops:referral-policy-check
 
+      - name: Validate service pages
+        run: npm run ops:service-pages-check
+
       - name: Validate revenue cycle status
         run: npm run ops:cycle-check
 

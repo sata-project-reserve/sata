@@ -43,6 +43,16 @@ if (['paid-awaiting-post', 'post-reported-unverified'].includes(dianaCampaign?.s
   if (plan.totals.awaitingVerification !== 0 || plan.totals.liveVerified !== 1) {
     findings.push('Diana test campaign must be counted as live verified after evidence is recorded');
   }
+  if (
+    !/record-conversion --campaign diana-crypto-20260903-transparency-tweet/.test(
+      plan.liveVerified[0]?.recordConversionCommand ?? ''
+    )
+  ) {
+    findings.push('plan must expose conversion measurement record command');
+  }
+  if (!/confirmedReceiptsSats 0/.test(plan.liveVerified[0]?.recordConversionCommand ?? '')) {
+    findings.push('conversion command must default to zero confirmed sats until evidence exists');
+  }
   if (!/Wait 24 hours/i.test(plan.nextAction ?? '')) {
     findings.push('plan must advance live-verified campaigns to conversion measurement');
   }

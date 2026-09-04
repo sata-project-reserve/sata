@@ -107,6 +107,12 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByRole('heading', { name: 'Paid Promotion Control' })).toBeVisible();
   await expect(page.getByText('Diana Crypto @142C_')).toBeVisible();
   await expect(page.getByText('live-verified').first()).toBeVisible();
+  await expect(page.getByText('Awaiting 24h Measurement')).toBeVisible();
+  await expect(
+    page.getByText(
+      'node scripts/paid-promotion-agent.mjs record-conversion --campaign diana-crypto-20260903-transparency-tweet --evidence "<24h-analytics-and-inquiry-log>" --profileViewLift "<profile-view-change-or-not-recorded>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0'
+    )
+  ).toBeVisible();
   const paidPromotionBlock = page
     .locator('.proof-block')
     .filter({ hasText: 'Diana Crypto @142C_' });

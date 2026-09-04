@@ -45,6 +45,14 @@ export function buildPaidPromotionPlan({ ledger, generatedAtUtc = new Date().toI
       nextAction: campaign.nextAction,
       recordLiveCommand: `node scripts/paid-promotion-agent.mjs record-live --campaign ${campaign.id} --post ${campaign.reportedPostUrl ?? '<x-status-url>'} --evidence "<live-post-screenshot-or-exported-text>"`
     })),
+    liveVerified: liveVerified.map((campaign) => ({
+      id: campaign.id,
+      promoter: campaign.promoter?.handle,
+      amountUsd: campaign.compensation?.amountUsd,
+      verifiedPostUrl: campaign.verifiedPostUrl ?? campaign.reportedPostUrl,
+      nextAction: campaign.nextAction,
+      recordConversionCommand: `node scripts/paid-promotion-agent.mjs record-conversion --campaign ${campaign.id} --evidence "<24h-analytics-and-inquiry-log>" --profileViewLift "<profile-view-change-or-not-recorded>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0`
+    })),
     nextAction:
       awaitingVerification[0]?.nextAction ??
       liveVerified[0]?.nextAction ??

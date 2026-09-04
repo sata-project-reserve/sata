@@ -20,6 +20,7 @@ export const metadata = {
 const PUBLIC_BASE_URL = 'https://sata-project-reserve.github.io/sata';
 
 type ApprovalItem = (typeof approvalQueue.items)[number];
+type PaidPromotionCampaign = (typeof paidPromotionLedger.campaigns)[number];
 type Prospect = (typeof prospectPipeline.prospects)[number];
 type SocialPost = (typeof socialQueue.posts)[number];
 type InboundLead = {
@@ -169,6 +170,10 @@ function recordInboundLeadCommand(source: InboundSource) {
   return `node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sourceType ${source.type} --sourceId ${source.id} --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --evidence "<reply-or-dm-evidence>" --customerAskedForInvoice false`;
 }
 
+function recordPaidPromotionConversionCommand(campaign: PaidPromotionCampaign) {
+  return `node scripts/paid-promotion-agent.mjs record-conversion --campaign ${campaign.id} --evidence "<24h-analytics-and-inquiry-log>" --profileViewLift "<profile-view-change-or-not-recorded>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0`;
+}
+
 export default function OperationsPage() {
   const approvalCounts = countByStatus(approvalQueue.items);
   const prospectCounts = countByStage(prospectPipeline.prospects);
@@ -204,6 +209,9 @@ export default function OperationsPage() {
   );
   const paidPromotionsAwaitingVerification = paidPromotionLedger.campaigns.filter((campaign) =>
     ['paid-awaiting-post', 'post-reported-unverified'].includes(campaign.status)
+  );
+  const liveVerifiedPaidPromotions = paidPromotionLedger.campaigns.filter(
+    (campaign) => campaign.status === 'live-verified'
   );
   const inboundLeads = inboundLeadQueue.leads as InboundLead[];
   const inboundInvoiceRequests = inboundLeads.filter(
@@ -689,6 +697,10 @@ export default function OperationsPage() {
             <strong>{paidPromotionsAwaitingVerification.length}</strong>
           </div>
           <div className="metric">
+            <span>Awaiting 24h Measurement</span>
+            <strong>{liveVerifiedPaidPromotions.length}</strong>
+          </div>
+          <div className="metric">
             <span>Confirmed Promo Receipts</span>
             <strong>
               {paidPromotionLedger.campaigns
@@ -720,6 +732,12 @@ export default function OperationsPage() {
                 </code>
                 <span>Verification</span>
                 <code>{campaign.verification.status}</code>
+                {campaign.status === 'live-verified' ? (
+                  <>
+                    <span>Record 24h Conversion</span>
+                    <code>{recordPaidPromotionConversionCommand(campaign)}</code>
+                  </>
+                ) : null}
               </div>
             </div>
           ))}

@@ -9,13 +9,15 @@ const APPROVAL_QUEUE_PATH = join('public', 'executive-approval-queue.json');
 const PIPELINE_PATH = join('public', 'sats-prospect-pipeline.json');
 const DELIVERY_KIT_PATH = join('public', 'transparency-audit-delivery-kit.json');
 const PACKET_QUEUE_PATH = join('public', 'service-outreach-packet-queue.json');
+const REFERRAL_POLICY_PATH = join('public', 'referral-partner-policy.json');
 const [, , command = 'plan'] = process.argv;
 
-const [approvalQueue, pipeline, deliveryKit, packetQueue] = await Promise.all([
+const [approvalQueue, pipeline, deliveryKit, packetQueue, referralPolicy] = await Promise.all([
   readJson(APPROVAL_QUEUE_PATH),
   readJson(PIPELINE_PATH),
   readJson(DELIVERY_KIT_PATH),
-  readOptionalJson(PACKET_QUEUE_PATH)
+  readOptionalJson(PACKET_QUEUE_PATH),
+  readOptionalJson(REFERRAL_POLICY_PATH)
 ]);
 
 switch (command) {
@@ -34,7 +36,8 @@ function printPlan() {
     approvalQueue,
     pipeline,
     deliveryKit,
-    packetQueue
+    packetQueue,
+    referralPolicy
   });
   console.log(JSON.stringify(summary(result), null, 2));
 }
@@ -44,7 +47,8 @@ async function writeFollowthrough() {
     approvalQueue,
     pipeline,
     deliveryKit,
-    packetQueue
+    packetQueue,
+    referralPolicy
   });
   if (!result.changed) {
     console.log(JSON.stringify(summary(result), null, 2));
@@ -53,7 +57,10 @@ async function writeFollowthrough() {
   await Promise.all([
     writeFile(APPROVAL_QUEUE_PATH, `${JSON.stringify(result.approvalQueue, null, 2)}\n`),
     writeFile(PIPELINE_PATH, `${JSON.stringify(result.pipeline, null, 2)}\n`),
-    writeFile(PACKET_QUEUE_PATH, `${JSON.stringify(result.packetQueue, null, 2)}\n`)
+    writeFile(PACKET_QUEUE_PATH, `${JSON.stringify(result.packetQueue, null, 2)}\n`),
+    ...(result.referralPolicy
+      ? [writeFile(REFERRAL_POLICY_PATH, `${JSON.stringify(result.referralPolicy, null, 2)}\n`)]
+      : [])
   ]);
   console.log(JSON.stringify(summary(result), null, 2));
 }

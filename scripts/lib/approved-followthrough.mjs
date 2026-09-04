@@ -13,6 +13,7 @@ export function buildApprovedFollowthroughPlan({
   pipeline,
   deliveryKit,
   packetQueue,
+  referralPolicy,
   generatedAtUtc = new Date().toISOString()
 }) {
   return processApprovedFollowthrough({
@@ -20,6 +21,7 @@ export function buildApprovedFollowthroughPlan({
     pipeline,
     deliveryKit,
     packetQueue,
+    referralPolicy,
     generatedAtUtc
   });
 }
@@ -29,6 +31,7 @@ export function applyApprovedFollowthrough({
   pipeline,
   deliveryKit,
   packetQueue,
+  referralPolicy,
   generatedAtUtc = new Date().toISOString()
 }) {
   return processApprovedFollowthrough({
@@ -36,6 +39,7 @@ export function applyApprovedFollowthrough({
     pipeline,
     deliveryKit,
     packetQueue,
+    referralPolicy,
     generatedAtUtc
   });
 }
@@ -45,12 +49,14 @@ function processApprovedFollowthrough({
   pipeline,
   deliveryKit,
   packetQueue,
+  referralPolicy,
   generatedAtUtc
 }) {
   assertInputs({ approvalQueue, pipeline, deliveryKit });
   let nextApprovalQueue = structuredClone(approvalQueue);
   let nextPipeline = structuredClone(pipeline);
   let nextPacketQueue = normalizePacketQueue(packetQueue, pipeline);
+  let nextReferralPolicy = referralPolicy ? structuredClone(referralPolicy) : null;
   const actions = [];
 
   for (const item of nextApprovalQueue.items ?? []) {
@@ -145,6 +151,24 @@ function processApprovedFollowthrough({
         }
       }
     }
+
+    if (
+      nextReferralPolicy &&
+      item.id === nextReferralPolicy.approvalItemId &&
+      nextReferralPolicy.status === 'pending-executive-chairman-approval'
+    ) {
+      nextReferralPolicy = {
+        ...nextReferralPolicy,
+        status: 'approved-by-chairman',
+        approvedBy: 'executive-chairman',
+        approvedAtUtc: item.approvedAtUtc ?? generatedAtUtc,
+        updatedAtUtc: generatedAtUtc
+      };
+      actions.push({
+        type: 'referral-policy-marked-approved',
+        approvalId: item.id
+      });
+    }
   }
 
   return {
@@ -156,6 +180,7 @@ function processApprovedFollowthrough({
     approvalQueue: nextApprovalQueue,
     pipeline: nextPipeline,
     packetQueue: nextPacketQueue,
+    referralPolicy: nextReferralPolicy,
     boundary:
       'This agent only follows through on already-approved records. It does not approve items, contact prospects, send invoices, move assets, grant tokens, or make public commitments.'
   };

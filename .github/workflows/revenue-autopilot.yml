@@ -89,6 +89,7 @@ jobs:
           git add \
             public/executive-approval-queue.json \
             public/paid-promotion-ledger.json \
+            public/referral-partner-policy.json \
             public/revenue-cycle-status.json \
             public/sats-prospect-pipeline.json \
             public/service-outreach-packet-queue.json

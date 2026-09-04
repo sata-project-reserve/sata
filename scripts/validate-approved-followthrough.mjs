@@ -6,6 +6,7 @@ const approvalQueue = JSON.parse(readFileSync(join('public', 'executive-approval
 const pipeline = JSON.parse(readFileSync(join('public', 'sats-prospect-pipeline.json'), 'utf8'));
 const deliveryKit = JSON.parse(readFileSync(join('public', 'transparency-audit-delivery-kit.json'), 'utf8'));
 const packetQueue = JSON.parse(readFileSync(join('public', 'service-outreach-packet-queue.json'), 'utf8'));
+const referralPolicy = JSON.parse(readFileSync(join('public', 'referral-partner-policy.json'), 'utf8'));
 const findings = [];
 
 const idlePlan = applyApprovedFollowthrough({
@@ -13,6 +14,7 @@ const idlePlan = applyApprovedFollowthrough({
   pipeline,
   deliveryKit,
   packetQueue,
+  referralPolicy,
   generatedAtUtc: '2026-09-03T17:00:00.000Z'
 });
 if (idlePlan.mode !== 'approved-only-followthrough') {
@@ -28,10 +30,34 @@ if (idlePlan.actions.some((action) => !action.type.endsWith('-skipped'))) {
 const fixtureReviewApprovalId = 'prospect-review-batch-20260903-fixture-alpha-fixture-beta';
 const fixturePriorReviewApprovalId = 'prospect-review-batch-20260903-fixture-gamma-fixture-delta';
 const fixtureOutreachApprovalId = 'outreach-approval-20260903-fixture-gamma-fixture-delta';
+const fixtureReferralApprovalId = 'post-receipt-referral-partner-policy-fixture';
 const approvedQueue = {
   ...approvalQueue,
   items: [...(approvalQueue.items ?? [])]
 };
+approvedQueue.items.push({
+  id: fixtureReferralApprovalId,
+  title: 'Approve synthetic referral policy fixture',
+  category: 'promoter-offer',
+  status: 'approved-by-chairman',
+  createdAtUtc: '2026-09-03T17:00:00.000Z',
+  preparedBy: 'codex-ops',
+  summary: 'Synthetic validator fixture for referral policy follow-through.',
+  rationale: 'Synthetic validator fixture.',
+  proposedAction: 'Mark only the referral policy record approved after confirmed customer receipt rules remain intact.',
+  execution: 'manual-chairman-action',
+  requiredChairmanApproval: true,
+  riskReview: ['Synthetic validation only.'],
+  publicDisclosure: 'Sponsored/Paid Partnership or token-compensated referral relationship when applicable.',
+  evidence: [
+    {
+      type: 'policy-json',
+      url: 'public/referral-partner-policy.json'
+    }
+  ],
+  approvedBy: 'executive-chairman',
+  approvedAtUtc: '2026-09-03T17:00:00.000Z'
+});
 approvedQueue.items.push({
   id: fixtureReviewApprovalId,
   title: 'Review fixture approved follow-through batch',
@@ -148,6 +174,13 @@ const advanced = applyApprovedFollowthrough({
   pipeline: fixturePipeline,
   deliveryKit,
   packetQueue,
+  referralPolicy: {
+    ...referralPolicy,
+    approvalItemId: fixtureReferralApprovalId,
+    status: 'pending-executive-chairman-approval',
+    approvedBy: undefined,
+    approvedAtUtc: undefined
+  },
   generatedAtUtc: '2026-09-03T17:00:00.000Z'
 });
 
@@ -186,6 +219,31 @@ for (const id of ['fixture-gamma', 'fixture-delta']) {
 
 if (advanced.actions.some((action) => /contact|invoice|asset|token/i.test(action.type))) {
   findings.push('follow-through actions must not contact, invoice, move assets, or grant tokens');
+}
+
+if (advanced.referralPolicy?.status !== 'approved-by-chairman') {
+  findings.push('approved referral policy follow-through must mark policy approved');
+}
+if (advanced.referralPolicy?.approvedBy !== 'executive-chairman') {
+  findings.push('approved referral policy follow-through must preserve chairman approval');
+}
+if (
+  !advanced.actions.some(
+    (action) =>
+      action.type === 'referral-policy-marked-approved' &&
+      action.approvalId === fixtureReferralApprovalId
+  )
+) {
+  findings.push('approved referral policy follow-through must record an action');
+}
+if (
+  advanced.actions.some(
+    (action) =>
+      action.type === 'referral-policy-marked-approved' &&
+      action.approvalId !== fixtureReferralApprovalId
+  )
+) {
+  findings.push('referral policy follow-through must preserve the approval id');
 }
 
 if (findings.length > 0) {

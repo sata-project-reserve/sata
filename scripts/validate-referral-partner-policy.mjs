@@ -14,8 +14,14 @@ if (policy.mode !== 'draft-referral-partner-policy') {
 if (!/without upfront spend/i.test(policy.objective ?? '')) {
   findings.push('objective must prohibit upfront spend');
 }
-if (policy.status !== 'pending-executive-chairman-approval') {
-  findings.push('status must remain pending executive chairman approval');
+if (!['pending-executive-chairman-approval', 'approved-by-chairman'].includes(policy.status)) {
+  findings.push('status must be pending executive chairman approval or approved by chairman');
+}
+if (
+  policy.status === 'approved-by-chairman' &&
+  (policy.approvedBy !== 'executive-chairman' || !policy.approvedAtUtc)
+) {
+  findings.push('approved referral policy must include approvedBy and approvedAtUtc');
 }
 if (policy.compensationModel?.paymentTrigger !== 'Only after the referred customer pays and the receipt is confirmed.') {
   findings.push('compensationModel.paymentTrigger must require confirmed customer receipt');
@@ -70,8 +76,14 @@ const approvalItem = (approvalQueue.items ?? []).find((item) => item.id === poli
 if (!approvalItem) {
   findings.push(`approval queue missing ${policy.approvalItemId}`);
 } else {
-  if (approvalItem.status !== 'ready-for-chairman-review') {
+  if (
+    policy.status === 'pending-executive-chairman-approval' &&
+    approvalItem.status !== 'ready-for-chairman-review'
+  ) {
     findings.push(`${policy.approvalItemId}: approval item must be ready-for-chairman-review`);
+  }
+  if (policy.status === 'approved-by-chairman' && approvalItem.status !== 'approved-by-chairman') {
+    findings.push(`${policy.approvalItemId}: approved policy requires approved approval item`);
   }
   if (approvalItem.category !== 'promoter-offer') {
     findings.push(`${policy.approvalItemId}: approval item must use promoter-offer category`);

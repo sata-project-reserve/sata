@@ -3,6 +3,7 @@ import inboundLeadQueue from '@/public/inbound-service-lead-queue.json';
 import outreachPacketQueue from '@/public/service-outreach-packet-queue.json';
 import paidPromotionLedger from '@/public/paid-promotion-ledger.json';
 import prospectPipeline from '@/public/sats-prospect-pipeline.json';
+import referralPartnerPolicy from '@/public/referral-partner-policy.json';
 import revenuePlan from '@/public/revenue-operating-plan.json';
 import socialQueue from '@/public/social-agent-content-queue.json';
 import cycleStatus from '@/public/revenue-cycle-status.json';
@@ -235,6 +236,9 @@ export default function OperationsPage() {
         label: `Published @${socialQueue.account.handle} post ${post.id}`
       }))
   ];
+  const referralPolicyApprovalItem = approvalQueue.items.find(
+    (item) => item.id === referralPartnerPolicy.approvalItemId
+  );
   const revenueExecutionActions = [
     ...paidPromotionsAwaitingVerification.map((campaign) => ({
       id: `verify-${campaign.id}`,
@@ -741,6 +745,50 @@ export default function OperationsPage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Referral Partner Policy</h2>
+          <p>Draft post-receipt partner compensation policy awaiting chairman decision.</p>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Status</span>
+            <strong>{referralPartnerPolicy.status}</strong>
+          </div>
+          <div className="metric">
+            <span>Max Referral Share</span>
+            <strong>
+              {referralPartnerPolicy.compensationModel.maximumReferralSharePercentOfNetServiceRevenue}
+              %
+            </strong>
+          </div>
+          <div className="metric">
+            <span>Payment Trigger</span>
+            <strong>{referralPartnerPolicy.compensationModel.paymentTrigger}</strong>
+          </div>
+        </div>
+        <div className="warning-list">
+          <div className="proof-block">
+            <span>{referralPartnerPolicy.mode}</span>
+            <strong>{referralPartnerPolicy.approvalItemId}</strong>
+            <p>{referralPartnerPolicy.nextAction}</p>
+            <pre className="preview">{referralPartnerPolicy.partnerReplyTemplate}</pre>
+            <div className="command-list">
+              <span>Policy Check</span>
+              <code>npm run ops:referral-policy-check</code>
+              {referralPolicyApprovalItem ? (
+                <>
+                  <span>Approve</span>
+                  <code>{approvalCommand(referralPolicyApprovalItem)}</code>
+                  <span>Reject</span>
+                  <code>{rejectionCommand(referralPolicyApprovalItem)}</code>
+                </>
+              ) : null}
+            </div>
+          </div>
         </div>
       </section>
 

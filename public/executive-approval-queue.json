@@ -1074,6 +1074,32 @@
       ],
       "approvedBy": "executive-chairman",
       "approvedAtUtc": "2026-09-03T18:58:05.312Z"
+    },
+    {
+      "id": "post-receipt-referral-partner-policy",
+      "title": "Approve post-receipt referral partner policy",
+      "category": "promoter-offer",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-09-03T22:20:00.000Z",
+      "preparedBy": "codex-ops",
+      "summary": "Allow referral partner discussions only under a post-receipt model: no upfront spend, no fake engagement, and no compensation until a referred customer pays.",
+      "rationale": "The sats objective needs revenue channels that can scale without paying for attention before conversion. A post-receipt referral policy lets legitimate partners source service customers while keeping token grants, cash payments, invoices, and asset movement separately approved.",
+      "proposedAction": "Approve referral partner policy in referral-partner-policy.json. Partners may be offered only disclosed, post-receipt referral compensation capped by policy. Each partner-specific compensation proposal, token grant, cash payment, invoice, and asset movement still requires separate Executive Chairman approval after confirmed customer receipt.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "No upfront payment or token grant is authorized by this policy.",
+        "Referral compensation is considered only after confirmed customer revenue.",
+        "Sponsored/Paid Partnership or token-compensated relationship disclosure is required when compensation is expected.",
+        "Partners must not use fake engagement, bots, raids, investor targeting, guaranteed buyers, price predictions, or market-support claims."
+      ],
+      "publicDisclosure": "Sponsored/Paid Partnership or token-compensated referral relationship when applicable. No price guarantee, no redemption promise, and no market-support commitment.",
+      "evidence": [
+        {
+          "type": "policy-json",
+          "url": "public/referral-partner-policy.json"
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,53 @@
+{
+  "project": "SATA Reserve Token",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-09-03T22:20:00.000Z",
+  "mode": "draft-referral-partner-policy",
+  "approvalItemId": "post-receipt-referral-partner-policy",
+  "objective": "Use disclosed referral partners to generate paid transparency-service revenue without upfront spend, abusive promotion, price claims, or autonomous token grants.",
+  "status": "pending-executive-chairman-approval",
+  "eligibleWork": [
+    "Introduce a crypto team that wants a transparency audit, report setup, or proof dashboard.",
+    "Share approved factual SATA service copy with Sponsored/Paid Partnership or token-compensated disclosure when compensation is expected.",
+    "Send inbound leads to the published intake form or a recorded evidence channel."
+  ],
+  "compensationModel": {
+    "paymentTrigger": "Only after the referred customer pays and the receipt is confirmed.",
+    "defaultReferralSharePercentOfNetServiceRevenue": 10,
+    "maximumReferralSharePercentOfNetServiceRevenue": 20,
+    "tokenCompensationAllowed": "proposal-only",
+    "cashCompensationAllowed": "proposal-only",
+    "requiresSeparateGrantApproval": true,
+    "notes": "Any SATA token grant must have a max token amount, recipient address, disclosure text, receipt evidence, and Executive Chairman approval before transfer."
+  },
+  "requiredPartnerDisclosure": "Sponsored/Paid Partnership or token-compensated referral relationship. No price guarantee, no redemption promise, no market-support commitment, and liquidity can be thin and volatile.",
+  "prohibitedPartnerClaims": [
+    "guaranteed buyers",
+    "fake engagement",
+    "bots",
+    "raids",
+    "price prediction",
+    "price guarantee",
+    "redemption promise",
+    "market-support commitment",
+    "investment return"
+  ],
+  "requiredEvidenceBeforeCompensation": [
+    "Partner identity and contact record.",
+    "Original referral source and timestamp.",
+    "Customer request for paid service.",
+    "Chairman-approved invoice.",
+    "Confirmed customer receipt.",
+    "Proposed referral compensation amount and asset.",
+    "Public or private disclosure evidence, depending on channel."
+  ],
+  "approvalGates": [
+    "Executive Chairman approves the referral policy before any partner offer is made.",
+    "Executive Chairman approves each partner-specific compensation proposal.",
+    "Executive Chairman approves any token grant, cash payment, or asset movement.",
+    "No referral compensation is recorded as earned until customer payment is confirmed."
+  ],
+  "partnerReplyTemplate": "SATA can consider referral compensation only for legitimate paid service referrals. Any relationship must be disclosed, no price or buyer claims are allowed, and compensation is considered only after a referred customer pays. Send the project, contact path, expected role, requested compensation model, and examples of prior work for chairman review.",
+  "nextAction": "Submit this policy to Executive Chairman review before offering percentage-based compensation to promoters or referral partners.",
+  "boundary": "This draft policy does not approve any partner, post, token grant, cash payment, transaction, invoice, or asset movement."
+}

@@ -61,6 +61,9 @@ jobs:
       - name: Validate paid promotion ledger
         run: npm run ops:paid-promotion-check
 
+      - name: Validate referral partner policy
+        run: npm run ops:referral-policy-check
+
       - name: Validate inbound service leads
         run: npm run ops:inbound-lead-check
 

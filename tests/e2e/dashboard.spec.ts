@@ -122,6 +122,14 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     })
   ).toBeVisible();
   await expect(page.getByText('Confirmed Promo Receipts')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Referral Partner Policy' })).toBeVisible();
+  const referralPolicyBlock = page
+    .locator('.proof-block')
+    .filter({ hasText: 'draft-referral-partner-policy' });
+  await expect(
+    referralPolicyBlock.getByText('post-receipt-referral-partner-policy', { exact: true })
+  ).toBeVisible();
+  await expect(referralPolicyBlock.getByText('npm run ops:referral-policy-check')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Manual Outreach Packets' })).toBeVisible();
   await expect(page.getByText('Showing 5 of 30 ready packets.')).toBeVisible();
   await expect(

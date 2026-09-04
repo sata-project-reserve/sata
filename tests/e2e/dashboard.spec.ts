@@ -73,6 +73,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByText('Due Follow-Ups')).toBeVisible();
   await expect(page.getByText('Paid Campaigns')).toBeVisible();
   await expect(page.getByText('Promo Verification')).toBeVisible();
+  await expect(page.getByText('Promo Measurement')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Target Math' })).toBeVisible();
   await expect(page.getByText('BTC/USD 100,000')).toBeVisible();
   await expect(page.getByText('Deals To 1B Sats').first()).toBeVisible();
@@ -89,6 +90,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByRole('heading', { name: 'Priority Action Queue' })).toBeVisible();
   await expect(page.getByText('#1 manual-outreach-send')).toBeVisible();
   await expect(page.getByText('#2 manual-outreach-send')).toBeVisible();
+  await expect(page.getByText('paid-promotion-conversion-measurement')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Social Review Queue' })).toBeVisible();
   await expect(page.getByText('No social posts are waiting for chairman review.')).toBeVisible();
   await expect(
@@ -108,14 +110,14 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByText('Diana Crypto @142C_')).toBeVisible();
   await expect(page.getByText('live-verified').first()).toBeVisible();
   await expect(page.getByText('Awaiting 24h Measurement')).toBeVisible();
-  await expect(
-    page.getByText(
-      'node scripts/paid-promotion-agent.mjs record-conversion --campaign diana-crypto-20260903-transparency-tweet --evidence "<24h-analytics-and-inquiry-log>" --profileViewLift "<profile-view-change-or-not-recorded>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0'
-    )
-  ).toBeVisible();
   const paidPromotionBlock = page
     .locator('.proof-block')
     .filter({ hasText: 'Diana Crypto @142C_' });
+  await expect(
+    paidPromotionBlock.getByText(
+      'node scripts/paid-promotion-agent.mjs record-conversion --campaign diana-crypto-20260903-transparency-tweet --evidence "<24h-analytics-and-inquiry-log>" --profileViewLift "<profile-view-change-or-not-recorded>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0'
+    )
+  ).toBeVisible();
   await expect(
     paidPromotionBlock.getByText('https://x.com/142C_/status/2086570576530010172', {
       exact: true

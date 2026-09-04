@@ -408,6 +408,10 @@ export default function OperationsPage() {
             <strong>{cycleStatus.funnel.paidPromotionsAwaitingVerification}</strong>
           </div>
           <div className="metric">
+            <span>Promo Measurement</span>
+            <strong>{cycleStatus.funnel.paidPromotionsAwaitingConversion}</strong>
+          </div>
+          <div className="metric">
             <span>Approved Posts</span>
             <strong>{cycleStatus.social.approvedPosts}</strong>
           </div>

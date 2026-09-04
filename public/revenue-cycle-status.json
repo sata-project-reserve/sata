@@ -22,6 +22,7 @@
     "readyOutreachPackets": 30,
     "paidPromotionCampaigns": 1,
     "paidPromotionsAwaitingVerification": 0,
+    "paidPromotionsAwaitingConversion": 1,
     "followUpDueProspects": 0
   },
   "social": {
@@ -337,8 +338,18 @@
       "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
     },
     {
-      "id": "approve-post-receipt-referral-partner-policy",
+      "id": "measure-paid-promotion-diana-crypto-20260903-transparency-tweet",
       "priority": 31,
+      "type": "paid-promotion-conversion-measurement",
+      "title": "Record 24-hour conversion measurement for paid promotion campaign diana-crypto-20260903-transparency-tweet.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/paid-promotion-agent.mjs record-conversion --campaign diana-crypto-20260903-transparency-tweet --evidence \"<24h-analytics-and-inquiry-log>\" --profileViewLift \"<profile-view-change-or-not-recorded>\" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0",
+      "evidenceRequired": "24-hour analytics, inquiry log, invoice request count, and confirmed receipt record if any.",
+      "boundary": "Measurement does not approve repeat spend, compensation, token grants, payment instructions, price claims, or market-support claims."
+    },
+    {
+      "id": "approve-post-receipt-referral-partner-policy",
+      "priority": 32,
       "type": "chairman-approval-needed",
       "title": "Chairman decision needed for post-receipt-referral-partner-policy: Approve post-receipt referral partner policy.",
       "requiredActor": "Executive Chairman",
@@ -348,7 +359,7 @@
     },
     {
       "id": "publish-social-btc-reserve-first-tranche",
-      "priority": 32,
+      "priority": 33,
       "type": "manual-social-publish",
       "title": "Manually publish approved post btc-reserve-first-tranche and record the live URL for attribution.",
       "requiredActor": "Executive Chairman or authorized human",

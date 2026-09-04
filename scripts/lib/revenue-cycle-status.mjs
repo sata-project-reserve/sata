@@ -46,6 +46,9 @@ export function buildRevenueCycleStatus({
   const paidPromotionsAwaitingVerification = paidPromotionCampaigns.filter((campaign) =>
     ['paid-awaiting-post', 'post-reported-unverified'].includes(campaign.status)
   );
+  const paidPromotionsAwaitingConversion = paidPromotionCampaigns.filter(
+    (campaign) => campaign.status === 'live-verified'
+  );
   const followUpAfterHours = Number(prospectPipeline.dailyCadence?.followUpAfterHours ?? 48);
   const generatedAt = new Date(env.SATA_REVENUE_CYCLE_GENERATED_AT_UTC ?? new Date().toISOString());
   const followUpDueProspects = prospects.filter((prospect) =>
@@ -74,6 +77,7 @@ export function buildRevenueCycleStatus({
     receiptsAwaitingAllocation,
     readyOutreachPackets,
     paidPromotionsAwaitingVerification,
+    paidPromotionsAwaitingConversion,
     followUpDueProspects,
     approvedPosts,
     livePostingEnabled,
@@ -108,6 +112,7 @@ export function buildRevenueCycleStatus({
       readyOutreachPackets: readyOutreachPackets.length,
       paidPromotionCampaigns: paidPromotionCampaigns.length,
       paidPromotionsAwaitingVerification: paidPromotionsAwaitingVerification.length,
+      paidPromotionsAwaitingConversion: paidPromotionsAwaitingConversion.length,
       followUpDueProspects: followUpDueProspects.length
     },
     social: {
@@ -178,6 +183,7 @@ function buildActionQueue({
   receiptsAwaitingAllocation,
   readyOutreachPackets,
   paidPromotionsAwaitingVerification,
+  paidPromotionsAwaitingConversion,
   followUpDueProspects,
   approvedPosts,
   livePostingEnabled,
@@ -254,6 +260,21 @@ function buildActionQueue({
         'Contact URL, message permalink, email record, or other durable send evidence.',
       boundary:
         'Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims.'
+    });
+  }
+
+  for (const campaign of paidPromotionsAwaitingConversion) {
+    actions.push({
+      id: `measure-paid-promotion-${campaign.id}`,
+      priority: actions.length + 1,
+      type: 'paid-promotion-conversion-measurement',
+      title: `Record 24-hour conversion measurement for paid promotion campaign ${campaign.id}.`,
+      requiredActor: 'Executive Chairman or authorized human',
+      command: `node scripts/paid-promotion-agent.mjs record-conversion --campaign ${campaign.id} --evidence "<24h-analytics-and-inquiry-log>" --profileViewLift "<profile-view-change-or-not-recorded>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0`,
+      evidenceRequired:
+        '24-hour analytics, inquiry log, invoice request count, and confirmed receipt record if any.',
+      boundary:
+        'Measurement does not approve repeat spend, compensation, token grants, payment instructions, price claims, or market-support claims.'
     });
   }
 

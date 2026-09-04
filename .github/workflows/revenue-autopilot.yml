@@ -61,6 +61,9 @@ jobs:
       - name: Validate paid promotion ledger
         run: npm run ops:paid-promotion-check
 
+      - name: Validate inbound service leads
+        run: npm run ops:inbound-lead-check
+
       - name: Validate revenue cycle status
         run: npm run ops:cycle-check
 

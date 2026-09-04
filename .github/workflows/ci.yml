@@ -86,6 +86,9 @@ jobs:
       - name: Validate sats invoice payment packets
         run: npm run ops:invoice-payment-check
 
+      - name: Validate inbound service leads
+        run: npm run ops:inbound-lead-check
+
       - name: Validate sats receipt allocation proposals
         run: npm run ops:receipt-check
 

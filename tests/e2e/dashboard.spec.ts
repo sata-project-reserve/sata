@@ -79,6 +79,13 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByRole('heading', { name: 'Attribution Links' })).toBeVisible();
   await expect(page.getByText('utm_source=x_142c').first()).toBeVisible();
   await expect(page.getByText('utm_source=manual_outreach').first()).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Inbound Lead Capture' })).toBeVisible();
+  await expect(page.getByText('Live Sources', { exact: true })).toBeVisible();
+  await expect(page.getByText('request-intake-fields')).toBeVisible();
+  await expect(page.getByText('Paid promotion from @142C_')).toBeVisible();
+  await expect(
+    page.getByText('node scripts/inbound-service-lead-agent.mjs record-lead').first()
+  ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Priority Action Queue' })).toBeVisible();
   await expect(page.getByText('#1 manual-outreach-send')).toBeVisible();
   await expect(page.getByText('#2 manual-outreach-send')).toBeVisible();
@@ -100,8 +107,13 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByRole('heading', { name: 'Paid Promotion Control' })).toBeVisible();
   await expect(page.getByText('Diana Crypto @142C_')).toBeVisible();
   await expect(page.getByText('live-verified').first()).toBeVisible();
+  const paidPromotionBlock = page
+    .locator('.proof-block')
+    .filter({ hasText: 'Diana Crypto @142C_' });
   await expect(
-    page.getByText('https://x.com/142C_/status/2086570576530010172', { exact: true })
+    paidPromotionBlock.getByText('https://x.com/142C_/status/2086570576530010172', {
+      exact: true
+    })
   ).toBeVisible();
   await expect(page.getByText('Confirmed Promo Receipts')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Manual Outreach Packets' })).toBeVisible();

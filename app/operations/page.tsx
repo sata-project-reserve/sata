@@ -1,4 +1,5 @@
 import approvalQueue from '@/public/executive-approval-queue.json';
+import inboundLeadQueue from '@/public/inbound-service-lead-queue.json';
 import outreachPacketQueue from '@/public/service-outreach-packet-queue.json';
 import paidPromotionLedger from '@/public/paid-promotion-ledger.json';
 import prospectPipeline from '@/public/sats-prospect-pipeline.json';
@@ -21,6 +22,22 @@ const PUBLIC_BASE_URL = 'https://sata-project-reserve.github.io/sata';
 type ApprovalItem = (typeof approvalQueue.items)[number];
 type Prospect = (typeof prospectPipeline.prospects)[number];
 type SocialPost = (typeof socialQueue.posts)[number];
+type InboundLead = {
+  id: string;
+  status: string;
+  sourceType: string;
+  sourceId: string;
+  contactHandle: string;
+  publicProfileUrl: string;
+  projectUrl: string;
+  requestedOfferId: string;
+};
+type InboundSource = {
+  type: string;
+  id: string;
+  url: string | undefined;
+  label: string;
+};
 
 const PROSPECT_STAGES = [
   'identified',
@@ -148,6 +165,10 @@ function recordPublishedSocialPostCommand(post: SocialPost) {
   return `npm run social:agent -- record-published --post ${post.id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>"`;
 }
 
+function recordInboundLeadCommand(source: InboundSource) {
+  return `node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sourceType ${source.type} --sourceId ${source.id} --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --evidence "<reply-or-dm-evidence>" --customerAskedForInvoice false`;
+}
+
 export default function OperationsPage() {
   const approvalCounts = countByStatus(approvalQueue.items);
   const prospectCounts = countByStage(prospectPipeline.prospects);
@@ -184,6 +205,28 @@ export default function OperationsPage() {
   const paidPromotionsAwaitingVerification = paidPromotionLedger.campaigns.filter((campaign) =>
     ['paid-awaiting-post', 'post-reported-unverified'].includes(campaign.status)
   );
+  const inboundLeads = inboundLeadQueue.leads as InboundLead[];
+  const inboundInvoiceRequests = inboundLeads.filter(
+    (lead) => lead.status === 'invoice-requested-needs-chairman-review'
+  );
+  const inboundSources: InboundSource[] = [
+    ...paidPromotionLedger.campaigns
+      .filter((campaign) => ['live-verified', 'completed'].includes(campaign.status))
+      .map((campaign) => ({
+        type: 'paid-promotion-reply',
+        id: campaign.id,
+        url: campaign.verifiedPostUrl ?? campaign.reportedPostUrl,
+        label: `Paid promotion from @${campaign.promoter.handle}`
+      })),
+    ...socialQueue.posts
+      .filter((post) => post.status === 'published')
+      .map((post) => ({
+        type: 'published-social-reply',
+        id: post.id,
+        url: post.postUrl,
+        label: `Published @${socialQueue.account.handle} post ${post.id}`
+      }))
+  ];
   const revenueExecutionActions = [
     ...paidPromotionsAwaitingVerification.map((campaign) => ({
       id: `verify-${campaign.id}`,
@@ -489,6 +532,57 @@ export default function OperationsPage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Inbound Lead Capture</h2>
+          <p>Record replies and DMs from live attention without bypassing invoice approval.</p>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Live Sources</span>
+            <strong>{inboundSources.length}</strong>
+          </div>
+          <div className="metric">
+            <span>Open Inbound Leads</span>
+            <strong>{inboundLeads.length}</strong>
+          </div>
+          <div className="metric">
+            <span>Invoice Requests Needing Review</span>
+            <strong>{inboundInvoiceRequests.length}</strong>
+          </div>
+        </div>
+        <div className="notice">
+          <strong>Terminal Plan</strong>
+          <span>Run npm run ops:inbound-lead-plan for live sources and compliant reply copy.</span>
+        </div>
+        <div className="warning-list">
+          {inboundLeadQueue.replyTemplates.map((template) => (
+            <div className="proof-block" key={template.id}>
+              <span>{template.id}</span>
+              <strong>{template.purpose}</strong>
+              <pre className="preview">{template.text}</pre>
+            </div>
+          ))}
+          {inboundSources.slice(0, 5).map((source) => (
+            <div className="proof-block" key={`${source.type}-${source.id}`}>
+              <span>{source.type}</span>
+              <strong>{source.label}</strong>
+              <code>{source.url}</code>
+              <div className="command-list">
+                <span>Record Inbound Lead</span>
+                <code>{recordInboundLeadCommand(source)}</code>
+              </div>
+            </div>
+          ))}
+          {inboundSources.length === 0 ? (
+            <div className="proof-block">
+              <span>waiting</span>
+              <strong>No live attribution source is ready for inbound lead capture.</strong>
+            </div>
+          ) : null}
         </div>
       </section>
 

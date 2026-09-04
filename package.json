@@ -59,6 +59,8 @@
     "ops:invoice-request-plan": "node scripts/sats-invoice-request-agent.mjs plan",
     "ops:invoice-payment-check": "node scripts/validate-sats-invoice-payment-packets.mjs",
     "ops:invoice-payment-plan": "node scripts/sats-invoice-payment-packet-agent.mjs plan",
+    "ops:inbound-lead-check": "node scripts/validate-inbound-service-leads.mjs",
+    "ops:inbound-lead-plan": "node scripts/inbound-service-lead-agent.mjs plan",
     "ops:receipt-check": "node scripts/validate-sats-receipt-allocation-proposals.mjs",
     "ops:receipt-plan": "node scripts/sats-receipt-allocation-agent.mjs plan",
     "ops:prospect-check": "node scripts/validate-sats-prospect-pipeline.mjs",

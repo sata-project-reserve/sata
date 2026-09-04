@@ -1,0 +1,63 @@
+{
+  "project": "SATA Reserve Token",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-09-03T22:10:00.000Z",
+  "mode": "inbound-service-lead-control",
+  "objective": "Capture inbound replies and DMs from social or paid attention so legitimate service interest can become chairman-reviewed invoice requests and confirmed BTC reserve sats.",
+  "intakeUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml",
+  "sourceTypes": [
+    "paid-promotion-reply",
+    "published-social-reply",
+    "x-dm",
+    "github-issue",
+    "manual-referral"
+  ],
+  "leadStatuses": [
+    "needs-intake",
+    "needs-chairman-review",
+    "invoice-requested-needs-chairman-review",
+    "closed-invalid"
+  ],
+  "policy": {
+    "chairmanApprovalRequiredBeforeInvoice": true,
+    "paymentInstructionsAllowed": false,
+    "assetMovementAllowed": false,
+    "requiredBoundary": "No payment address, exact-sats invoice, paid work, token grant, public commitment, or asset movement before Executive Chairman approval.",
+    "prohibitedClaims": [
+      "price guarantee",
+      "redemption promise",
+      "market-support commitment",
+      "guaranteed buyers",
+      "fake engagement",
+      "bots",
+      "raids",
+      "investment return"
+    ]
+  },
+  "requiredLeadFields": [
+    "id",
+    "sourceType",
+    "sourceId",
+    "contactHandle",
+    "publicProfileUrl",
+    "projectUrl",
+    "requestedOfferId",
+    "evidence",
+    "status"
+  ],
+  "replyTemplates": [
+    {
+      "id": "request-intake-fields",
+      "purpose": "Ask an inbound lead for the minimum fields required to qualify paid transparency-audit work.",
+      "text": "Thanks for reaching out. If you want SATA to review transparency claims, send the project name, token or contract address, public website/X link, and the specific authority, liquidity, reserve, or disclosure claims you want checked. Starter audit is $50. Any exact BTC invoice and payment instructions require Executive Chairman approval first."
+    },
+    {
+      "id": "invoice-request-boundary",
+      "purpose": "Acknowledge an invoice request without sending payment instructions.",
+      "text": "Got it. I can prepare the scope and exact-sats invoice packet for Executive Chairman approval. Payment instructions are not sent until approved. The work is a public-evidence transparency audit only: no price guarantee, no redemption promise, no investor targeting, and no market-support commitment."
+    }
+  ],
+  "leads": [],
+  "nextAction": "When a social reply or DM shows service interest, record the source evidence, send only the intake-fields reply, and wait for chairman review before invoice preparation.",
+  "boundary": "This queue records inbound interest and compliant replies only. It does not approve invoices, payment instructions, paid work, token grants, custody changes, public commitments, or asset movement."
+}

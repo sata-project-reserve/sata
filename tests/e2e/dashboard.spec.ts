@@ -84,6 +84,19 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByText('#2 manual-outreach-send')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Social Review Queue' })).toBeVisible();
   await expect(page.getByText('No social posts are waiting for chairman review.')).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Approved Social Publishing Queue' })
+  ).toBeVisible();
+  const approvedSocialBlock = page
+    .locator('.proof-block')
+    .filter({ hasText: 'btc-reserve-first-tranche' })
+    .filter({ hasText: 'Record Published URL' });
+  await expect(approvedSocialBlock.getByText('btc-reserve-first-tranche', { exact: true })).toBeVisible();
+  await expect(
+    approvedSocialBlock.getByText(
+      'npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>"'
+    )
+  ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Paid Promotion Control' })).toBeVisible();
   await expect(page.getByText('Diana Crypto @142C_')).toBeVisible();
   await expect(page.getByText('live-verified').first()).toBeVisible();

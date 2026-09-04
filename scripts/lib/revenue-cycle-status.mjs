@@ -401,10 +401,10 @@ function buildActionQueue({
       id: `publish-social-${approvedPosts[0].id}`,
       priority: actions.length + 1,
       type: 'manual-social-publish',
-      title: `Manually publish approved post ${approvedPosts[0].id}, or enable approved-only X credentials after chairman approval.`,
+      title: `Manually publish approved post ${approvedPosts[0].id} and record the live URL for attribution.`,
       requiredActor: 'Executive Chairman or authorized human',
-      command: 'npm run social:agent:dry-run',
-      evidenceRequired: 'Published post URL or approved-only posting credentials.',
+      command: `npm run social:agent -- record-published --post ${approvedPosts[0].id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>"`,
+      evidenceRequired: 'Published @SATAReserve post URL plus screenshot or exported text.',
       boundary: 'Only chairman-approved factual posts may be published.'
     });
   }

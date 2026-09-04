@@ -31,6 +31,9 @@ switch (command) {
   case 'reject-post':
     await rejectPost();
     break;
+  case 'record-published':
+    await recordPublished();
+    break;
   case 'dry-run-post-next-approved':
     await postNextApproved({ dryRun: true });
     break;
@@ -39,7 +42,7 @@ switch (command) {
     break;
   default:
     throw new Error(
-      `Unknown x-social-agent command: ${command}. Use plan, draft-report-update, approve-post, reject-post, dry-run-post-next-approved, or post-next-approved.`
+      `Unknown x-social-agent command: ${command}. Use plan, draft-report-update, approve-post, reject-post, record-published, dry-run-post-next-approved, or post-next-approved.`
     );
 }
 
@@ -148,6 +151,27 @@ async function rejectPost() {
   console.log(`Rejected social post ${postId}.`);
 }
 
+async function recordPublished() {
+  const postId = cleanLine(options.post);
+  const postUrl = normalizeXPostUrl(options.postUrl);
+  const evidence = cleanLine(options.evidence);
+  if (!evidence) {
+    throw new Error('Recording a published post requires --evidence.');
+  }
+  const post = findPost(postId);
+  if (post.status !== 'approved') {
+    throw new Error(`${postId}: only approved posts can be recorded as published.`);
+  }
+  validatePostForPublication(post);
+  markPublished(post, postUrl, {
+    source: 'manual-owner-record',
+    evidence
+  });
+  await writeJson(QUEUE_PATH, queue);
+  await writeJson(MONITORING_PATH, monitoring);
+  console.log(`Recorded published social post ${postId}: ${post.postUrl}`);
+}
+
 async function postNextApproved({ dryRun }) {
   if (!assertPostingMode()) return;
   const posts = approvedPosts().slice(0, MAX_POSTS_PER_RUN);
@@ -178,7 +202,9 @@ async function postNextApproved({ dryRun }) {
     }
 
     const published = await createPost(post);
-    markPublished(post, published.data.id);
+    markPublished(post, `https://x.com/${queue.account.handle}/status/${published.data.id}`, {
+      source: 'x-social-agent'
+    });
     await writeJson(QUEUE_PATH, queue);
     await writeJson(MONITORING_PATH, monitoring);
     console.log(`Published ${post.id}: ${post.postUrl}`);
@@ -233,6 +259,31 @@ function validatePostForPublication(post) {
   }
 }
 
+function normalizeXPostUrl(value) {
+  const raw = cleanLine(value);
+  if (!raw) throw new Error('Missing --postUrl value.');
+  let url;
+  try {
+    url = new URL(raw);
+  } catch {
+    throw new Error(`Invalid X post URL: ${raw}`);
+  }
+  if (!['x.com', 'twitter.com'].includes(url.hostname.toLowerCase())) {
+    throw new Error(`Post URL must use x.com or twitter.com: ${raw}`);
+  }
+  const [, handle, statusLabel, statusId] = url.pathname.split('/');
+  if (
+    handle?.toLowerCase() !== queue.account.handle.toLowerCase() ||
+    statusLabel !== 'status' ||
+    !/^\d{8,}$/.test(statusId ?? '')
+  ) {
+    throw new Error(
+      `Post URL must match https://x.com/${queue.account.handle}/status/<numeric-id>.`
+    );
+  }
+  return `https://x.com/${queue.account.handle}/status/${statusId}`;
+}
+
 async function createPost(post) {
   const response = await fetch(X_POST_URL, {
     method: 'POST',
@@ -255,11 +306,12 @@ async function createPost(post) {
   return body;
 }
 
-function markPublished(post, postId) {
+function markPublished(post, postUrl, { source, evidence } = {}) {
   const publishedAtUtc = new Date().toISOString();
   post.status = 'published';
   post.publishedAtUtc = publishedAtUtc;
-  post.postUrl = `https://x.com/${queue.account.handle}/status/${postId}`;
+  post.postUrl = postUrl;
+  if (evidence) post.publicationEvidence = evidence;
   monitoring.posts ??= [];
   monitoring.posts.push({
     id: post.id,
@@ -267,8 +319,15 @@ function markPublished(post, postId) {
     status: 'published',
     publishedAtUtc,
     postUrl: post.postUrl,
-    source: 'x-social-agent',
-    observations: []
+    source,
+    observations: evidence
+      ? [
+          {
+            observedAtUtc: publishedAtUtc,
+            notes: evidence
+          }
+        ]
+      : []
   });
 }
 

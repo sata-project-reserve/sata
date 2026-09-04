@@ -144,6 +144,10 @@ function rejectSocialPostCommand(post: SocialPost) {
   return `npm run social:agent -- reject-post --post ${post.id} --confirmChairmanRejection "I am Executive Chairman and reject social post ${post.id}"`;
 }
 
+function recordPublishedSocialPostCommand(post: SocialPost) {
+  return `npm run social:agent -- record-published --post ${post.id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>"`;
+}
+
 export default function OperationsPage() {
   const approvalCounts = countByStatus(approvalQueue.items);
   const prospectCounts = countByStage(prospectPipeline.prospects);
@@ -168,6 +172,7 @@ export default function OperationsPage() {
   const socialPostsReadyForReview = socialQueue.posts.filter(
     (post) => post.status === 'ready-for-review'
   );
+  const approvedSocialPosts = socialQueue.posts.filter((post) => post.status === 'approved');
   const readyOutreachPackets = outreachPacketQueue.packets.filter(
     (packet) => packet.status === 'ready-for-manual-send'
   );
@@ -539,6 +544,39 @@ export default function OperationsPage() {
               </div>
             ))
           )}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Approved Social Publishing Queue</h2>
+          <p>Approved posts waiting for manual publication or approved-only X credentials.</p>
+        </div>
+        <div className="warning-list">
+          {approvedSocialPosts.length === 0 ? (
+            <div className="proof-block">
+              <span>clear</span>
+              <strong>No approved social posts are waiting for publication.</strong>
+            </div>
+          ) : (
+            approvedSocialPosts.slice(0, 5).map((post) => (
+              <div className="proof-block" key={post.id}>
+                <span>{post.type}</span>
+                <strong>{post.id}</strong>
+                <pre className="preview">{post.text}</pre>
+                <div className="command-list">
+                  <span>Record Published URL</span>
+                  <code>{recordPublishedSocialPostCommand(post)}</code>
+                </div>
+              </div>
+            ))
+          )}
+          {approvedSocialPosts.length > 5 ? (
+            <div className="notice">
+              <strong>Backlog</strong>
+              <span>{approvedSocialPosts.length - 5} additional approved posts are queued.</span>
+            </div>
+          ) : null}
         </div>
       </section>
 

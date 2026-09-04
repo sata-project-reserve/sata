@@ -340,10 +340,10 @@
       "id": "publish-social-btc-reserve-first-tranche",
       "priority": 31,
       "type": "manual-social-publish",
-      "title": "Manually publish approved post btc-reserve-first-tranche, or enable approved-only X credentials after chairman approval.",
+      "title": "Manually publish approved post btc-reserve-first-tranche and record the live URL for attribution.",
       "requiredActor": "Executive Chairman or authorized human",
-      "command": "npm run social:agent:dry-run",
-      "evidenceRequired": "Published post URL or approved-only posting credentials.",
+      "command": "npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl \"https://x.com/SATAReserve/status/<numeric-id>\" --evidence \"<live-post-screenshot-or-exported-text>\"",
+      "evidenceRequired": "Published @SATAReserve post URL plus screenshot or exported text.",
       "boundary": "Only chairman-approved factual posts may be published."
     }
   ],

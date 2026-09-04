@@ -3,6 +3,9 @@ import { join } from 'node:path';
 
 const queuePath = join('public', 'social-agent-content-queue.json');
 const queue = JSON.parse(readFileSync(queuePath, 'utf8'));
+const monitoring = JSON.parse(
+  readFileSync(join('public', 'social-agent-monitoring-log.json'), 'utf8')
+);
 const agent = readFileSync(join('scripts', 'x-social-agent.mjs'), 'utf8');
 
 const bannedPatterns = [
@@ -43,13 +46,22 @@ if (!allowedModes.includes(queue.mode)) {
 for (const required of [
   /case 'approve-post'/,
   /case 'reject-post'/,
+  /case 'record-published'/,
   /I am Executive Chairman and approve social post/,
-  /I am Executive Chairman and reject social post/
+  /I am Executive Chairman and reject social post/,
+  /Post URL must match https:\/\/x\.com\/\$\{queue\.account\.handle\}\/status\/<numeric-id>\./,
+  /manual-owner-record/
 ]) {
   if (!required.test(agent)) {
     findings.push(`x-social-agent approval flow missing ${required}`);
   }
 }
+
+const monitoringPostsById = new Map((monitoring.posts ?? []).map((post) => [post.id, post]));
+const xStatusUrlPattern = new RegExp(
+  `^https://x\\.com/${escapeRegExp(queue.account.handle)}/status/\\d{8,}$`,
+  'i'
+);
 
 for (const post of queue.posts ?? []) {
   if (!post.id || !post.text) {
@@ -82,6 +94,20 @@ for (const post of queue.posts ?? []) {
   ) {
     findings.push(`${post.id}: contains a non-approved URL`);
   }
+  if (post.status === 'published') {
+    if (!xStatusUrlPattern.test(post.postUrl ?? '')) {
+      findings.push(
+        `${post.id}: published posts must include a canonical @${queue.account.handle} X status URL`
+      );
+    }
+    if (!post.publishedAtUtc) {
+      findings.push(`${post.id}: published posts must include publishedAtUtc`);
+    }
+    const monitoredPost = monitoringPostsById.get(post.id);
+    if (!monitoredPost || monitoredPost.postUrl !== post.postUrl) {
+      findings.push(`${post.id}: published post must have matching monitoring-log entry`);
+    }
+  }
 }
 
 if (findings.length > 0) {
@@ -91,3 +117,7 @@ if (findings.length > 0) {
 }
 
 console.log('Social content check passed: queued drafts follow SATA posting rules.');
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}

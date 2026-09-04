@@ -65,8 +65,32 @@ for (const route of serviceRoutes) {
 }
 
 for (const route of serviceRoutes.slice(1)) {
-  if (!auditPage.includes(`href="${route.path}"`)) {
+  if (!auditPage.includes(`publicPath('${route.path}')`)) {
     findings.push(`/services/transparency-audit: offer menu must link to ${route.path}`);
+  }
+}
+
+const publicPathHelper = readText(join('lib', 'public-path.ts'));
+const nextConfig = readText(join('next.config.ts'));
+if (!/NEXT_PUBLIC_SITE_BASE_PATH/.test(publicPathHelper)) {
+  findings.push('lib/public-path.ts must read NEXT_PUBLIC_SITE_BASE_PATH');
+}
+if (!/GITHUB_PAGES/.test(nextConfig) || !/NEXT_PUBLIC_SITE_BASE_PATH/.test(nextConfig)) {
+  findings.push('next.config.ts must expose NEXT_PUBLIC_SITE_BASE_PATH for GitHub Pages builds');
+}
+
+const publicRouteSources = [
+  join('app', 'operations', 'page.tsx'),
+  join('app', 'services', '_components', 'high-value-service-page.tsx'),
+  join('app', 'services', 'transparency-audit', 'page.tsx')
+];
+for (const sourcePath of publicRouteSources) {
+  const source = readText(sourcePath);
+  if (/href="\//.test(source)) {
+    findings.push(`${sourcePath}: root-relative hrefs must use publicPath() for GitHub Pages`);
+  }
+  if (/src="\//.test(source)) {
+    findings.push(`${sourcePath}: root-relative image src values must use publicPath() for GitHub Pages`);
   }
 }
 

@@ -8,6 +8,7 @@ import revenuePlan from '@/public/revenue-operating-plan.json';
 import socialQueue from '@/public/social-agent-content-queue.json';
 import cycleStatus from '@/public/revenue-cycle-status.json';
 import report from '@/public/transparency/latest.json';
+import { publicPath } from '@/lib/public-path';
 
 export const metadata = {
   title: 'SATA Operations Queue',
@@ -330,19 +331,19 @@ export default function OperationsPage() {
             outreach, invoices, paid promotion, token grants, transactions, and asset movement.
           </p>
           <div className="inline-actions">
-            <a className="button-link" href="/transparency">
+            <a className="button-link" href={publicPath('/transparency')}>
               Transparency
             </a>
-            <a className="button-link" href="/services/transparency-audit">
+            <a className="button-link" href={publicPath('/services/transparency-audit')}>
               Audit Service
             </a>
-            <a className="button-link" href="/executive-approval-queue.json">
+            <a className="button-link" href={publicPath('/executive-approval-queue.json')}>
               Approval JSON
             </a>
-            <a className="button-link" href="/sats-prospect-pipeline.json">
+            <a className="button-link" href={publicPath('/sats-prospect-pipeline.json')}>
               Prospect JSON
             </a>
-            <a className="button-link" href="/service-outreach-packet-queue.json">
+            <a className="button-link" href={publicPath('/service-outreach-packet-queue.json')}>
               Outreach Queue
             </a>
           </div>

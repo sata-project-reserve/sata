@@ -160,3 +160,6 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Validate built public paths
+        run: npm run ops:built-public-paths-check

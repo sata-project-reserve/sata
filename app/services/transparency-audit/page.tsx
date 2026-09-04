@@ -4,6 +4,7 @@ import report from '@/public/transparency/latest.json';
 import revenuePlan from '@/public/revenue-operating-plan.json';
 import prospectPipeline from '@/public/sats-prospect-pipeline.json';
 import deliveryKit from '@/public/transparency-audit-delivery-kit.json';
+import { publicPath } from '@/lib/public-path';
 
 export const metadata = {
   title: 'SATA Transparency Audit Service',
@@ -70,7 +71,7 @@ export default function TransparencyAuditServicePage() {
         </div>
         <div className="service-proof">
           <Image
-            src="/mainnet/sata-image.png"
+            src={publicPath('/mainnet/sata-image.png')}
             alt="SATA reserve token mark"
             className="service-mark"
             width={180}
@@ -127,25 +128,25 @@ export default function TransparencyAuditServicePage() {
           <a className="button-link" href={deliveryKit.intakeUrl}>
             Open Audit Intake
           </a>
-          <a className="button-link" href="/transparency-audit-delivery-kit.json">
+          <a className="button-link" href={publicPath('/transparency-audit-delivery-kit.json')}>
             View Intake Schema
           </a>
           <a className="button-link" href={prospectPipeline.prospectIntakeUrl}>
             Suggest Prospect
           </a>
-          <a className="button-link" href="/transparency-audit-delivery-kit.json">
+          <a className="button-link" href={publicPath('/transparency-audit-delivery-kit.json')}>
             View Delivery Kit
           </a>
-          <a className="button-link" href="/sats-prospect-pipeline.json">
+          <a className="button-link" href={publicPath('/sats-prospect-pipeline.json')}>
             View Prospect Pipeline
           </a>
-          <a className="button-link" href="/operations">
+          <a className="button-link" href={publicPath('/operations')}>
             View Operations
           </a>
-          <a className="button-link" href="/sats-invoice-queue.json">
+          <a className="button-link" href={publicPath('/sats-invoice-queue.json')}>
             View Invoice Queue
           </a>
-          <a className="button-link" href="/revenue-operating-plan.json">
+          <a className="button-link" href={publicPath('/revenue-operating-plan.json')}>
             View Operating Plan
           </a>
         </div>
@@ -166,7 +167,7 @@ export default function TransparencyAuditServicePage() {
             <span>{setupOffer?.label}</span>
             <strong>${setupOffer?.priceUsd}</strong>
             <p>{setupOffer?.deliverable}</p>
-            <a className="button-link" href="/services/transparency-report-setup">
+            <a className="button-link" href={publicPath('/services/transparency-report-setup')}>
               View Setup
             </a>
           </article>
@@ -174,7 +175,7 @@ export default function TransparencyAuditServicePage() {
             <span>{dashboardOffer?.label}</span>
             <strong>${dashboardOffer?.priceUsd}</strong>
             <p>{dashboardOffer?.deliverable}</p>
-            <a className="button-link" href="/services/full-proof-dashboard">
+            <a className="button-link" href={publicPath('/services/full-proof-dashboard')}>
               View Dashboard
             </a>
           </article>

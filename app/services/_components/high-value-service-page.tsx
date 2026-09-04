@@ -4,6 +4,7 @@ import report from '@/public/transparency/latest.json';
 import revenuePlan from '@/public/revenue-operating-plan.json';
 import prospectPipeline from '@/public/sats-prospect-pipeline.json';
 import deliveryKit from '@/public/transparency-audit-delivery-kit.json';
+import { publicPath } from '@/lib/public-path';
 
 type OfferId = 'transparency-report-setup' | 'full-proof-dashboard';
 type RevenueStream = (typeof revenuePlan.revenueStreams)[number];
@@ -51,7 +52,7 @@ export function HighValueServicePage({
             <a className="button-link" href={deliveryKit.intakeUrl}>
               {primaryAction}
             </a>
-            <a className="button-link" href="/services/transparency-audit">
+            <a className="button-link" href={publicPath('/services/transparency-audit')}>
               Start With Audit
             </a>
             <a className="button-link" href="https://x.com/SATAReserve">
@@ -61,7 +62,7 @@ export function HighValueServicePage({
         </div>
         <div className="service-proof">
           <Image
-            src="/mainnet/sata-image.png"
+            src={publicPath('/mainnet/sata-image.png')}
             alt="SATA reserve token mark"
             className="service-mark"
             width={180}

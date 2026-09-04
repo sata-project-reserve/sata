@@ -253,6 +253,12 @@ jobs:
         env:
           GITHUB_PAGES: 'true'
 
+      - name: Validate GitHub Pages public paths
+        if: steps.report_commit.outputs.deploy == 'true'
+        run: npm run ops:built-public-paths-check
+        env:
+          GITHUB_PAGES: 'true'
+
       - name: Upload report artifact
         if: steps.report_commit.outputs.deploy == 'true'
         uses: actions/upload-artifact@v4

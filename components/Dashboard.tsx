@@ -13,6 +13,7 @@ import {
 import { PUBLIC_KEYS } from '@/lib/solana/public-keys';
 import { buildMetadataJson } from '@/lib/metadata/metadata';
 import { buildLaunchManifest, buildLaunchReport } from '@/lib/manifest/manifest';
+import { publicPath } from '@/lib/public-path';
 import {
   buildLiquidityPlan,
   buildPoolCreationPreview,
@@ -1758,7 +1759,7 @@ function TokenForm({
         {value.imageUri.includes('sata-default.svg') && (
           <Image
             className="token-image-preview"
-            src="/sata-default.svg"
+            src={publicPath('/sata-default.svg')}
             alt="SATA token preview"
             width={96}
             height={96}

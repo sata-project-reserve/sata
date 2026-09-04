@@ -67,7 +67,7 @@ export function buildRevenueCycleStatus({
     blockers.push('No confirmed direct-reserve BTC receipt is recorded.');
   if (approvedPosts.length > 0 && !livePostingEnabled) {
     blockers.push(
-      'Approved social content exists, but live X posting credentials are not enabled in this runtime.'
+      'Approved social content exists; publish manually and record the live URL, or enable approved-only X credentials.'
     );
   }
 

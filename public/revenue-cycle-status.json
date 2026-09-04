@@ -34,7 +34,7 @@
   "blockers": [
     "No chairman-approved exact-sats invoice is ready to send.",
     "No confirmed direct-reserve BTC receipt is recorded.",
-    "Approved social content exists, but live X posting credentials are not enabled in this runtime."
+    "Approved social content exists; publish manually and record the live URL, or enable approved-only X credentials."
   ],
   "actionQueue": [
     {

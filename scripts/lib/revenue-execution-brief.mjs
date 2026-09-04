@@ -55,9 +55,7 @@ export function buildRevenueExecutionBrief({
     });
   }
 
-  const liveCampaigns = (paidPromotionLedger.campaigns ?? []).filter(
-    (campaign) => campaign.status === 'live-verified'
-  );
+  const liveCampaigns = paidPromotionPlan.liveVerified ?? [];
   for (const campaign of liveCampaigns) {
     actions.push({
       id: `measure-${campaign.id}`,
@@ -66,7 +64,7 @@ export function buildRevenueExecutionBrief({
       objective: `Record 24-hour conversion results for ${campaign.id}.`,
       whyItCanCreateSats:
         'Measured inquiries and receipts decide whether promotion is worth repeating.',
-      command: `node scripts/paid-promotion-agent.mjs record-conversion --campaign ${campaign.id} --evidence "<24h-measurement-screenshot-or-export>" --profileViewLift "<profile-view-change>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0`,
+      command: campaign.recordConversionCommand,
       evidenceRequired:
         '24-hour profile analytics, link clicks if available, inquiry count, invoice-request count, and confirmed direct-reserve receipts.',
       stopRule:
@@ -88,7 +86,17 @@ export function buildRevenueExecutionBrief({
     });
   }
 
-  const topActions = actions.slice(0, Math.max(maxManualSends, awaitingVerification.length));
+  const primaryActionLimit = Math.max(maxManualSends, awaitingVerification.length);
+  const primaryActions = actions.filter(
+    (action) => action.type !== 'paid-promotion-conversion-measurement'
+  );
+  const measurementActions = actions.filter(
+    (action) => action.type === 'paid-promotion-conversion-measurement'
+  );
+  const topActions = [
+    ...primaryActions.slice(0, primaryActionLimit),
+    ...measurementActions.slice(0, 1)
+  ];
   const estimatedIfOneStarterClosesSats = usdToSatsEstimate({
     usd: 50,
     btcUsd: Number(status.conversionAssumptions?.btcUsd ?? 100000)
@@ -255,6 +263,10 @@ function assertBriefInputs({ status, paidPromotionLedger, outreachPacketQueue, m
   }
   if (status.funnel?.paidPromotionsAwaitingVerification !== awaitingVerification.length) {
     throw new Error('revenue cycle paid promotion verification count must match the ledger.');
+  }
+  const awaitingConversion = campaigns.filter((campaign) => campaign.status === 'live-verified');
+  if (status.funnel?.paidPromotionsAwaitingConversion !== awaitingConversion.length) {
+    throw new Error('revenue cycle paid promotion conversion count must match the ledger.');
   }
   if (status.funnel?.readyOutreachPackets !== readyPackets.length) {
     throw new Error('revenue cycle ready outreach packet count must match the packet queue.');

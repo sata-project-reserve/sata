@@ -42,6 +42,14 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
   if (!brief.constraints.some((constraint) => /24-hour conversion evidence/i.test(constraint))) {
     findings.push('live-verified campaigns must preserve the 24-hour conversion evidence constraint');
   }
+  if (status.funnel.paidPromotionsAwaitingConversion > 0) {
+    const measurement = brief.topActions.find(
+      (action) => action.type === 'paid-promotion-conversion-measurement'
+    );
+    if (!measurement?.command?.includes('record-conversion --campaign diana-crypto-20260903-transparency-tweet')) {
+      findings.push('live-verified campaigns must expose a conversion measurement command');
+    }
+  }
 }
 if (brief.manualSendBatch.length !== 5) {
   findings.push('manual send batch must default to the first five ready outreach packets');
@@ -63,12 +71,13 @@ const maintenanceBrief = buildRevenueExecutionBrief({
   status: {
     ...status,
     nextAction: 'Continue qualifying evidence-backed prospects.',
-    funnel: {
-      ...status.funnel,
-      readyOutreachPackets: 0,
-      paidPromotionCampaigns: 0,
-      paidPromotionsAwaitingVerification: 0
-    }
+      funnel: {
+        ...status.funnel,
+        readyOutreachPackets: 0,
+        paidPromotionCampaigns: 0,
+        paidPromotionsAwaitingVerification: 0,
+        paidPromotionsAwaitingConversion: 0
+      }
   },
   paidPromotionLedger: {
     ...paidPromotionLedger,

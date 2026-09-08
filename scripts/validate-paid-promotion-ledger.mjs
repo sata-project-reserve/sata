@@ -56,8 +56,21 @@ if (['paid-awaiting-post', 'post-reported-unverified'].includes(dianaCampaign?.s
   if (!/Wait 24 hours/i.test(plan.nextAction ?? '')) {
     findings.push('plan must advance live-verified campaigns to conversion measurement');
   }
+} else if (dianaCampaign?.status === 'completed') {
+  if (plan.totals.completed !== 1 || plan.totals.liveVerified !== 0) {
+    findings.push('Diana test campaign must be counted as completed after conversion is recorded');
+  }
+  if (dianaCampaign.conversion?.confirmedReceiptsSats !== '0') {
+    findings.push('Diana completed conversion must not fabricate confirmed reserve sats');
+  }
+  if (!dianaCampaign.conversion?.evidence) {
+    findings.push('Diana completed conversion must include conversion evidence');
+  }
+  if (!/Do not repeat paid promotion unless/i.test(plan.nextAction ?? '')) {
+    findings.push('completed campaign plan must block repeat spend without a new approval');
+  }
 } else {
-  findings.push('Diana test campaign must be awaiting verification or live verified');
+  findings.push('Diana test campaign must be awaiting verification, live verified, or completed');
 }
 
 const transitionLedger = {

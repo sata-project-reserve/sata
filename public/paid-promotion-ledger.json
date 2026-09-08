@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-03T20:54:04.715Z",
+  "updatedAtUtc": "2026-09-05T23:35:22.984Z",
   "mode": "paid-promotion-control-ledger",
   "objective": "Track paid or token-compensated promotion as disclosed experiments only, with live-post evidence and conversion measurement before any repeat spend.",
   "policy": {
@@ -29,7 +29,7 @@
         "profileUrl": "https://x.com/142C_"
       },
       "channel": "x-post",
-      "status": "live-verified",
+      "status": "completed",
       "approval": {
         "approvedBy": "executive-chairman",
         "approvalBasis": "manual DM negotiation and approved factual draft",
@@ -67,13 +67,15 @@
         "evidence": "X public HTML metadata fetched 2026-09-03T20:55Z shows Diana Crypto (@142C_) sponsored paid partnership post at status 2086570576530010172 with SATA copy and disclosed 500000 sats reserve."
       },
       "conversion": {
-        "profileViewLift": "chairman-observed",
+        "profileViewLift": "not-recorded; X analytics export not available in repository",
         "trackedClicks": null,
         "serviceInquiries": 0,
         "invoiceRequests": 0,
-        "confirmedReceiptsSats": "0"
+        "confirmedReceiptsSats": "0",
+        "evidence": "2026-09-05T23:34Z repo checks: no open GitHub issues or inbound leads, no invoice requests, and reserve address shows no new receipt; X analytics export not available in repository",
+        "measuredAtUtc": "2026-09-05T23:35:22.984Z"
       },
-      "nextAction": "Wait 24 hours from the verified post timestamp, then record profile views, clicks, inquiries, invoice requests, and confirmed receipts without approving repeat spend.",
+      "nextAction": "Do not repeat paid promotion unless the Executive Chairman approves a new experiment using recorded conversion evidence.",
       "verifiedPostUrl": "https://x.com/142C_/status/2086570576530010172"
     }
   ],

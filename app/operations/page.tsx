@@ -34,6 +34,7 @@ type InboundLead = {
   publicProfileUrl: string;
   projectUrl: string;
   requestedOfferId: string;
+  evidence: string;
 };
 type InboundSource = {
   type: string;
@@ -170,6 +171,10 @@ function recordPublishedSocialPostCommand(post: SocialPost) {
 
 function recordInboundLeadCommand(source: InboundSource) {
   return `node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sourceType ${source.type} --sourceId ${source.id} --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --evidence "<reply-or-dm-evidence>" --customerAskedForInvoice false`;
+}
+
+function renderInboundInvoiceRequestCommand(lead: InboundLead) {
+  return `node scripts/inbound-invoice-request-agent.mjs render --lead ${lead.id}`;
 }
 
 function recordPaidPromotionConversionCommand(campaign: PaidPromotionCampaign) {
@@ -600,6 +605,46 @@ export default function OperationsPage() {
               <strong>No live attribution source is ready for inbound lead capture.</strong>
             </div>
           ) : null}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Inbound Invoice Requests</h2>
+          <p>Turn explicit inbound invoice demand into quote inputs for chairman review.</p>
+        </div>
+        <div className="warning-list">
+          {inboundInvoiceRequests.length === 0 ? (
+            <div className="proof-block">
+              <span>waiting</span>
+              <strong>No inbound invoice requests are waiting for chairman review.</strong>
+              <p>
+                Record interested replies with customerAskedForInvoice true only when the customer
+                explicitly asks for an invoice.
+              </p>
+              <div className="command-list">
+                <span>Plan Command</span>
+                <code>npm run ops:inbound-invoice-request-plan</code>
+                <span>Boundary</span>
+                <code>No exact-sats invoice or payment instruction before Executive Chairman approval.</code>
+              </div>
+            </div>
+          ) : null}
+          {inboundInvoiceRequests.map((lead) => (
+            <div className="proof-block" key={lead.id}>
+              <span>{lead.requestedOfferId}</span>
+              <strong>{lead.contactHandle}</strong>
+              <p>{lead.projectUrl}</p>
+              <div className="command-list">
+                <span>Evidence</span>
+                <code>{lead.evidence}</code>
+                <span>Render Chairman Packet</span>
+                <code>{renderInboundInvoiceRequestCommand(lead)}</code>
+                <span>Boundary</span>
+                <code>No exact-sats invoice or payment instruction before Executive Chairman approval.</code>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 

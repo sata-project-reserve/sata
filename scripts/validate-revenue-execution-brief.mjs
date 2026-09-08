@@ -39,16 +39,18 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
   if (brief.topActions[0]?.type !== 'manual-outreach-send') {
     findings.push('manual outreach must become the first top action after paid promotion verification');
   }
-  if (!brief.constraints.some((constraint) => /24-hour conversion evidence/i.test(constraint))) {
-    findings.push('live-verified campaigns must preserve the 24-hour conversion evidence constraint');
-  }
   if (status.funnel.paidPromotionsAwaitingConversion > 0) {
+    if (!brief.constraints.some((constraint) => /24-hour conversion evidence/i.test(constraint))) {
+      findings.push('live-verified campaigns must preserve the 24-hour conversion evidence constraint');
+    }
     const measurement = brief.topActions.find(
       (action) => action.type === 'paid-promotion-conversion-measurement'
     );
     if (!measurement?.command?.includes('record-conversion --campaign diana-crypto-20260903-transparency-tweet')) {
       findings.push('live-verified campaigns must expose a conversion measurement command');
     }
+  } else if (!brief.constraints.some((constraint) => /No paid promotion verification is currently pending/i.test(constraint))) {
+    findings.push('completed paid promotion state must clear the pending verification/conversion constraint');
   }
 }
 if (brief.manualSendBatch.length !== 5) {

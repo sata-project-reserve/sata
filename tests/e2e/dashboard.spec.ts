@@ -164,6 +164,18 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(referralPolicyBlock.getByText('npm run ops:referral-policy-check')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Manual Outreach Packets' })).toBeVisible();
   await expect(page.getByText('Showing 5 of 30 ready packets.')).toBeVisible();
+  await expect(page.getByText('Sprint Gross Target')).toBeVisible();
+  await expect(page.getByText('$250')).toBeVisible();
+  await expect(page.getByText('Reserve Allocation Target')).toBeVisible();
+  await expect(page.getByText('$175 at 70%')).toBeVisible();
+  await expect(page.getByText('Planning Reserve Impact')).toBeVisible();
+  await expect(page.getByText('175000 sats')).toBeVisible();
+  await expect(page.getByText('Get one explicit invoice request')).toBeVisible();
+  await expect(
+    page.getByText(
+      'manual_outreach:outreach-packet-20260831-arnold-solana-transparency-audit-first-contact'
+    )
+  ).toBeVisible();
   await expect(
     page.getByText('outreach-packet-20260831-arnold-solana-transparency-audit-first-contact', {
       exact: true

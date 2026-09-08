@@ -5,7 +5,8 @@ import { buildOutreachDispatchBrief, renderOutreachDispatchMarkdown } from './ou
 const status = readJson(join('public', 'revenue-cycle-status.json'));
 const packetQueue = readJson(join('public', 'service-outreach-packet-queue.json'));
 const approvalQueue = readJson(join('public', 'executive-approval-queue.json'));
-const brief = buildOutreachDispatchBrief({ status, packetQueue, approvalQueue });
+const revenuePlan = readJson(join('public', 'revenue-operating-plan.json'));
+const brief = buildOutreachDispatchBrief({ status, packetQueue, approvalQueue, revenuePlan });
 const markdown = renderOutreachDispatchMarkdown(brief);
 const findings = [];
 
@@ -30,12 +31,30 @@ if (brief.queuedRemainderCount !== Math.max(brief.readyManualSendCount - brief.r
 if (!/focused manual sprint/i.test(brief.dispatchRule ?? '')) {
   findings.push('dispatch rule must require a focused manual sprint');
 }
+if (brief.sprintEconomics?.reserveAllocationPercent !== '70') {
+  findings.push('sprint economics must preserve the 70 percent BTC reserve allocation policy');
+}
+if (!Number.isSafeInteger(Number(brief.sprintEconomics?.reserveSatsAtPlanningRate))) {
+  findings.push('sprint economics must include reserve sats at the planning rate');
+}
+if (!/one explicit invoice request/i.test(brief.sprintEconomics?.firstConversionGoal ?? '')) {
+  findings.push('sprint economics must define the first invoice-request conversion goal');
+}
+if (!/confirmed receipts/i.test(brief.sprintEconomics?.measurementRule ?? '')) {
+  findings.push('sprint economics must measure through confirmed receipts');
+}
 for (const packet of brief.readyManualSends) {
   if (!packet.message.includes('No price promotion')) {
     findings.push(`${packet.packetId}: ready message must preserve no-price-promotion language`);
   }
   if (!/mark-sent --packet/.test(packet.recordContactCommand ?? '')) {
     findings.push(`${packet.packetId}: ready packet must include a post-send evidence command`);
+  }
+  if (!packet.trackingLabel?.startsWith('manual_outreach:')) {
+    findings.push(`${packet.packetId}: ready packet must expose a manual outreach tracking label`);
+  }
+  if (!Number.isSafeInteger(Number(packet.targetRevenueUsd)) || Number(packet.targetRevenueUsd) <= 0) {
+    findings.push(`${packet.packetId}: ready packet must expose target revenue from its offer`);
   }
 }
 for (const item of brief.pendingOutreachApprovals) {
@@ -51,6 +70,12 @@ if (!markdown.includes('## Ready Manual Sends')) {
 }
 if (!markdown.includes('## Pending Chairman Outreach Approvals')) {
   findings.push('markdown brief must include pending chairman outreach approvals section');
+}
+if (!markdown.includes('## Sprint Economics')) {
+  findings.push('markdown brief must include sprint economics section');
+}
+if (!markdown.includes('manual_outreach:')) {
+  findings.push('markdown brief must include tracking labels');
 }
 if (/\b(private key|seed phrase|guaranteed buyers|fake engagement|pump)\b/i.test(markdown)) {
   findings.push('dispatch brief must not include prohibited or secret-requesting language');

@@ -5,15 +5,17 @@ import { pathToFileURL } from 'node:url';
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [, , command = 'plan', ...args] = process.argv;
   const options = parseOptions(args);
-  const [status, packetQueue, approvalQueue] = await Promise.all([
+  const [status, packetQueue, approvalQueue, revenuePlan] = await Promise.all([
     readJson(join('public', 'revenue-cycle-status.json')),
     readJson(join('public', 'service-outreach-packet-queue.json')),
-    readJson(join('public', 'executive-approval-queue.json'))
+    readJson(join('public', 'executive-approval-queue.json')),
+    readJson(join('public', 'revenue-operating-plan.json'))
   ]);
   const brief = buildOutreachDispatchBrief({
     status,
     packetQueue,
     approvalQueue,
+    revenuePlan,
     maxManualSends: options.max ? Number(options.max) : undefined
   });
 
@@ -34,6 +36,7 @@ export function buildOutreachDispatchBrief({
   status,
   packetQueue,
   approvalQueue,
+  revenuePlan,
   maxManualSends = 5
 }) {
   if (!Number.isSafeInteger(maxManualSends) || maxManualSends < 1 || maxManualSends > 20) {
@@ -44,13 +47,28 @@ export function buildOutreachDispatchBrief({
     .map((packet) => ({
       packetId: packet.id,
       prospectId: packet.prospectId,
+      offerId: packet.offerId,
       channel: packet.channel,
       destination: packet.destination,
       message: packet.message,
       recordContactCommand: packet.recordContactCommand,
+      targetRevenueUsd: offerPriceUsd({ revenuePlan, offerId: packet.offerId }),
+      trackingLabel: `manual_outreach:${packet.id}`,
       boundary: packet.boundary
     }));
   const sprintPackets = readyPackets.slice(0, maxManualSends);
+  const reserveAllocationPercent =
+    revenuePlan?.allocationPolicy?.postReceiptAllocationPercent?.btcReserve ?? 70;
+  const planningBtcUsd = 100000;
+  const sprintGrossRevenueUsd = sprintPackets.reduce(
+    (total, packet) => total + Number(packet.targetRevenueUsd),
+    0
+  );
+  const sprintReserveAllocationUsd =
+    (sprintGrossRevenueUsd * Number(reserveAllocationPercent)) / 100;
+  const sprintReserveSatsAtPlanningRate = Math.floor(
+    (sprintReserveAllocationUsd / planningBtcUsd) * 100_000_000
+  );
   const pendingOutreachApprovals = (approvalQueue.items ?? [])
     .filter(
       (item) =>
@@ -75,6 +93,17 @@ export function buildOutreachDispatchBrief({
     readyManualSendCount: readyPackets.length,
     queuedRemainderCount: Math.max(readyPackets.length - sprintPackets.length, 0),
     readyManualSends: sprintPackets,
+    sprintEconomics: {
+      planningBtcUsd: String(planningBtcUsd),
+      reserveAllocationPercent: String(reserveAllocationPercent),
+      grossRevenueUsd: String(sprintGrossRevenueUsd),
+      reserveAllocationUsd: sprintReserveAllocationUsd.toFixed(2),
+      reserveSatsAtPlanningRate: String(sprintReserveSatsAtPlanningRate),
+      firstConversionGoal:
+        'Get one explicit invoice request from this manual sprint before expanding spend or outreach volume.',
+      measurementRule:
+        'Count only durable contact evidence, replies, invoice requests, approved invoices, confirmed receipts, and post-receipt allocation proposals.'
+    },
     pendingOutreachApprovals,
     dispatchRule:
       'Run one focused manual sprint: send the listed packets exactly as approved, record evidence after each send, then stop and review replies before expanding the batch.',
@@ -102,7 +131,14 @@ export function renderOutreachDispatchMarkdown(brief) {
     '## Ready Manual Sends',
     `Sprint: ${brief.readyManualSends.length} of ${brief.readyManualSendCount} ready packets. Backlog after this sprint: ${brief.queuedRemainderCount}.`,
     '',
-    brief.dispatchRule
+    brief.dispatchRule,
+    '',
+    '## Sprint Economics',
+    `Gross service target if this sprint fully converts: $${brief.sprintEconomics.grossRevenueUsd}.`,
+    `Reserve allocation target at ${brief.sprintEconomics.reserveAllocationPercent}%: $${brief.sprintEconomics.reserveAllocationUsd}.`,
+    `Planning reserve impact at BTC/USD ${brief.sprintEconomics.planningBtcUsd}: ${brief.sprintEconomics.reserveSatsAtPlanningRate} sats.`,
+    brief.sprintEconomics.firstConversionGoal,
+    brief.sprintEconomics.measurementRule
   ];
   if (brief.readyManualSends.length === 0) {
     lines.push('No outreach packets are ready for manual send.');
@@ -112,6 +148,8 @@ export function renderOutreachDispatchMarkdown(brief) {
       '',
       `### ${packet.prospectId}`,
       `Packet: ${packet.packetId}`,
+      `Offer: ${packet.offerId} / $${packet.targetRevenueUsd}`,
+      `Tracking: ${packet.trackingLabel}`,
       `Destination: ${packet.destination.publicProfileUrl}`,
       '',
       '```text',
@@ -146,6 +184,11 @@ export function renderOutreachDispatchMarkdown(brief) {
 
   lines.push('', '## Next Action', brief.nextAction);
   return `${lines.join('\n')}\n`;
+}
+
+function offerPriceUsd({ revenuePlan, offerId }) {
+  const stream = (revenuePlan?.revenueStreams ?? []).find((item) => item.id === offerId);
+  return stream?.priceUsd ?? '0';
 }
 
 function prospectIdsFromOutreachApprovalTitle(title) {

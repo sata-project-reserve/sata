@@ -214,6 +214,21 @@ export default function OperationsPage() {
     readyOutreachPackets.length - outreachDispatchSprint.length,
     0
   );
+  const outreachDispatchPriceByOffer = Object.fromEntries(
+    revenuePlan.revenueStreams.map((stream) => [stream.id, Number(stream.priceUsd)])
+  );
+  const outreachDispatchGrossRevenueUsd = outreachDispatchSprint.reduce(
+    (total, packet) => total + (outreachDispatchPriceByOffer[packet.offerId] ?? 0),
+    0
+  );
+  const outreachDispatchReserveAllocationPercent =
+    revenuePlan.allocationPolicy.postReceiptAllocationPercent.btcReserve;
+  const outreachDispatchReserveUsd =
+    (outreachDispatchGrossRevenueUsd * outreachDispatchReserveAllocationPercent) / 100;
+  const outreachDispatchReserveSatsAtPlanningRate = satsFromUsd(
+    outreachDispatchReserveUsd,
+    100000
+  );
   const paidPromotionsAwaitingVerification = paidPromotionLedger.campaigns.filter((campaign) =>
     ['paid-awaiting-post', 'post-reported-unverified'].includes(campaign.status)
   );
@@ -880,6 +895,23 @@ export default function OperationsPage() {
           <h2>Manual Outreach Packets</h2>
           <p>Current five-packet dispatch sprint waiting for human send and contact evidence.</p>
         </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Sprint Gross Target</span>
+            <strong>${outreachDispatchGrossRevenueUsd.toLocaleString('en-US')}</strong>
+          </div>
+          <div className="metric">
+            <span>Reserve Allocation Target</span>
+            <strong>
+              ${outreachDispatchReserveUsd.toLocaleString('en-US')} at{' '}
+              {outreachDispatchReserveAllocationPercent}%
+            </strong>
+          </div>
+          <div className="metric">
+            <span>Planning Reserve Impact</span>
+            <strong>{outreachDispatchReserveSatsAtPlanningRate.toString()} sats</strong>
+          </div>
+        </div>
         <div className="notice">
           <strong>Dispatch Sprint</strong>
           <span>
@@ -888,12 +920,20 @@ export default function OperationsPage() {
             ops:outreach-dispatch-plan for copy-ready instructions.
           </span>
         </div>
+        <div className="notice">
+          <strong>First Conversion Goal</strong>
+          <span>
+            Get one explicit invoice request from this manual sprint before expanding spend or
+            outreach volume.
+          </span>
+        </div>
         <div className="warning-list">
           {outreachDispatchSprint.map((packet) => (
             <div className="proof-block" key={packet.id}>
               <span>{packet.status}</span>
               <strong>{packet.prospectId}</strong>
               <code>{packet.id}</code>
+              <code>manual_outreach:{packet.id}</code>
               <p>{packet.sendInstructions}</p>
               <pre className="preview">{packet.message}</pre>
               <div className="command-list">

@@ -24,6 +24,14 @@ const serviceRoutes = [
     price: '$300'
   }
 ];
+const partnerRoutes = [
+  {
+    id: 'referral-partners',
+    path: '/partners/referrals',
+    file: join('app', 'partners', 'referrals', 'page.tsx'),
+    heading: 'Post-receipt referral partners.'
+  }
+];
 
 const findings = [];
 const revenuePlan = readJson(join('public', 'revenue-operating-plan.json'));
@@ -69,6 +77,34 @@ for (const route of serviceRoutes.slice(1)) {
     findings.push(`/services/transparency-audit: offer menu must link to ${route.path}`);
   }
 }
+for (const route of partnerRoutes) {
+  if (!existsSync(route.file)) {
+    findings.push(`${route.path}: route file is missing`);
+    continue;
+  }
+  const pageSource = readText(route.file);
+  if (!pageSource.includes(route.heading)) {
+    findings.push(`${route.path}: page must publish heading "${route.heading}"`);
+  }
+  if (!/Only after the referred customer pays and the receipt is confirmed/i.test(pageSource)) {
+    findings.push(`${route.path}: page must preserve post-receipt payment trigger`);
+  }
+  if (!/This page does not approve any partner/i.test(pageSource)) {
+    findings.push(`${route.path}: page must preserve no-approval boundary`);
+  }
+  if (!sitemap.includes(`https://sata-project-reserve.github.io/sata${route.path}`)) {
+    findings.push(`${route.path}: public sitemap is missing route`);
+  }
+  if (!reportGenerator.includes(`\${PUBLIC_BASE_URL}${route.path}`)) {
+    findings.push(`${route.path}: transparency report sitemap generator is missing route`);
+  }
+  if (!staticExporter.includes(`url.pathname === '${route.path}'`)) {
+    findings.push(`${route.path}: Sites static exporter is missing fallback route`);
+  }
+}
+if (!auditPage.includes("publicPath('/partners/referrals')")) {
+  findings.push('/services/transparency-audit: public page must link to referral partners');
+}
 
 const publicPathHelper = readText(join('lib', 'public-path.ts'));
 const nextConfig = readText(join('next.config.ts'));
@@ -82,7 +118,8 @@ if (!/GITHUB_PAGES/.test(nextConfig) || !/NEXT_PUBLIC_SITE_BASE_PATH/.test(nextC
 const publicRouteSources = [
   join('app', 'operations', 'page.tsx'),
   join('app', 'services', '_components', 'high-value-service-page.tsx'),
-  join('app', 'services', 'transparency-audit', 'page.tsx')
+  join('app', 'services', 'transparency-audit', 'page.tsx'),
+  join('app', 'partners', 'referrals', 'page.tsx')
 ];
 for (const sourcePath of publicRouteSources) {
   const source = readText(sourcePath);

@@ -24,6 +24,10 @@ const socialAgentMonitoringLog = readFileSync(
   'utf8'
 );
 const revenueOperatingPlan = readFileSync(join('public', 'revenue-operating-plan.json'), 'utf8');
+const referralPartnerPolicyJson = readFileSync(
+  join('public', 'referral-partner-policy.json'),
+  'utf8'
+);
 const satsGenerationLedger = readFileSync(join('public', 'sats-generation-ledger.json'), 'utf8');
 const satsInvoiceQueue = readFileSync(join('public', 'sats-invoice-queue.json'), 'utf8');
 const satsProspectPipeline = readFileSync(join('public', 'sats-prospect-pipeline.json'), 'utf8');
@@ -37,6 +41,7 @@ const hostingJson = readFileSync(join('.openai', 'hosting.json'), 'utf8');
 const report = JSON.parse(transparencyJson);
 const history = JSON.parse(transparencyHistoryJson);
 const revenuePlan = JSON.parse(revenueOperatingPlan);
+const referralPartnerPolicy = JSON.parse(referralPartnerPolicyJson);
 const prospectPipeline = JSON.parse(satsProspectPipeline);
 const deliveryKit = JSON.parse(transparencyAuditDeliveryKit);
 
@@ -59,6 +64,7 @@ const socialAgentProfile = ${JSON.stringify(socialAgentProfile)};
 const socialAgentContentQueue = ${JSON.stringify(socialAgentContentQueue)};
 const socialAgentMonitoringLog = ${JSON.stringify(socialAgentMonitoringLog)};
 const revenueOperatingPlan = ${JSON.stringify(revenueOperatingPlan)};
+const referralPartnerPolicyJson = ${JSON.stringify(referralPartnerPolicyJson)};
 const satsGenerationLedger = ${JSON.stringify(satsGenerationLedger)};
 const satsInvoiceQueue = ${JSON.stringify(satsInvoiceQueue)};
 const satsProspectPipeline = ${JSON.stringify(satsProspectPipeline)};
@@ -68,6 +74,9 @@ const metadataPolicy = ${JSON.stringify(metadataPolicy)};
 const transparencyHtml = ${JSON.stringify(buildTransparencyHtml(report))};
 const historyHtml = ${JSON.stringify(buildHistoryHtml(history))};
 const serviceHtml = ${JSON.stringify(buildServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit))};
+const referralPartnerHtml = ${JSON.stringify(
+  buildReferralPartnerHtml(referralPartnerPolicy, revenuePlan, deliveryKit)
+)};
 const reportSetupServiceHtml = ${JSON.stringify(
   buildHighValueServiceHtml(
     report,
@@ -201,6 +210,11 @@ export default {
         headers: withCors({ 'content-type': 'text/html; charset=utf-8' })
       });
     }
+    if (url.pathname === '/partners/referrals') {
+      return new Response(referralPartnerHtml, {
+        headers: withCors({ 'content-type': 'text/html; charset=utf-8' })
+      });
+    }
     if (url.pathname === '/transparency/latest.json') {
       return new Response(transparencyJson, {
         headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
@@ -256,6 +270,11 @@ export default {
         headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
       });
     }
+    if (url.pathname === '/referral-partner-policy.json') {
+      return new Response(referralPartnerPolicyJson, {
+        headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
+      });
+    }
     if (url.pathname === '/sats-generation-ledger.json') {
       return new Response(satsGenerationLedger, {
         headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
@@ -288,7 +307,7 @@ export default {
     }
     if (url.pathname === '/') {
       return new Response(
-        '<!doctype html><title>SATA Reserve Token</title><h1>SATA Reserve Token</h1><p>Proof over promises. Temporary transparency and launch-app surface while the official SATA website is being built. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/transparency/history">history</a></li><li><a href="/transparency/history.json">history.json</a></li><li><a href="/health.json">health.json</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="/revenue-operating-plan.json">revenue-operating-plan.json</a></li><li><a href="/sats-generation-ledger.json">sats-generation-ledger.json</a></li><li><a href="/sats-invoice-queue.json">sats-invoice-queue.json</a></li><li><a href="/sats-prospect-pipeline.json">sats-prospect-pipeline.json</a></li><li><a href="/transparency-audit-delivery-kit.json">transparency-audit-delivery-kit.json</a></li><li><a href="/docs/metadata-policy.md">metadata-policy.md</a></li><li><a href="https://github.com/sata-project-reserve/sata">GitHub repository</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.png">sata-image.png</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/sata-x-header.png">sata-x-header.png</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
+        '<!doctype html><title>SATA Reserve Token</title><h1>SATA Reserve Token</h1><p>Proof over promises. Temporary transparency and launch-app surface while the official SATA website is being built. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/services/transparency-audit">Transparency audit service</a></li><li><a href="/partners/referrals">Referral partners</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/transparency/history">history</a></li><li><a href="/transparency/history.json">history.json</a></li><li><a href="/health.json">health.json</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="/revenue-operating-plan.json">revenue-operating-plan.json</a></li><li><a href="/referral-partner-policy.json">referral-partner-policy.json</a></li><li><a href="/sats-generation-ledger.json">sats-generation-ledger.json</a></li><li><a href="/sats-invoice-queue.json">sats-invoice-queue.json</a></li><li><a href="/sats-prospect-pipeline.json">sats-prospect-pipeline.json</a></li><li><a href="/transparency-audit-delivery-kit.json">transparency-audit-delivery-kit.json</a></li><li><a href="/docs/metadata-policy.md">metadata-policy.md</a></li><li><a href="https://github.com/sata-project-reserve/sata">GitHub repository</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.png">sata-image.png</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/sata-x-header.png">sata-x-header.png</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
         { headers: withCors({ 'content-type': 'text/html; charset=utf-8' }) }
       );
     }
@@ -531,6 +550,100 @@ function buildServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit) {
   <section class="metric">
     <strong>Boundaries</strong>
     <p>No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment. SATA does not sell fake engagement, raids, bots, or investor lists.</p>
+  </section>
+</main>
+</body>
+</html>`;
+}
+
+function buildReferralPartnerHtml(referralPolicy, revenuePlan, deliveryKit) {
+  const offers = revenuePlan.revenueStreams
+    .map(
+      (offer) =>
+        `<div class="metric"><span>${escapeHtml(offer.label)}</span><strong>$${escapeHtml(offer.priceUsd)}</strong><p>${escapeHtml(offer.deliverable)}</p></div>`
+    )
+    .join('');
+  const eligibleWork = referralPolicy.eligibleWork
+    .map((item) => `<div class="metric"><strong>${escapeHtml(item)}</strong></div>`)
+    .join('');
+  const requiredEvidence = referralPolicy.requiredEvidenceBeforeCompensation
+    .map((item) => `<div class="metric"><strong>${escapeHtml(item)}</strong></div>`)
+    .join('');
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SATA Referral Partners</title>
+  <style>
+    :root { color-scheme: light; --bg: #f6f7f9; --panel: #fff; --text: #111827; --muted: #5b6472; --line: #d9dee7; --accent: #0f766e; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { max-width: 1120px; margin: 0 auto; padding: 24px; display: grid; gap: 18px; }
+    h1 { margin: 0; font-size: clamp(38px, 7vw, 72px); line-height: 1; letter-spacing: 0; }
+    h2 { margin: 0; font-size: 24px; }
+    p { color: var(--muted); line-height: 1.6; }
+    a { color: #0b5f59; }
+    .hero { min-height: 54vh; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); gap: 18px; align-items: center; border-bottom: 1px solid var(--line); }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .metric { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 14px; }
+    .metric span { display: block; color: var(--muted); font-size: 13px; }
+    .metric strong { overflow-wrap: anywhere; }
+    .mark { width: min(180px, 48vw); aspect-ratio: 1; border: 1px solid var(--line); border-radius: 8px; object-fit: cover; background: #eef2f5; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; border: 1px solid var(--line); border-radius: 8px; background: #111827; color: #fff; padding: 14px; }
+    @media (max-width: 800px) { .hero, .grid { grid-template-columns: 1fr; } .hero { min-height: auto; padding-top: 16px; } }
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div>
+      <p><strong>SATA partners</strong></p>
+      <h1>Post-receipt referral partners.</h1>
+      <p>SATA can work with legitimate referrers who introduce crypto teams that need transparency audits, report setup, or proof-dashboard work. Compensation is considered only after the referred customer pays and the receipt is confirmed.</p>
+      <p><a href="${escapeHtml(deliveryKit.intakeUrl)}">Refer a customer</a> | <a href="https://x.com/SATAReserve">Contact @SATAReserve</a> | <a href="/referral-partner-policy.json">Policy JSON</a></p>
+    </div>
+    <div>
+      <img class="mark" src="/mainnet/sata-image.png" alt="SATA reserve token mark">
+      <div class="metric"><span>Default Share</span><strong>${escapeHtml(referralPolicy.compensationModel.defaultReferralSharePercentOfNetServiceRevenue)}%</strong><p>Post-receipt, net service revenue, proposal-only.</p></div>
+      <div class="metric"><span>Maximum Share</span><strong>${escapeHtml(referralPolicy.compensationModel.maximumReferralSharePercentOfNetServiceRevenue)}%</strong></div>
+      <div class="metric"><span>Payment Trigger</span><strong>${escapeHtml(referralPolicy.compensationModel.paymentTrigger)}</strong></div>
+    </div>
+  </section>
+  <section>
+    <h2>Eligible Work</h2>
+    <p>Partners source paid service customers, not trading demand or artificial attention.</p>
+    <div class="grid">${eligibleWork}</div>
+  </section>
+  <section>
+    <h2>Service Menu</h2>
+    <p>Referral value comes from real customer work that can create confirmed receipts.</p>
+    <div class="grid">${offers}</div>
+  </section>
+  <section>
+    <h2>Compensation Gate</h2>
+    <div class="grid">
+      <div class="metric"><span>Default Referral Share</span><strong>${escapeHtml(referralPolicy.compensationModel.defaultReferralSharePercentOfNetServiceRevenue)}% of net service revenue</strong></div>
+      <div class="metric"><span>Maximum Referral Share</span><strong>${escapeHtml(referralPolicy.compensationModel.maximumReferralSharePercentOfNetServiceRevenue)}% of net service revenue</strong></div>
+      <div class="metric"><span>Upfront Spend</span><strong>Not authorized</strong></div>
+    </div>
+  </section>
+  <section>
+    <h2>Evidence Required</h2>
+    <p>Referral compensation is earned from verified service revenue, not promised attention.</p>
+    <div class="grid">${requiredEvidence}</div>
+  </section>
+  <section>
+    <h2>Partner Reply Template</h2>
+    <pre>${escapeHtml(referralPolicy.partnerReplyTemplate)}</pre>
+  </section>
+  <section class="metric">
+    <strong>Required Disclosure</strong>
+    <p>${escapeHtml(referralPolicy.requiredPartnerDisclosure)}</p>
+  </section>
+  <section class="metric">
+    <strong>Boundary</strong>
+    <p>This page does not approve any partner, post, token grant, cash payment, transaction, invoice, or asset movement.</p>
   </section>
 </main>
 </body>

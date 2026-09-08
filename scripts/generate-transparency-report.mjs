@@ -875,6 +875,7 @@ function buildSitemap(report) {
     `${PUBLIC_BASE_URL}/services/transparency-audit`,
     `${PUBLIC_BASE_URL}/services/transparency-report-setup`,
     `${PUBLIC_BASE_URL}/services/full-proof-dashboard`,
+    `${PUBLIC_BASE_URL}/partners/referrals`,
     `${PUBLIC_BASE_URL}/operations`,
     report.source.transparencyPage,
     `${PUBLIC_BASE_URL}/transparency/history`,

@@ -366,6 +366,9 @@ export default function OperationsPage() {
             <a className="button-link" href={publicPath('/service-outreach-packet-queue.json')}>
               Outreach Queue
             </a>
+            <a className="button-link" href={publicPath('/partners/referrals')}>
+              Referral Partners
+            </a>
           </div>
         </div>
         <div className="proof-stack">
@@ -842,6 +845,8 @@ export default function OperationsPage() {
             <p>{referralPartnerPolicy.nextAction}</p>
             <pre className="preview">{referralPartnerPolicy.partnerReplyTemplate}</pre>
             <div className="command-list">
+              <span>Public Partner Page</span>
+              <code>{PUBLIC_BASE_URL}/partners/referrals</code>
               <span>Policy Check</span>
               <code>npm run ops:referral-policy-check</code>
               {referralPolicyApprovalItem ? (

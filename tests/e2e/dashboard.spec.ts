@@ -93,6 +93,29 @@ test('higher-value service pages publish gates and boundaries', async ({ page })
   await expect(page.getByRole('link', { name: 'Request Dashboard' })).toBeVisible();
 });
 
+test('referral partner page publishes post-receipt gates', async ({ page }) => {
+  await page.goto('/partners/referrals');
+  await expect(page.getByRole('heading', { name: 'Post-receipt referral partners.' })).toBeVisible();
+  await expect(page.locator('.service-primary-metric')).toContainText('Default Share');
+  await expect(page.locator('.service-primary-metric')).toContainText('10%');
+  await expect(
+    page.getByText('Only after the referred customer pays and the receipt is confirmed.', {
+      exact: true
+    })
+  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Compensation Gate' })).toBeVisible();
+  await expect(page.getByText('Not authorized')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Evidence Required' })).toBeVisible();
+  await expect(page.getByText('Chairman-approved invoice')).toBeVisible();
+  await expect(page.getByText('Confirmed customer receipt')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Partner Reply Template' })).toBeVisible();
+  await expect(page.getByText('This page does not approve any partner')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Policy JSON' })).toHaveAttribute(
+    'href',
+    '/referral-partner-policy.json'
+  );
+});
+
 test('operations page surfaces chairman queue and prospect batch', async ({ page }) => {
   await page.goto('/operations');
   await expect(page.getByRole('heading', { name: 'Reserve growth queue.' })).toBeVisible();
@@ -155,6 +178,10 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   ).toBeVisible();
   await expect(page.getByText('Confirmed Promo Receipts')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Referral Partner Policy' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Referral Partners' })).toHaveAttribute(
+    'href',
+    '/partners/referrals'
+  );
   const referralPolicyBlock = page
     .locator('.proof-block')
     .filter({ hasText: 'draft-referral-partner-policy' });

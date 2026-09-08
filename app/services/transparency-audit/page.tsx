@@ -143,6 +143,9 @@ export default function TransparencyAuditServicePage() {
           <a className="button-link" href={publicPath('/operations')}>
             View Operations
           </a>
+          <a className="button-link" href={publicPath('/partners/referrals')}>
+            Referral Partners
+          </a>
           <a className="button-link" href={publicPath('/sats-invoice-queue.json')}>
             View Invoice Queue
           </a>

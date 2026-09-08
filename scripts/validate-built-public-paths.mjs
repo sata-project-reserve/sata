@@ -6,6 +6,7 @@ const findings = [];
 const htmlFiles = [
   join('out', 'index.html'),
   join('out', 'operations.html'),
+  join('out', 'partners', 'referrals.html'),
   join('out', 'services', 'transparency-audit.html'),
   join('out', 'services', 'transparency-report-setup.html'),
   join('out', 'services', 'full-proof-dashboard.html')
@@ -22,9 +23,11 @@ for (const htmlFile of htmlFiles) {
       /href="\/services\//,
       /href="\/transparency(?:["/?])/,
       /href="\/operations(?:["/?])/,
+      /href="\/partners\//,
       /href="\/executive-/,
       /href="\/sats-/,
       /href="\/revenue-/,
+      /href="\/referral-/,
       /href="\/service-/,
       /src="\/mainnet\//,
       /href="\/mainnet\//,
@@ -41,6 +44,7 @@ if (githubPagesMode) {
   const setupPage = readFileSync(join('out', 'services', 'transparency-report-setup.html'), 'utf8');
   const dashboardPage = readFileSync(join('out', 'services', 'full-proof-dashboard.html'), 'utf8');
   const auditPage = readFileSync(join('out', 'services', 'transparency-audit.html'), 'utf8');
+  const referralPage = readFileSync(join('out', 'partners', 'referrals.html'), 'utf8');
   const requiredPublishedPaths = [
     [setupPage, 'href="/sata/services/transparency-audit"'],
     [setupPage, 'src="/sata/mainnet/sata-image.png"'],
@@ -48,7 +52,10 @@ if (githubPagesMode) {
     [dashboardPage, 'src="/sata/mainnet/sata-image.png"'],
     [auditPage, 'href="/sata/services/transparency-report-setup"'],
     [auditPage, 'href="/sata/services/full-proof-dashboard"'],
-    [auditPage, 'src="/sata/mainnet/sata-image.png"']
+    [auditPage, 'href="/sata/partners/referrals"'],
+    [auditPage, 'src="/sata/mainnet/sata-image.png"'],
+    [referralPage, 'href="/sata/referral-partner-policy.json"'],
+    [referralPage, 'src="/sata/mainnet/sata-image.png"']
   ];
   for (const [html, expected] of requiredPublishedPaths) {
     if (!html.includes(expected)) {

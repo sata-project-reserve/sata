@@ -64,6 +64,9 @@ export default function TransparencyAuditServicePage() {
             <a className="button-link" href={deliveryKit.intakeUrl}>
               Request Audit
             </a>
+            <a className="button-link" href={publicPath('/services/sample-audit')}>
+              View Sample Audit
+            </a>
             <a className="button-link" href="https://x.com/SATAReserve">
               Contact @SATAReserve
             </a>
@@ -133,6 +136,9 @@ export default function TransparencyAuditServicePage() {
           </a>
           <a className="button-link" href={prospectPipeline.prospectIntakeUrl}>
             Suggest Prospect
+          </a>
+          <a className="button-link" href={publicPath('/services/sample-audit')}>
+            View Sample Audit
           </a>
           <a className="button-link" href={publicPath('/transparency-audit-delivery-kit.json')}>
             View Delivery Kit

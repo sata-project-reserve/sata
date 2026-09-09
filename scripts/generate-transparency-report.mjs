@@ -873,6 +873,7 @@ function buildSitemap(report) {
   const urls = [
     `${PUBLIC_BASE_URL}/`,
     `${PUBLIC_BASE_URL}/services/transparency-audit`,
+    `${PUBLIC_BASE_URL}/services/sample-audit`,
     `${PUBLIC_BASE_URL}/services/transparency-report-setup`,
     `${PUBLIC_BASE_URL}/services/full-proof-dashboard`,
     `${PUBLIC_BASE_URL}/partners/referrals`,

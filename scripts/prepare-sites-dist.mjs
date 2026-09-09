@@ -74,6 +74,7 @@ const metadataPolicy = ${JSON.stringify(metadataPolicy)};
 const transparencyHtml = ${JSON.stringify(buildTransparencyHtml(report))};
 const historyHtml = ${JSON.stringify(buildHistoryHtml(history))};
 const serviceHtml = ${JSON.stringify(buildServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit))};
+const sampleAuditHtml = ${JSON.stringify(buildSampleAuditHtml(deliveryKit))};
 const referralPartnerHtml = ${JSON.stringify(
   buildReferralPartnerHtml(referralPartnerPolicy, revenuePlan, deliveryKit)
 )};
@@ -200,6 +201,11 @@ export default {
         headers: withCors({ 'content-type': 'text/html; charset=utf-8' })
       });
     }
+    if (url.pathname === '/services/sample-audit') {
+      return new Response(sampleAuditHtml, {
+        headers: withCors({ 'content-type': 'text/html; charset=utf-8' })
+      });
+    }
     if (url.pathname === '/services/transparency-report-setup') {
       return new Response(reportSetupServiceHtml, {
         headers: withCors({ 'content-type': 'text/html; charset=utf-8' })
@@ -307,7 +313,7 @@ export default {
     }
     if (url.pathname === '/') {
       return new Response(
-        '<!doctype html><title>SATA Reserve Token</title><h1>SATA Reserve Token</h1><p>Proof over promises. Temporary transparency and launch-app surface while the official SATA website is being built. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/services/transparency-audit">Transparency audit service</a></li><li><a href="/partners/referrals">Referral partners</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/transparency/history">history</a></li><li><a href="/transparency/history.json">history.json</a></li><li><a href="/health.json">health.json</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="/revenue-operating-plan.json">revenue-operating-plan.json</a></li><li><a href="/referral-partner-policy.json">referral-partner-policy.json</a></li><li><a href="/sats-generation-ledger.json">sats-generation-ledger.json</a></li><li><a href="/sats-invoice-queue.json">sats-invoice-queue.json</a></li><li><a href="/sats-prospect-pipeline.json">sats-prospect-pipeline.json</a></li><li><a href="/transparency-audit-delivery-kit.json">transparency-audit-delivery-kit.json</a></li><li><a href="/docs/metadata-policy.md">metadata-policy.md</a></li><li><a href="https://github.com/sata-project-reserve/sata">GitHub repository</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.png">sata-image.png</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/sata-x-header.png">sata-x-header.png</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
+        '<!doctype html><title>SATA Reserve Token</title><h1>SATA Reserve Token</h1><p>Proof over promises. Temporary transparency and launch-app surface while the official SATA website is being built. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/services/transparency-audit">Transparency audit service</a></li><li><a href="/services/sample-audit">Sample transparency audit</a></li><li><a href="/partners/referrals">Referral partners</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/transparency/history">history</a></li><li><a href="/transparency/history.json">history.json</a></li><li><a href="/health.json">health.json</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="/revenue-operating-plan.json">revenue-operating-plan.json</a></li><li><a href="/referral-partner-policy.json">referral-partner-policy.json</a></li><li><a href="/sats-generation-ledger.json">sats-generation-ledger.json</a></li><li><a href="/sats-invoice-queue.json">sats-invoice-queue.json</a></li><li><a href="/sats-prospect-pipeline.json">sats-prospect-pipeline.json</a></li><li><a href="/transparency-audit-delivery-kit.json">transparency-audit-delivery-kit.json</a></li><li><a href="/docs/metadata-policy.md">metadata-policy.md</a></li><li><a href="https://github.com/sata-project-reserve/sata">GitHub repository</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.png">sata-image.png</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/sata-x-header.png">sata-x-header.png</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
         { headers: withCors({ 'content-type': 'text/html; charset=utf-8' }) }
       );
     }
@@ -550,6 +556,98 @@ function buildServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit) {
   <section class="metric">
     <strong>Boundaries</strong>
     <p>No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment. SATA does not sell fake engagement, raids, bots, or investor lists.</p>
+  </section>
+</main>
+</body>
+</html>`;
+}
+
+function buildSampleAuditHtml(deliveryKit) {
+  const sections = [
+    [
+      'Public inputs reviewed',
+      'Example website, public profile, token address, pool reference, and reserve claim.'
+    ],
+    [
+      'Token authority review',
+      'Mint and freeze authority examples are verified; metadata authority is partially verified.'
+    ],
+    [
+      'Liquidity and lock evidence review',
+      'LP lock evidence is partially verified until terms and any removable LP are disclosed.'
+    ],
+    [
+      'Reserve or treasury claim review',
+      'Reserve claims remain unverified until address, balance source, and signed proof are public.'
+    ],
+    [
+      'Ownership and concentration disclosure review',
+      'Top holder data needs labelled owner, team, pool, exchange, and lock accounts.'
+    ],
+    [
+      'Recommended fixes',
+      'Publish proof links, label accounts, summarize lock mechanics, and remove price-support language.'
+    ]
+  ];
+  const cards = sections
+    .map(
+      ([title, detail]) =>
+        `<div class="metric"><span>${escapeHtml(title)}</span><strong>${escapeHtml(detail)}</strong></div>`
+    )
+    .join('');
+  const disclosures = (deliveryKit.deliverableTemplate?.requiredDisclosures ?? [])
+    .map((disclosure) => `<div class="metric"><strong>${escapeHtml(disclosure)}</strong></div>`)
+    .join('');
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SATA Sample Transparency Audit</title>
+  <style>
+    :root { color-scheme: light; --bg: #f6f7f9; --panel: #fff; --text: #111827; --muted: #5b6472; --line: #d9dee7; --accent: #0f766e; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { max-width: 1120px; margin: 0 auto; padding: 24px; display: grid; gap: 18px; }
+    h1 { margin: 0; font-size: clamp(38px, 7vw, 72px); line-height: 1; letter-spacing: 0; }
+    h2 { margin: 0; font-size: 24px; }
+    p { color: var(--muted); line-height: 1.6; }
+    a { color: #0b5f59; }
+    .hero { min-height: 54vh; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); gap: 18px; align-items: center; border-bottom: 1px solid var(--line); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .metric { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 14px; }
+    .metric span { display: block; color: var(--muted); font-size: 13px; }
+    .metric strong { overflow-wrap: anywhere; }
+    .mark { width: min(180px, 48vw); aspect-ratio: 1; border: 1px solid var(--line); border-radius: 8px; object-fit: cover; background: #eef2f5; }
+    @media (max-width: 800px) { .hero, .grid { grid-template-columns: 1fr; } .hero { min-height: auto; padding-top: 16px; } }
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div>
+      <p><strong>Sample deliverable</strong></p>
+      <h1>Sample transparency audit.</h1>
+      <p>This fictional sample shows evidence separation, disclosure gaps, and concrete fixes without rating a token, endorsing a project, or making trading claims.</p>
+      <p><a href="${escapeHtml(deliveryKit.intakeUrl)}">Request audit</a> | <a href="/services/transparency-audit">View service</a> | <a href="/transparency-audit-delivery-kit.json">Delivery kit JSON</a></p>
+    </div>
+    <div>
+      <img class="mark" src="/mainnet/sata-image.png" alt="SATA reserve token mark">
+      <div class="metric"><span>Example Status</span><strong>Fictional sample only</strong><p>This is not a rating, endorsement, recommendation, or investment-grade label.</p></div>
+      <div class="metric"><span>Format</span><strong>${escapeHtml(deliveryKit.deliverableTemplate?.format ?? '')}</strong></div>
+    </div>
+  </section>
+  <section class="metric">
+    <h2>Scope And Limitations</h2>
+    <p>Example Project is not a real client. This page does not approve any invoice, transaction, token grant, promotion, market-making activity, or asset movement.</p>
+  </section>
+  <section>
+    <h2>Evidence Separation</h2>
+    <div class="grid">${cards}</div>
+  </section>
+  <section>
+    <h2>Required Disclosures</h2>
+    <div class="grid">${disclosures}</div>
   </section>
 </main>
 </body>

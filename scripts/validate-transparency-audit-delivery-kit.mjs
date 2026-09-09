@@ -38,6 +38,9 @@ if (!/chairman-approved BTC invoices/i.test(kit.paymentDependency ?? '')) {
 if (!/transparency-audit-intake\.yml/i.test(kit.intakeUrl ?? '')) {
   findings.push('intakeUrl must point to the transparency audit intake issue form');
 }
+if (!/\/services\/sample-audit$/i.test(kit.sampleAuditUrl ?? '')) {
+  findings.push('sampleAuditUrl must point to the public sample audit page');
+}
 
 for (const field of [
   'projectName',

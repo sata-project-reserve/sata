@@ -31,6 +31,9 @@ export default function ReferralPartnersPage() {
             <a className="button-link" href={deliveryKit.intakeUrl}>
               Refer A Customer
             </a>
+            <a className="button-link" href={publicPath('/services/sample-audit')}>
+              Sample Audit
+            </a>
             <a className="button-link" href="https://x.com/SATAReserve">
               Contact @SATAReserve
             </a>

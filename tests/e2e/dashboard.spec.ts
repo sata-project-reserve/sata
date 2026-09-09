@@ -57,6 +57,10 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
   await expect(page.getByRole('heading', { name: 'Delivery Kit' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'View Delivery Kit' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Request Audit' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'View Sample Audit' }).first()).toHaveAttribute(
+    'href',
+    '/services/sample-audit'
+  );
   await expect(page.getByRole('heading', { name: 'Upgrade Path' })).toBeVisible();
   await expect(page.getByText('Offer the $300 full proof dashboard only')).toBeVisible();
   await expect(page.getByRole('link', { name: 'View Setup' })).toHaveAttribute(
@@ -69,6 +73,26 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
   );
   await expect(page.getByText('No price guarantee')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Contact @SATAReserve' })).toBeVisible();
+});
+
+test('sample transparency audit page publishes fictional deliverable boundaries', async ({ page }) => {
+  await page.goto('/services/sample-audit');
+  await expect(page.getByRole('heading', { name: 'Sample transparency audit.' })).toBeVisible();
+  await expect(page.getByText('Fictional Sample', { exact: true })).toBeVisible();
+  await expect(page.getByText('not a rating')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Public Inputs Reviewed' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Token Authority Review' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Evidence Separation' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Recommended Fixes' })).toBeVisible();
+  const tradingBoundary = page.locator('.notice').filter({ hasText: 'Trading Boundary' });
+  await expect(tradingBoundary.getByText('No price guarantee')).toBeVisible();
+  await expect(tradingBoundary.getByText('no redemption promise')).toBeVisible();
+  await expect(tradingBoundary.getByText('no market-support commitment')).toBeVisible();
+  await expect(page.getByText('This page does not approve any invoice')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'View Service' })).toHaveAttribute(
+    'href',
+    '/services/transparency-audit'
+  );
 });
 
 test('higher-value service pages publish gates and boundaries', async ({ page }) => {
@@ -113,6 +137,10 @@ test('referral partner page publishes post-receipt gates', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Policy JSON' })).toHaveAttribute(
     'href',
     '/referral-partner-policy.json'
+  );
+  await expect(page.getByRole('link', { name: 'Sample Audit' })).toHaveAttribute(
+    'href',
+    '/services/sample-audit'
   );
 });
 

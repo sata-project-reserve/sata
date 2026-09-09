@@ -32,6 +32,11 @@ const partnerRoutes = [
     heading: 'Post-receipt referral partners.'
   }
 ];
+const sampleAuditRoute = {
+  path: '/services/sample-audit',
+  file: join('app', 'services', 'sample-audit', 'page.tsx'),
+  heading: 'Sample transparency audit.'
+};
 
 const findings = [];
 const revenuePlan = readJson(join('public', 'revenue-operating-plan.json'));
@@ -39,6 +44,7 @@ const sitemap = readText(join('public', 'sitemap.xml'));
 const reportGenerator = readText(join('scripts', 'generate-transparency-report.mjs'));
 const staticExporter = readText(join('scripts', 'prepare-sites-dist.mjs'));
 const auditPage = readText(join('app', 'services', 'transparency-audit', 'page.tsx'));
+const referralPage = readText(join('app', 'partners', 'referrals', 'page.tsx'));
 
 const revenueStreams = revenuePlan.revenueStreams ?? [];
 for (const route of serviceRoutes) {
@@ -105,6 +111,41 @@ for (const route of partnerRoutes) {
 if (!auditPage.includes("publicPath('/partners/referrals')")) {
   findings.push('/services/transparency-audit: public page must link to referral partners');
 }
+if (!existsSync(sampleAuditRoute.file)) {
+  findings.push(`${sampleAuditRoute.path}: route file is missing`);
+} else {
+  const sampleAuditPage = readText(sampleAuditRoute.file);
+  for (const required of [
+    sampleAuditRoute.heading,
+    'Fictional sample',
+    'not a rating',
+    'This page does not approve any invoice',
+    'No price guarantee',
+    'no redemption promise'
+  ]) {
+    if (!sampleAuditPage.includes(required)) {
+      findings.push(`${sampleAuditRoute.path}: sample page missing ${required}`);
+    }
+  }
+  if (!/no market-support\s+commitment/i.test(sampleAuditPage)) {
+    findings.push(`${sampleAuditRoute.path}: sample page missing no market-support commitment`);
+  }
+}
+if (!auditPage.includes("publicPath('/services/sample-audit')")) {
+  findings.push('/services/transparency-audit: public page must link to sample audit');
+}
+if (!referralPage.includes("publicPath('/services/sample-audit')")) {
+  findings.push('/partners/referrals: public page must link to sample audit');
+}
+if (!sitemap.includes(`https://sata-project-reserve.github.io/sata${sampleAuditRoute.path}`)) {
+  findings.push(`${sampleAuditRoute.path}: public sitemap is missing route`);
+}
+if (!reportGenerator.includes(`\${PUBLIC_BASE_URL}${sampleAuditRoute.path}`)) {
+  findings.push(`${sampleAuditRoute.path}: transparency report sitemap generator is missing route`);
+}
+if (!staticExporter.includes(`url.pathname === '${sampleAuditRoute.path}'`)) {
+  findings.push(`${sampleAuditRoute.path}: Sites static exporter is missing fallback route`);
+}
 
 const publicPathHelper = readText(join('lib', 'public-path.ts'));
 const nextConfig = readText(join('next.config.ts'));
@@ -119,6 +160,7 @@ const publicRouteSources = [
   join('app', 'operations', 'page.tsx'),
   join('app', 'services', '_components', 'high-value-service-page.tsx'),
   join('app', 'services', 'transparency-audit', 'page.tsx'),
+  join('app', 'services', 'sample-audit', 'page.tsx'),
   join('app', 'partners', 'referrals', 'page.tsx')
 ];
 for (const sourcePath of publicRouteSources) {

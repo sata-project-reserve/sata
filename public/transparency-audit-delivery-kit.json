@@ -19,6 +19,10 @@
     "requestedDeliverableVisibility",
     "paymentStatus"
   ],
+  "optionalReferralIntake": [
+    "referralPartner",
+    "referralSource"
+  ],
   "deliverableTemplate": {
     "title": "Transparency Audit - {projectName}",
     "format": "Markdown and optional public JSON summary",

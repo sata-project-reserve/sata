@@ -49,7 +49,8 @@ export function buildReferralPartnerPacket({
       sourceType: 'manual-referral',
       sourceId,
       serviceUrl,
-      referralPageUrl
+      referralPageUrl,
+      intakeUrl: inboundQueue.intakeUrl
     },
     compensation: {
       requestedCompensation: cleanLine(requestedCompensation),
@@ -67,7 +68,8 @@ export function buildReferralPartnerPacket({
       policy,
       displayName: cleanLine(displayName),
       serviceUrl,
-      referralPageUrl
+      referralPageUrl,
+      intakeUrl: inboundQueue.intakeUrl
     }),
     recordReferredLeadCommand: `node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sourceType manual-referral --sourceId ${sourceId} --contactHandle "<customer-handle-or-contact>" --publicProfileUrl "<https-customer-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --evidence "<referral-and-customer-interest-evidence>" --customerAskedForInvoice false`,
     nextAction:
@@ -100,6 +102,7 @@ export function renderReferralPartnerPacket(packet) {
     '## Tracking',
     `Service URL: ${packet.source.serviceUrl}`,
     `Referral policy: ${packet.source.referralPageUrl}`,
+    `Customer intake: ${packet.source.intakeUrl}`,
     '',
     '## Compensation Gate',
     `Payment trigger: ${packet.compensation.paymentTrigger}`,
@@ -165,7 +168,7 @@ export function validateReferralPartnerPacket({ packet, policy, inboundQueue }) 
   return true;
 }
 
-function renderPartnerReply({ policy, displayName, serviceUrl, referralPageUrl }) {
+function renderPartnerReply({ policy, displayName, serviceUrl, referralPageUrl, intakeUrl }) {
   return [
     `Thanks ${displayName}. SATA can consider referral compensation only for legitimate paid transparency-service referrals.`,
     'Any relationship must be clearly disclosed to your audience before compensated coverage or referral activity.',
@@ -173,6 +176,7 @@ function renderPartnerReply({ policy, displayName, serviceUrl, referralPageUrl }
     'No upfront payment, no price or buyer claims, no fake engagement, no bots, no raids, and no market-support commitment.',
     `Service link: ${serviceUrl}`,
     `Referral policy: ${referralPageUrl}`,
+    `Customer intake: ${intakeUrl}`,
     `Required disclosure: ${policy.requiredPartnerDisclosure}`,
     'Send the referred project, contact path, expected role, requested compensation model, and evidence trail for chairman review.'
   ].join('\n\n');

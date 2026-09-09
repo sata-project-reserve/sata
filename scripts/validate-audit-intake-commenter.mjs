@@ -22,6 +22,9 @@ if (!comment.includes('<!-- sata-audit-intake-review -->')) {
 if (!/No payment instruction has been issued/i.test(comment)) {
   findings.push('comment must clearly state that automation has not issued payment instructions');
 }
+if (!/Referral partner: Diana Crypto/i.test(comment)) {
+  findings.push('comment must preserve referral partner attribution');
+}
 if (!/Executive Chairman approval is required/i.test(comment)) {
   findings.push('comment must require Executive Chairman approval before invoices or commitments');
 }

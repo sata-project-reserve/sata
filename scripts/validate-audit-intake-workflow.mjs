@@ -17,8 +17,29 @@ if (!/transparency-audit-intake\.yml/i.test(deliveryKit.intakeUrl ?? '')) {
   findings.push('delivery kit must link to the transparency audit intake form');
 }
 if (!/service-intake/.test(form)) findings.push('issue form must apply the service-intake label');
+if (!/id:\s*referralPartner/.test(form)) {
+  findings.push('issue form must include optional referralPartner field');
+}
+if (!/id:\s*referralSource/.test(form)) {
+  findings.push('issue form must include optional referralSource field');
+}
+if (!(deliveryKit.optionalReferralIntake ?? []).includes('referralPartner')) {
+  findings.push('delivery kit must list optional referralPartner intake');
+}
+if (!(deliveryKit.optionalReferralIntake ?? []).includes('referralSource')) {
+  findings.push('delivery kit must list optional referralSource intake');
+}
 if (draft.missingRequiredFields.length > 0) {
   findings.push(`fixture missing required fields: ${draft.missingRequiredFields.join(', ')}`);
+}
+if (draft.intake.referralPartner !== 'Diana Crypto') {
+  findings.push('parser must capture referral partner field');
+}
+if (!draft.prospectDraft.evidence.includes('referralPartner:Diana Crypto')) {
+  findings.push('prospect draft evidence must preserve referral partner');
+}
+if (draft.deliveryDraft.referralSource !== 'https://x.com/142C_/status/2086570576530010172') {
+  findings.push('delivery draft must preserve referral source');
 }
 if (draft.prospectDraft.stage !== 'identified') {
   findings.push('imported prospect drafts must start at identified until chairman review');

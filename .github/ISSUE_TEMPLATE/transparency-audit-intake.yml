@@ -85,6 +85,20 @@ body:
       description: Add block explorers, lock records, reserve proofs, repositories, or public posts.
     validations:
       required: false
+  - type: input
+    id: referralPartner
+    attributes:
+      label: Referral partner
+      description: Optional. X handle, contact name, or partner id if someone referred you.
+    validations:
+      required: false
+  - type: input
+    id: referralSource
+    attributes:
+      label: Referral source
+      description: Optional. Link or note showing where the referral came from.
+    validations:
+      required: false
   - type: checkboxes
     id: acknowledgements
     attributes:

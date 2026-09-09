@@ -7,7 +7,9 @@ const FIELD_LABELS = {
   claimsToReview: 'Claims to review',
   requestedDeliverableVisibility: 'Requested deliverable visibility',
   paymentStatus: 'Payment status',
-  evidence: 'Evidence links'
+  evidence: 'Evidence links',
+  referralPartner: 'Referral partner',
+  referralSource: 'Referral source'
 };
 
 export function parseIssueFormBody(body) {
@@ -57,7 +59,15 @@ export function buildAuditIntakeDraft({ issue, deliveryKit, prospectPipeline, in
       observedClaim: intake.claimsToReview,
       recommendedOfferId: deliveryKit.primaryOfferId,
       chairmanApprovedBeforeOutreach: false,
-      evidence: compact([issueUrl, intake.tokenOrContractAddress, intake.evidence])
+      referralPartner: intake.referralPartner,
+      referralSource: intake.referralSource,
+      evidence: compact([
+        issueUrl,
+        intake.tokenOrContractAddress,
+        intake.evidence,
+        intake.referralPartner ? `referralPartner:${intake.referralPartner}` : '',
+        intake.referralSource ? `referralSource:${intake.referralSource}` : ''
+      ])
     },
     invoiceDraft: {
       status: 'draft',
@@ -79,7 +89,9 @@ export function buildAuditIntakeDraft({ issue, deliveryKit, prospectPipeline, in
       format: deliveryKit.deliverableTemplate.format,
       sections: deliveryKit.deliverableTemplate.sections,
       visibility: intake.requestedDeliverableVisibility,
-      paymentStatus: intake.paymentStatus
+      paymentStatus: intake.paymentStatus,
+      referralPartner: intake.referralPartner,
+      referralSource: intake.referralSource
     },
     nextRequiredAction:
       missingRequiredFields.length > 0

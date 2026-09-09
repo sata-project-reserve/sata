@@ -71,6 +71,8 @@ export function renderAuditIntakeComment(draft) {
     `- Claims requested: ${safeValue(draft.intake.claimsToReview)}`,
     `- Requested visibility: ${safeValue(draft.intake.requestedDeliverableVisibility)}`,
     `- Payment status: ${safeValue(draft.intake.paymentStatus)}`,
+    `- Referral partner: ${safeValue(draft.intake.referralPartner)}`,
+    `- Referral source: ${safeValue(draft.intake.referralSource)}`,
     '',
     'Draft records prepared:',
     `- Prospect draft id: ${draft.prospectDraft.id}`,

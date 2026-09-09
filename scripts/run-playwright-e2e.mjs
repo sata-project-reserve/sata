@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import { writeFile } from 'node:fs/promises';
+import net from 'node:net';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -33,13 +34,8 @@ async function waitForServer() {
 
   while (Date.now() < deadline) {
     try {
-      const response = await fetch(baseUrl, {
-        signal: AbortSignal.timeout(2_000)
-      });
-      if (response.ok) {
-        return;
-      }
-      lastError = new Error(`HTTP ${response.status}`);
+      await waitForTcpPort();
+      return;
     } catch (error) {
       lastError = error;
     }
@@ -48,6 +44,26 @@ async function waitForServer() {
   }
 
   throw new Error(`Timed out waiting for ${baseUrl}: ${lastError?.message ?? 'no response'}`);
+}
+
+function waitForTcpPort() {
+  return new Promise((resolve, reject) => {
+    const socket = net.connect(Number(port), '127.0.0.1');
+    const timeout = setTimeout(() => {
+      socket.destroy();
+      reject(new Error('TCP probe timed out'));
+    }, 2_000);
+
+    socket.once('connect', () => {
+      clearTimeout(timeout);
+      socket.end();
+      resolve();
+    });
+    socket.once('error', (error) => {
+      clearTimeout(timeout);
+      reject(error);
+    });
+  });
 }
 
 function killProcessTree(child) {

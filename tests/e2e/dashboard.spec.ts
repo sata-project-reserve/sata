@@ -194,6 +194,8 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     referralPolicyBlock.getByText('post-receipt-referral-partner-policy', { exact: true })
   ).toBeVisible();
   await expect(referralPolicyBlock.getByText('npm run ops:referral-policy-check')).toBeVisible();
+  await expect(referralPolicyBlock.getByText('Partner Packet')).toBeVisible();
+  await expect(referralPolicyBlock.getByText('npm run ops:referral-packet-plan')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Manual Outreach Packets' })).toBeVisible();
   await expect(page.getByText('Showing 5 of 30 ready packets.')).toBeVisible();
   await expect(page.getByText('Sprint Gross Target')).toBeVisible();

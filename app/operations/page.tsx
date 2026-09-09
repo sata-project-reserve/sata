@@ -181,6 +181,10 @@ function recordPaidPromotionConversionCommand(campaign: PaidPromotionCampaign) {
   return `node scripts/paid-promotion-agent.mjs record-conversion --campaign ${campaign.id} --evidence "<24h-analytics-and-inquiry-log>" --profileViewLift "<profile-view-change-or-not-recorded>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0`;
 }
 
+function referralPartnerPacketCommand() {
+  return 'npm run ops:referral-packet-plan -- --partner "diana-crypto" --displayName "Diana Crypto" --handle "142C_" --sourceEvidence "<dm-or-reply-evidence>" --requestedCompensation "post-receipt referral share"';
+}
+
 export default function OperationsPage() {
   const approvalCounts = countByStatus(approvalQueue.items);
   const prospectCounts = countByStage(prospectPipeline.prospects);
@@ -849,6 +853,8 @@ export default function OperationsPage() {
               <code>{PUBLIC_BASE_URL}/partners/referrals</code>
               <span>Policy Check</span>
               <code>npm run ops:referral-policy-check</code>
+              <span>Partner Packet</span>
+              <code>{referralPartnerPacketCommand()}</code>
               {referralPolicyApprovalItem ? (
                 <>
                   <span>Approve</span>

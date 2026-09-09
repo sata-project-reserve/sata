@@ -30,6 +30,12 @@ if (packet.source.sourceType !== 'manual-referral') {
 if (!packet.source.serviceUrl.includes('utm_source=referral_diana_crypto')) {
   findings.push('packet must generate a partner-specific service tracking URL');
 }
+if (!packet.source.sampleAuditUrl.includes('/services/sample-audit?')) {
+  findings.push('packet must generate a tracked sample audit URL');
+}
+if (!/Sample audit:/i.test(rendered) || !/services\/sample-audit/i.test(packet.replyTemplate)) {
+  findings.push('rendered packet and reply template must include the sample audit link');
+}
 if (!packet.recordReferredLeadCommand.includes('--customerAskedForInvoice false')) {
   findings.push('packet must record referred customers before invoice request status');
 }

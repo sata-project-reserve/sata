@@ -50,6 +50,7 @@ function printPlan(pipeline, deliveryKit) {
           channel: template.channel
         })),
         servicePage: 'https://sata-project-reserve.github.io/sata/services/transparency-audit',
+        sampleAudit: deliveryKit.sampleAuditUrl,
         intakeUrl: deliveryKit.intakeUrl,
         nextAction:
           'Render a packet from an approved template for a qualified public-evidence prospect, then request chairman approval before outreach. Use render-approved only for outreach-approved prospect records.',
@@ -274,6 +275,7 @@ export function renderOutreachPacket({
     ...context,
     context.length > 0 ? '' : null,
     `Service page: https://sata-project-reserve.github.io/sata/services/transparency-audit`,
+    `Sample audit: ${deliveryKit.sampleAuditUrl}`,
     `Intake form: ${deliveryKit.intakeUrl}`,
     '',
     'Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.'

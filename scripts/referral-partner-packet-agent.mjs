@@ -34,6 +34,12 @@ export function buildReferralPartnerPacket({
     utm_campaign: sourceId,
     utm_content: 'policy'
   });
+  const sampleAuditUrl = trackedPublicUrl('/services/sample-audit', {
+    utm_source: `referral_${cleanPartnerId}`,
+    utm_medium: 'partner_referral',
+    utm_campaign: sourceId,
+    utm_content: 'sample_audit'
+  });
 
   const packet = {
     project: policy.project,
@@ -49,6 +55,7 @@ export function buildReferralPartnerPacket({
       sourceType: 'manual-referral',
       sourceId,
       serviceUrl,
+      sampleAuditUrl,
       referralPageUrl,
       intakeUrl: inboundQueue.intakeUrl
     },
@@ -68,6 +75,7 @@ export function buildReferralPartnerPacket({
       policy,
       displayName: cleanLine(displayName),
       serviceUrl,
+      sampleAuditUrl,
       referralPageUrl,
       intakeUrl: inboundQueue.intakeUrl
     }),
@@ -101,6 +109,7 @@ export function renderReferralPartnerPacket(packet) {
     '',
     '## Tracking',
     `Service URL: ${packet.source.serviceUrl}`,
+    `Sample audit: ${packet.source.sampleAuditUrl}`,
     `Referral policy: ${packet.source.referralPageUrl}`,
     `Customer intake: ${packet.source.intakeUrl}`,
     '',
@@ -148,6 +157,9 @@ export function validateReferralPartnerPacket({ packet, policy, inboundQueue }) 
   if (!/customerAskedForInvoice false/i.test(packet.recordReferredLeadCommand ?? '')) {
     findings.push('record command must start referred leads before invoice-request status');
   }
+  if (!/\/services\/sample-audit\?/i.test(packet.source?.sampleAuditUrl ?? '')) {
+    findings.push('packet must include a tracked sample audit URL');
+  }
   for (const required of [
     'Customer request for paid service.',
     'Chairman-approved invoice.',
@@ -168,13 +180,14 @@ export function validateReferralPartnerPacket({ packet, policy, inboundQueue }) 
   return true;
 }
 
-function renderPartnerReply({ policy, displayName, serviceUrl, referralPageUrl, intakeUrl }) {
+function renderPartnerReply({ policy, displayName, serviceUrl, sampleAuditUrl, referralPageUrl, intakeUrl }) {
   return [
     `Thanks ${displayName}. SATA can consider referral compensation only for legitimate paid transparency-service referrals.`,
     'Any relationship must be clearly disclosed to your audience before compensated coverage or referral activity.',
     'Compensation is considered only after a referred customer pays and the receipt is confirmed.',
     'No upfront payment, no price or buyer claims, no fake engagement, no bots, no raids, and no market-support commitment.',
     `Service link: ${serviceUrl}`,
+    `Sample audit: ${sampleAuditUrl}`,
     `Referral policy: ${referralPageUrl}`,
     `Customer intake: ${intakeUrl}`,
     `Required disclosure: ${policy.requiredPartnerDisclosure}`,

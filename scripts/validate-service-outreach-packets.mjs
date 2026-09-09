@@ -74,6 +74,7 @@ for (const required of [
   /no investor targeting/i,
   /no market-support promises/i,
   /services\/transparency-audit/i,
+  /services\/sample-audit/i,
   /transparency-audit-intake\.yml/i,
   /Executive Chairman approval/i
 ]) {

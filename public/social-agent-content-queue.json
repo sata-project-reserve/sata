@@ -86,6 +86,13 @@
       "text": "SATA referral partners are post-receipt only: real transparency-service customer referrals, no upfront payment, no buyer/price claims, no fake engagement. Compensation requires confirmed receipt and chairman approval. https://sata-project-reserve.github.io/sata/partners/referrals"
     },
     {
+      "id": "sample-transparency-audit",
+      "status": "ready-for-review",
+      "type": "revenue",
+      "requiresHumanApproval": true,
+      "text": "SATA published a sample $50 transparency audit: authority, liquidity, reserve, and disclosure checks.\n\nNot a redemption promise or guaranteed price floor. Locked LP verified; unlocked LP disclosed separately.\n\nhttps://sata-project-reserve.github.io/sata/services/sample-audit"
+    },
+    {
       "id": "gmgn-route-pending",
       "status": "hold-until-manual-verification",
       "type": "market-readiness",

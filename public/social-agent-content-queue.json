@@ -79,6 +79,13 @@
       "approvedAtUtc": "2026-09-03T21:48:49.400Z"
     },
     {
+      "id": "post-receipt-referral-partners",
+      "status": "ready-for-review",
+      "type": "revenue",
+      "requiresHumanApproval": true,
+      "text": "SATA referral partners are post-receipt only: real transparency-service customer referrals, no upfront payment, no buyer/price claims, no fake engagement. Compensation requires confirmed receipt and chairman approval. https://sata-project-reserve.github.io/sata/partners/referrals"
+    },
+    {
       "id": "gmgn-route-pending",
       "status": "hold-until-manual-verification",
       "type": "market-readiness",

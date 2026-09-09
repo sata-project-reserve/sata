@@ -7,14 +7,8 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: 'list',
   use: {
-    baseURL: 'http://127.0.0.1:3001',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:3001',
     trace: 'on-first-retry'
-  },
-  webServer: {
-    command: 'npm run dev -- -p 3001',
-    url: 'http://127.0.0.1:3001',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },

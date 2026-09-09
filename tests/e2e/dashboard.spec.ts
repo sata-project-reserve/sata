@@ -94,7 +94,7 @@ test('higher-value service pages publish gates and boundaries', async ({ page })
 });
 
 test('referral partner page publishes post-receipt gates', async ({ page }) => {
-  await page.goto('/partners/referrals');
+  await page.goto('/partners/referrals', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: 'Post-receipt referral partners.' })).toBeVisible();
   await expect(page.locator('.service-primary-metric')).toContainText('Default Share');
   await expect(page.locator('.service-primary-metric')).toContainText('10%');
@@ -149,7 +149,12 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByText('#1 manual-outreach-send')).toBeVisible();
   await expect(page.getByText('#2 manual-outreach-send')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Social Review Queue' })).toBeVisible();
-  await expect(page.getByText('No social posts are waiting for chairman review.')).toBeVisible();
+  await expect(page.getByText('post-receipt-referral-partners', { exact: true })).toBeVisible();
+  await expect(
+    page.getByText(
+      'npm run social:agent -- approve-post --post post-receipt-referral-partners --confirmChairmanApproval "I am Executive Chairman and approve social post post-receipt-referral-partners"'
+    )
+  ).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Approved Social Publishing Queue' })
   ).toBeVisible();

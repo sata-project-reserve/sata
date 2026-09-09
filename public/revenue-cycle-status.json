@@ -28,7 +28,7 @@
   "social": {
     "queueMode": "approved-only-automation",
     "approvedPosts": 7,
-    "readyForReviewPosts": 1,
+    "readyForReviewPosts": 2,
     "livePostingEnabled": false
   },
   "blockers": [

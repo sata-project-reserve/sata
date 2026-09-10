@@ -48,6 +48,9 @@ const baseInputs = {
   outreachPacketQueue: {
     packets: []
   },
+  inboundLeadQueue: {
+    leads: []
+  },
   paidPromotionLedger: {
     campaigns: []
   },
@@ -129,6 +132,27 @@ const receiptStatus = buildRevenueCycleStatus({
 validateRevenueCycleStatus(receiptStatus);
 assertIncludes(receiptStatus.nextAction, 'Render receipt allocation proposal for receipt-1');
 assertEqual(receiptStatus.funnel.receiptsAwaitingAllocation, 1);
+
+const inboundInvoiceStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  inboundLeadQueue: {
+    leads: [
+      {
+        id: 'hot-inbound-lead',
+        status: 'invoice-requested-needs-chairman-review',
+        customerAskedForInvoice: true
+      }
+    ]
+  },
+  env: {}
+});
+validateRevenueCycleStatus(inboundInvoiceStatus);
+assertEqual(inboundInvoiceStatus.funnel.inboundInvoiceRequestsNeedingChairmanReview, 1);
+assertEqual(inboundInvoiceStatus.actionQueue[0]?.type, 'inbound-invoice-request-packet');
+assertIncludes(
+  inboundInvoiceStatus.nextAction,
+  'Render chairman review packet for inbound invoice request hot-inbound-lead'
+);
 
 const readyOutreachPacketStatus = buildRevenueCycleStatus({
   ...baseInputs,
@@ -309,6 +333,7 @@ async function readPublicInputs() {
     invoiceQueue: await readJson(join('public', 'sats-invoice-queue.json')),
     prospectPipeline: await readJson(join('public', 'sats-prospect-pipeline.json')),
     outreachPacketQueue: await readJson(join('public', 'service-outreach-packet-queue.json')),
+    inboundLeadQueue: await readJson(join('public', 'inbound-service-lead-queue.json')),
     paidPromotionLedger: await readJson(join('public', 'paid-promotion-ledger.json')),
     approvalQueue: await readJson(join('public', 'executive-approval-queue.json')),
     socialQueue: await readJson(join('public', 'social-agent-content-queue.json'))

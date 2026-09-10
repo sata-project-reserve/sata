@@ -20,6 +20,7 @@
     "receiptsAwaitingAllocation": 0,
     "recordedAllocations": 0,
     "readyOutreachPackets": 30,
+    "inboundInvoiceRequestsNeedingChairmanReview": 0,
     "paidPromotionCampaigns": 1,
     "paidPromotionsAwaitingVerification": 0,
     "paidPromotionsAwaitingConversion": 0,

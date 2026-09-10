@@ -5,6 +5,7 @@ export function buildRevenueCycleStatus({
   invoiceQueue,
   prospectPipeline,
   outreachPacketQueue = { packets: [] },
+  inboundLeadQueue = { leads: [] },
   paidPromotionLedger = { campaigns: [] },
   approvalQueue = { items: [] },
   socialQueue,
@@ -17,6 +18,7 @@ export function buildRevenueCycleStatus({
     invoiceQueue,
     prospectPipeline,
     outreachPacketQueue,
+    inboundLeadQueue,
     paidPromotionLedger,
     approvalQueue,
     socialQueue
@@ -41,6 +43,9 @@ export function buildRevenueCycleStatus({
   );
   const readyOutreachPackets = (outreachPacketQueue.packets ?? []).filter(
     (packet) => packet.status === 'ready-for-manual-send'
+  );
+  const inboundInvoiceRequests = (inboundLeadQueue.leads ?? []).filter(
+    (lead) => lead.status === 'invoice-requested-needs-chairman-review'
   );
   const paidPromotionCampaigns = paidPromotionLedger.campaigns ?? [];
   const paidPromotionsAwaitingVerification = paidPromotionCampaigns.filter((campaign) =>
@@ -76,6 +81,7 @@ export function buildRevenueCycleStatus({
     approvedInvoices,
     receiptsAwaitingAllocation,
     readyOutreachPackets,
+    inboundInvoiceRequests,
     paidPromotionsAwaitingVerification,
     paidPromotionsAwaitingConversion,
     followUpDueProspects,
@@ -110,6 +116,7 @@ export function buildRevenueCycleStatus({
       receiptsAwaitingAllocation: receiptsAwaitingAllocation.length,
       recordedAllocations: allocations.length,
       readyOutreachPackets: readyOutreachPackets.length,
+      inboundInvoiceRequestsNeedingChairmanReview: inboundInvoiceRequests.length,
       paidPromotionCampaigns: paidPromotionCampaigns.length,
       paidPromotionsAwaitingVerification: paidPromotionsAwaitingVerification.length,
       paidPromotionsAwaitingConversion: paidPromotionsAwaitingConversion.length,
@@ -182,6 +189,7 @@ function buildActionQueue({
   approvedInvoices,
   receiptsAwaitingAllocation,
   readyOutreachPackets,
+  inboundInvoiceRequests,
   paidPromotionsAwaitingVerification,
   paidPromotionsAwaitingConversion,
   followUpDueProspects,
@@ -230,6 +238,19 @@ function buildActionQueue({
       command: `node scripts/sats-invoice-payment-packet-agent.mjs render --invoice ${invoice.id}`,
       evidenceRequired: 'Chairman-approved exact-sats invoice record.',
       boundary: 'Payment instructions must route only to the published reserve address.'
+    });
+  }
+
+  for (const lead of inboundInvoiceRequests) {
+    actions.push({
+      id: `inbound-invoice-request-${lead.id}`,
+      priority: actions.length + 1,
+      type: 'inbound-invoice-request-packet',
+      title: `Render chairman review packet for inbound invoice request ${lead.id}.`,
+      requiredActor: 'agent prepares quote inputs; Executive Chairman approves invoice',
+      command: `node scripts/inbound-invoice-request-agent.mjs render --lead ${lead.id}`,
+      evidenceRequired: 'Inbound lead evidence and explicit customer invoice request.',
+      boundary: 'No exact-sats invoice or payment instruction may be sent before chairman approval.'
     });
   }
 
@@ -483,6 +504,7 @@ function assertInputs({
   outreachPacketQueue,
   paidPromotionLedger,
   approvalQueue,
+  inboundLeadQueue,
   socialQueue
 }) {
   const required = {
@@ -494,6 +516,7 @@ function assertInputs({
     outreachPacketQueue,
     paidPromotionLedger,
     approvalQueue,
+    inboundLeadQueue,
     socialQueue
   };
   for (const [label, value] of Object.entries(required)) {

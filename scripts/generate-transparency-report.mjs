@@ -10,7 +10,7 @@ import {
   getAddressEncoder,
   getProgramDerivedAddress
 } from '@solana/kit';
-import { buildRevenueCycleStatus, validateRevenueCycleStatus } from './lib/revenue-cycle-status.mjs';
+import { writeRevenueCyclePublicStatus } from './lib/revenue-cycle-public-state.mjs';
 
 await loadLocalEnvFile('.env.local');
 
@@ -737,7 +737,6 @@ async function writeReports(report) {
   ]);
   const history = await buildHistoryLedger(report, publicDir);
   const health = buildHealthReport(report, history);
-  const revenueCycleStatus = await buildPublishedRevenueCycleStatus(report);
   const sitemap = buildSitemap(report);
   const robots = buildRobots();
   const json = `${JSON.stringify(report, null, 2)}\n`;
@@ -745,7 +744,6 @@ async function writeReports(report) {
   const historyJson = `${JSON.stringify(history, null, 2)}\n`;
   const historyMarkdown = buildHistoryMarkdown(history);
   const healthJson = `${JSON.stringify(health, null, 2)}\n`;
-  const revenueCycleStatusJson = `${JSON.stringify(revenueCycleStatus, null, 2)}\n`;
   await Promise.all([
     writeFile(join(artifactDir, `sata-transparency-${slug}.json`), json, 'utf8'),
     writeFile(join(artifactDir, `sata-transparency-${slug}.md`), markdown, 'utf8'),
@@ -757,11 +755,11 @@ async function writeReports(report) {
     writeFile(join(publicDir, 'latest.md'), markdown, 'utf8'),
     writeFile(join(publicDir, 'history.json'), historyJson, 'utf8'),
     writeFile(join(publicDir, 'history.md'), historyMarkdown, 'utf8'),
-    writeFile(join('public', 'revenue-cycle-status.json'), revenueCycleStatusJson, 'utf8'),
     writeFile(join('public', 'health.json'), healthJson, 'utf8'),
     writeFile(join('public', 'sitemap.xml'), sitemap, 'utf8'),
     writeFile(join('public', 'robots.txt'), robots, 'utf8')
   ]);
+  await writeRevenueCyclePublicStatus({ reportOverride: report, env: {} });
   return {
     artifactJson: join(artifactDir, `sata-transparency-${slug}.json`),
     artifactMarkdown: join(artifactDir, `sata-transparency-${slug}.md`),
@@ -771,25 +769,6 @@ async function writeReports(report) {
     publicRevenueCycleStatusJson: join('public', 'revenue-cycle-status.json'),
     publicHealthJson: join('public', 'health.json')
   };
-}
-
-async function buildPublishedRevenueCycleStatus(report) {
-  const status = buildRevenueCycleStatus({
-    report,
-    revenuePlan: await readRequiredJson(join('public', 'revenue-operating-plan.json')),
-    ledger: await readRequiredJson(join('public', 'sats-generation-ledger.json')),
-    invoiceQueue: await readRequiredJson(join('public', 'sats-invoice-queue.json')),
-    prospectPipeline: await readRequiredJson(join('public', 'sats-prospect-pipeline.json')),
-    outreachPacketQueue: await readRequiredJson(join('public', 'service-outreach-packet-queue.json')),
-    paidPromotionLedger: await readRequiredJson(join('public', 'paid-promotion-ledger.json')),
-    referralPartnerPolicy: await readRequiredJson(join('public', 'referral-partner-policy.json')),
-    referralPartnerHandoffQueue: await readRequiredJson(join('public', 'referral-partner-handoff-queue.json')),
-    approvalQueue: await readRequiredJson(join('public', 'executive-approval-queue.json')),
-    socialQueue: await readRequiredJson(join('public', 'social-agent-content-queue.json')),
-    env: {}
-  });
-  validateRevenueCycleStatus(status);
-  return status;
 }
 
 async function buildHistoryLedger(report, publicDir) {

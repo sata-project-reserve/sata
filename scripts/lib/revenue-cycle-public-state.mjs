@@ -63,9 +63,13 @@ export async function writeRevenueCyclePublicStatus({
   replyConversionBriefMarkdownPath = join('public', 'reply-conversion-brief.md'),
   referralHandoffDispatchBriefJsonPath = join('public', 'referral-handoff-dispatch-brief.json'),
   referralHandoffDispatchBriefMarkdownPath = join('public', 'referral-handoff-dispatch-brief.md'),
+  reportOverride = null,
   env = process.env
 } = {}) {
   const inputs = await readRevenueCyclePublicInputs(paths);
+  if (reportOverride) {
+    inputs.report = reportOverride;
+  }
   const status = buildRevenueCyclePublicStatus(inputs, env);
   const generatedAtUtc = new Date(
     env.SATA_REVENUE_OPS_GENERATED_AT_UTC ?? new Date().toISOString()

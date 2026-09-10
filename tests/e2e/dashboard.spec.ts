@@ -145,12 +145,15 @@ test('referral partner page publishes post-receipt gates', async ({ page }) => {
 });
 
 test('operations page surfaces chairman queue and prospect batch', async ({ page }) => {
-  await page.goto('/operations');
+  await page.goto('/operations', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: 'Reserve growth queue.' })).toBeVisible();
   await expect(page.getByText('500000 sats').first()).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Cycle Status' })).toBeVisible();
   await expect(page.getByText('999,500,000 sats')).toBeVisible();
   await expect(page.getByText('Ready Outreach Packets')).toBeVisible();
+  await expect(
+    page.locator('.metric').filter({ hasText: 'Inbound Invoice Requests' }).first()
+  ).toBeVisible();
   await expect(page.getByText('Due Follow-Ups')).toBeVisible();
   await expect(page.getByText('Paid Campaigns')).toBeVisible();
   await expect(page.getByText('Promo Verification')).toBeVisible();

@@ -424,6 +424,10 @@ export default function OperationsPage() {
             <strong>{cycleStatus.funnel.readyOutreachPackets}</strong>
           </div>
           <div className="metric">
+            <span>Inbound Invoice Requests</span>
+            <strong>{cycleStatus.funnel.inboundInvoiceRequestsNeedingChairmanReview}</strong>
+          </div>
+          <div className="metric">
             <span>Due Follow-Ups</span>
             <strong>{cycleStatus.funnel.followUpDueProspects}</strong>
           </div>

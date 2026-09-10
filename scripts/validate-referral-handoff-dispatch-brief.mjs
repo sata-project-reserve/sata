@@ -101,7 +101,11 @@ if (publicBrief) {
   if (JSON.stringify(publicBrief) !== JSON.stringify(expectedPublicBrief)) {
     findings.push('public referral-handoff-dispatch-brief.json must match current generated brief');
   }
-  if (publicMarkdown && publicMarkdown !== renderReferralHandoffDispatchMarkdown(publicBrief)) {
+  if (
+    publicMarkdown &&
+    normalizeMarkdown(publicMarkdown) !==
+      normalizeMarkdown(renderReferralHandoffDispatchMarkdown(publicBrief))
+  ) {
     findings.push('public referral-handoff-dispatch-brief.md must match public JSON brief');
   }
 }
@@ -155,4 +159,8 @@ function stripNegativeSafetyLanguage(text) {
 
 function unsafePositiveClaimPattern() {
   return /\b(guaranteed buyers|fake engagement|bots|raids|price prediction|price guarantee|redemption promise|market support|market-support commitment)\b/i;
+}
+
+function normalizeMarkdown(value) {
+  return String(value ?? '').replace(/\r\n/g, '\n');
 }

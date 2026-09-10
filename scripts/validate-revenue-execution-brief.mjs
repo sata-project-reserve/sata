@@ -382,7 +382,9 @@ if (publicMarkdown) {
     findings.push(
       'public revenue-execution-brief.md requires matching revenue-execution-brief.json'
     );
-  } else if (publicMarkdown !== renderRevenueExecutionMarkdown(publicBrief)) {
+  } else if (
+    normalizeMarkdown(publicMarkdown) !== normalizeMarkdown(renderRevenueExecutionMarkdown(publicBrief))
+  ) {
     findings.push('public revenue-execution-brief.md must match the public JSON brief');
   }
   for (const command of publicMarkdown.match(
@@ -464,4 +466,8 @@ function hasUnsafeOperatingLanguage(value) {
   return /\b(private key|seed phrase|guaranteed buyers|fake engagement|bots|raids|price prediction|price guarantee|redemption promise)\b/i.test(
     cleaned
   );
+}
+
+function normalizeMarkdown(value) {
+  return String(value ?? '').replace(/\r\n/g, '\n');
 }

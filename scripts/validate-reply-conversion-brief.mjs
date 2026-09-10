@@ -204,7 +204,11 @@ if (publicBrief) {
   if (JSON.stringify(publicBrief) !== JSON.stringify(expectedPublicBrief)) {
     findings.push('public reply-conversion-brief.json must match the current generated brief');
   }
-  if (publicMarkdown && publicMarkdown !== renderReplyConversionMarkdown(publicBrief)) {
+  if (
+    publicMarkdown &&
+    normalizeMarkdown(publicMarkdown) !==
+      normalizeMarkdown(renderReplyConversionMarkdown(publicBrief))
+  ) {
     findings.push('public reply-conversion-brief.md must match the public JSON brief');
   }
   for (const item of publicBrief.eligibleContactRecording ?? []) {
@@ -254,4 +258,8 @@ function readOptionalText(path) {
     if (error.code === 'ENOENT') return null;
     throw error;
   }
+}
+
+function normalizeMarkdown(value) {
+  return String(value ?? '').replace(/\r\n/g, '\n');
 }

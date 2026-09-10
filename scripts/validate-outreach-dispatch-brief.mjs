@@ -219,7 +219,11 @@ if (publicBrief) {
   if (JSON.stringify(publicBrief) !== JSON.stringify(expectedPublicBrief)) {
     findings.push('public outreach-dispatch-brief.json must match the current generated brief');
   }
-  if (publicMarkdown && publicMarkdown !== renderOutreachDispatchMarkdown(publicBrief)) {
+  if (
+    publicMarkdown &&
+    normalizeMarkdown(publicMarkdown) !==
+      normalizeMarkdown(renderOutreachDispatchMarkdown(publicBrief))
+  ) {
     findings.push('public outreach-dispatch-brief.md must match the public JSON brief');
   }
   for (const packet of publicBrief.readyManualSends ?? []) {
@@ -269,4 +273,8 @@ function readOptionalText(path) {
     if (error.code === 'ENOENT') return null;
     throw error;
   }
+}
+
+function normalizeMarkdown(value) {
+  return String(value ?? '').replace(/\r\n/g, '\n');
 }

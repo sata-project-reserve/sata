@@ -20,7 +20,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       printPlan(pipeline, deliveryKit);
       break;
     case 'render':
-      printPacket(pipeline, deliveryKit, args);
+      printPacket(pipeline, deliveryKit, packetQueue, args);
       break;
     case 'render-approved':
       printApprovedPacket(pipeline, deliveryKit, args);
@@ -63,8 +63,13 @@ function printPlan(pipeline, deliveryKit) {
   );
 }
 
-function printPacket(pipeline, deliveryKit, args) {
+function printPacket(pipeline, deliveryKit, packetQueue, args) {
   const options = parseOptions(args);
+  if (options.packet) {
+    const packet = findQueuedOutreachPacket(packetQueue, options.packet);
+    console.log(packet.message);
+    return;
+  }
   const packet = renderOutreachPacket({
     pipeline,
     deliveryKit,
@@ -74,6 +79,20 @@ function printPacket(pipeline, deliveryKit, args) {
     projectUrl: options.projectUrl
   });
   console.log(packet);
+}
+
+export function findQueuedOutreachPacket(packetQueue, packetId) {
+  const id = cleanLine(packetId);
+  if (!id) throw new Error('Packet id is required.');
+  const packet = (packetQueue?.packets ?? []).find((item) => item.id === id);
+  if (!packet) throw new Error(`Outreach packet not found: ${id}`);
+  if (!['ready-for-manual-send', 'sent'].includes(packet.status)) {
+    throw new Error(`${id}: only ready-for-manual-send or sent packets can be rendered.`);
+  }
+  if (!cleanLine(packet.message)) {
+    throw new Error(`${id}: queued outreach packet does not include a message.`);
+  }
+  return packet;
 }
 
 function printApprovedPacket(pipeline, deliveryKit, args) {

@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import {
   appendApprovedProspectOutreachPacket,
   buildApprovedProspectOutreachPacketRecord,
+  findQueuedOutreachPacket,
   markOutreachPacketSent,
   renderApprovedProspectOutreachPacket,
   renderOutreachPacket,
@@ -100,6 +101,10 @@ if (!/mark-sent/i.test(approvedRecord.recordContactCommand)) {
   findings.push('approved outreach record must include contact evidence command');
 }
 validateOutreachPacketQueue({ queue: packetQueue, pipeline: approvedPipeline });
+const queuedPacket = findQueuedOutreachPacket(packetQueue, approvedRecord.id);
+if (queuedPacket.message !== approvedRecord.message) {
+  findings.push('queued packet lookup must return the stored approved message');
+}
 const sentResult = markOutreachPacketSent({
   queue: packetQueue,
   pipeline: approvedPipeline,

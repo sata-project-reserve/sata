@@ -8,7 +8,7 @@
     "targetSats": "1000000000",
     "remainingSats": "999500000",
     "remainingBtc": "9.995",
-    "latestReportGeneratedAtUtc": "2026-09-10T16:27:01.833Z"
+    "latestReportGeneratedAtUtc": "2026-09-10T16:30:30.304Z"
   },
   "funnel": {
     "prospects": 30,
@@ -43,15 +43,15 @@
   ],
   "actionQueue": [
     {
-      "id": "send-referral-handoff-diana-crypto-20260903-transparency-tweet",
+      "id": "referral-handoff-diana-crypto-20260903-transparency-tweet",
       "priority": 1,
-      "type": "manual-referral-handoff-send",
-      "title": "Send prepared no-upfront post-receipt referral terms to Diana Crypto and record sent evidence.",
+      "type": "post-receipt-referral-handoff",
+      "title": "Prepare and send Diana Crypto a no-upfront post-receipt referral role after completed campaign diana-crypto-20260903-transparency-tweet.",
       "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence \"<partner-terms-send-evidence>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18",
+      "command": "node scripts/referral-partner-handoff-agent.mjs write-packet --campaign diana-crypto-20260903-transparency-tweet",
       "artifact": "public/referral-partner-handoff-packet.md",
-      "evidenceRequired": "Partner terms sent evidence, explicit sentAtUtc timestamp, and approved terms SHA-256.",
-      "boundary": "Recording sent evidence does not approve upfront spend, posts, compensation, invoices, grants, or asset movement."
+      "evidenceRequired": "Partner terms sent evidence after the approved handoff packet is manually sent.",
+      "boundary": "Referral handoff does not approve upfront spend, posts, compensation, invoices, grants, or asset movement."
     },
     {
       "id": "triage-live-replies",
@@ -770,6 +770,6 @@
       "boundary": "Only chairman-approved factual posts may be published."
     }
   ],
-  "nextAction": "Send prepared no-upfront post-receipt referral terms to Diana Crypto and record sent evidence.",
+  "nextAction": "Prepare and send Diana Crypto a no-upfront post-receipt referral role after completed campaign diana-crypto-20260903-transparency-tweet.",
   "boundary": "Agents may prepare records, packets, and proposals. The Executive Chairman approves outreach, invoices, transactions, allocations, paid promotion, token grants, and any asset movement."
 }

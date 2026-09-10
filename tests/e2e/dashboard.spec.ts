@@ -193,6 +193,26 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
       'No exact-sats invoice or payment instruction before Executive Chairman approval.'
     )
   ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Settlement Options Brief' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Settlement Brief' })).toHaveAttribute(
+    'href',
+    '/settlement-options-brief.md'
+  );
+  const settlementSection = page
+    .locator('section')
+    .filter({ has: page.getByRole('heading', { name: 'Settlement Options Brief' }) });
+  await expect(settlementSection.getByText('implemented-for-all-service-templates')).toBeVisible();
+  await expect(
+    settlementSection.getByText(
+      'Do not send a payment address or amount from this brief. Render a customer payment packet only after a chairman-approved exact-sats invoice.',
+      { exact: true }
+    )
+  ).toBeVisible();
+  await expect(settlementSection.getByText('USDC on Solana', { exact: true })).toBeVisible();
+  await expect(settlementSection.getByText('SOL', { exact: true })).toBeVisible();
+  await expect(
+    settlementSection.getByText('node scripts/sats-invoice-quote-agent.mjs write-draft').first()
+  ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Priority Action Queue' })).toBeVisible();
   await expect(page.getByText('#1 manual-referral-handoff-send')).toBeVisible();
   const referralHandoffAction = page

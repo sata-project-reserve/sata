@@ -12,6 +12,7 @@ import revenueExecutionBrief from '@/public/revenue-execution-brief.json';
 import revenuePlan from '@/public/revenue-operating-plan.json';
 import socialDispatchBrief from '@/public/social-dispatch-brief.json';
 import socialQueue from '@/public/social-agent-content-queue.json';
+import settlementOptionsBrief from '@/public/settlement-options-brief.json';
 import cycleStatus from '@/public/revenue-cycle-status.json';
 import report from '@/public/transparency/latest.json';
 import { publicPath } from '@/lib/public-path';
@@ -482,6 +483,9 @@ export default function OperationsPage() {
             <a className="button-link" href={publicPath('/social-dispatch-brief.md')}>
               Social Dispatch Brief
             </a>
+            <a className="button-link" href={publicPath('/settlement-options-brief.md')}>
+              Settlement Brief
+            </a>
             <a className="button-link" href={publicPath('/revenue-execution-brief.md')}>
               Execution Brief
             </a>
@@ -923,6 +927,74 @@ export default function OperationsPage() {
               <span>{approvedSocialPosts.length - 5} additional approved posts are queued.</span>
             </div>
           ) : null}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Settlement Options Brief</h2>
+          <p>{settlementOptionsBrief.nextAction}</p>
+        </div>
+        <div className="notice">
+          <strong>Public Brief</strong>
+          <span>
+            Generated {settlementOptionsBrief.generatedAtUtc}.{' '}
+            <a href={publicPath('/settlement-options-brief.json')}>JSON</a> .{' '}
+            <a href={publicPath('/settlement-options-brief.md')}>Markdown</a> . run{' '}
+            <code>npm run ops:settlement-options-write</code> after state changes.
+          </span>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Direct Reserve Path</span>
+            <strong>{settlementOptionsBrief.directReservePath.settlementCurrency}</strong>
+          </div>
+          <div className="metric">
+            <span>Direct Path Status</span>
+            <strong>{settlementOptionsBrief.directReservePath.status}</strong>
+          </div>
+          <div className="metric">
+            <span>Alternative Paths</span>
+            <strong>{settlementOptionsBrief.alternativeSettlementPaths.length}</strong>
+          </div>
+          <div className="metric">
+            <span>Invoice Templates</span>
+            <strong>{settlementOptionsBrief.directReservePath.supportedOffers.length}</strong>
+          </div>
+        </div>
+        <div className="notice">
+          <strong>Payment Address Policy</strong>
+          <span>{settlementOptionsBrief.directReservePath.paymentAddressPolicy}</span>
+        </div>
+        <div className="warning-list">
+          {settlementOptionsBrief.directReservePath.supportedOffers.map((offer) => (
+            <div className="proof-block" key={offer.offerId}>
+              <span>BTC invoice template</span>
+              <strong>{offer.offerId}</strong>
+              <p>{offer.label}</p>
+              <div className="command-list">
+                <span>USD Price</span>
+                <code>${offer.priceUsd}</code>
+                <span>Template Ready</span>
+                <code>{String(offer.hasTemplate)}</code>
+                <span>Quote Draft</span>
+                <code>{offer.quoteCommand}</code>
+              </div>
+            </div>
+          ))}
+          {settlementOptionsBrief.alternativeSettlementPaths.map((option) => (
+            <div className="proof-block" key={option.settlementCurrency}>
+              <span>planning only</span>
+              <strong>{option.settlementCurrency}</strong>
+              <p>{option.customerReply}</p>
+              <div className="command-list">
+                <span>Status</span>
+                <code>{option.status}</code>
+                <span>Stop Rule</span>
+                <code>{option.stopRule}</code>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 

@@ -50,7 +50,9 @@ async function writeStatus() {
           'public/referral-handoff-dispatch-brief.json',
           'public/referral-handoff-dispatch-brief.md',
           'public/social-dispatch-brief.json',
-          'public/social-dispatch-brief.md'
+          'public/social-dispatch-brief.md',
+          'public/settlement-options-brief.json',
+          'public/settlement-options-brief.md'
         ],
         actions: status.actionQueue.length
       },

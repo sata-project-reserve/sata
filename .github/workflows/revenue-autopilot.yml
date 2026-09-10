@@ -52,6 +52,9 @@ jobs:
       - name: Refresh social dispatch brief
         run: npm run ops:social-dispatch-write
 
+      - name: Refresh settlement options brief
+        run: npm run ops:settlement-options-write
+
       - name: Validate approval queue
         run: npm run ops:check
 
@@ -121,6 +124,9 @@ jobs:
       - name: Validate sats target planner
         run: npm run ops:sats-target-check
 
+      - name: Validate settlement options brief
+        run: npm run ops:settlement-options-check
+
       - name: Commit approved follow-through state
         run: |
           set -euo pipefail
@@ -143,6 +149,8 @@ jobs:
             public/referral-handoff-dispatch-brief.md \
             public/social-dispatch-brief.json \
             public/social-dispatch-brief.md \
+            public/settlement-options-brief.json \
+            public/settlement-options-brief.md \
             public/sats-prospect-pipeline.json \
             public/service-outreach-packet-queue.json
 

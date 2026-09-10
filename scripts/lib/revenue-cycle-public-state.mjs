@@ -22,6 +22,10 @@ import {
   buildSocialDispatchBrief,
   renderSocialDispatchMarkdown
 } from '../social-dispatch-brief-agent.mjs';
+import {
+  buildSettlementOptionsBrief,
+  renderSettlementOptionsMarkdown
+} from '../settlement-options-brief-agent.mjs';
 
 export const REVENUE_CYCLE_PUBLIC_PATHS = {
   report: join('public', 'transparency', 'latest.json'),
@@ -69,6 +73,8 @@ export async function writeRevenueCyclePublicStatus({
   referralHandoffDispatchBriefMarkdownPath = join('public', 'referral-handoff-dispatch-brief.md'),
   socialDispatchBriefJsonPath = join('public', 'social-dispatch-brief.json'),
   socialDispatchBriefMarkdownPath = join('public', 'social-dispatch-brief.md'),
+  settlementOptionsBriefJsonPath = join('public', 'settlement-options-brief.json'),
+  settlementOptionsBriefMarkdownPath = join('public', 'settlement-options-brief.md'),
   reportOverride = null,
   env = process.env
 } = {}) {
@@ -125,6 +131,13 @@ export async function writeRevenueCyclePublicStatus({
     maxManualPosts: 5,
     generatedAtUtc
   });
+  const settlementOptionsBrief = buildSettlementOptionsBrief({
+    status,
+    revenuePlan: inputs.revenuePlan,
+    invoiceQueue: inputs.invoiceQueue,
+    report: inputs.report,
+    generatedAtUtc
+  });
   await writeFile(statusPath, `${JSON.stringify(status, null, 2)}\n`);
   await Promise.all([
     writeFile(revenueExecutionBriefJsonPath, `${JSON.stringify(revenueExecutionBrief, null, 2)}\n`),
@@ -154,6 +167,14 @@ export async function writeRevenueCyclePublicStatus({
     writeFile(
       socialDispatchBriefMarkdownPath,
       renderSocialDispatchMarkdown(socialDispatchBrief)
+    ),
+    writeFile(
+      settlementOptionsBriefJsonPath,
+      `${JSON.stringify(settlementOptionsBrief, null, 2)}\n`
+    ),
+    writeFile(
+      settlementOptionsBriefMarkdownPath,
+      renderSettlementOptionsMarkdown(settlementOptionsBrief)
     )
   ]);
   return status;

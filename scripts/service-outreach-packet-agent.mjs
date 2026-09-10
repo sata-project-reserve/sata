@@ -28,12 +28,15 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     case 'write-approved':
       await writeApprovedPacket(pipeline, deliveryKit, packetQueue, args);
       break;
+    case 'refresh-ready':
+      await refreshReadyPackets(pipeline, deliveryKit, packetQueue);
+      break;
     case 'mark-sent':
       await markPacketSent(pipeline, packetQueue, args);
       break;
     default:
       throw new Error(
-        `Unknown service outreach command: ${command}. Use plan, render, render-approved, write-approved, or mark-sent.`
+        `Unknown service outreach command: ${command}. Use plan, render, render-approved, write-approved, refresh-ready, or mark-sent.`
       );
   }
 }
@@ -134,6 +137,26 @@ async function markPacketSent(pipeline, packetQueue, args) {
     writeFile(PIPELINE_PATH, `${JSON.stringify(result.pipeline, null, 2)}\n`)
   ]);
   console.log(JSON.stringify(result.packet, null, 2));
+}
+
+async function refreshReadyPackets(pipeline, deliveryKit, packetQueue) {
+  const result = refreshReadyOutreachPackets({
+    queue: packetQueue,
+    pipeline,
+    deliveryKit
+  });
+  await writeFile(OUTREACH_PACKET_QUEUE_PATH, `${JSON.stringify(result.queue, null, 2)}\n`);
+  console.log(
+    JSON.stringify(
+      {
+        refreshed: result.refreshed,
+        skipped: result.skipped,
+        updatedAtUtc: result.queue.updatedAtUtc
+      },
+      null,
+      2
+    )
+  );
 }
 
 export function renderApprovedProspectOutreachPacket({
@@ -267,6 +290,48 @@ export function markOutreachPacketSent({
     },
     pipeline: pipelineAfterContact,
     packet: sentPacket
+  };
+}
+
+export function refreshReadyOutreachPackets({
+  queue,
+  pipeline,
+  deliveryKit,
+  refreshedAtUtc = new Date().toISOString()
+}) {
+  const current = normalizeQueue(queue, pipeline);
+  let refreshed = 0;
+  let skipped = 0;
+  const packets = current.packets.map((packet) => {
+    if (packet.status !== 'ready-for-manual-send') {
+      skipped += 1;
+      return packet;
+    }
+    const message = renderApprovedProspectOutreachPacket({
+      pipeline,
+      deliveryKit,
+      prospectId: packet.prospectId,
+      templateId: packet.templateId
+    });
+    if (packet.message === message) {
+      skipped += 1;
+      return packet;
+    }
+    refreshed += 1;
+    return {
+      ...packet,
+      message,
+      refreshedAtUtc
+    };
+  });
+  return {
+    queue: {
+      ...current,
+      updatedAtUtc: refreshed > 0 ? refreshedAtUtc : current.updatedAtUtc,
+      packets
+    },
+    refreshed,
+    skipped
   };
 }
 

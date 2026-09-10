@@ -7,6 +7,7 @@ import {
   markOutreachPacketSent,
   renderApprovedProspectOutreachPacket,
   renderOutreachPacket,
+  refreshReadyOutreachPackets,
   validateOutreachPacketQueue
 } from './service-outreach-packet-agent.mjs';
 
@@ -105,6 +106,25 @@ const queuedPacket = findQueuedOutreachPacket(packetQueue, approvedRecord.id);
 if (queuedPacket.message !== approvedRecord.message) {
   findings.push('queued packet lookup must return the stored approved message');
 }
+const stalePacketQueue = {
+  ...packetQueue,
+  packets: packetQueue.packets.map((item) =>
+    item.id === approvedRecord.id ? { ...item, message: 'stale approved message' } : item
+  )
+};
+const refreshedQueue = refreshReadyOutreachPackets({
+  queue: stalePacketQueue,
+  pipeline: approvedPipeline,
+  deliveryKit,
+  refreshedAtUtc: '2026-09-10T12:00:00.000Z'
+});
+const refreshedRecord = refreshedQueue.queue.packets.find((item) => item.id === approvedRecord.id);
+if (refreshedQueue.refreshed !== 1) {
+  findings.push('refresh-ready must refresh stale ready-for-manual-send messages');
+}
+if (refreshedRecord?.message !== approvedRecord.message) {
+  findings.push('refresh-ready must restore the current approved render output');
+}
 const sentResult = markOutreachPacketSent({
   queue: packetQueue,
   pipeline: approvedPipeline,
@@ -124,7 +144,14 @@ if (contactedProspect?.stage !== 'contacted') {
 validateOutreachPacketQueue({ queue: sentResult.queue, pipeline: sentResult.pipeline });
 
 const publicQueue = readOptionalJson(join('public', 'service-outreach-packet-queue.json'));
-if (publicQueue) validateOutreachPacketQueue({ queue: publicQueue, pipeline });
+if (publicQueue) {
+  validateOutreachPacketQueue({ queue: publicQueue, pipeline });
+  for (const item of publicQueue.packets ?? []) {
+    if (item.status === 'ready-for-manual-send' && !/services\/sample-audit/i.test(item.message ?? '')) {
+      findings.push(`${item.id}: ready outreach packet must include the sample audit link`);
+    }
+  }
+}
 
 assertRejects('identified prospect render', /requires outreach-approved stage/i, () =>
   renderApprovedProspectOutreachPacket({

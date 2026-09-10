@@ -212,7 +212,20 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(
     referralHandoffAction.getByRole('link', { name: 'public/referral-partner-handoff-packet.md' })
   ).toHaveAttribute('href', '/referral-partner-handoff-packet.md');
-  await expect(page.getByText('#2 manual-outreach-send')).toBeVisible();
+  await expect(page.getByText('#2 inbound-reply-triage-monitor')).toBeVisible();
+  const replyTriageAction = page
+    .locator('.proof-block')
+    .filter({ hasText: '#2 inbound-reply-triage-monitor' });
+  await expect(
+    replyTriageAction.getByText(
+      'Triage replies and DMs from live SATA attribution sources before cold outreach.',
+      { exact: true }
+    )
+  ).toBeVisible();
+  await expect(
+    replyTriageAction.getByText('npm run ops:inbound-reply-triage-plan')
+  ).toBeVisible();
+  await expect(page.getByText('#3 manual-outreach-send')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Social Review Queue' })).toBeVisible();
   await expect(page.getByText('post-receipt-referral-partners', { exact: true })).toBeVisible();
   await expect(
@@ -312,12 +325,12 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByText('Get one explicit invoice request')).toBeVisible();
   await expect(
     page.getByText(
-      'manual_outreach:outreach-packet-20260831-arnold-solana-transparency-audit-first-contact'
+      'manual_outreach:outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact'
     )
   ).toBeVisible();
   await expect(
     page
-      .getByText('outreach-packet-20260831-arnold-solana-transparency-audit-first-contact', {
+      .getByText('outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact', {
         exact: true
       })
       .first()
@@ -325,14 +338,14 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(
     page
       .locator('.preview')
-      .filter({ hasText: 'Hi arnold-solana' })
+      .filter({ hasText: 'Hi sanctum-elysium-loam' })
       .filter({ hasText: 'SATA runs a small transparency audit service for crypto teams.' })
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Reply Conversion' })).toBeVisible();
   await expect(
     page
       .getByText(
-        'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash c370ebac72102e729a6fc7b1155afa2dbd8b8a07ba154fddca993a223d349ae8'
+        'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 1d37077645c8d720356f548899d61049e8f835d23a5990f2994b6415ba1d1122'
       )
       .first()
   ).toBeVisible();

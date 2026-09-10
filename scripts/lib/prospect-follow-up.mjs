@@ -64,7 +64,7 @@ export function recordProspectFollowUp({
   prospectId,
   followUpEvidence,
   followUpChannel = 'manual-dm-or-email',
-  followedUpAtUtc = new Date().toISOString()
+  followedUpAtUtc
 }) {
   if (!pipeline) throw new Error('Missing prospect pipeline.');
   const evidence = requireEvidence(followUpEvidence, 'Follow-up evidence is required.');
@@ -120,6 +120,13 @@ export function validateProspectFollowUps({ pipeline }) {
       }
       for (const field of ['channel', 'evidence', 'followedUpAtUtc']) {
         if (!cleanLine(followUp[field])) findings.push(`${label}: ${field} is required`);
+      }
+      if (cleanLine(followUp.followedUpAtUtc)) {
+        try {
+          parseDate(followUp.followedUpAtUtc, `${label}.followedUpAtUtc`);
+        } catch (error) {
+          findings.push(error.message);
+        }
       }
       if (
         /pay now|send .*to .*wallet|\bpump\b|guaranteed buyers|fake engagement|\bbots\b|\braids\b/i.test(

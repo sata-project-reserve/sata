@@ -1,28 +1,14 @@
-import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
-  buildRevenueCycleStatus,
-  validateRevenueCycleStatus
-} from './lib/revenue-cycle-status.mjs';
+  buildRevenueCyclePublicStatus,
+  readRevenueCyclePublicInputs,
+  REVENUE_CYCLE_PUBLIC_PATHS,
+  writeRevenueCyclePublicStatus
+} from './lib/revenue-cycle-public-state.mjs';
 
 const [, , command = 'status'] = process.argv;
 
-const paths = {
-  report: join('public', 'transparency', 'latest.json'),
-  revenuePlan: join('public', 'revenue-operating-plan.json'),
-  ledger: join('public', 'sats-generation-ledger.json'),
-  invoiceQueue: join('public', 'sats-invoice-queue.json'),
-  prospectPipeline: join('public', 'sats-prospect-pipeline.json'),
-  outreachPacketQueue: join('public', 'service-outreach-packet-queue.json'),
-  inboundLeadQueue: join('public', 'inbound-service-lead-queue.json'),
-  paidPromotionLedger: join('public', 'paid-promotion-ledger.json'),
-  approvalQueue: join('public', 'executive-approval-queue.json'),
-  socialQueue: join('public', 'social-agent-content-queue.json')
-};
-
-const inputs = Object.fromEntries(
-  await Promise.all(Object.entries(paths).map(async ([key, path]) => [key, await readJson(path)]))
-);
+const inputs = await readRevenueCyclePublicInputs();
 
 switch (command) {
   case 'status':
@@ -37,9 +23,7 @@ switch (command) {
 }
 
 function buildStatus() {
-  const status = buildRevenueCycleStatus(inputs);
-  validateRevenueCycleStatus(status);
-  return status;
+  return buildRevenueCyclePublicStatus(inputs);
 }
 
 function printStatus() {
@@ -48,20 +32,28 @@ function printStatus() {
 }
 
 async function writeStatus() {
-  const status = buildStatus();
-  await writeFile(
-    join('public', 'revenue-cycle-status.json'),
-    `${JSON.stringify(status, null, 2)}\n`
-  );
+  const status = await writeRevenueCyclePublicStatus({
+    paths: REVENUE_CYCLE_PUBLIC_PATHS,
+    statusPath: join('public', 'revenue-cycle-status.json')
+  });
   console.log(
     JSON.stringify(
-      { wrote: 'public/revenue-cycle-status.json', actions: status.actionQueue.length },
+      {
+        wrote: [
+          'public/revenue-cycle-status.json',
+          'public/revenue-execution-brief.json',
+          'public/revenue-execution-brief.md',
+          'public/outreach-dispatch-brief.json',
+          'public/outreach-dispatch-brief.md',
+          'public/reply-conversion-brief.json',
+          'public/reply-conversion-brief.md',
+          'public/referral-handoff-dispatch-brief.json',
+          'public/referral-handoff-dispatch-brief.md'
+        ],
+        actions: status.actionQueue.length
+      },
       null,
       2
     )
   );
-}
-
-async function readJson(path) {
-  return JSON.parse(await readFile(path, 'utf8'));
 }

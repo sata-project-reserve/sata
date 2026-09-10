@@ -37,6 +37,9 @@ if (!diana) {
   if (!/untracked unless X analytics or replies are recorded/i.test(diana.currentPostTracking)) {
     findings.push('Diana current post must be treated as untracked without analytics or replies');
   }
+  if (!/--measuredAtUtc "<measured-at-utc>"/.test(diana.recordConversionCommand ?? '')) {
+    findings.push('Diana conversion command must require explicit measuredAtUtc evidence');
+  }
 }
 
 if (plan.outreachLinks.length !== 5) {

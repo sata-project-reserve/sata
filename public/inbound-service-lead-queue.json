@@ -43,6 +43,7 @@
     "projectUrl",
     "requestedOfferId",
     "evidence",
+    "recordedAtUtc",
     "status"
   ],
   "replyTemplates": [

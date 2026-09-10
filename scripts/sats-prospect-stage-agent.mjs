@@ -4,6 +4,7 @@ import {
   applyProspectStageTransition,
   buildProspectStagePlan
 } from './lib/prospect-stage-transition.mjs';
+import { writeRevenueCyclePublicStatus } from './lib/revenue-cycle-public-state.mjs';
 
 const PIPELINE_PATH = join('public', 'sats-prospect-pipeline.json');
 const APPROVAL_QUEUE_PATH = join('public', 'executive-approval-queue.json');
@@ -46,9 +47,11 @@ async function advance(args) {
     approvalQueue,
     approvalId: options.approvalId ?? 'prospect-review-batch-20260829',
     prospectIds: options.prospects ?? options.prospect,
-    targetStage: options.stage ?? 'chairman-review'
+    targetStage: options.stage ?? 'chairman-review',
+    transitionedAtUtc: options.transitionedAtUtc
   });
   await writeFile(PIPELINE_PATH, `${JSON.stringify(updated, null, 2)}\n`);
+  await writeRevenueCyclePublicStatus();
   console.log(
     `Advanced ${String(options.prospects ?? options.prospect).split(',').length} prospect(s) to chairman-review.`
   );

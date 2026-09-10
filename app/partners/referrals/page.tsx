@@ -1,6 +1,7 @@
 import Image from 'next/image';
 
 import referralPolicy from '@/public/referral-partner-policy.json';
+import collaboratorMeetingIntake from '@/public/collaborator-meeting-intake.json';
 import revenuePlan from '@/public/revenue-operating-plan.json';
 import deliveryKit from '@/public/transparency-audit-delivery-kit.json';
 import { publicPath } from '@/lib/public-path';
@@ -12,7 +13,8 @@ export const metadata = {
 };
 
 const serviceOffers = revenuePlan.revenueStreams;
-const defaultShare = referralPolicy.compensationModel.defaultReferralSharePercentOfNetServiceRevenue;
+const defaultShare =
+  referralPolicy.compensationModel.defaultReferralSharePercentOfNetServiceRevenue;
 const maxShare = referralPolicy.compensationModel.maximumReferralSharePercentOfNetServiceRevenue;
 
 export default function ReferralPartnersPage() {
@@ -30,6 +32,9 @@ export default function ReferralPartnersPage() {
           <div className="inline-actions">
             <a className="button-link" href={deliveryKit.intakeUrl}>
               Refer A Customer
+            </a>
+            <a className="button-link" href={collaboratorMeetingIntake.issueIntakeUrl}>
+              Request Meeting Review
             </a>
             <a className="button-link" href={publicPath('/services/sample-audit')}>
               Sample Audit
@@ -133,7 +138,9 @@ export default function ReferralPartnersPage() {
       <section className="public-band">
         <div className="section-heading">
           <h2>Evidence Required</h2>
-          <p>Referral compensation is earned from verified service revenue, not promised attention.</p>
+          <p>
+            Referral compensation is earned from verified service revenue, not promised attention.
+          </p>
         </div>
         <div className="service-checklist">
           {referralPolicy.requiredEvidenceBeforeCompensation.map((item) => (
@@ -153,6 +160,40 @@ export default function ReferralPartnersPage() {
       </section>
 
       <section className="public-band">
+        <div className="section-heading">
+          <h2>Face-To-Face Review</h2>
+          <p>
+            Local collaborator meetings are evidence-first and chairman-gated. The current proposed
+            location scope is {collaboratorMeetingIntake.locationScope.primaryLocation}.
+          </p>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Intake Status</span>
+            <strong>{collaboratorMeetingIntake.status}</strong>
+          </div>
+          <div className="metric">
+            <span>Venue Rule</span>
+            <strong>{collaboratorMeetingIntake.locationScope.meetingVenueRule}</strong>
+          </div>
+          <div className="metric">
+            <span>Approval Item</span>
+            <strong>{collaboratorMeetingIntake.approvalItemId}</strong>
+          </div>
+        </div>
+        <div className="service-checklist">
+          {collaboratorMeetingIntake.requiredSubmission.map((item) => (
+            <div className="proof-block" key={item}>
+              <strong>{item}</strong>
+            </div>
+          ))}
+        </div>
+        <a className="button-link" href={collaboratorMeetingIntake.issueIntakeUrl}>
+          Request Meeting Review
+        </a>
+      </section>
+
+      <section className="public-band">
         <div className="notice">
           <strong>Required Disclosure</strong>
           <span>{referralPolicy.requiredPartnerDisclosure}</span>
@@ -160,9 +201,13 @@ export default function ReferralPartnersPage() {
         <div className="notice">
           <strong>Boundary</strong>
           <span>
-            This page does not approve any partner, post, token grant, cash payment,
-            transaction, invoice, or asset movement.
+            This page does not approve any partner, post, token grant, cash payment, transaction,
+            invoice, or asset movement.
           </span>
+        </div>
+        <div className="notice">
+          <strong>Meeting Intake Boundary</strong>
+          <span>{collaboratorMeetingIntake.boundary}</span>
         </div>
       </section>
     </main>

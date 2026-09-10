@@ -10,7 +10,12 @@ const form = readFileSync(
   join('.github', 'ISSUE_TEMPLATE', 'transparency-audit-intake.yml'),
   'utf8'
 );
-const draft = buildAuditIntakeDraft({ issue: issueFixture, deliveryKit, prospectPipeline, invoiceQueue });
+const draft = buildAuditIntakeDraft({
+  issue: issueFixture,
+  deliveryKit,
+  prospectPipeline,
+  invoiceQueue
+});
 const findings = [];
 
 if (!/transparency-audit-intake\.yml/i.test(deliveryKit.intakeUrl ?? '')) {
@@ -47,6 +52,42 @@ if (draft.prospectDraft.stage !== 'identified') {
 if (draft.prospectDraft.chairmanApprovedBeforeOutreach !== false) {
   findings.push('imported prospect drafts must not claim chairman approval');
 }
+if (draft.inboundLeadDraft.sourceType !== 'github-issue') {
+  findings.push('intake issue must produce a github-issue inbound lead draft');
+}
+if (draft.inboundLeadDraft.status !== 'invoice-requested-needs-chairman-review') {
+  findings.push('invoice-requesting intake must become chairman-review inbound lead draft');
+}
+if (draft.inboundLeadDraft.customerAskedForInvoice !== true) {
+  findings.push('invoice-requesting intake must preserve customerAskedForInvoice true');
+}
+if (!draft.inboundLeadDraft.recordCommand.includes('inbound-service-lead-agent.mjs record-lead')) {
+  findings.push('intake draft must expose inbound lead record command');
+}
+if (
+  !draft.inboundLeadDraft.recordFromIssueCommand.includes(
+    'inbound-service-lead-agent.mjs record-from-intake-issue-json'
+  )
+) {
+  findings.push('intake draft must expose intake issue JSON record command');
+}
+if (!draft.inboundLeadDraft.recordFromIssueCommand.includes('--issue "<issue-json-path>"')) {
+  findings.push('intake issue JSON record command must require issue JSON path');
+}
+if (
+  !draft.inboundLeadDraft.recordFromIssueCommand.includes('--recordedAtUtc "<recorded-at-utc>"')
+) {
+  findings.push('intake issue JSON record command must require recordedAtUtc evidence');
+}
+if (!draft.inboundLeadDraft.recordCommand.includes('--sourceType github-issue')) {
+  findings.push('intake draft record command must preserve github-issue attribution');
+}
+if (!draft.inboundLeadDraft.recordCommand.includes('--customerAskedForInvoice true')) {
+  findings.push('intake draft record command must preserve invoice-request flag');
+}
+if (!draft.inboundLeadDraft.recordCommand.includes('--recordedAtUtc "<recorded-at-utc>"')) {
+  findings.push('intake draft record command must require recordedAtUtc evidence');
+}
 if (draft.invoiceDraft.chairmanApprovalRequired !== true) {
   findings.push('invoice drafts must require chairman approval');
 }
@@ -69,7 +110,9 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('Audit intake workflow check passed: issue intake maps to reviewable prospect, invoice, and delivery drafts.');
+console.log(
+  'Audit intake workflow check passed: issue intake maps to reviewable prospect, invoice, and delivery drafts.'
+);
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));

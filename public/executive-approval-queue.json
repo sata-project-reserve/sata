@@ -1102,6 +1102,36 @@
       ],
       "approvedBy": "executive-chairman",
       "approvedAtUtc": "2026-09-04T18:34:22.798Z"
+    },
+    {
+      "id": "dubai-collaborator-meeting-intake-policy",
+      "title": "Review Dubai collaborator meeting intake policy",
+      "category": "partnership",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-09-10T13:20:00.000Z",
+      "preparedBy": "codex-ops",
+      "summary": "Create an evidence-first intake path for legitimate collaborators willing to meet face-to-face in Dubai while preserving post-receipt compensation and no-asset-movement boundaries.",
+      "rationale": "The sats objective needs revenue partners who can produce real customers without repeat upfront promotion spend. A meeting intake path lets SATA qualify serious collaborators while keeping every meeting, partnership, compensation proposal, post, invoice, grant, transaction, custody change, and asset movement behind Executive Chairman approval.",
+      "proposedAction": "Review collaborator-meeting-intake.json and decide whether SATA may use it as a public intake path for collaborator evidence and possible Dubai public-place meetings. This approval item does not approve a meeting, partnership, compensation, public post, invoice, payment instruction, token grant, transaction, custody change, or asset movement.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Meetings must be in public venues only and require separate Executive Chairman approval before scheduling.",
+        "No wallet signing, recovery-secret discussion, custody handoff, cash exchange, or asset exchange is authorized.",
+        "No partner-specific compensation, token grant, cash payment, public commitment, or invoice is authorized by this policy.",
+        "Collaborators must reject fake engagement, bots, raids, guaranteed buyers, price claims, return claims, and market-support promises."
+      ],
+      "publicDisclosure": "Potential collaborator review only. No price guarantee, no redemption promise, no market-support commitment, and no compensation without separate Executive Chairman approval.",
+      "evidence": [
+        {
+          "type": "policy-json",
+          "url": "public/collaborator-meeting-intake.json"
+        },
+        {
+          "type": "issue-template",
+          "url": ".github/ISSUE_TEMPLATE/collaborator-meeting-intake.yml"
+        }
+      ]
     }
   ]
 }

@@ -32,7 +32,11 @@ export function buildInboundLeadPlan({
         type: 'paid-promotion-reply',
         id: campaign.id,
         url: campaign.verifiedPostUrl ?? campaign.reportedPostUrl,
-        label: `Paid promotion from @${campaign.promoter?.handle}`
+        label: `Paid promotion from @${campaign.promoter?.handle}`,
+        recordLeadCommand: recordLeadCommandForSource({
+          sourceType: 'paid-promotion-reply',
+          sourceId: campaign.id
+        })
       })),
     ...(socialQueue.posts ?? [])
       .filter((post) => post.status === 'published')
@@ -40,7 +44,11 @@ export function buildInboundLeadPlan({
         type: 'published-social-reply',
         id: post.id,
         url: post.postUrl,
-        label: `Published @${socialQueue.account?.handle} post ${post.id}`
+        label: `Published @${socialQueue.account?.handle} post ${post.id}`,
+        recordLeadCommand: recordLeadCommandForSource({
+          sourceType: 'published-social-reply',
+          sourceId: post.id
+        })
       }))
   ];
 
@@ -84,7 +92,7 @@ export function recordInboundLead({
   evidence,
   customerAskedForInvoice = false,
   notes = '',
-  recordedAtUtc = new Date().toISOString()
+  recordedAtUtc
 }) {
   validateInboundLeadQueue(queue);
   const id = kebab(leadId || contactHandle || sourceId);
@@ -96,20 +104,23 @@ export function recordInboundLead({
   if (!ALLOWED_SOURCE_TYPES.has(type)) {
     throw new Error(`Unsupported sourceType: ${type}`);
   }
+  const profile = cleanUrl(publicProfileUrl, 'publicProfileUrl');
+  const project = cleanUrl(projectUrl, 'projectUrl');
+  const recordedAt = parseDate(recordedAtUtc, 'recordedAtUtc');
   const lead = {
     id,
     sourceType: type,
     sourceId: cleanLine(sourceId),
     contactHandle: cleanLine(contactHandle),
-    publicProfileUrl: cleanUrl(publicProfileUrl, 'publicProfileUrl'),
-    projectUrl: cleanUrl(projectUrl, 'projectUrl'),
+    publicProfileUrl: profile,
+    projectUrl: project,
     requestedOfferId: cleanLine(requestedOfferId),
     evidence: requireEvidence(evidence, 'Inbound lead evidence is required.'),
     status: customerAskedForInvoice
       ? 'invoice-requested-needs-chairman-review'
       : 'needs-intake',
     customerAskedForInvoice: Boolean(customerAskedForInvoice),
-    recordedAtUtc,
+    recordedAtUtc: recordedAt,
     notes: cleanLine(notes),
     nextAction: customerAskedForInvoice
       ? 'Prepare chairman review packet before exact-sats invoice or payment instructions.'
@@ -117,7 +128,7 @@ export function recordInboundLead({
   };
   const updated = {
     ...queue,
-    updatedAtUtc: recordedAtUtc,
+    updatedAtUtc: recordedAt,
     leads: [...(queue.leads ?? []), lead]
   };
   validateInboundLeadQueue(updated);
@@ -168,6 +179,7 @@ export function validateInboundLeadQueue(queue) {
     'projectUrl',
     'requestedOfferId',
     'evidence',
+    'recordedAtUtc',
     'status'
   ]) {
     if (!(queue?.requiredLeadFields ?? []).includes(field)) {
@@ -210,6 +222,9 @@ export function validateInboundLeadQueue(queue) {
     if (lead.customerAskedForInvoice === true && lead.status !== 'invoice-requested-needs-chairman-review') {
       findings.push(`${label}: invoice-requesting leads must wait for chairman review`);
     }
+    if (lead.recordedAtUtc && Number.isNaN(Date.parse(lead.recordedAtUtc))) {
+      findings.push(`${label}: recordedAtUtc must be a valid date`);
+    }
     assertNoProhibitedPositiveClaims(
       [lead.notes, lead.nextAction, lead.evidence].join('\n'),
       `${label}: lead text`,
@@ -245,6 +260,18 @@ function requireEvidence(value, message) {
   const evidence = cleanLine(value);
   if (evidence.length < 8) throw new Error(message);
   return evidence;
+}
+
+function recordLeadCommandForSource({ sourceType, sourceId }) {
+  return `node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sourceType ${sourceType} --sourceId ${sourceId} --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --evidence "<reply-or-dm-evidence>" --customerAskedForInvoice false --recordedAtUtc "<recorded-at-utc>"`;
+}
+
+function parseDate(value, label) {
+  const cleaned = cleanLine(value);
+  if (!cleaned || Number.isNaN(Date.parse(cleaned))) {
+    throw new Error(`${label} must be a valid date.`);
+  }
+  return cleaned;
 }
 
 function kebab(value) {

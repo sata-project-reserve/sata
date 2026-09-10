@@ -9,7 +9,12 @@ const invoiceQueue = readJson(join('public', 'sats-invoice-queue.json'));
 const issueFixture = readJson(join('tests', 'fixtures', 'transparency-audit-intake-issue.json'));
 const eventFixture = readJson(join('tests', 'fixtures', 'transparency-audit-intake-event.json'));
 const workflow = readFileSync(join('.github', 'workflows', 'audit-intake.yml'), 'utf8');
-const draft = buildAuditIntakeDraft({ issue: issueFixture, deliveryKit, prospectPipeline, invoiceQueue });
+const draft = buildAuditIntakeDraft({
+  issue: issueFixture,
+  deliveryKit,
+  prospectPipeline,
+  invoiceQueue
+});
 const comment = renderAuditIntakeComment(draft);
 const findings = [];
 
@@ -25,6 +30,27 @@ if (!/No payment instruction has been issued/i.test(comment)) {
 if (!/Referral partner: Diana Crypto/i.test(comment)) {
   findings.push('comment must preserve referral partner attribution');
 }
+if (!/Inbound lead status: invoice-requested-needs-chairman-review/i.test(comment)) {
+  findings.push('comment must route invoice-requesting intake to chairman-review lead status');
+}
+if (!/inbound-service-lead-agent\.mjs record-lead/.test(comment)) {
+  findings.push('comment must include inbound lead record command');
+}
+if (!/inbound-service-lead-agent\.mjs record-from-intake-issue-json/.test(comment)) {
+  findings.push('comment must include intake issue JSON record command');
+}
+if (!/--issue "<issue-json-path>"/.test(comment)) {
+  findings.push('comment intake issue JSON command must require issue JSON path');
+}
+if (!/--sourceType github-issue/.test(comment)) {
+  findings.push('comment record command must preserve github-issue attribution');
+}
+if (!/--customerAskedForInvoice true/.test(comment)) {
+  findings.push('comment record command must preserve invoice-request flag');
+}
+if (!/--recordedAtUtc "<recorded-at-utc>"/.test(comment)) {
+  findings.push('comment record command must require recordedAtUtc evidence');
+}
 if (!/Executive Chairman approval is required/i.test(comment)) {
   findings.push('comment must require Executive Chairman approval before invoices or commitments');
 }
@@ -38,7 +64,9 @@ if (!/service-intake/.test(workflow)) {
   findings.push('audit intake workflow must only run for service-intake issues');
 }
 if (!/issues:\s*write/.test(workflow)) {
-  findings.push('audit intake workflow needs issues: write permission to upsert the review comment');
+  findings.push(
+    'audit intake workflow needs issues: write permission to upsert the review comment'
+  );
 }
 if (!/sata-audit-intake-review/.test(workflow)) {
   findings.push('audit intake workflow must upsert by the stable comment marker');
@@ -56,7 +84,9 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('Audit intake commenter check passed: service-intake issues produce safe chairman-review comments.');
+console.log(
+  'Audit intake commenter check passed: service-intake issues produce safe chairman-review comments.'
+);
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));

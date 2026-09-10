@@ -1,0 +1,36 @@
+{
+  "project": "SATA Reserve Token",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-09-10T11:00:00.000Z",
+  "mode": "referral-partner-handoff-control",
+  "objective": "Record no-upfront, post-receipt referral handoffs created from completed paid-promotion experiments so partner follow-up can generate qualified service leads and eventual reserve sats without repeat upfront spend.",
+  "handoffStatuses": [
+    "sent-awaiting-response",
+    "accepted-awaiting-referred-lead",
+    "converted-to-lead",
+    "declined",
+    "closed-no-response"
+  ],
+  "policy": {
+    "sourceCampaignMustBeCompleted": true,
+    "requiresZeroConfirmedReceiptSats": true,
+    "requiresApprovedReferralPolicy": true,
+    "paymentInstructionsAllowed": false,
+    "upfrontCompensationAllowed": false,
+    "assetMovementAllowed": false,
+    "requiredBoundary": "No partner-specific compensation, invoice, payment instruction, token grant, cash payment, public post, or asset movement before separate Executive Chairman approval."
+  },
+  "requiredHandoffFields": [
+    "id",
+    "sourceCampaignId",
+    "partner",
+    "sourceEvidence",
+    "status",
+    "sentEvidence",
+    "sentAtUtc",
+    "nextAction"
+  ],
+  "handoffs": [],
+  "nextAction": "Render the first eligible post-receipt referral handoff, send the approved terms manually, and record durable sent evidence.",
+  "boundary": "This queue records referral handoff evidence only. It does not approve any partner, compensation, public post, invoice, payment instruction, token grant, custody change, transaction, or asset movement."
+}

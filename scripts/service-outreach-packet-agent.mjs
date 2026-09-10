@@ -1,11 +1,14 @@
+import { createHash } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { writeRevenueCyclePublicStatus } from './lib/revenue-cycle-public-state.mjs';
 import { recordProspectContact } from './lib/prospect-response-transition.mjs';
 
 const PIPELINE_PATH = join('public', 'sats-prospect-pipeline.json');
 const DELIVERY_KIT_PATH = join('public', 'transparency-audit-delivery-kit.json');
 const OUTREACH_PACKET_QUEUE_PATH = join('public', 'service-outreach-packet-queue.json');
+const PUBLIC_BASE_URL = 'https://sata-project-reserve.github.io/sata';
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [, , command = 'plan', ...args] = process.argv;
@@ -130,12 +133,15 @@ async function markPacketSent(pipeline, packetQueue, args) {
     pipeline,
     packetId: options.packet,
     contactEvidence: options.evidence,
-    contactChannel: options.channel
+    contactChannel: options.channel,
+    messageHash: options.messageHash,
+    sentAtUtc: options.sentAtUtc
   });
   await Promise.all([
     writeFile(OUTREACH_PACKET_QUEUE_PATH, `${JSON.stringify(result.queue, null, 2)}\n`),
     writeFile(PIPELINE_PATH, `${JSON.stringify(result.pipeline, null, 2)}\n`)
   ]);
+  await writeRevenueCyclePublicStatus();
   console.log(JSON.stringify(result.packet, null, 2));
 }
 
@@ -163,7 +169,8 @@ export function renderApprovedProspectOutreachPacket({
   pipeline,
   deliveryKit,
   prospectId,
-  templateId = 'transparency-audit-first-contact'
+  templateId = 'transparency-audit-first-contact',
+  tracking = null
 }) {
   const prospect = findApprovedOutreachProspect({ pipeline, prospectId });
   return renderOutreachPacket({
@@ -172,7 +179,8 @@ export function renderApprovedProspectOutreachPacket({
     templateId,
     prospectName: prospect.id,
     publicProfileUrl: prospect.publicProfileUrl,
-    projectUrl: prospect.projectUrl
+    projectUrl: prospect.projectUrl,
+    tracking
   });
 }
 
@@ -219,17 +227,25 @@ export function buildApprovedProspectOutreachPacketRecord({
 }) {
   const prospect = findApprovedOutreachProspect({ pipeline, prospectId });
   const template = findTemplate({ pipeline, templateId });
+  const dateId = generatedAtUtc.slice(0, 10).replaceAll('-', '');
+  const packetId = `outreach-packet-${dateId}-${prospect.id}-${template.id}`;
+  const tracking = trackingForManualPacket({
+    id: packetId,
+    channel: template.channel,
+    prospectId: prospect.id
+  });
   const message = renderOutreachPacket({
     pipeline,
     deliveryKit,
     templateId,
     prospectName: prospect.id,
     publicProfileUrl: prospect.publicProfileUrl,
-    projectUrl: prospect.projectUrl
+    projectUrl: prospect.projectUrl,
+    tracking
   });
-  const dateId = generatedAtUtc.slice(0, 10).replaceAll('-', '');
+  const messageSha256 = sha256(message);
   return {
-    id: `outreach-packet-${dateId}-${prospect.id}-${template.id}`,
+    id: packetId,
     prospectId: prospect.id,
     templateId: template.id,
     offerId: template.offerId,
@@ -241,10 +257,12 @@ export function buildApprovedProspectOutreachPacketRecord({
       publicProfileUrl: prospect.publicProfileUrl,
       projectUrl: prospect.projectUrl
     },
+    tracking,
     message,
+    messageSha256,
     sendInstructions:
       'Chairman or authorized human sends this exact factual message manually. Do not add price, return, buyer, liquidity, investment, or market-support claims.',
-    recordContactCommand: `node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-${dateId}-${prospect.id}-${template.id} --evidence "<contact-evidence-url-or-reference>"`,
+    recordContactCommand: `node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-${dateId}-${prospect.id}-${template.id} --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash ${messageSha256}`,
     boundary:
       'This packet does not approve invoices, payment instructions, paid work, token grants, commitments, or asset movement.'
   };
@@ -256,7 +274,8 @@ export function markOutreachPacketSent({
   packetId,
   contactEvidence,
   contactChannel,
-  sentAtUtc = new Date().toISOString()
+  messageHash,
+  sentAtUtc
 }) {
   const current = normalizeQueue(queue, pipeline);
   const evidence = requireEvidence(contactEvidence, 'Contact evidence is required.');
@@ -266,6 +285,13 @@ export function markOutreachPacketSent({
   if (!packet) throw new Error(`Outreach packet not found: ${id}`);
   if (packet.status !== 'ready-for-manual-send') {
     throw new Error(`${id}: only ready-for-manual-send packets can be marked sent.`);
+  }
+  const approvedMessageHash = cleanLine(messageHash);
+  if (!/^[a-f0-9]{64}$/.test(approvedMessageHash)) {
+    throw new Error('Approved outreach message SHA-256 is required.');
+  }
+  if (approvedMessageHash !== packet.messageSha256) {
+    throw new Error('Approved outreach message SHA-256 does not match the packet.');
   }
   const channel = cleanLine(contactChannel ?? packet.channel);
   const pipelineAfterContact = recordProspectContact({
@@ -280,7 +306,8 @@ export function markOutreachPacketSent({
     status: 'sent',
     sentAtUtc,
     contactEvidence: evidence,
-    contactChannel: channel
+    contactChannel: channel,
+    approvedMessageSha256: approvedMessageHash
   };
   return {
     queue: {
@@ -307,20 +334,33 @@ export function refreshReadyOutreachPackets({
       skipped += 1;
       return packet;
     }
-    const message = renderApprovedProspectOutreachPacket({
+    const prospect = findApprovedOutreachProspect({ pipeline, prospectId: packet.prospectId });
+    const message = renderOutreachPacket({
       pipeline,
       deliveryKit,
-      prospectId: packet.prospectId,
-      templateId: packet.templateId
+      templateId: packet.templateId,
+      prospectName: prospect.id,
+      publicProfileUrl: prospect.publicProfileUrl,
+      projectUrl: prospect.projectUrl,
+      tracking: trackingForManualPacket(packet)
     });
-    if (packet.message === message) {
+    const recordContactCommand = recordContactCommandForPacket(packet);
+    const messageSha256 = sha256(message);
+    if (
+      packet.message === message &&
+      packet.messageSha256 === messageSha256 &&
+      packet.recordContactCommand === recordContactCommand
+    ) {
       skipped += 1;
       return packet;
     }
     refreshed += 1;
     return {
       ...packet,
+      tracking: trackingForManualPacket(packet),
       message,
+      messageSha256,
+      recordContactCommand,
       refreshedAtUtc
     };
   });
@@ -341,9 +381,11 @@ export function renderOutreachPacket({
   templateId,
   prospectName,
   publicProfileUrl,
-  projectUrl
+  projectUrl,
+  tracking = null
 }) {
   const template = findTemplate({ pipeline, templateId });
+  const urls = outreachUrls({ deliveryKit, tracking });
 
   const greeting = prospectName ? `Hi ${cleanLine(prospectName)},` : 'Hi,';
   const context = [
@@ -358,9 +400,9 @@ export function renderOutreachPacket({
     '',
     ...context,
     context.length > 0 ? '' : null,
-    `Service page: https://sata-project-reserve.github.io/sata/services/transparency-audit`,
-    `Sample audit: ${deliveryKit.sampleAuditUrl}`,
-    `Intake form: ${deliveryKit.intakeUrl}`,
+    `Service page: ${urls.service}`,
+    `Sample audit: ${urls.sampleAudit}`,
+    `Intake form: ${urls.intake}`,
     '',
     'Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.'
   ]
@@ -396,9 +438,43 @@ export function validateOutreachPacketQueue({ queue, pipeline }) {
     if (!/mark-sent/i.test(packet.recordContactCommand ?? '')) {
       findings.push(`${packet.id}: recordContactCommand must mark sent with contact evidence`);
     }
+    if (!/^[a-f0-9]{64}$/.test(packet.messageSha256 ?? '')) {
+      findings.push(`${packet.id}: messageSha256 must be a SHA-256 hex digest`);
+    } else if (packet.messageSha256 !== sha256(packet.message)) {
+      findings.push(`${packet.id}: messageSha256 must match the approved outreach message`);
+    }
+    if (
+      packet.status === 'ready-for-manual-send' &&
+      !/--sentAtUtc "<sent-at-utc>"/.test(packet.recordContactCommand ?? '')
+    ) {
+      findings.push(`${packet.id}: ready packet recordContactCommand must require explicit sentAtUtc evidence`);
+    }
+    if (
+      packet.status === 'ready-for-manual-send' &&
+      !/--messageHash [a-f0-9]{64}/.test(packet.recordContactCommand ?? '')
+    ) {
+      findings.push(`${packet.id}: ready packet recordContactCommand must include approved message SHA-256`);
+    }
     if (packet.status === 'sent') {
-      for (const field of ['sentAtUtc', 'contactEvidence', 'contactChannel']) {
+      for (const field of ['sentAtUtc', 'contactEvidence', 'contactChannel', 'approvedMessageSha256']) {
         if (!cleanLine(packet[field])) findings.push(`${packet.id}: sent packet missing ${field}`);
+      }
+      if (packet.approvedMessageSha256 && packet.approvedMessageSha256 !== packet.messageSha256) {
+        findings.push(`${packet.id}: sent packet approvedMessageSha256 must match messageSha256`);
+      }
+    }
+    if (packet.status === 'ready-for-manual-send') {
+      if (!packet.tracking || typeof packet.tracking !== 'object') {
+        findings.push(`${packet.id}: ready packet must include tracking links`);
+      } else {
+        for (const field of ['serviceUrl', 'sampleAuditUrl', 'intakeUrl']) {
+          if (!/utm_source=manual_outreach/i.test(packet.tracking[field] ?? '')) {
+            findings.push(`${packet.id}: tracking.${field} must include manual_outreach UTM`);
+          }
+        }
+      }
+      if (!/utm_source=manual_outreach/i.test(packet.message ?? '')) {
+        findings.push(`${packet.id}: ready packet message must include tracked manual_outreach links`);
       }
     }
     if (/approval is required before contact/i.test(packet.message ?? '')) {
@@ -452,6 +528,55 @@ function normalizeQueue(queue, pipeline) {
   };
 }
 
+function trackingForManualPacket(packet) {
+  const params = {
+    utm_source: 'manual_outreach',
+    utm_medium: cleanSlug(packet.channel ?? 'manual_dm_or_email'),
+    utm_campaign: cleanSlug(packet.id),
+    utm_content: cleanSlug(packet.prospectId)
+  };
+  return {
+    serviceUrl: trackedPublicUrl('/services/transparency-audit', {
+      ...params,
+      utm_content: `${params.utm_content}_audit_service`
+    }),
+    sampleAuditUrl: trackedPublicUrl('/services/sample-audit', {
+      ...params,
+      utm_content: `${params.utm_content}_sample_audit`
+    }),
+    intakeUrl: trackedPublicUrl('/issues/new', {
+      ...params,
+      template: 'transparency-audit-intake.yml'
+    })
+  };
+}
+
+function outreachUrls({ deliveryKit, tracking }) {
+  if (tracking) {
+    return {
+      service: tracking.serviceUrl,
+      sampleAudit: tracking.sampleAuditUrl,
+      intake: tracking.intakeUrl
+    };
+  }
+  return {
+    service: `${PUBLIC_BASE_URL}/services/transparency-audit`,
+    sampleAudit: deliveryKit.sampleAuditUrl,
+    intake: deliveryKit.intakeUrl
+  };
+}
+
+function trackedPublicUrl(pathname, params) {
+  const url =
+    pathname === '/issues/new'
+      ? new URL('https://github.com/sata-project-reserve/sata/issues/new')
+      : new URL(`${PUBLIC_BASE_URL}${pathname}`);
+  for (const [key, value] of Object.entries(params)) {
+    url.searchParams.set(key, key === 'template' ? String(value) : cleanSlug(value));
+  }
+  return url.toString();
+}
+
 function requireEvidence(value, message) {
   const evidence = cleanLine(value);
   if (evidence.length < 8) throw new Error(message);
@@ -474,8 +599,28 @@ function parseOptions(values) {
   return options;
 }
 
+function recordContactCommandForPacket(packet) {
+  return `node scripts/service-outreach-packet-agent.mjs mark-sent --packet ${packet.id} --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash ${packet.messageSha256 ?? sha256(packet.message)}`;
+}
+
 function cleanLine(value) {
   return String(value ?? '').replace(/\s+/g, ' ').trim();
+}
+
+function cleanSlug(value) {
+  return String(value ?? '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 96);
+}
+
+function sha256(value) {
+  return createHash('sha256').update(normalizeMessage(value), 'utf8').digest('hex');
+}
+
+function normalizeMessage(value) {
+  return String(value ?? '').replace(/\r/g, '').trim();
 }
 
 async function readJson(path) {

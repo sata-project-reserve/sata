@@ -4,6 +4,7 @@ import {
   applyApprovedFollowthrough,
   buildApprovedFollowthroughPlan
 } from './lib/approved-followthrough.mjs';
+import { writeRevenueCyclePublicStatus } from './lib/revenue-cycle-public-state.mjs';
 
 const APPROVAL_QUEUE_PATH = join('public', 'executive-approval-queue.json');
 const PIPELINE_PATH = join('public', 'sats-prospect-pipeline.json');
@@ -62,6 +63,7 @@ async function writeFollowthrough() {
       ? [writeFile(REFERRAL_POLICY_PATH, `${JSON.stringify(result.referralPolicy, null, 2)}\n`)]
       : [])
   ]);
+  await writeRevenueCyclePublicStatus();
   console.log(JSON.stringify(summary(result), null, 2));
 }
 

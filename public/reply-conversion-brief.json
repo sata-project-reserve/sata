@@ -1,0 +1,282 @@
+{
+  "project": "SATA Reserve Token",
+  "mode": "chairman-gated-reply-conversion-brief",
+  "generatedAtUtc": "2026-09-10T16:04:11.104Z",
+  "reserve": {
+    "confirmedSats": "500000",
+    "confirmedBtc": "0.005",
+    "targetSats": "1000000000",
+    "remainingSats": "999500000",
+    "remainingBtc": "9.995",
+    "latestReportGeneratedAtUtc": "2026-09-10T09:00:00.965Z"
+  },
+  "counts": {
+    "outreachApprovedProspects": "30",
+    "readyOutreachPackets": "30",
+    "sentOutreachPackets": "0",
+    "contactedProspects": "0",
+    "invoiceRequestedProspects": "0",
+    "inboundInvoiceRequests": "0"
+  },
+  "conversionStages": [
+    {
+      "id": "triage-inbound-reply",
+      "eligibleStage": "live reply or DM evidence",
+      "outputStage": "needs-intake or invoice-requested-needs-chairman-review",
+      "evidenceRequired": "Reply or DM text, source, public profile, project URL, and durable evidence.",
+      "commandTemplate": "node scripts/inbound-reply-triage-agent.mjs markdown --sourceType <source-type> --sourceId <source-id> --contactHandle \"<x-handle-or-contact>\" --publicProfileUrl \"<https-profile-url>\" --projectUrl \"<https-project-url>\" --offer transparency-audit --replyText \"<reply-or-dm-text>\" --evidence \"<reply-or-dm-evidence>\" --recordedAtUtc \"<recorded-at-utc>\""
+    },
+    {
+      "id": "record-sent-contact",
+      "eligibleStage": "outreach-approved",
+      "outputStage": "contacted",
+      "evidenceRequired": "Manual send evidence or durable contact record.",
+      "commandTemplate": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet <packetId> --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash \"<approved-message-sha256>\""
+    },
+    {
+      "id": "record-invoice-request",
+      "eligibleStage": "contacted",
+      "outputStage": "invoice-requested",
+      "evidenceRequired": "Customer reply explicitly asking for an invoice.",
+      "commandTemplate": "node scripts/sats-prospect-response-agent.mjs record-invoice-request --prospect <id> --offer <recommendedOfferId> --evidence \"<invoice-request-evidence-url-or-reference>\" --confirmedCustomerRequestedInvoice true --requestedAtUtc \"<requested-at-utc>\""
+    },
+    {
+      "id": "render-outbound-invoice-request-packet",
+      "eligibleStage": "invoice-requested",
+      "outputStage": "chairman-review-packet",
+      "evidenceRequired": "Recorded invoice-request stage plus prior contact evidence.",
+      "commandTemplate": "node scripts/sats-invoice-request-agent.mjs render --prospects \"<id>\""
+    },
+    {
+      "id": "render-inbound-invoice-request-packet",
+      "eligibleStage": "invoice-requested-needs-chairman-review",
+      "outputStage": "chairman-review-packet",
+      "evidenceRequired": "Inbound lead evidence showing explicit invoice request.",
+      "commandTemplate": "node scripts/inbound-invoice-request-agent.mjs render --lead <id>"
+    }
+  ],
+  "eligibleContactRecording": [
+    {
+      "prospectId": "sanctum-elysium-loam",
+      "recommendedOfferId": "transparency-report-setup",
+      "currentOfferId": "transparency-audit",
+      "currentAskUsd": "50",
+      "recommendedAskUsd": "150",
+      "projectUrl": "https://sanctumelysium.com/whitepaper.html",
+      "publicProfileUrl": "https://sanctumelysium.com/whitepaper.html",
+      "packetId": "outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact",
+      "tracking": {
+        "serviceUrl": "https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_audit_service",
+        "sampleAuditUrl": "https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_sample_audit",
+        "intakeUrl": "https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam&template=transparency-audit-intake.yml"
+      },
+      "priority": {
+        "score": 112,
+        "tier": "hot",
+        "reasons": [
+          "current offer value $50",
+          "qualified upgrade path $150",
+          "setup offer has higher reserve-sats leverage",
+          "public reporting/setup intent",
+          "reserve, treasury, custody, or multisig claims",
+          "authority or liquidity claims",
+          "multiple public evidence links",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "150",
+      "conversionPlan": {
+        "upgradeOfferId": "transparency-report-setup",
+        "upgradeAskUsd": "150",
+        "rule": "Send the approved starter-audit packet first; discuss the higher-value setup offer only after the prospect explicitly wants help implementing public reporting.",
+        "qualificationQuestions": [
+          "Do you only want the gap report, or do you want help setting up the public report?",
+          "Do you need a one-time report template or an automated dashboard/workflow?",
+          "Who will approve public wording, payment terms, and final deployment on your side?"
+        ]
+      },
+      "recordSentContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 1d37077645c8d720356f548899d61049e8f835d23a5990f2994b6415ba1d1122",
+      "boundary": "Record only after chairman-approved outreach has been sent and durable contact evidence exists. Prefer the mark-sent command so packet and prospect state move together."
+    },
+    {
+      "prospectId": "meme-launch",
+      "recommendedOfferId": "transparency-report-setup",
+      "currentOfferId": "transparency-audit",
+      "currentAskUsd": "50",
+      "recommendedAskUsd": "150",
+      "projectUrl": "https://memelaunchs.com/results",
+      "publicProfileUrl": "https://memelaunchs.com/results",
+      "packetId": "outreach-packet-20260903-meme-launch-transparency-audit-first-contact",
+      "tracking": {
+        "serviceUrl": "https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_meme_launch_transparency_audit_first_contact&utm_content=meme_launch_audit_service",
+        "sampleAuditUrl": "https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_meme_launch_transparency_audit_first_contact&utm_content=meme_launch_sample_audit",
+        "intakeUrl": "https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_meme_launch_transparency_audit_first_contact&utm_content=meme_launch&template=transparency-audit-intake.yml"
+      },
+      "priority": {
+        "score": 100,
+        "tier": "hot",
+        "reasons": [
+          "current offer value $50",
+          "qualified upgrade path $150",
+          "setup offer has higher reserve-sats leverage",
+          "public reporting/setup intent",
+          "authority or liquidity claims",
+          "tooling, launchpad, or platform fit",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "150",
+      "conversionPlan": {
+        "upgradeOfferId": "transparency-report-setup",
+        "upgradeAskUsd": "150",
+        "rule": "Send the approved starter-audit packet first; discuss the higher-value setup offer only after the prospect explicitly wants help implementing public reporting.",
+        "qualificationQuestions": [
+          "Do you only want the gap report, or do you want help setting up the public report?",
+          "Do you need a one-time report template or an automated dashboard/workflow?",
+          "Who will approve public wording, payment terms, and final deployment on your side?"
+        ]
+      },
+      "recordSentContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash c6b13a9b08f8f021567acf82463cf0a8970e2a24d62ad60525019b4028339bc4",
+      "boundary": "Record only after chairman-approved outreach has been sent and durable contact evidence exists. Prefer the mark-sent command so packet and prospect state move together."
+    },
+    {
+      "prospectId": "instar-meme-futures",
+      "recommendedOfferId": "transparency-report-setup",
+      "currentOfferId": "transparency-audit",
+      "currentAskUsd": "50",
+      "recommendedAskUsd": "150",
+      "projectUrl": "https://instarbrands.com/pages/meme-futures",
+      "publicProfileUrl": "https://instarbrands.com/pages/meme-futures",
+      "packetId": "outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact",
+      "tracking": {
+        "serviceUrl": "https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures_audit_service",
+        "sampleAuditUrl": "https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures_sample_audit",
+        "intakeUrl": "https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures&template=transparency-audit-intake.yml"
+      },
+      "priority": {
+        "score": 94,
+        "tier": "hot",
+        "reasons": [
+          "current offer value $50",
+          "qualified upgrade path $150",
+          "setup offer has higher reserve-sats leverage",
+          "reserve, treasury, custody, or multisig claims",
+          "authority or liquidity claims",
+          "tooling, launchpad, or platform fit",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "150",
+      "conversionPlan": {
+        "upgradeOfferId": "transparency-report-setup",
+        "upgradeAskUsd": "150",
+        "rule": "Send the approved starter-audit packet first; discuss the higher-value setup offer only after the prospect explicitly wants help implementing public reporting.",
+        "qualificationQuestions": [
+          "Do you only want the gap report, or do you want help setting up the public report?",
+          "Do you need a one-time report template or an automated dashboard/workflow?",
+          "Who will approve public wording, payment terms, and final deployment on your side?"
+        ]
+      },
+      "recordSentContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 1feb4dff1091d637a6a3eedc88dbcc094183d7b49ce17d1add1fa6d8cb325a7a",
+      "boundary": "Record only after chairman-approved outreach has been sent and durable contact evidence exists. Prefer the mark-sent command so packet and prospect state move together."
+    },
+    {
+      "prospectId": "soltokenlab",
+      "recommendedOfferId": "transparency-report-setup",
+      "currentOfferId": "transparency-audit",
+      "currentAskUsd": "50",
+      "recommendedAskUsd": "150",
+      "projectUrl": "https://www.soltokenlab.com/",
+      "publicProfileUrl": "https://www.soltokenlab.com/",
+      "packetId": "outreach-packet-20260903-soltokenlab-transparency-audit-first-contact",
+      "tracking": {
+        "serviceUrl": "https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_soltokenlab_transparency_audit_first_contact&utm_content=soltokenlab_audit_service",
+        "sampleAuditUrl": "https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_soltokenlab_transparency_audit_first_contact&utm_content=soltokenlab_sample_audit",
+        "intakeUrl": "https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_soltokenlab_transparency_audit_first_contact&utm_content=soltokenlab&template=transparency-audit-intake.yml"
+      },
+      "priority": {
+        "score": 94,
+        "tier": "hot",
+        "reasons": [
+          "current offer value $50",
+          "qualified upgrade path $150",
+          "setup offer has higher reserve-sats leverage",
+          "reserve, treasury, custody, or multisig claims",
+          "authority or liquidity claims",
+          "tooling, launchpad, or platform fit",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "150",
+      "conversionPlan": {
+        "upgradeOfferId": "transparency-report-setup",
+        "upgradeAskUsd": "150",
+        "rule": "Send the approved starter-audit packet first; discuss the higher-value setup offer only after the prospect explicitly wants help implementing public reporting.",
+        "qualificationQuestions": [
+          "Do you only want the gap report, or do you want help setting up the public report?",
+          "Do you need a one-time report template or an automated dashboard/workflow?",
+          "Who will approve public wording, payment terms, and final deployment on your side?"
+        ]
+      },
+      "recordSentContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 8b7dfb9398938bb1b89505f2a6b31b87974425e4ab003dbb082aeee7621ad070",
+      "boundary": "Record only after chairman-approved outreach has been sent and durable contact evidence exists. Prefer the mark-sent command so packet and prospect state move together."
+    },
+    {
+      "prospectId": "bitdust",
+      "recommendedOfferId": "transparency-report-setup",
+      "currentOfferId": "transparency-audit",
+      "currentAskUsd": "50",
+      "recommendedAskUsd": "150",
+      "projectUrl": "https://www.geckoterminal.com/solana/pools/7KcXVi6on67TnmfudJ7X61hdjccF7y62oN96zEoHyDDs",
+      "publicProfileUrl": "https://www.geckoterminal.com/solana/pools/7KcXVi6on67TnmfudJ7X61hdjccF7y62oN96zEoHyDDs",
+      "packetId": "outreach-packet-20260903-bitdust-transparency-audit-first-contact",
+      "tracking": {
+        "serviceUrl": "https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_bitdust_transparency_audit_first_contact&utm_content=bitdust_audit_service",
+        "sampleAuditUrl": "https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_bitdust_transparency_audit_first_contact&utm_content=bitdust_sample_audit",
+        "intakeUrl": "https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_bitdust_transparency_audit_first_contact&utm_content=bitdust&template=transparency-audit-intake.yml"
+      },
+      "priority": {
+        "score": 90,
+        "tier": "hot",
+        "reasons": [
+          "current offer value $50",
+          "qualified upgrade path $150",
+          "setup offer has higher reserve-sats leverage",
+          "public reporting/setup intent",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "150",
+      "conversionPlan": {
+        "upgradeOfferId": "transparency-report-setup",
+        "upgradeAskUsd": "150",
+        "rule": "Send the approved starter-audit packet first; discuss the higher-value setup offer only after the prospect explicitly wants help implementing public reporting.",
+        "qualificationQuestions": [
+          "Do you only want the gap report, or do you want help setting up the public report?",
+          "Do you need a one-time report template or an automated dashboard/workflow?",
+          "Who will approve public wording, payment terms, and final deployment on your side?"
+        ]
+      },
+      "recordSentContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-bitdust-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash ab5485b74f010fd1af64290cfb03f801e6789843f97ff84c3c2f253c0d156d31",
+      "boundary": "Record only after chairman-approved outreach has been sent and durable contact evidence exists. Prefer the mark-sent command so packet and prospect state move together."
+    }
+  ],
+  "eligibleInvoiceRequestRecording": [],
+  "eligibleOutboundInvoicePackets": [],
+  "inboundInvoiceRequests": [],
+  "nextAction": "Send outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact exactly as approved, then record contact evidence.",
+  "stopRules": [
+    "No payment instructions without a chairman-approved exact-sats invoice.",
+    "No invoice request record unless the customer explicitly asks for an invoice.",
+    "No autonomous transactions, token grants, public posts, paid promotion, or asset movement.",
+    "No reserve progress counted until a direct-reserve receipt is confirmed.",
+    "No price, return, liquidity, buyer, or market-support claims."
+  ],
+  "boundary": "This brief records reply-conversion evidence only. It does not contact prospects, approve invoices, send payment instructions, move assets, grant tokens, publish posts, or make commitments."
+}

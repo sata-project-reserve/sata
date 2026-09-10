@@ -1,7 +1,10 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { assertConfirmedReceipt } from './lib/sats-receipt-allocation-proposal.mjs';
 
 const ledger = JSON.parse(readFileSync(join('public', 'sats-generation-ledger.json'), 'utf8'));
+const invoiceQueue = JSON.parse(readFileSync(join('public', 'sats-invoice-queue.json'), 'utf8'));
+const satsAgent = readFileSync(join('scripts', 'sats-generation-agent.mjs'), 'utf8');
 const findings = [];
 
 if (ledger.schemaVersion !== 1) findings.push('schemaVersion must be 1');
@@ -45,6 +48,24 @@ for (const receipt of ledger.receipts ?? []) {
   for (const field of ledger.requiredReceiptFields ?? []) {
     if (!receipt[field]) findings.push(`${receipt.id ?? '<missing-receipt-id>'}: missing receipt field ${field}`);
   }
+  if (receipt.status === 'confirmed') {
+    try {
+      assertConfirmedReceipt({ receipt, ledger, queue: invoiceQueue });
+    } catch (error) {
+      findings.push(`${receipt.id ?? '<missing-receipt-id>'}: ${error.message}`);
+    }
+  }
+}
+for (const required of ['invoiceId', 'amountSats', 'receivedAddress', 'confirmations']) {
+  if (!(ledger.requiredReceiptFields ?? []).includes(required)) {
+    findings.push(`requiredReceiptFields missing ${required}`);
+  }
+}
+if (!/receiptRecording/.test(satsAgent) || !/sats-receipt-allocation-agent\.mjs record-confirmed/.test(satsAgent)) {
+  findings.push('sats plan must expose the bounded confirmed-receipt recording command');
+}
+if (!/--recordedAtUtc "<recorded-at-utc>"/.test(satsAgent)) {
+  findings.push('sats plan confirmed-receipt command must require explicit recordedAtUtc evidence');
 }
 
 for (const allocationItem of ledger.allocations ?? []) {

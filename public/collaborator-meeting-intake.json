@@ -1,0 +1,55 @@
+{
+  "project": "SATA Reserve Token",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-09-10T13:20:00.000Z",
+  "mode": "collaborator-meeting-intake-policy",
+  "status": "pending-executive-chairman-approval",
+  "approvalItemId": "dubai-collaborator-meeting-intake-policy",
+  "objective": "Create a chairman-review path for legitimate collaborators who are willing to meet face-to-face in Dubai or submit equivalent evidence before any partnership, paid work, token compensation, public commitment, or asset movement is considered.",
+  "locationScope": {
+    "primaryLocation": "Dubai, UAE",
+    "availabilityWindow": "Executive Chairman declared travel window only; confirm current availability before scheduling.",
+    "meetingVenueRule": "Public venue only. No custody handoff, cash exchange, wallet signing, private-key discussion, or asset movement at the meeting."
+  },
+  "eligibleCollaborators": [
+    "Transparency-service referral partners who can introduce paying crypto teams.",
+    "Media or education collaborators who will use factual source-linked coverage and clear compensation disclosure.",
+    "Technical collaborators who can help improve public proof, reporting, verification, or reserve operations.",
+    "Local collaborators willing to meet face-to-face in a public Dubai venue after evidence review."
+  ],
+  "requiredSubmission": [
+    "Real identity or durable professional profile.",
+    "Public handle and contact path.",
+    "Examples of past work.",
+    "Requested role and requested compensation model.",
+    "Disclosure policy for paid or token-compensated work.",
+    "Confirmation of no fake engagement, no bots, no raids, no guaranteed buyers, no price claims, and no market-support commitment.",
+    "Whether the collaborator is willing to meet in person in Dubai in a public place."
+  ],
+  "allowedNextStepsAfterReview": [
+    "Reject the collaborator.",
+    "Request more evidence.",
+    "Send approved post-receipt referral terms.",
+    "Prepare a partner-specific proposal for separate Executive Chairman approval.",
+    "Schedule a public-place meeting after evidence review."
+  ],
+  "approvalGates": [
+    "Executive Chairman approval is required before any meeting is scheduled on behalf of SATA.",
+    "Executive Chairman approval is required before any partner-specific compensation proposal.",
+    "Executive Chairman approval is required before any public post, invoice, payment instruction, token grant, cash payment, transaction, custody change, or asset movement.",
+    "No compensation is earned unless the required post-receipt evidence exists."
+  ],
+  "prohibitedMeetingActivity": [
+    "No private-key, seed phrase, or wallet custody exchange.",
+    "No cash or asset exchange at the meeting.",
+    "No payment instruction at the meeting without a separate approved invoice packet.",
+    "No token grant promise.",
+    "No price, buyer, return, liquidity, volume, or market-support promise.",
+    "No pump language, fake engagement, bots, raids, or coordinated trading."
+  ],
+  "issueIntakeUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=collaborator-meeting-intake.yml",
+  "publicDisclosure": "Potential collaborator review only. No price guarantee, no redemption promise, no market-support commitment, and no compensation without separate Executive Chairman approval.",
+  "replyTemplate": "Thanks for reaching out. SATA can review legitimate collaborators who are willing to provide evidence first and, when useful, meet face-to-face in a public Dubai venue while the Executive Chairman is available. Please send your role, past work, requested compensation model, disclosure policy, and confirmation that you will not use fake engagement, bots, raids, guaranteed buyers, price claims, or market-support promises. This review does not approve compensation, posts, invoices, token grants, payment instructions, transactions, custody changes, or asset movement.",
+  "nextAction": "Submit this intake policy for Executive Chairman review before using it as an approved collaborator meeting path.",
+  "boundary": "This intake policy does not approve any collaborator, meeting, partnership, compensation, public post, invoice, payment instruction, token grant, transaction, custody change, or asset movement."
+}

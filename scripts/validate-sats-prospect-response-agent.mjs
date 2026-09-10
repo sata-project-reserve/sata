@@ -83,6 +83,14 @@ assertRejects('contact wrong stage', /requires outreach-approved stage/i, () =>
 assertRejects('contact missing evidence', /Contact evidence is required/i, () =>
   recordProspectContact({ pipeline, prospectId: 'approved-team', contactEvidence: 'short' })
 );
+assertRejects('contact missing timestamp', /contactedAtUtc must be a valid date/i, () =>
+  recordProspectContact({
+    pipeline,
+    prospectId: 'approved-team',
+    contactEvidence: 'https://x.com/example/status/contact',
+    contactChannel: 'manual-dm'
+  })
+);
 assertRejects('invoice wrong stage', /requires contacted stage/i, () =>
   recordInvoiceRequest({
     pipeline,
@@ -97,6 +105,14 @@ assertRejects('invoice no confirmation', /confirmedCustomerRequestedInvoice=true
     prospectId: 'approved-team',
     requestEvidence: 'Customer asked for invoice in DM.',
     confirmedCustomerRequestedInvoice: false
+  })
+);
+assertRejects('invoice missing timestamp', /requestedAtUtc must be a valid date/i, () =>
+  recordInvoiceRequest({
+    pipeline: contactedPipeline,
+    prospectId: 'approved-team',
+    requestEvidence: 'Customer asked for invoice in DM.',
+    confirmedCustomerRequestedInvoice: true
   })
 );
 assertRejects('pipeline missing contact evidence', /requires contact evidence/i, () =>

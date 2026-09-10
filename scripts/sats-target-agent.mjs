@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import {
@@ -6,6 +6,9 @@ import {
   renderSatsTargetMarkdown,
   validateSatsTargetPlan
 } from './lib/sats-target-planner.mjs';
+
+const TARGET_JSON_PATH = join('public', 'sats-target-plan.json');
+const TARGET_MARKDOWN_PATH = join('public', 'sats-target-plan.md');
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [, , command = 'plan', ...args] = process.argv;
@@ -31,8 +34,25 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     case 'markdown':
       console.log(renderSatsTargetMarkdown(plan));
       break;
+    case 'write':
+      await Promise.all([
+        writeFile(TARGET_JSON_PATH, `${JSON.stringify(plan, null, 2)}\n`),
+        writeFile(TARGET_MARKDOWN_PATH, renderSatsTargetMarkdown(plan))
+      ]);
+      console.log(
+        JSON.stringify(
+          {
+            wrote: [TARGET_JSON_PATH, TARGET_MARKDOWN_PATH],
+            remainingSats: plan.target.remainingSats,
+            currentPipelineReserveSats: plan.currentPipeline.estimatedReserveSatsAtFullClose
+          },
+          null,
+          2
+        )
+      );
+      break;
     default:
-      throw new Error(`Unknown sats target command: ${command}. Use plan, json, or markdown.`);
+      throw new Error(`Unknown sats target command: ${command}. Use plan, json, markdown, or write.`);
   }
 }
 

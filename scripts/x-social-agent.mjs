@@ -1,5 +1,7 @@
+import { createHash } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { writeRevenueCyclePublicStatus } from './lib/revenue-cycle-public-state.mjs';
 
 const QUEUE_PATH = join('public', 'social-agent-content-queue.json');
 const MONITORING_PATH = join('public', 'social-agent-monitoring-log.json');
@@ -34,6 +36,9 @@ switch (command) {
   case 'record-published':
     await recordPublished();
     break;
+  case 'refresh-content-hashes':
+    await refreshContentHashes();
+    break;
   case 'dry-run-post-next-approved':
     await postNextApproved({ dryRun: true });
     break;
@@ -42,7 +47,7 @@ switch (command) {
     break;
   default:
     throw new Error(
-      `Unknown x-social-agent command: ${command}. Use plan, draft-report-update, approve-post, reject-post, record-published, dry-run-post-next-approved, or post-next-approved.`
+      `Unknown x-social-agent command: ${command}. Use plan, draft-report-update, approve-post, reject-post, record-published, refresh-content-hashes, dry-run-post-next-approved, or post-next-approved.`
     );
 }
 
@@ -76,7 +81,8 @@ function printPlan() {
         nextAction:
           approved.length > 0
             ? `Next approved post: ${approved[0].id}`
-            : 'No approved post. Drafts remain queued for human approval.'
+            : 'No approved post. Drafts remain queued for human approval.',
+        nextApprovedContentSha256: approved[0] ? contentHashForPost(approved[0]) : null
       },
       null,
       2
@@ -106,7 +112,8 @@ async function draftReportUpdate() {
       id,
       status: 'ready-for-review',
       type: 'transparency',
-      text
+      text,
+      contentSha256: sha256(text)
     }
   ];
   await writeJson(QUEUE_PATH, queue);
@@ -128,6 +135,7 @@ async function approvePost() {
   post.approvedBy = 'owner';
   post.approvalRole = 'executive-chairman';
   post.approvedAtUtc = new Date().toISOString();
+  post.contentSha256 = contentHashForPost(post);
   await writeJson(QUEUE_PATH, queue);
   console.log(`Approved social post ${postId}.`);
 }
@@ -163,9 +171,19 @@ async function recordPublished() {
     throw new Error(`${postId}: only approved posts can be recorded as published.`);
   }
   validatePostForPublication(post);
+  const approvedContentHash = contentHashForPost(post);
+  const providedContentHash = cleanLine(options.contentHash);
+  if (!/^[a-f0-9]{64}$/.test(providedContentHash)) {
+    throw new Error('Recording a published post requires --contentHash with the approved post SHA-256.');
+  }
+  if (providedContentHash !== approvedContentHash) {
+    throw new Error(`${postId}: contentHash does not match the approved post text.`);
+  }
   markPublished(post, postUrl, {
     source: 'manual-owner-record',
-    evidence
+    evidence,
+    contentSha256: approvedContentHash,
+    publishedAtUtc: options.publishedAtUtc
   });
   await writeJson(QUEUE_PATH, queue);
   await writeJson(MONITORING_PATH, monitoring);
@@ -203,12 +221,28 @@ async function postNextApproved({ dryRun }) {
 
     const published = await createPost(post);
     markPublished(post, `https://x.com/${queue.account.handle}/status/${published.data.id}`, {
-      source: 'x-social-agent'
+      source: 'x-social-agent',
+      contentSha256: contentHashForPost(post),
+      publishedAtUtc: new Date().toISOString()
     });
     await writeJson(QUEUE_PATH, queue);
     await writeJson(MONITORING_PATH, monitoring);
     console.log(`Published ${post.id}: ${post.postUrl}`);
   }
+}
+
+async function refreshContentHashes() {
+  for (const post of queue.posts ?? []) {
+    if (post.text) post.contentSha256 = contentHashForPost(post);
+  }
+  const postsById = new Map((queue.posts ?? []).map((post) => [post.id, post]));
+  for (const observed of monitoring.posts ?? []) {
+    const post = postsById.get(observed.id);
+    if (post?.contentSha256) observed.contentSha256 = post.contentSha256;
+  }
+  await writeJson(QUEUE_PATH, queue);
+  await writeJson(MONITORING_PATH, monitoring);
+  console.log('Refreshed social post content SHA-256 values.');
 }
 
 function approvedPosts() {
@@ -256,6 +290,9 @@ function validatePostForPublication(post) {
   }
   if (/treasury movement|liquidity removal|wallet migration|security incident/i.test(post.type)) {
     throw new Error(`${post.id} is escalation-only and cannot be auto-posted.`);
+  }
+  if (post.contentSha256 && post.contentSha256 !== contentHashForPost(post)) {
+    throw new Error(`${post.id}: contentSha256 does not match post text.`);
   }
 }
 
@@ -306,11 +343,16 @@ async function createPost(post) {
   return body;
 }
 
-function markPublished(post, postUrl, { source, evidence } = {}) {
-  const publishedAtUtc = new Date().toISOString();
+function markPublished(
+  post,
+  postUrl,
+  { source, evidence, contentSha256 = contentHashForPost(post), publishedAtUtc } = {}
+) {
+  assertIsoTimestamp(publishedAtUtc, 'publishedAtUtc');
   post.status = 'published';
   post.publishedAtUtc = publishedAtUtc;
   post.postUrl = postUrl;
+  post.contentSha256 = contentSha256;
   if (evidence) post.publicationEvidence = evidence;
   monitoring.posts ??= [];
   monitoring.posts.push({
@@ -319,6 +361,7 @@ function markPublished(post, postUrl, { source, evidence } = {}) {
     status: 'published',
     publishedAtUtc,
     postUrl: post.postUrl,
+    contentSha256,
     source,
     observations: evidence
       ? [
@@ -341,6 +384,7 @@ async function readJson(path) {
 
 async function writeJson(path, value) {
   await writeFile(path, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
+  if (path === QUEUE_PATH) await writeRevenueCyclePublicStatus();
 }
 
 function parseOptions(values) {
@@ -363,4 +407,22 @@ function cleanLine(value) {
   return String(value ?? '')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function assertIsoTimestamp(value, label) {
+  if (!value || Number.isNaN(new Date(value).getTime())) {
+    throw new Error(`${label} must be a valid timestamp.`);
+  }
+}
+
+function contentHashForPost(post) {
+  return sha256(post.text);
+}
+
+function sha256(value) {
+  return createHash('sha256').update(normalizeContent(value), 'utf8').digest('hex');
+}
+
+function normalizeContent(value) {
+  return String(value ?? '').replaceAll('\r\n', '\n');
 }

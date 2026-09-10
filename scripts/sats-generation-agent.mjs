@@ -62,6 +62,21 @@ function printPlan() {
         activeProspects: prospects.length,
         receiptsAwaitingAllocation: receipts.filter((receipt) => !receipt.allocatedAtUtc).length,
         recordedAllocations: allocations.length,
+        receiptRecording: {
+          commandTemplate:
+            'node scripts/sats-receipt-allocation-agent.mjs record-confirmed --receipt "<receipt-id>" --invoice "<approved-invoice-id>" --receivedAtUtc "<received-at-utc>" --source "<service-source>" --amount "<btc-amount>" --amountSats "<exact-sats>" --transactionId "<bitcoin-txid>" --receivedAddress "<published-reserve-address>" --confirmations "<confirmations>" --deliverableUrl "<delivery-evidence-url>" --recordedAtUtc "<recorded-at-utc>" --confirmChairmanReceiptApproval "I am Executive Chairman and approve receipt <receipt-id>"',
+          requiredEvidence: [
+            'approved invoice id',
+            'Bitcoin transaction id',
+            'published reserve receiving address',
+            'exact sats received',
+            'confirmation count',
+            'deliverable evidence URL',
+            'Executive Chairman receipt approval phrase'
+          ],
+          boundary:
+            'Recording a receipt updates local ledger evidence only; it does not verify keys, move BTC, approve allocations, or send payment instructions.'
+        },
         invoiceTemplates: (invoiceQueue.invoices ?? [])
           .filter((invoice) => invoice.status === 'template')
           .map((invoice) => ({

@@ -75,7 +75,9 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
   await expect(page.getByRole('link', { name: 'Contact @SATAReserve' })).toBeVisible();
 });
 
-test('sample transparency audit page publishes fictional deliverable boundaries', async ({ page }) => {
+test('sample transparency audit page publishes fictional deliverable boundaries', async ({
+  page
+}) => {
   await page.goto('/services/sample-audit');
   await expect(page.getByRole('heading', { name: 'Sample transparency audit.' })).toBeVisible();
   await expect(page.getByText('Fictional Sample', { exact: true })).toBeVisible();
@@ -101,7 +103,9 @@ test('higher-value service pages publish gates and boundaries', async ({ page })
   await expect(page.locator('.service-primary-metric')).toContainText('$150');
   await expect(page.getByRole('heading', { name: 'Payment Gate' })).toBeVisible();
   await expect(page.getByText('Executive Chairman approves final scope and invoice')).toBeVisible();
-  await expect(page.getByText('No agent receives funds, controls keys, or approves spending')).toBeVisible();
+  await expect(
+    page.getByText('No agent receives funds, controls keys, or approves spending')
+  ).toBeVisible();
   await expect(page.getByText('No price guarantee')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Start With Audit' })).toHaveAttribute(
     'href',
@@ -119,7 +123,9 @@ test('higher-value service pages publish gates and boundaries', async ({ page })
 
 test('referral partner page publishes post-receipt gates', async ({ page }) => {
   await page.goto('/partners/referrals', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByRole('heading', { name: 'Post-receipt referral partners.' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Post-receipt referral partners.' })
+  ).toBeVisible();
   await expect(page.locator('.service-primary-metric')).toContainText('Default Share');
   await expect(page.locator('.service-primary-metric')).toContainText('10%');
   await expect(
@@ -133,6 +139,15 @@ test('referral partner page publishes post-receipt gates', async ({ page }) => {
   await expect(page.getByText('Chairman-approved invoice')).toBeVisible();
   await expect(page.getByText('Confirmed customer receipt')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Partner Reply Template' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Face-To-Face Review' })).toBeVisible();
+  await expect(page.getByText('Dubai, UAE')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Request Meeting Review' }).first()).toHaveAttribute(
+    'href',
+    'https://github.com/sata-project-reserve/sata/issues/new?template=collaborator-meeting-intake.yml'
+  );
+  await expect(
+    page.getByText('This intake policy does not approve any collaborator')
+  ).toBeVisible();
   await expect(page.getByText('This page does not approve any partner')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Policy JSON' })).toHaveAttribute(
     'href',
@@ -174,10 +189,29 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByRole('heading', { name: 'Inbound Invoice Requests' })).toBeVisible();
   await expect(page.getByText('npm run ops:inbound-invoice-request-plan')).toBeVisible();
   await expect(
-    page.getByText('No exact-sats invoice or payment instruction before Executive Chairman approval.')
+    page.getByText(
+      'No exact-sats invoice or payment instruction before Executive Chairman approval.'
+    )
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Priority Action Queue' })).toBeVisible();
-  await expect(page.getByText('#1 manual-outreach-send')).toBeVisible();
+  await expect(page.getByText('#1 manual-referral-handoff-send')).toBeVisible();
+  const referralHandoffAction = page
+    .locator('.proof-block')
+    .filter({ hasText: '#1 manual-referral-handoff-send' });
+  await expect(
+    referralHandoffAction.getByText(
+      'Send prepared no-upfront post-receipt referral terms to Diana Crypto and record sent evidence.',
+      { exact: true }
+    )
+  ).toBeVisible();
+  await expect(
+    referralHandoffAction.getByText(
+      'node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18'
+    )
+  ).toBeVisible();
+  await expect(
+    referralHandoffAction.getByRole('link', { name: 'public/referral-partner-handoff-packet.md' })
+  ).toHaveAttribute('href', '/referral-partner-handoff-packet.md');
   await expect(page.getByText('#2 manual-outreach-send')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Social Review Queue' })).toBeVisible();
   await expect(page.getByText('post-receipt-referral-partners', { exact: true })).toBeVisible();
@@ -193,20 +227,28 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     .locator('.proof-block')
     .filter({ hasText: 'btc-reserve-first-tranche' })
     .filter({ hasText: 'Record Published URL' });
-  await expect(approvedSocialBlock.getByText('btc-reserve-first-tranche', { exact: true })).toBeVisible();
+  await expect(
+    approvedSocialBlock.getByText('btc-reserve-first-tranche', { exact: true })
+  ).toBeVisible();
   await expect(
     approvedSocialBlock.getByText(
-      'npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>"'
+      'npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e'
     )
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Paid Promotion Control' })).toBeVisible();
-  await expect(page.getByText('Diana Crypto @142C_')).toBeVisible();
   await expect(page.getByText('completed').first()).toBeVisible();
   await expect(page.getByText('Awaiting 24h Measurement')).toBeVisible();
-  await expect(page.getByText('Do not repeat paid promotion unless')).toBeVisible();
   const paidPromotionBlock = page
     .locator('.proof-block')
+    .filter({ hasText: 'Reported Post' })
     .filter({ hasText: 'Diana Crypto @142C_' });
+  await expect(paidPromotionBlock.getByText('Diana Crypto @142C_', { exact: true })).toBeVisible();
+  await expect(
+    paidPromotionBlock.getByText(
+      'Convert this zero-receipt promotion into a no-upfront post-receipt referral handoff before considering repeat spend.',
+      { exact: true }
+    )
+  ).toBeVisible();
   await expect(
     paidPromotionBlock.getByText('https://x.com/142C_/status/2086570576530010172', {
       exact: true
@@ -214,9 +256,41 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   ).toBeVisible();
   await expect(page.getByText('Confirmed Promo Receipts')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Referral Partner Policy' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Referral Handoff Queue' })).toBeVisible();
+  const referralHandoffCandidateBlock = page
+    .locator('.proof-block')
+    .filter({ hasText: 'post-receipt candidate' })
+    .filter({ hasText: 'Diana Crypto @142C_' });
+  await expect(
+    referralHandoffCandidateBlock.getByText('Write Packet', { exact: true })
+  ).toBeVisible();
+  await expect(
+    referralHandoffCandidateBlock.getByText(
+      'node scripts/referral-partner-handoff-agent.mjs write-packet --campaign diana-crypto-20260903-transparency-tweet'
+    )
+  ).toBeVisible();
+  await expect(
+    referralHandoffCandidateBlock.getByRole('link', {
+      name: 'public/referral-partner-handoff-packet.md'
+    })
+  ).toHaveAttribute('href', '/referral-partner-handoff-packet.md');
+  await expect(
+    referralHandoffCandidateBlock.getByText(
+      'node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18'
+    )
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      'Approved post-receipt partner compensation policy ready for gated referral packet generation.'
+    )
+  ).toBeVisible();
   await expect(page.getByRole('link', { name: 'Referral Partners' })).toHaveAttribute(
     'href',
     '/partners/referrals'
+  );
+  await expect(page.getByRole('link', { name: 'Referral Handoff Brief' })).toHaveAttribute(
+    'href',
+    '/referral-handoff-dispatch-brief.md'
   );
   const referralPolicyBlock = page
     .locator('.proof-block')
@@ -225,7 +299,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     referralPolicyBlock.getByText('post-receipt-referral-partner-policy', { exact: true })
   ).toBeVisible();
   await expect(referralPolicyBlock.getByText('npm run ops:referral-policy-check')).toBeVisible();
-  await expect(referralPolicyBlock.getByText('Partner Packet')).toBeVisible();
+  await expect(referralPolicyBlock.getByText('Partner Packet', { exact: true })).toBeVisible();
   await expect(referralPolicyBlock.getByText('npm run ops:referral-packet-plan')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Manual Outreach Packets' })).toBeVisible();
   await expect(page.getByText('Showing 5 of 30 ready packets.')).toBeVisible();
@@ -242,9 +316,11 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     )
   ).toBeVisible();
   await expect(
-    page.getByText('outreach-packet-20260831-arnold-solana-transparency-audit-first-contact', {
-      exact: true
-    }).first()
+    page
+      .getByText('outreach-packet-20260831-arnold-solana-transparency-audit-first-contact', {
+        exact: true
+      })
+      .first()
   ).toBeVisible();
   await expect(
     page
@@ -254,9 +330,11 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Reply Conversion' })).toBeVisible();
   await expect(
-    page.getByText(
-      'node scripts/sats-prospect-response-agent.mjs record-contacted --prospect arnold-solana --evidence "<contact-evidence-url-or-reference>" --channel "manual-dm-or-email"'
-    )
+    page
+      .getByText(
+        'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash c370ebac72102e729a6fc7b1155afa2dbd8b8a07ba154fddca993a223d349ae8'
+      )
+      .first()
   ).toBeVisible();
   await expect(
     page.getByText('No contacted prospects or invoice requests are recorded yet.')

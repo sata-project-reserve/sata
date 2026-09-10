@@ -69,17 +69,17 @@ export function buildProspectReviewAdvanceCommand({ approvalId, prospectPipeline
     prospectPipeline
   });
   if (eligibleIds.length === 0) {
-    return `node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${approvalId} --prospects "<chairman-selected-prospect-ids>"`;
+    return `node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${approvalId} --prospects "<chairman-selected-prospect-ids>" --transitionedAtUtc "<transitioned-at-utc>"`;
   }
-  return `node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${approvalId} --prospects ${eligibleIds.join(',')}`;
+  return `node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${approvalId} --prospects ${eligibleIds.join(',')} --transitionedAtUtc "<transitioned-at-utc>"`;
 }
 
 export function buildOutreachApprovalAdvanceCommand({ approvalId, title }) {
   const ids = prospectIdsFromOutreachApprovalTitle(title);
   if (ids.length === 0) {
-    return `node scripts/sats-outreach-approval-agent.mjs advance --approvalId ${approvalId} --prospects "<chairman-approved-prospect-ids>"`;
+    return `node scripts/sats-outreach-approval-agent.mjs advance --approvalId ${approvalId} --prospects "<chairman-approved-prospect-ids>" --transitionedAtUtc "<transitioned-at-utc>"`;
   }
-  return `node scripts/sats-outreach-approval-agent.mjs advance --approvalId ${approvalId} --prospects ${ids.join(',')}`;
+  return `node scripts/sats-outreach-approval-agent.mjs advance --approvalId ${approvalId} --prospects ${ids.join(',')} --transitionedAtUtc "<transitioned-at-utc>"`;
 }
 
 function inferNextCommandAfterApproval(item, { prospectPipeline }) {

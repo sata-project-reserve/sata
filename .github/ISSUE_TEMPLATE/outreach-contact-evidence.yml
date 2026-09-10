@@ -1,0 +1,77 @@
+name: Outreach Contact Evidence
+description: Submit evidence that an approved SATA outreach packet was manually sent.
+title: '[Outreach Evidence]: '
+labels: ['outreach-contact-evidence', 'manual-evidence']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form only after an approved SATA outreach packet has been manually sent.
+
+        This form records evidence for review. It does not approve invoices, payment instructions, paid work, token grants, public commitments, or asset movement.
+  - type: input
+    id: packetId
+    attributes:
+      label: Outreach packet ID
+      description: 'Example: outreach-packet-20260831-arnold-solana-transparency-audit-first-contact'
+    validations:
+      required: true
+  - type: input
+    id: prospectId
+    attributes:
+      label: Prospect ID
+      description: The prospect id from sats-prospect-pipeline.json.
+    validations:
+      required: true
+  - type: dropdown
+    id: contactChannel
+    attributes:
+      label: Contact channel
+      options:
+        - public-dm-or-email
+        - x-dm
+        - email
+        - public-reply
+        - github-issue
+        - other
+    validations:
+      required: true
+  - type: input
+    id: contactEvidenceUrl
+    attributes:
+      label: Contact evidence URL or reference
+      description: Message permalink, issue URL, email archive reference, screenshot reference, or other durable evidence.
+    validations:
+      required: true
+  - type: input
+    id: approvedMessageSha256
+    attributes:
+      label: Approved message SHA-256
+      description: Copy this from the outreach packet record or operations page command.
+    validations:
+      required: true
+  - type: textarea
+    id: exactMessageSent
+    attributes:
+      label: Exact message sent
+      description: Paste the exact approved message that was sent. Do not include payment instructions or new claims.
+    validations:
+      required: true
+  - type: input
+    id: sentAtUtc
+    attributes:
+      label: Sent at UTC
+      description: Optional ISO timestamp if known, otherwise the operator command will use the current time.
+    validations:
+      required: false
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      options:
+        - label: I sent only the chairman-approved factual outreach copy.
+          required: true
+        - label: I did not add price, return, buyer, liquidity, investment, market-support, or guaranteed-result claims.
+          required: true
+        - label: I understand this evidence does not approve an invoice, payment instruction, paid work, token grant, or asset movement.
+          required: true

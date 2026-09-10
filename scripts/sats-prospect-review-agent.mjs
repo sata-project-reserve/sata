@@ -1,5 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { writeRevenueCyclePublicStatus } from './lib/revenue-cycle-public-state.mjs';
 import { buildProspectReviewPacket, renderProspectReviewPacket } from './lib/prospect-review-packet.mjs';
 
 const PIPELINE_PATH = join('public', 'sats-prospect-pipeline.json');
@@ -37,6 +38,7 @@ async function writeDraft() {
     items: [...(approvalQueue.items ?? []), approvalItem]
   };
   await writeFile(APPROVAL_QUEUE_PATH, `${JSON.stringify(updated, null, 2)}\n`);
+  await writeRevenueCyclePublicStatus();
   console.log(JSON.stringify(approvalItem, null, 2));
 }
 

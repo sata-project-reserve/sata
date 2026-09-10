@@ -12,6 +12,16 @@ const htmlFiles = [
   join('out', 'services', 'transparency-report-setup.html'),
   join('out', 'services', 'full-proof-dashboard.html')
 ];
+const publicFiles = [
+  join('out', 'revenue-execution-brief.json'),
+  join('out', 'revenue-execution-brief.md'),
+  join('out', 'outreach-dispatch-brief.json'),
+  join('out', 'outreach-dispatch-brief.md'),
+  join('out', 'reply-conversion-brief.json'),
+  join('out', 'reply-conversion-brief.md'),
+  join('out', 'referral-handoff-dispatch-brief.json'),
+  join('out', 'referral-handoff-dispatch-brief.md')
+];
 
 for (const htmlFile of htmlFiles) {
   if (!existsSync(htmlFile)) {
@@ -28,6 +38,7 @@ for (const htmlFile of htmlFiles) {
       /href="\/executive-/,
       /href="\/sats-/,
       /href="\/revenue-/,
+      /href="\/reply-/,
       /href="\/referral-/,
       /href="\/service-/,
       /src="\/mainnet\//,
@@ -38,6 +49,12 @@ for (const htmlFile of htmlFiles) {
         findings.push(`${htmlFile}: contains unprefixed GitHub Pages path matching ${pattern}`);
       }
     }
+  }
+}
+
+for (const publicFile of publicFiles) {
+  if (!existsSync(publicFile)) {
+    findings.push(`${publicFile}: exported public file is missing`);
   }
 }
 

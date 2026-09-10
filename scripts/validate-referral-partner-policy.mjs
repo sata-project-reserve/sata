@@ -23,6 +23,24 @@ if (
 ) {
   findings.push('approved referral policy must include approvedBy and approvedAtUtc');
 }
+if (
+  policy.status === 'approved-by-chairman' &&
+  /Submit this policy to Executive Chairman review/i.test(policy.nextAction ?? '')
+) {
+  findings.push('approved referral policy nextAction must not ask for already-completed policy approval');
+}
+if (
+  policy.status === 'approved-by-chairman' &&
+  !/partner-specific compensation proposal/i.test(policy.nextAction ?? '')
+) {
+  findings.push('approved referral policy nextAction must preserve partner-specific compensation gate');
+}
+if (
+  policy.status === 'pending-executive-chairman-approval' &&
+  !/Submit this policy to Executive Chairman review/i.test(policy.nextAction ?? '')
+) {
+  findings.push('pending referral policy nextAction must request chairman review');
+}
 if (policy.compensationModel?.paymentTrigger !== 'Only after the referred customer pays and the receipt is confirmed.') {
   findings.push('compensationModel.paymentTrigger must require confirmed customer receipt');
 }

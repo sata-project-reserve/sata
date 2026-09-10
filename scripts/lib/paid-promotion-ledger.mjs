@@ -20,6 +20,9 @@ export function buildPaidPromotionPlan({ ledger, generatedAtUtc = new Date().toI
   );
   const liveVerified = campaigns.filter((campaign) => campaign.status === 'live-verified');
   const completed = campaigns.filter((campaign) => campaign.status === 'completed');
+  const completedZeroReceipt = completed.filter(
+    (campaign) => BigInt(campaign.conversion?.confirmedReceiptsSats ?? '0') === 0n
+  );
 
   return {
     project: ledger.project,
@@ -43,7 +46,7 @@ export function buildPaidPromotionPlan({ ledger, generatedAtUtc = new Date().toI
       amountUsd: campaign.compensation?.amountUsd,
       reportedPostUrl: campaign.reportedPostUrl ?? null,
       nextAction: campaign.nextAction,
-      recordLiveCommand: `node scripts/paid-promotion-agent.mjs record-live --campaign ${campaign.id} --post ${campaign.reportedPostUrl ?? '<x-status-url>'} --evidence "<live-post-screenshot-or-exported-text>"`
+      recordLiveCommand: `node scripts/paid-promotion-agent.mjs record-live --campaign ${campaign.id} --post ${campaign.reportedPostUrl ?? '<x-status-url>'} --evidence "<live-post-screenshot-or-exported-text>" --verifiedAtUtc "<verified-at-utc>"`
     })),
     liveVerified: liveVerified.map((campaign) => ({
       id: campaign.id,
@@ -51,11 +54,27 @@ export function buildPaidPromotionPlan({ ledger, generatedAtUtc = new Date().toI
       amountUsd: campaign.compensation?.amountUsd,
       verifiedPostUrl: campaign.verifiedPostUrl ?? campaign.reportedPostUrl,
       nextAction: campaign.nextAction,
-      recordConversionCommand: `node scripts/paid-promotion-agent.mjs record-conversion --campaign ${campaign.id} --evidence "<24h-analytics-and-inquiry-log>" --profileViewLift "<profile-view-change-or-not-recorded>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0`
+      recordConversionCommand: `node scripts/paid-promotion-agent.mjs record-conversion --campaign ${campaign.id} --evidence "<24h-analytics-and-inquiry-log>" --profileViewLift "<profile-view-change-or-not-recorded>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0 --measuredAtUtc "<measured-at-utc>"`
+    })),
+    postReceiptReferralHandoffCandidates: completedZeroReceipt.map((campaign) => ({
+      id: campaign.id,
+      promoter: campaign.promoter?.handle,
+      amountUsd: campaign.compensation?.amountUsd,
+      verifiedPostUrl: campaign.verifiedPostUrl ?? campaign.reportedPostUrl,
+      confirmedReceiptsSats: campaign.conversion?.confirmedReceiptsSats ?? '0',
+      nextAction:
+        'Convert this zero-receipt promotion into a no-upfront, post-receipt referral handoff before considering repeat spend.',
+      renderHandoffCommand: `node scripts/referral-partner-handoff-agent.mjs render --campaign ${campaign.id}`
     })),
     nextAction:
       awaitingVerification[0]?.nextAction ??
       liveVerified[0]?.nextAction ??
+      (completedZeroReceipt[0]
+        ? `Offer ${cleanLine(
+            completedZeroReceipt[0].promoter?.displayName ||
+              completedZeroReceipt[0].promoter?.handle
+          )} a no-upfront post-receipt referral handoff before repeat paid promotion.`
+        : null) ??
       completed[0]?.nextAction ??
       ledger.nextAction ??
       'Wait for verified live evidence and measured conversion before repeating paid promotion.',
@@ -69,7 +88,7 @@ export function recordPaidPromotionVerification({
   campaignId,
   evidence,
   verifiedPostUrl,
-  verifiedAtUtc = new Date().toISOString()
+  verifiedAtUtc
 }) {
   validatePaidPromotionLedger(ledger);
   const id = cleanLine(campaignId);
@@ -78,7 +97,7 @@ export function recordPaidPromotionVerification({
   if (!/^https:\/\/x\.com\/[^/]+\/status\/\d+/i.test(postUrl)) {
     throw new Error('verifiedPostUrl must be an X status URL.');
   }
-  parseDate(verifiedAtUtc, 'verifiedAtUtc');
+  let ledgerUpdatedAtUtc = null;
   let found = false;
   const campaigns = (ledger.campaigns ?? []).map((campaign) => {
     if (campaign.id !== id) return campaign;
@@ -88,6 +107,8 @@ export function recordPaidPromotionVerification({
         `${id}: only paid-awaiting-post or post-reported-unverified campaigns can be verified.`
       );
     }
+    const verifiedAt = parseTimestamp(verifiedAtUtc, 'verifiedAtUtc');
+    ledgerUpdatedAtUtc = verifiedAt;
     return {
       ...campaign,
       status: 'live-verified',
@@ -96,7 +117,7 @@ export function recordPaidPromotionVerification({
       verification: {
         ...campaign.verification,
         status: 'live-verified',
-        checkedAtUtc: verifiedAtUtc,
+        checkedAtUtc: verifiedAt,
         evidence: proof,
         result:
           'Human verification recorded: post is live, disclosed, unchanged from approved requirements, and ready for conversion measurement.'
@@ -106,7 +127,7 @@ export function recordPaidPromotionVerification({
     };
   });
   if (!found) throw new Error(`Paid promotion campaign not found: ${id}`);
-  const nextLedger = { ...ledger, updatedAtUtc: verifiedAtUtc, campaigns };
+  const nextLedger = { ...ledger, updatedAtUtc: ledgerUpdatedAtUtc, campaigns };
   validatePaidPromotionLedger(nextLedger);
   return nextLedger;
 }
@@ -120,12 +141,11 @@ export function recordPaidPromotionConversion({
   serviceInquiries,
   invoiceRequests,
   confirmedReceiptsSats,
-  measuredAtUtc = new Date().toISOString()
+  measuredAtUtc
 }) {
   validatePaidPromotionLedger(ledger);
   const id = cleanLine(campaignId);
   const proof = requireEvidence(evidence, 'Conversion measurement evidence is required.');
-  parseDate(measuredAtUtc, 'measuredAtUtc');
   const conversion = {
     profileViewLift: cleanLine(profileViewLift || 'not-recorded'),
     trackedClicks: nullableInteger(trackedClicks, 'trackedClicks'),
@@ -136,8 +156,9 @@ export function recordPaidPromotionConversion({
       'confirmedReceiptsSats'
     ),
     evidence: proof,
-    measuredAtUtc
+    measuredAtUtc: null
   };
+  let ledgerUpdatedAtUtc = null;
   let found = false;
   const campaigns = (ledger.campaigns ?? []).map((campaign) => {
     if (campaign.id !== id) return campaign;
@@ -145,18 +166,23 @@ export function recordPaidPromotionConversion({
     if (campaign.status !== 'live-verified') {
       throw new Error(`${id}: conversion recording requires live-verified status.`);
     }
+    const measuredAt = parseTimestamp(measuredAtUtc, 'measuredAtUtc');
+    ledgerUpdatedAtUtc = measuredAt;
     return {
       ...campaign,
       status: 'completed',
-      conversion,
+      conversion: {
+        ...conversion,
+        measuredAtUtc: measuredAt
+      },
       nextAction:
         BigInt(conversion.confirmedReceiptsSats) > 0n
           ? 'Prepare receipt allocation proposal for confirmed sats before counting reserve progress.'
-          : 'Do not repeat paid promotion unless the Executive Chairman approves a new experiment using recorded conversion evidence.'
+          : 'Convert this zero-receipt promotion into a no-upfront post-receipt referral handoff before considering repeat spend.'
     };
   });
   if (!found) throw new Error(`Paid promotion campaign not found: ${id}`);
-  const nextLedger = { ...ledger, updatedAtUtc: measuredAtUtc, campaigns };
+  const nextLedger = { ...ledger, updatedAtUtc: ledgerUpdatedAtUtc, campaigns };
   validatePaidPromotionLedger(nextLedger);
   return nextLedger;
 }
@@ -184,6 +210,7 @@ export function validatePaidPromotionLedger(ledger) {
   const ids = new Set();
   for (const campaign of ledger?.campaigns ?? []) {
     const label = campaign.id ?? '<missing-id>';
+    const confirmedReceiptsSats = campaign.conversion?.confirmedReceiptsSats ?? '0';
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(label)) {
       findings.push(`${label}: id must be kebab-case`);
     }
@@ -227,8 +254,30 @@ export function validatePaidPromotionLedger(ledger) {
     if (campaign.status === 'live-verified' && !cleanLine(campaign.verification?.evidence)) {
       findings.push(`${label}: live-verified campaigns require verification evidence`);
     }
+    if (
+      campaign.status === 'live-verified' &&
+      Number.isNaN(Date.parse(campaign.verification?.checkedAtUtc ?? ''))
+    ) {
+      findings.push(`${label}: live-verified campaigns require valid verification checkedAtUtc`);
+    }
     if (campaign.status === 'completed' && !cleanLine(campaign.conversion?.evidence)) {
       findings.push(`${label}: completed campaigns require conversion evidence`);
+    }
+    if (
+      campaign.status === 'completed' &&
+      Number.isNaN(Date.parse(campaign.conversion?.measuredAtUtc ?? ''))
+    ) {
+      findings.push(`${label}: completed campaigns require valid conversion measuredAtUtc`);
+    }
+    if (
+      campaign.status === 'completed' &&
+      /^\d+$/.test(confirmedReceiptsSats) &&
+      BigInt(confirmedReceiptsSats) === 0n &&
+      !/post-receipt referral handoff/i.test(campaign.nextAction ?? '')
+    ) {
+      findings.push(
+        `${label}: zero-receipt completed campaigns must route to post-receipt referral handoff before repeat spend`
+      );
     }
     if (
       campaign.reportedPostUrl &&
@@ -236,7 +285,7 @@ export function validatePaidPromotionLedger(ledger) {
     ) {
       findings.push(`${label}: reportedPostUrl must be an X status URL`);
     }
-    if (!/^\d+$/.test(campaign.conversion?.confirmedReceiptsSats ?? '0')) {
+    if (!/^\d+$/.test(confirmedReceiptsSats)) {
       findings.push(`${label}: confirmedReceiptsSats must be an integer string`);
     }
     const requirements = (campaign.approvedContentRequirements ?? []).join('\n');
@@ -286,11 +335,12 @@ function requireEvidence(value, message) {
   return evidence;
 }
 
-function parseDate(value, label) {
-  const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime()))
-    throw new Error(`${label} must be a valid timestamp.`);
-  return date;
+function parseTimestamp(value, label) {
+  const cleaned = cleanLine(value);
+  if (!cleaned) throw new Error(`${label} must be a valid timestamp.`);
+  const date = new Date(cleaned);
+  if (Number.isNaN(date.getTime())) throw new Error(`${label} must be a valid timestamp.`);
+  return cleaned;
 }
 
 function nullableInteger(value, label) {

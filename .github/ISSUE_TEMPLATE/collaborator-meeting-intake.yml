@@ -1,0 +1,86 @@
+name: Collaborator Meeting Intake
+description: Submit a SATA collaborator or Dubai face-to-face meeting candidate for review.
+title: '[Collaborator Meeting Intake]: '
+labels: ['collaborator-meeting-intake', 'chairman-review']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to submit a legitimate collaborator candidate for Executive Chairman review.
+
+        This form records evidence only. It does not approve a meeting, partner, compensation, post, invoice, payment instruction, token grant, transaction, custody change, or asset movement.
+  - type: input
+    id: collaboratorName
+    attributes:
+      label: Collaborator name or handle
+      description: 'Example: Diana Crypto'
+    validations:
+      required: true
+  - type: input
+    id: publicProfileUrl
+    attributes:
+      label: Public profile URL
+      description: Durable public profile, website, X profile, GitHub profile, or portfolio.
+    validations:
+      required: true
+  - type: dropdown
+    id: proposedRole
+    attributes:
+      label: Proposed role
+      options:
+        - transparency-service referral
+        - factual media or education coverage
+        - technical proof or reporting contributor
+        - local Dubai collaborator meeting
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: pastWork
+    attributes:
+      label: Past work evidence
+      description: Links or concise examples of relevant prior work.
+    validations:
+      required: true
+  - type: textarea
+    id: requestedTerms
+    attributes:
+      label: Requested terms
+      description: Requested compensation model or collaboration terms. Do not include wallet secrets.
+    validations:
+      required: true
+  - type: input
+    id: disclosurePolicy
+    attributes:
+      label: Disclosure policy
+      description: How paid or token-compensated work would be disclosed.
+    validations:
+      required: true
+  - type: dropdown
+    id: willingToMeetDubai
+    attributes:
+      label: Willing to meet face-to-face in Dubai
+      options:
+        - 'yes-public-place'
+        - 'no'
+        - 'not-applicable'
+    validations:
+      required: true
+  - type: textarea
+    id: meetingNotes
+    attributes:
+      label: Meeting notes
+      description: Public venue preference, availability, or reason an in-person meeting is useful. Do not include private addresses.
+    validations:
+      required: false
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      options:
+        - label: I understand this submission does not approve compensation, token grants, posts, invoices, payment instructions, transactions, custody changes, or asset movement.
+          required: true
+        - label: I will not use fake engagement, bots, raids, guaranteed buyers, price claims, return claims, or market-support promises.
+          required: true
+        - label: Any meeting must be in a public place and must not involve wallet signing, cash exchange, private keys, seed phrases, or asset custody.
+          required: true

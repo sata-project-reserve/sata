@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 
 const queuePath = join('public', 'social-agent-content-queue.json');
@@ -47,14 +48,21 @@ for (const required of [
   /case 'approve-post'/,
   /case 'reject-post'/,
   /case 'record-published'/,
+  /case 'refresh-content-hashes'/,
   /I am Executive Chairman and approve social post/,
   /I am Executive Chairman and reject social post/,
   /Post URL must match https:\/\/x\.com\/\$\{queue\.account\.handle\}\/status\/<numeric-id>\./,
-  /manual-owner-record/
+  /manual-owner-record/,
+  /requires --contentHash with the approved post SHA-256/,
+  /contentHash does not match the approved post text/,
+  /publishedAtUtc: new Date\(\)\.toISOString\(\)/
 ]) {
   if (!required.test(agent)) {
     findings.push(`x-social-agent approval flow missing ${required}`);
   }
+}
+if (/publishedAtUtc = new Date\(\)\.toISOString\(\)/.test(agent)) {
+  findings.push('manual publication recording must not default publishedAtUtc to runtime now');
 }
 
 const monitoringPostsById = new Map((monitoring.posts ?? []).map((post) => [post.id, post]));
@@ -75,6 +83,13 @@ for (const post of queue.posts ?? []) {
   );
   if (post.text.length > 280) {
     findings.push(`${post.id}: text exceeds 280 characters (${post.text.length})`);
+  }
+  if (['approved', 'published'].includes(post.status)) {
+    if (!/^[a-f0-9]{64}$/.test(post.contentSha256 ?? '')) {
+      findings.push(`${post.id}: approved/published posts must include contentSha256`);
+    } else if (post.contentSha256 !== sha256(post.text)) {
+      findings.push(`${post.id}: contentSha256 must match approved post text`);
+    }
   }
   for (const pattern of bannedPatterns) {
     if (pattern.test(promotionalText)) {
@@ -107,6 +122,9 @@ for (const post of queue.posts ?? []) {
     if (!monitoredPost || monitoredPost.postUrl !== post.postUrl) {
       findings.push(`${post.id}: published post must have matching monitoring-log entry`);
     }
+    if (monitoredPost && monitoredPost.contentSha256 !== post.contentSha256) {
+      findings.push(`${post.id}: monitoring-log contentSha256 must match published post`);
+    }
   }
 }
 
@@ -120,4 +138,8 @@ console.log('Social content check passed: queued drafts follow SATA posting rule
 
 function escapeRegExp(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function sha256(value) {
+  return createHash('sha256').update(String(value ?? '').replaceAll('\r\n', '\n'), 'utf8').digest('hex');
 }

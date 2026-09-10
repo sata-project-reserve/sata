@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -40,6 +41,14 @@ export function buildReferralPartnerPacket({
     utm_campaign: sourceId,
     utm_content: 'sample_audit'
   });
+  const replyTemplate = renderPartnerReply({
+    policy,
+    displayName: cleanLine(displayName),
+    serviceUrl,
+    sampleAuditUrl,
+    referralPageUrl,
+    intakeUrl: inboundQueue.intakeUrl
+  });
 
   const packet = {
     project: policy.project,
@@ -71,15 +80,9 @@ export function buildReferralPartnerPacket({
     },
     requiredDisclosure: policy.requiredPartnerDisclosure,
     requiredEvidenceBeforeCompensation: policy.requiredEvidenceBeforeCompensation,
-    replyTemplate: renderPartnerReply({
-      policy,
-      displayName: cleanLine(displayName),
-      serviceUrl,
-      sampleAuditUrl,
-      referralPageUrl,
-      intakeUrl: inboundQueue.intakeUrl
-    }),
-    recordReferredLeadCommand: `node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sourceType manual-referral --sourceId ${sourceId} --contactHandle "<customer-handle-or-contact>" --publicProfileUrl "<https-customer-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --evidence "<referral-and-customer-interest-evidence>" --customerAskedForInvoice false`,
+    replyTemplate,
+    termsSha256: sha256(replyTemplate),
+    recordReferredLeadCommand: `node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sourceType manual-referral --sourceId ${sourceId} --contactHandle "<customer-handle-or-contact>" --publicProfileUrl "<https-customer-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --evidence "<referral-and-customer-interest-evidence>" --customerAskedForInvoice false --recordedAtUtc "<recorded-at-utc>" --convertedAtUtc "<converted-at-utc>"`,
     nextAction:
       'Send only chairman-approved factual referral terms, then record any referred customer as an inbound lead before invoice review.',
     boundary:
@@ -108,6 +111,7 @@ export function renderReferralPartnerPacket(packet) {
     '```',
     '',
     '## Tracking',
+    `Approved terms SHA-256: ${packet.termsSha256}`,
     `Service URL: ${packet.source.serviceUrl}`,
     `Sample audit: ${packet.source.sampleAuditUrl}`,
     `Referral policy: ${packet.source.referralPageUrl}`,
@@ -132,7 +136,8 @@ export function renderReferralPartnerPacket(packet) {
 
 export function validateReferralPartnerPacket({ packet, policy, inboundQueue }) {
   const findings = [];
-  if (packet.mode !== 'referral-partner-packet') findings.push('mode must be referral-partner-packet');
+  if (packet.mode !== 'referral-partner-packet')
+    findings.push('mode must be referral-partner-packet');
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(packet.partner?.id ?? '')) {
     findings.push('partner id must be kebab-case');
   }
@@ -148,7 +153,9 @@ export function validateReferralPartnerPacket({ packet, policy, inboundQueue }) 
   if (packet.compensation?.requiresSeparateGrantApproval !== true) {
     findings.push('packet must require separate token grant approval');
   }
-  if (!/Sponsored\/Paid Partnership|token-compensated referral/i.test(packet.requiredDisclosure ?? '')) {
+  if (
+    !/Sponsored\/Paid Partnership|token-compensated referral/i.test(packet.requiredDisclosure ?? '')
+  ) {
     findings.push('packet must require paid or token-compensated disclosure');
   }
   if (!/does not approve the partner/i.test(packet.boundary ?? '')) {
@@ -159,6 +166,12 @@ export function validateReferralPartnerPacket({ packet, policy, inboundQueue }) 
   }
   if (!/\/services\/sample-audit\?/i.test(packet.source?.sampleAuditUrl ?? '')) {
     findings.push('packet must include a tracked sample audit URL');
+  }
+  if (!/^[a-f0-9]{64}$/.test(packet.termsSha256 ?? '')) {
+    findings.push('packet must include approved terms SHA-256');
+  }
+  if (packet.termsSha256 !== sha256(packet.replyTemplate)) {
+    findings.push('packet approved terms SHA-256 must match reply template');
   }
   for (const required of [
     'Customer request for paid service.',
@@ -171,7 +184,9 @@ export function validateReferralPartnerPacket({ packet, policy, inboundQueue }) 
     }
   }
   assertNoUnsafePositiveClaims(
-    [packet.replyTemplate, packet.requiredDisclosure, packet.nextAction, packet.boundary].join('\n'),
+    [packet.replyTemplate, packet.requiredDisclosure, packet.nextAction, packet.boundary].join(
+      '\n'
+    ),
     findings
   );
   if (findings.length > 0) {
@@ -180,7 +195,14 @@ export function validateReferralPartnerPacket({ packet, policy, inboundQueue }) 
   return true;
 }
 
-function renderPartnerReply({ policy, displayName, serviceUrl, sampleAuditUrl, referralPageUrl, intakeUrl }) {
+function renderPartnerReply({
+  policy,
+  displayName,
+  serviceUrl,
+  sampleAuditUrl,
+  referralPageUrl,
+  intakeUrl
+}) {
   return [
     `Thanks ${displayName}. SATA can consider referral compensation only for legitimate paid transparency-service referrals.`,
     'Any relationship must be clearly disclosed to your audience before compensated coverage or referral activity.',
@@ -211,7 +233,9 @@ function assertNoUnsafePositiveClaims(text, findings) {
     )
     .replace(/prohibitedPartnerClaims[^}]+/gi, '');
   if (
-    /\b(upfront payment|price guarantee|redemption promise|buyer claims|fake engagement|bots|raids|market-support|investment return)\b/i.test(cleaned)
+    /\b(upfront payment|price guarantee|redemption promise|buyer claims|fake engagement|bots|raids|market-support|investment return)\b/i.test(
+      cleaned
+    )
   ) {
     findings.push('packet contains unsafe promotional wording outside negative controls');
   }
@@ -239,6 +263,16 @@ function kebab(value) {
 function cleanLine(value) {
   return String(value ?? '')
     .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function sha256(value) {
+  return createHash('sha256').update(normalizeMessage(value), 'utf8').digest('hex');
+}
+
+function normalizeMessage(value) {
+  return String(value ?? '')
+    .replace(/\r/g, '')
     .trim();
 }
 

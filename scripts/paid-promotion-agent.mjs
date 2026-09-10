@@ -6,6 +6,7 @@ import {
   recordPaidPromotionConversion,
   recordPaidPromotionVerification
 } from './lib/paid-promotion-ledger.mjs';
+import { writeRevenueCyclePublicStatus } from './lib/revenue-cycle-public-state.mjs';
 
 const LEDGER_PATH = join('public', 'paid-promotion-ledger.json');
 
@@ -25,7 +26,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
           ledger,
           campaignId: options.campaign,
           evidence: options.evidence,
-          verifiedPostUrl: options.post
+          verifiedPostUrl: options.post,
+          verifiedAtUtc: options.verifiedAtUtc
         })
       );
       break;
@@ -39,7 +41,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
           trackedClicks: options.trackedClicks,
           serviceInquiries: options.serviceInquiries,
           invoiceRequests: options.invoiceRequests,
-          confirmedReceiptsSats: options.confirmedReceiptsSats
+          confirmedReceiptsSats: options.confirmedReceiptsSats,
+          measuredAtUtc: options.measuredAtUtc
         })
       );
       break;
@@ -52,6 +55,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 
 async function writeLedger(ledger) {
   await writeFile(LEDGER_PATH, `${JSON.stringify(ledger, null, 2)}\n`);
+  await writeRevenueCyclePublicStatus();
   console.log(JSON.stringify(buildPaidPromotionPlan({ ledger }), null, 2));
 }
 

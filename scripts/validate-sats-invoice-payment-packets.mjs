@@ -1,6 +1,8 @@
 import { renderInvoicePaymentPacket } from './lib/sats-invoice-payment-packet.mjs';
+import { readFileSync } from 'node:fs';
 
 const reserveAddress = 'bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk';
+const agentSource = readFileSync('scripts/sats-invoice-payment-packet-agent.mjs', 'utf8');
 const queue = {
   paymentPolicy: {
     reserveAddress
@@ -20,7 +22,8 @@ const approvedInvoice = {
   quoteCreatedAtUtc: '2026-08-28T00:00:00.000Z',
   quoteExpiresAtUtc: '2026-08-28T00:30:00.000Z',
   chairmanApprovalRequired: true,
-  deliverable: 'One-page public-readiness audit covering token authorities, liquidity lock, reserve claims, and disclosure gaps.',
+  deliverable:
+    'One-page public-readiness audit covering token authorities, liquidity lock, reserve claims, and disclosure gaps.',
   publicDisclosure:
     'Service revenue may be paid directly into the BTC reserve. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment.'
 };
@@ -43,6 +46,10 @@ for (const required of [
   if (!required.test(packet)) findings.push(`payment packet missing ${required}`);
 }
 
+if (!/resolveInvoiceId/.test(agentSource) || !/options\.invoice/.test(agentSource)) {
+  findings.push('payment packet agent must accept --invoice <invoice-id> render commands');
+}
+
 for (const invoice of [
   { ...approvedInvoice, status: 'draft' },
   { ...approvedInvoice, approvedBy: undefined },
@@ -59,7 +66,9 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('Sats invoice payment packet check passed: only approved current invoices can render customer payment text.');
+console.log(
+  'Sats invoice payment packet check passed: only approved current invoices can render customer payment text.'
+);
 
 function assertRejects(invoice, generatedAtUtc = '2026-08-28T00:10:00.000Z') {
   try {

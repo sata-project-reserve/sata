@@ -105,12 +105,41 @@ assertRejects('record missing evidence', /Follow-up evidence is required/i, () =
     followedUpAtUtc: '2026-09-03T11:00:00.000Z'
   })
 );
+assertRejects('record missing followedUpAtUtc', /followedUpAtUtc must be a valid timestamp/i, () =>
+  recordProspectFollowUp({
+    pipeline,
+    prospectId: 'due-team',
+    followUpEvidence: 'https://x.com/example/status/follow-up'
+  })
+);
 assertRejects('record too early', /not due yet/i, () =>
   recordProspectFollowUp({
     pipeline,
     prospectId: 'fresh-team',
     followUpEvidence: 'https://x.com/example/status/follow-up',
     followedUpAtUtc: '2026-09-03T11:00:00.000Z'
+  })
+);
+assertRejects('invalid stored follow-up timestamp', /followedUpAtUtc must be a valid timestamp/i, () =>
+  validateProspectFollowUps({
+    pipeline: {
+      ...pipeline,
+      prospects: [
+        {
+          ...contactedProspect({
+            id: 'bad-follow-up-time',
+            contactedAtUtc: '2026-09-01T10:00:00.000Z'
+          }),
+          followUps: [
+            {
+              channel: 'manual-dm',
+              evidence: 'https://x.com/example/status/follow-up',
+              followedUpAtUtc: 'not-a-date'
+            }
+          ]
+        }
+      ]
+    }
   })
 );
 

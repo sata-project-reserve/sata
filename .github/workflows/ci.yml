@@ -35,6 +35,9 @@ jobs:
       - name: Validate social content
         run: npm run social:check
 
+      - name: Validate social publish evidence workflow
+        run: npm run ops:social-publish-evidence-check
+
       - name: Validate executive approval queue
         run: npm run ops:check
 
@@ -61,6 +64,9 @@ jobs:
 
       - name: Validate referral partner policy
         run: npm run ops:referral-policy-check
+
+      - name: Validate collaborator meeting intake
+        run: npm run ops:collaborator-meeting-check
 
       - name: Validate referral partner packets
         run: npm run ops:referral-packet-check
@@ -97,6 +103,9 @@ jobs:
 
       - name: Validate inbound service leads
         run: npm run ops:inbound-lead-check
+
+      - name: Validate inbound reply triage
+        run: npm run ops:inbound-reply-triage-check
 
       - name: Validate inbound invoice request packets
         run: npm run ops:inbound-invoice-request-check
@@ -137,8 +146,20 @@ jobs:
       - name: Validate service outreach packets
         run: npm run ops:outreach-check
 
+      - name: Validate outreach contact evidence workflow
+        run: npm run ops:outreach-contact-evidence-check
+
+      - name: Validate referral handoff evidence workflow
+        run: npm run ops:referral-handoff-evidence-check
+
+      - name: Validate referral handoff response evidence workflow
+        run: npm run ops:referral-handoff-response-evidence-check
+
       - name: Validate outreach dispatch brief
         run: npm run ops:outreach-dispatch-check
+
+      - name: Validate reply conversion brief
+        run: npm run ops:reply-conversion-check
 
       - name: Validate transparency audit delivery kit
         run: npm run ops:delivery-check

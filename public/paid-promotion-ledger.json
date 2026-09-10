@@ -75,10 +75,10 @@
         "evidence": "2026-09-05T23:34Z repo checks: no open GitHub issues or inbound leads, no invoice requests, and reserve address shows no new receipt; X analytics export not available in repository",
         "measuredAtUtc": "2026-09-05T23:35:22.984Z"
       },
-      "nextAction": "Do not repeat paid promotion unless the Executive Chairman approves a new experiment using recorded conversion evidence.",
+      "nextAction": "Convert this zero-receipt promotion into a no-upfront post-receipt referral handoff before considering repeat spend.",
       "verifiedPostUrl": "https://x.com/142C_/status/2086570576530010172"
     }
   ],
-  "nextAction": "Verify diana-crypto-20260903-transparency-tweet, then record conversion results after 24 hours without making price or market-support claims.",
+  "nextAction": "Offer Diana Crypto a no-upfront post-receipt referral handoff before repeat paid promotion.",
   "boundary": "This ledger tracks disclosed marketing experiments. It does not approve promotion, payment, token grants, asset movement, price claims, investor targeting, or repeat spend."
 }

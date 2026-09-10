@@ -35,7 +35,7 @@ export function buildRevenueAttributionPlan({
           utm_content: 'audit_service'
         })
       },
-      recordConversionCommand: `node scripts/paid-promotion-agent.mjs record-conversion --campaign ${campaign.id} --evidence "<24h-x-analytics-or-reply-export>" --profileViewLift "<profile-view-change>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0`,
+      recordConversionCommand: `node scripts/paid-promotion-agent.mjs record-conversion --campaign ${campaign.id} --evidence "<24h-x-analytics-or-reply-export>" --profileViewLift "<profile-view-change>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0 --measuredAtUtc "<measured-at-utc>"`,
       measurementRule:
         'Count only platform analytics, trackable link clicks, direct replies, invoice requests, and confirmed reserve receipts.'
     };

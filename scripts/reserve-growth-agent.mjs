@@ -1,5 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { writeRevenueCyclePublicStatus } from './lib/revenue-cycle-public-state.mjs';
 
 const PLAN_PATH = join('public', 'reserve-growth-plan.json');
 const REPORT_PATH = join('public', 'transparency', 'latest.json');
@@ -117,6 +118,7 @@ async function draftNextTranche() {
   });
   queue.updatedAtUtc = latestIsoTimestamp(queue.updatedAtUtc, createdAtUtc);
   await writeJson(QUEUE_PATH, queue);
+  await writeRevenueCyclePublicStatus();
   console.log(`Created chairman-review tranche proposal: ${id}`);
 }
 

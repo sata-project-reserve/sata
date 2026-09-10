@@ -88,7 +88,8 @@ assertRejects('unapproved advancement', /not approved by the Executive Chairman/
     pipeline: transitionFixture,
     approvalQueue: unapprovedQueue,
     approvalId,
-    prospectIds: [firstIdentified?.id]
+    prospectIds: [firstIdentified?.id],
+    transitionedAtUtc: '2026-08-29T08:45:00.000Z'
   })
 );
 
@@ -152,7 +153,8 @@ assertRejects('wrong target stage', /Only chairman-review transitions/i, () =>
     approvalQueue: approvedQueue,
     approvalId,
     prospectIds: [firstIdentified?.id],
-    targetStage: 'outreach-approved'
+    targetStage: 'outreach-approved',
+    transitionedAtUtc: '2026-08-29T08:45:00.000Z'
   })
 );
 assertRejects('unknown prospect', /Prospect not found/i, () =>
@@ -160,7 +162,8 @@ assertRejects('unknown prospect', /Prospect not found/i, () =>
     pipeline: transitionFixture,
     approvalQueue: approvedQueue,
     approvalId,
-    prospectIds: ['missing-prospect']
+    prospectIds: ['missing-prospect'],
+    transitionedAtUtc: '2026-08-29T08:45:00.000Z'
   })
 );
 assertRejects('oversized transition batch', /exceeds chairman review batch size/i, () =>
@@ -168,7 +171,8 @@ assertRejects('oversized transition batch', /exceeds chairman review batch size/
     pipeline: transitionFixture,
     approvalQueue: approvedQueue,
     approvalId,
-    prospectIds: ['arnold-solana', 'npc-meme', 'black-bull-ansem', 'roach-solana']
+    prospectIds: ['arnold-solana', 'npc-meme', 'black-bull-ansem', 'roach-solana'],
+    transitionedAtUtc: '2026-08-29T08:45:00.000Z'
   })
 );
 assertRejects('reused approval id', /already been used/i, () =>
@@ -176,7 +180,16 @@ assertRejects('reused approval id', /already been used/i, () =>
     pipeline: updated,
     approvalQueue: approvedQueue,
     approvalId,
-    prospectIds: [secondIdentified?.id]
+    prospectIds: [secondIdentified?.id],
+    transitionedAtUtc: '2026-08-29T08:45:00.000Z'
+  })
+);
+assertRejects('missing transition timestamp', /transitionedAtUtc must be a valid timestamp/i, () =>
+  applyProspectStageTransition({
+    pipeline: transitionFixture,
+    approvalQueue: approvedQueue,
+    approvalId,
+    prospectIds: [firstIdentified?.id]
   })
 );
 

@@ -22,6 +22,7 @@ const queueWithLead = recordInboundLead({
   requestedOfferId: 'transparency-report-setup',
   evidence: 'Inbound DM evidence: customer asked for a transparency setup invoice.',
   customerAskedForInvoice: true,
+  recordedAtUtc: '2026-09-10T12:15:00.000Z',
   notes: 'No payment instructions sent before chairman review.'
 });
 
@@ -42,14 +43,25 @@ const request = packet.requests[0];
 if (request?.offerId !== 'transparency-report-setup' || request?.usdPrice !== '150') {
   findings.push('packet request must preserve inbound requested offer and invoice template price');
 }
-if (request?.paymentAddress !== invoiceQueue.paymentPolicy.reserveAddress) {
-  findings.push('packet request payment address must match invoice queue reserve address');
+if (
+  !/Hidden until a chairman-approved exact-sats invoice/i.test(request?.paymentAddressPolicy ?? '')
+) {
+  findings.push('packet request must hide payment address until invoice approval');
+}
+if (JSON.stringify(packet).includes(invoiceQueue.paymentPolicy.reserveAddress)) {
+  findings.push('pre-approval inbound packet must not render the reserve payment address');
 }
 if (!/sats-invoice-quote-agent\.mjs quote-template/.test(request?.quoteCommand ?? '')) {
   findings.push('packet must include quote-template command');
 }
 if (!/chairman-selected-rate/.test(request?.quoteCommand ?? '')) {
   findings.push('quote command must require chairman-selected rate');
+}
+if (!/sats-invoice-quote-agent\.mjs write-draft/.test(request?.writeDraftCommand ?? '')) {
+  findings.push('packet must include durable write-draft command');
+}
+if (!/--evidence/.test(request?.writeDraftCommand ?? '')) {
+  findings.push('write-draft command must require invoice-request evidence');
 }
 if (!/Executive Chairman approval is required/i.test(request?.approvalRequired ?? '')) {
   findings.push('request must require Executive Chairman approval');
@@ -68,10 +80,15 @@ for (const required of [
   /SATA Inbound Invoice Request Packet/i,
   /example-paid-service-buyer/i,
   /transparency-report-setup/i,
+  /Payment address policy/i,
+  /Stage draft command/i,
   /Executive Chairman approval is required/i,
   /does not approve an invoice/i
 ]) {
   if (!required.test(rendered)) findings.push(`rendered packet missing ${required}`);
+}
+if (rendered.includes(invoiceQueue.paymentPolicy.reserveAddress)) {
+  findings.push('rendered inbound packet must not expose reserve payment address before approval');
 }
 
 if (!/render/.test(agent) || !/inbound-invoice-request-planner/.test(agent)) {
@@ -90,7 +107,8 @@ assertRejects('non-invoice lead', /inbound invoice request requires/i, () =>
       projectUrl: 'https://example.invalid',
       requestedOfferId: 'transparency-audit',
       evidence: 'Inbound DM evidence: asked a generic question.',
-      customerAskedForInvoice: false
+      customerAskedForInvoice: false,
+      recordedAtUtc: '2026-09-10T12:20:00.000Z'
     }),
     invoiceQueue,
     leadIds: 'example-needs-intake'
@@ -103,7 +121,9 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('Inbound invoice request packet check passed: inbound invoice demand stays chairman-gated.');
+console.log(
+  'Inbound invoice request packet check passed: inbound invoice demand stays chairman-gated.'
+);
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));

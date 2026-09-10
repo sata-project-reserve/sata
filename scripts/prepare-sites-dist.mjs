@@ -24,8 +24,31 @@ const socialAgentMonitoringLog = readFileSync(
   'utf8'
 );
 const revenueOperatingPlan = readFileSync(join('public', 'revenue-operating-plan.json'), 'utf8');
+const revenueExecutionBriefJson = readFileSync(
+  join('public', 'revenue-execution-brief.json'),
+  'utf8'
+);
+const revenueExecutionBriefMd = readFileSync(join('public', 'revenue-execution-brief.md'), 'utf8');
+const outreachDispatchBriefJson = readFileSync(
+  join('public', 'outreach-dispatch-brief.json'),
+  'utf8'
+);
+const outreachDispatchBriefMd = readFileSync(join('public', 'outreach-dispatch-brief.md'), 'utf8');
+const replyConversionBriefJson = readFileSync(
+  join('public', 'reply-conversion-brief.json'),
+  'utf8'
+);
+const replyConversionBriefMd = readFileSync(join('public', 'reply-conversion-brief.md'), 'utf8');
 const referralPartnerPolicyJson = readFileSync(
   join('public', 'referral-partner-policy.json'),
+  'utf8'
+);
+const referralHandoffDispatchBriefJson = readFileSync(
+  join('public', 'referral-handoff-dispatch-brief.json'),
+  'utf8'
+);
+const referralHandoffDispatchBriefMd = readFileSync(
+  join('public', 'referral-handoff-dispatch-brief.md'),
   'utf8'
 );
 const satsGenerationLedger = readFileSync(join('public', 'sats-generation-ledger.json'), 'utf8');
@@ -64,7 +87,15 @@ const socialAgentProfile = ${JSON.stringify(socialAgentProfile)};
 const socialAgentContentQueue = ${JSON.stringify(socialAgentContentQueue)};
 const socialAgentMonitoringLog = ${JSON.stringify(socialAgentMonitoringLog)};
 const revenueOperatingPlan = ${JSON.stringify(revenueOperatingPlan)};
+const revenueExecutionBriefJson = ${JSON.stringify(revenueExecutionBriefJson)};
+const revenueExecutionBriefMd = ${JSON.stringify(revenueExecutionBriefMd)};
+const outreachDispatchBriefJson = ${JSON.stringify(outreachDispatchBriefJson)};
+const outreachDispatchBriefMd = ${JSON.stringify(outreachDispatchBriefMd)};
+const replyConversionBriefJson = ${JSON.stringify(replyConversionBriefJson)};
+const replyConversionBriefMd = ${JSON.stringify(replyConversionBriefMd)};
 const referralPartnerPolicyJson = ${JSON.stringify(referralPartnerPolicyJson)};
+const referralHandoffDispatchBriefJson = ${JSON.stringify(referralHandoffDispatchBriefJson)};
+const referralHandoffDispatchBriefMd = ${JSON.stringify(referralHandoffDispatchBriefMd)};
 const satsGenerationLedger = ${JSON.stringify(satsGenerationLedger)};
 const satsInvoiceQueue = ${JSON.stringify(satsInvoiceQueue)};
 const satsProspectPipeline = ${JSON.stringify(satsProspectPipeline)};
@@ -88,7 +119,13 @@ const reportSetupServiceHtml = ${JSON.stringify(
   )
 )};
 const dashboardServiceHtml = ${JSON.stringify(
-  buildHighValueServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit, 'full-proof-dashboard')
+  buildHighValueServiceHtml(
+    report,
+    revenuePlan,
+    prospectPipeline,
+    deliveryKit,
+    'full-proof-dashboard'
+  )
 )};
 
 function buildMetadata(origin) {
@@ -276,9 +313,49 @@ export default {
         headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
       });
     }
+    if (url.pathname === '/revenue-execution-brief.json') {
+      return new Response(revenueExecutionBriefJson, {
+        headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/revenue-execution-brief.md') {
+      return new Response(revenueExecutionBriefMd, {
+        headers: withCors({ 'content-type': 'text/markdown; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/outreach-dispatch-brief.json') {
+      return new Response(outreachDispatchBriefJson, {
+        headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/outreach-dispatch-brief.md') {
+      return new Response(outreachDispatchBriefMd, {
+        headers: withCors({ 'content-type': 'text/markdown; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/reply-conversion-brief.json') {
+      return new Response(replyConversionBriefJson, {
+        headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/reply-conversion-brief.md') {
+      return new Response(replyConversionBriefMd, {
+        headers: withCors({ 'content-type': 'text/markdown; charset=utf-8' })
+      });
+    }
     if (url.pathname === '/referral-partner-policy.json') {
       return new Response(referralPartnerPolicyJson, {
         headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/referral-handoff-dispatch-brief.json') {
+      return new Response(referralHandoffDispatchBriefJson, {
+        headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/referral-handoff-dispatch-brief.md') {
+      return new Response(referralHandoffDispatchBriefMd, {
+        headers: withCors({ 'content-type': 'text/markdown; charset=utf-8' })
       });
     }
     if (url.pathname === '/sats-generation-ledger.json') {
@@ -313,7 +390,7 @@ export default {
     }
     if (url.pathname === '/') {
       return new Response(
-        '<!doctype html><title>SATA Reserve Token</title><h1>SATA Reserve Token</h1><p>Proof over promises. Temporary transparency and launch-app surface while the official SATA website is being built. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/services/transparency-audit">Transparency audit service</a></li><li><a href="/services/sample-audit">Sample transparency audit</a></li><li><a href="/partners/referrals">Referral partners</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">latest.md</a></li><li><a href="/transparency/history">history</a></li><li><a href="/transparency/history.json">history.json</a></li><li><a href="/health.json">health.json</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="/revenue-operating-plan.json">revenue-operating-plan.json</a></li><li><a href="/referral-partner-policy.json">referral-partner-policy.json</a></li><li><a href="/sats-generation-ledger.json">sats-generation-ledger.json</a></li><li><a href="/sats-invoice-queue.json">sats-invoice-queue.json</a></li><li><a href="/sats-prospect-pipeline.json">sats-prospect-pipeline.json</a></li><li><a href="/transparency-audit-delivery-kit.json">transparency-audit-delivery-kit.json</a></li><li><a href="/docs/metadata-policy.md">metadata-policy.md</a></li><li><a href="https://github.com/sata-project-reserve/sata">GitHub repository</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.png">sata-image.png</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/sata-x-header.png">sata-x-header.png</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
+        '<!doctype html><title>SATA Reserve Token</title><h1>SATA Reserve Token</h1><p>Proof over promises. Temporary transparency and launch-app surface while the official SATA website is being built. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/services/transparency-audit">Transparency audit service</a></li><li><a href="/services/sample-audit">Sample transparency audit</a></li><li><a href="/partners/referrals">Referral partners</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">Latest Markdown</a></li><li><a href="/transparency/history">history</a></li><li><a href="/transparency/history.json">history.json</a></li><li><a href="/health.json">health.json</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="/revenue-operating-plan.json">revenue-operating-plan.json</a></li><li><a href="/revenue-execution-brief.json">revenue-execution-brief.json</a></li><li><a href="/revenue-execution-brief.md">revenue-execution-brief.md</a></li><li><a href="/outreach-dispatch-brief.json">outreach-dispatch-brief.json</a></li><li><a href="/outreach-dispatch-brief.md">outreach-dispatch-brief.md</a></li><li><a href="/reply-conversion-brief.json">reply-conversion-brief.json</a></li><li><a href="/reply-conversion-brief.md">reply-conversion-brief.md</a></li><li><a href="/referral-handoff-dispatch-brief.json">referral-handoff-dispatch-brief.json</a></li><li><a href="/referral-handoff-dispatch-brief.md">referral-handoff-dispatch-brief.md</a></li><li><a href="/referral-partner-policy.json">referral-partner-policy.json</a></li><li><a href="/sats-generation-ledger.json">sats-generation-ledger.json</a></li><li><a href="/sats-invoice-queue.json">sats-invoice-queue.json</a></li><li><a href="/sats-prospect-pipeline.json">sats-prospect-pipeline.json</a></li><li><a href="/transparency-audit-delivery-kit.json">transparency-audit-delivery-kit.json</a></li><li><a href="/docs/metadata-policy.md">metadata-policy.md</a></li><li><a href="https://github.com/sata-project-reserve/sata">GitHub repository</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.png">sata-image.png</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/sata-x-header.png">sata-x-header.png</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
         { headers: withCors({ 'content-type': 'text/html; charset=utf-8' }) }
       );
     }
@@ -485,7 +562,8 @@ function buildHistoryHtml(history) {
 function buildServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit) {
   const offers = revenuePlan.revenueStreams
     .map(
-      (offer) => `<div class="metric"><span>${escapeHtml(offer.label)}</span><strong>$${escapeHtml(offer.priceUsd)}</strong><p>${escapeHtml(offer.deliverable)}</p>${offer.id === 'transparency-report-setup' ? '<p><a href="/services/transparency-report-setup">View Setup</a></p>' : ''}${offer.id === 'full-proof-dashboard' ? '<p><a href="/services/full-proof-dashboard">View Dashboard</a></p>' : ''}</div>`
+      (offer) =>
+        `<div class="metric"><span>${escapeHtml(offer.label)}</span><strong>$${escapeHtml(offer.priceUsd)}</strong><p>${escapeHtml(offer.deliverable)}</p>${offer.id === 'transparency-report-setup' ? '<p><a href="/services/transparency-report-setup">View Setup</a></p>' : ''}${offer.id === 'full-proof-dashboard' ? '<p><a href="/services/full-proof-dashboard">View Dashboard</a></p>' : ''}</div>`
     )
     .join('');
   const upgradePath = (revenuePlan.upgradePolicy?.defaultPath ?? [])
@@ -754,7 +832,9 @@ function buildHighValueServiceHtml(report, revenuePlan, prospectPipeline, delive
     throw new Error(`Missing revenue stream: ${offerId}`);
   }
   const isDashboard = offerId === 'full-proof-dashboard';
-  const title = isDashboard ? 'SATA Full Proof Dashboard Service' : 'SATA Transparency Report Setup Service';
+  const title = isDashboard
+    ? 'SATA Full Proof Dashboard Service'
+    : 'SATA Transparency Report Setup Service';
   const heading = isDashboard ? 'Full proof dashboard setup.' : 'Transparency report setup.';
   const intro = isDashboard
     ? 'SATA packages its proof dashboard pattern into a public reporting workflow with machine-readable endpoints and an operator runbook.'

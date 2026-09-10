@@ -21,7 +21,8 @@
       "type": "pinned",
       "publishedAtUtc": "2026-08-03T12:04:00Z",
       "postUrl": "https://x.com/SATAReserve/status/2084248941801906474",
-      "text": "SATA publishes checks for token authority, Raydium liquidity, LP lock status, and the BTC reserve. Reserve transparency is not a redemption promise or guaranteed price floor. Owner-held unlocked LP is disclosed.\n\nhttps://sata-project-reserve.github.io/sata/transparency"
+      "text": "SATA publishes checks for token authority, Raydium liquidity, LP lock status, and the BTC reserve. Reserve transparency is not a redemption promise or guaranteed price floor. Owner-held unlocked LP is disclosed.\n\nhttps://sata-project-reserve.github.io/sata/transparency",
+      "contentSha256": "d16b7674ba7824cdb77d028a3a366660e979938636ccdf4f35e6339cd5cfc7c0"
     },
     {
       "id": "btc-reserve-first-tranche",
@@ -30,7 +31,8 @@
       "text": "SATA has a dedicated Bitcoin reserve address with signed address-control proof. Current first tranche: 500,000 sats.\n\nThe BTC reserve is not a redemption promise or guaranteed price floor.\n\nhttps://sata-project-reserve.github.io/sata/transparency",
       "approvedBy": "owner",
       "approvalRole": "executive-chairman",
-      "approvedAtUtc": "2026-09-03T21:48:29.101Z"
+      "approvedAtUtc": "2026-09-03T21:48:29.101Z",
+      "contentSha256": "4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e"
     },
     {
       "id": "authority-revoked",
@@ -39,7 +41,8 @@
       "text": "SATA mint and freeze authorities are revoked on Solana mainnet. That means no hidden minting path and no freeze authority when the public checks are passing.\n\nVerify from the public report:\nhttps://sata-project-reserve.github.io/sata/transparency",
       "approvedBy": "owner",
       "approvalRole": "executive-chairman",
-      "approvedAtUtc": "2026-09-03T21:48:34.639Z"
+      "approvedAtUtc": "2026-09-03T21:48:34.639Z",
+      "contentSha256": "5210756b4a42acb586bdde80a314fc11d245e1014b5fbed4ad766d06eb134d29"
     },
     {
       "id": "liquidity-disclosure",
@@ -48,7 +51,8 @@
       "text": "The Raydium SATA/WSOL pool is live. Initial Burn & Earn LP lock is verified, and owner-held unlocked LP is disclosed separately.\n\nUnlocked LP remains removable unless separately locked and verified.\n\nhttps://sata-project-reserve.github.io/sata/transparency",
       "approvedBy": "owner",
       "approvalRole": "executive-chairman",
-      "approvedAtUtc": "2026-09-03T21:48:39.845Z"
+      "approvedAtUtc": "2026-09-03T21:48:39.845Z",
+      "contentSha256": "79880b681cebb9df659a3c5a96e6042de033949eb95c7886c8a49916b7079368"
     },
     {
       "id": "ten-btc-target",
@@ -57,7 +61,8 @@
       "text": "Long-term SATA treasury target: 10 BTC.\n\nThe point is to move attention toward sats, custody, reserves, and proof over time. This is not a redemption path, price target, or market-support promise.\n\nProof over promises.",
       "approvedBy": "owner",
       "approvalRole": "executive-chairman",
-      "approvedAtUtc": "2026-09-03T21:48:44.990Z"
+      "approvedAtUtc": "2026-09-03T21:48:44.990Z",
+      "contentSha256": "ef3cfad6266b194c678c140adacd3d5aab8454459e0a74281c8941bac107a268"
     },
     {
       "id": "transparency-service-offer",
@@ -66,7 +71,8 @@
       "requiresHumanApproval": true,
       "approvedBy": "owner",
       "approvedAtUtc": "2026-08-26T12:45:00Z",
-      "text": "SATA offers $50 transparency audits: authority, liquidity-lock, BTC reserve, and disclosure checks.\n\nThe BTC reserve is not a redemption promise or guaranteed price floor. Locked status must be verified.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit"
+      "text": "SATA offers $50 transparency audits: authority, liquidity-lock, BTC reserve, and disclosure checks.\n\nThe BTC reserve is not a redemption promise or guaranteed price floor. Locked status must be verified.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit",
+      "contentSha256": "7e53c3087aeb869aeae52efd2e65d39e2f009c5cd3bd89ed663e248183724b08"
     },
     {
       "id": "service-upgrade-path",
@@ -76,27 +82,31 @@
       "text": "SATA service path: $50 transparency audit first. If a team wants implementation help, scope can move to a $150 report setup or $300 proof dashboard.\n\nNo market outcome, volume, or buyer-demand claims.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit",
       "approvedBy": "owner",
       "approvalRole": "executive-chairman",
-      "approvedAtUtc": "2026-09-03T21:48:49.400Z"
+      "approvedAtUtc": "2026-09-03T21:48:49.400Z",
+      "contentSha256": "31f5c94d2885c67047e384d46d719a4c1d9c444bb1b08dbe8aace1afd149f2b6"
     },
     {
       "id": "post-receipt-referral-partners",
       "status": "ready-for-review",
       "type": "revenue",
       "requiresHumanApproval": true,
-      "text": "SATA referral partners are post-receipt only: real transparency-service customer referrals, no upfront payment, no buyer/price claims, no fake engagement. Compensation requires confirmed receipt and chairman approval. https://sata-project-reserve.github.io/sata/partners/referrals"
+      "text": "SATA referral partners are post-receipt only: real transparency-service customer referrals, no upfront payment, no buyer/price claims, no fake engagement. Compensation requires confirmed receipt and chairman approval. https://sata-project-reserve.github.io/sata/partners/referrals",
+      "contentSha256": "0a4f537319b6a1efa4a9c5e57f14b190ac7295351ba401dbf7073153d5c6c9f8"
     },
     {
       "id": "sample-transparency-audit",
       "status": "ready-for-review",
       "type": "revenue",
       "requiresHumanApproval": true,
-      "text": "SATA published a sample $50 transparency audit: authority, liquidity, reserve, and disclosure checks.\n\nNot a redemption promise or guaranteed price floor. Locked LP verified; unlocked LP disclosed separately.\n\nhttps://sata-project-reserve.github.io/sata/services/sample-audit"
+      "text": "SATA published a sample $50 transparency audit: authority, liquidity, reserve, and disclosure checks.\n\nNot a redemption promise or guaranteed price floor. Locked LP verified; unlocked LP disclosed separately.\n\nhttps://sata-project-reserve.github.io/sata/services/sample-audit",
+      "contentSha256": "fc02b08ed219b5d9df0c8ee7899aa76a335c560e64256e91379591dd4550a3be"
     },
     {
       "id": "gmgn-route-pending",
       "status": "hold-until-manual-verification",
       "type": "market-readiness",
-      "text": "GMGN route status will be claimed only after current buy and sell routes are manually verified from the public interface.\n\nUntil then, use the transparency report as source of truth. Unlocked LP remains removable unless separately locked and verified."
+      "text": "GMGN route status will be claimed only after current buy and sell routes are manually verified from the public interface.\n\nUntil then, use the transparency report as source of truth. Unlocked LP remains removable unless separately locked and verified.",
+      "contentSha256": "61049e5d27e716432d3ab6e8963832d69d4a0b6c3d7952f5dccfb10a4cb3f995"
     },
     {
       "id": "transparency-20260903T162453Z",
@@ -105,7 +115,8 @@
       "text": "SATA transparency report updated.\n\nReserve: 500000 sats. Raydium LP lock status is publicly reported.\n\nNot a redemption promise or guaranteed price floor. Locked LP verified; unlocked LP disclosed separately.\nhttps://sata-project-reserve.github.io/sata/transparency",
       "approvedBy": "owner",
       "approvalRole": "executive-chairman",
-      "approvedAtUtc": "2026-09-03T21:48:54.376Z"
+      "approvedAtUtc": "2026-09-03T21:48:54.376Z",
+      "contentSha256": "b1fba705b18d42967148fae64d4fbfdde1561a404e4638983061ac516cf1da3b"
     }
   ]
 }

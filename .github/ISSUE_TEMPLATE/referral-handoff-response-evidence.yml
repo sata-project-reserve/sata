@@ -1,0 +1,59 @@
+name: Referral Handoff Response Evidence
+description: Submit evidence that a referral handoff partner accepted or declined approved terms.
+title: '[Referral Handoff Response Evidence]: '
+labels: ['referral-handoff-response-evidence', 'manual-evidence']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form only after referral handoff terms have already been recorded as sent.
+
+        This form records partner response evidence for review. It does not approve compensation, invoices, payment instructions, paid work, token grants, public commitments, or asset movement.
+  - type: input
+    id: handoffId
+    attributes:
+      label: Referral handoff ID
+      description: 'Example: handoff-diana-crypto-20260903-transparency-tweet'
+    validations:
+      required: true
+  - type: dropdown
+    id: partnerAccepted
+    attributes:
+      label: Partner accepted terms
+      options:
+        - 'true'
+        - 'false'
+    validations:
+      required: true
+  - type: input
+    id: responseEvidenceUrl
+    attributes:
+      label: Response evidence URL or reference
+      description: Message permalink, email archive reference, screenshot reference, or other durable evidence.
+    validations:
+      required: true
+  - type: textarea
+    id: exactResponseSummary
+    attributes:
+      label: Exact response summary
+      description: Summarize the partner response. Do not include payment instructions, token grants, or new promotional claims.
+    validations:
+      required: true
+  - type: input
+    id: respondedAtUtc
+    attributes:
+      label: Responded at UTC
+      description: Optional ISO timestamp if known, otherwise the operator command will use the current time.
+    validations:
+      required: false
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      options:
+        - label: The handoff terms were already sent and recorded before this response evidence.
+          required: true
+        - label: This response does not approve compensation, invoices, payment instructions, token grants, or asset movement.
+          required: true
+        - label: I did not add price, return, buyer, liquidity, investment, market-support, or guaranteed-result claims.
+          required: true

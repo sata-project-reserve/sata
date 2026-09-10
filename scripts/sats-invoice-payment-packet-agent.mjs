@@ -11,10 +11,12 @@ switch (command) {
     printPlan();
     break;
   case 'render':
-    printPacket(args[0]);
+    printPacket(resolveInvoiceId(args));
     break;
   default:
-    throw new Error(`Unknown invoice payment packet command: ${command}. Use plan or render <invoice-id>.`);
+    throw new Error(
+      `Unknown invoice payment packet command: ${command}. Use plan or render <invoice-id>.`
+    );
 }
 
 function printPlan() {
@@ -50,6 +52,25 @@ function printPacket(invoiceId) {
   const invoice = (queue.invoices ?? []).find((item) => item.id === invoiceId);
   if (!invoice) throw new Error(`Invoice not found: ${invoiceId}.`);
   console.log(renderInvoicePaymentPacket({ invoice, queue }));
+}
+
+function resolveInvoiceId(values) {
+  if (values.length === 1 && !values[0].startsWith('--')) return values[0];
+  const options = parseOptions(values);
+  return options.invoice ?? options.invoiceId;
+}
+
+function parseOptions(values) {
+  const options = {};
+  for (let index = 0; index < values.length; index += 1) {
+    const key = values[index];
+    if (!key?.startsWith('--')) throw new Error('Options must be provided as --key value pairs.');
+    const value = values[index + 1];
+    if (!value || value.startsWith('--')) throw new Error(`Missing value for ${key}.`);
+    options[key.slice(2)] = value;
+    index += 1;
+  }
+  return options;
 }
 
 async function readJson(path) {

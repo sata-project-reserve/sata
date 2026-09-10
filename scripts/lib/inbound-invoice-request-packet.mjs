@@ -37,8 +37,10 @@ export function buildInboundInvoiceRequestPacket({
         offerId: lead.requestedOfferId,
         usdPrice: template.usdPrice,
         settlementCurrency: template.settlementCurrency,
-        paymentAddress: invoiceQueue.paymentPolicy.reserveAddress,
+        paymentAddressPolicy:
+          'Hidden until a chairman-approved exact-sats invoice is finalized; quote staging validates the published reserve address internally.',
         quoteCommand: `node scripts/sats-invoice-quote-agent.mjs quote-template --offer ${lead.requestedOfferId} --customer "${lead.id}" --btcUsd "<chairman-selected-rate>" --source "<quote-source>"`,
+        writeDraftCommand: `node scripts/sats-invoice-quote-agent.mjs write-draft --offer ${lead.requestedOfferId} --customer "${lead.id}" --btcUsd "<chairman-selected-rate>" --source "<quote-source>" --evidence "<invoice-request-evidence-url-or-reference>"`,
         approvalRequired:
           'Executive Chairman approval is required before the exact-sats invoice or payment instruction is sent.'
       };
@@ -83,8 +85,9 @@ export function renderInboundInvoiceRequestPacket({
       `- Offer: ${request.offerId}`,
       `- USD price: $${request.usdPrice}`,
       `- Settlement: ${request.settlementCurrency}`,
-      `- Payment address: ${request.paymentAddress}`,
+      `- Payment address policy: ${request.paymentAddressPolicy}`,
       `- Quote command: ${request.quoteCommand}`,
+      `- Stage draft command: ${request.writeDraftCommand}`,
       `- Approval: ${request.approvalRequired}`
     );
   }

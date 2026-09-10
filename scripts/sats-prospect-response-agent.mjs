@@ -5,6 +5,7 @@ import {
   recordInvoiceRequest,
   recordProspectContact
 } from './lib/prospect-response-transition.mjs';
+import { writeRevenueCyclePublicStatus } from './lib/revenue-cycle-public-state.mjs';
 
 const PIPELINE_PATH = join('public', 'sats-prospect-pipeline.json');
 const [, , command = 'plan', ...args] = process.argv;
@@ -32,7 +33,8 @@ async function recordContacted(args) {
     pipeline,
     prospectId: options.prospect,
     contactEvidence: options.evidence,
-    contactChannel: options.channel
+    contactChannel: options.channel,
+    contactedAtUtc: options.contactedAtUtc
   });
   await writePipeline(updated);
   console.log(`${options.prospect} marked contacted with evidence.`);
@@ -45,7 +47,8 @@ async function recordRequestedInvoice(args) {
     prospectId: options.prospect,
     requestEvidence: options.evidence,
     requestedOfferId: options.offer,
-    confirmedCustomerRequestedInvoice: /^true$/i.test(options.confirmedCustomerRequestedInvoice ?? '')
+    confirmedCustomerRequestedInvoice: /^true$/i.test(options.confirmedCustomerRequestedInvoice ?? ''),
+    requestedAtUtc: options.requestedAtUtc
   });
   await writePipeline(updated);
   console.log(`${options.prospect} marked invoice-requested with evidence.`);
@@ -73,4 +76,5 @@ async function readJson(path) {
 
 async function writePipeline(updated) {
   await writeFile(PIPELINE_PATH, `${JSON.stringify(updated, null, 2)}\n`);
+  await writeRevenueCyclePublicStatus();
 }

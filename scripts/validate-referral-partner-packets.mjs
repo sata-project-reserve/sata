@@ -39,6 +39,12 @@ if (!/Sample audit:/i.test(rendered) || !/services\/sample-audit/i.test(packet.r
 if (!packet.recordReferredLeadCommand.includes('--customerAskedForInvoice false')) {
   findings.push('packet must record referred customers before invoice request status');
 }
+if (!packet.recordReferredLeadCommand.includes('--recordedAtUtc "<recorded-at-utc>"')) {
+  findings.push('packet record command must require recordedAtUtc evidence');
+}
+if (!packet.recordReferredLeadCommand.includes('--convertedAtUtc "<converted-at-utc>"')) {
+  findings.push('packet record command must require convertedAtUtc evidence');
+}
 if (!/compensation is considered only after a referred customer pays/i.test(packet.replyTemplate)) {
   findings.push('reply template must preserve post-receipt compensation');
 }

@@ -7,6 +7,7 @@ import {
   assertChairmanDecisionConfirmation,
   buildExecutiveApprovalPlan,
 } from './lib/executive-approval-plan.mjs';
+import { writeRevenueCyclePublicStatus } from './lib/revenue-cycle-public-state.mjs';
 
 const QUEUE_PATH = join('public', 'executive-approval-queue.json');
 const PROSPECT_PIPELINE_PATH = join('public', 'sats-prospect-pipeline.json');
@@ -119,6 +120,7 @@ async function decideItem(status, args) {
   queue.updatedAtUtc = new Date().toISOString();
 
   await writeFile(QUEUE_PATH, `${JSON.stringify(queue, null, 2)}\n`);
+  await writeRevenueCyclePublicStatus();
   console.log(`${itemId} marked ${status}.`);
 }
 

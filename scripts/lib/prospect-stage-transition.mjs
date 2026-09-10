@@ -44,9 +44,10 @@ export function applyProspectStageTransition({
   approvalId = 'prospect-review-batch-20260829',
   prospectIds,
   targetStage = 'chairman-review',
-  transitionedAtUtc = new Date().toISOString()
+  transitionedAtUtc
 }) {
   assertInputs({ pipeline, approvalQueue });
+  parseDate(transitionedAtUtc, 'transitionedAtUtc');
   if (targetStage !== 'chairman-review') {
     throw new Error('Only chairman-review transitions are supported by this approval gate.');
   }
@@ -153,4 +154,12 @@ function getReviewBatchSize(pipeline) {
     throw new Error('dailyCadence.chairmanReviewBatchSize must be an integer >= 1.');
   }
   return size;
+}
+
+function parseDate(value, label) {
+  const date = new Date(value);
+  if (!value || Number.isNaN(date.getTime())) {
+    throw new Error(`${label} must be a valid timestamp.`);
+  }
+  return value;
 }

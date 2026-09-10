@@ -101,6 +101,26 @@ if (approvedRecord.outreachApprovalId !== 'outreach-approval-20260831-approved-t
 if (!/mark-sent/i.test(approvedRecord.recordContactCommand)) {
   findings.push('approved outreach record must include contact evidence command');
 }
+if (!/--sentAtUtc "<sent-at-utc>"/.test(approvedRecord.recordContactCommand)) {
+  findings.push('approved outreach record command must require explicit sentAtUtc evidence');
+}
+if (!/^[a-f0-9]{64}$/.test(approvedRecord.messageSha256 ?? '')) {
+  findings.push('approved outreach record must include approved message SHA-256');
+}
+if (!/--messageHash [a-f0-9]{64}/.test(approvedRecord.recordContactCommand)) {
+  findings.push('approved outreach record command must include approved message SHA-256');
+}
+for (const [field, value] of Object.entries(approvedRecord.tracking ?? {})) {
+  if (!/utm_source=manual_outreach/i.test(value)) {
+    findings.push(`approved outreach tracking ${field} must include manual_outreach source`);
+  }
+}
+if (!/utm_campaign=outreach_packet_20260831_approved_team_transparency_audit_first_contact/i.test(approvedRecord.message)) {
+  findings.push('approved outreach message must include packet-specific tracking campaign');
+}
+if (!/template=transparency-audit-intake\.yml/i.test(approvedRecord.message)) {
+  findings.push('approved outreach message must preserve the GitHub intake template parameter');
+}
 validateOutreachPacketQueue({ queue: packetQueue, pipeline: approvedPipeline });
 const queuedPacket = findQueuedOutreachPacket(packetQueue, approvedRecord.id);
 if (queuedPacket.message !== approvedRecord.message) {
@@ -130,7 +150,8 @@ const sentResult = markOutreachPacketSent({
   pipeline: approvedPipeline,
   packetId: approvedRecord.id,
   contactEvidence: 'https://x.com/example/status/contact',
-  sentAtUtc: '2026-08-31T16:50:00.000Z'
+  sentAtUtc: '2026-08-31T16:50:00.000Z',
+  messageHash: approvedRecord.messageSha256
 });
 const sentPacket = sentResult.queue.packets.find((item) => item.id === approvedRecord.id);
 const contactedProspect = sentResult.pipeline.prospects.find((item) => item.id === 'approved-team');
@@ -141,6 +162,9 @@ if (sentPacket?.contactEvidence !== 'https://x.com/example/status/contact') {
 if (contactedProspect?.stage !== 'contacted') {
   findings.push('mark-sent must record contact on the prospect pipeline');
 }
+if (sentPacket?.approvedMessageSha256 !== approvedRecord.messageSha256) {
+  findings.push('mark-sent must record approved message SHA-256 on the sent packet');
+}
 validateOutreachPacketQueue({ queue: sentResult.queue, pipeline: sentResult.pipeline });
 
 const publicQueue = readOptionalJson(join('public', 'service-outreach-packet-queue.json'));
@@ -149,6 +173,18 @@ if (publicQueue) {
   for (const item of publicQueue.packets ?? []) {
     if (item.status === 'ready-for-manual-send' && !/services\/sample-audit/i.test(item.message ?? '')) {
       findings.push(`${item.id}: ready outreach packet must include the sample audit link`);
+    }
+    if (
+      item.status === 'ready-for-manual-send' &&
+      !/--sentAtUtc "<sent-at-utc>"/.test(item.recordContactCommand ?? '')
+    ) {
+      findings.push(`${item.id}: ready outreach packet command must require explicit sentAtUtc evidence`);
+    }
+    if (
+      item.status === 'ready-for-manual-send' &&
+      !/--messageHash [a-f0-9]{64}/.test(item.recordContactCommand ?? '')
+    ) {
+      findings.push(`${item.id}: ready outreach packet command must include approved message SHA-256`);
     }
   }
 }
@@ -180,7 +216,34 @@ assertRejects('mark sent missing evidence', /Contact evidence is required/i, () 
     queue: packetQueue,
     pipeline: approvedPipeline,
     packetId: approvedRecord.id,
-    contactEvidence: 'short'
+    contactEvidence: 'short',
+    messageHash: approvedRecord.messageSha256
+  })
+);
+assertRejects('mark sent missing message hash', /message SHA-256 is required/i, () =>
+  markOutreachPacketSent({
+    queue: packetQueue,
+    pipeline: approvedPipeline,
+    packetId: approvedRecord.id,
+    contactEvidence: 'https://x.com/example/status/contact'
+  })
+);
+assertRejects('mark sent wrong message hash', /does not match/i, () =>
+  markOutreachPacketSent({
+    queue: packetQueue,
+    pipeline: approvedPipeline,
+    packetId: approvedRecord.id,
+    contactEvidence: 'https://x.com/example/status/contact',
+    messageHash: '0'.repeat(64)
+  })
+);
+assertRejects('mark sent missing timestamp', /contactedAtUtc must be a valid date/i, () =>
+  markOutreachPacketSent({
+    queue: packetQueue,
+    pipeline: approvedPipeline,
+    packetId: approvedRecord.id,
+    contactEvidence: 'https://x.com/example/status/contact',
+    messageHash: approvedRecord.messageSha256
   })
 );
 assertRejects('mark sent unknown packet', /Outreach packet not found/i, () =>
@@ -188,7 +251,8 @@ assertRejects('mark sent unknown packet', /Outreach packet not found/i, () =>
     queue: packetQueue,
     pipeline: approvedPipeline,
     packetId: 'missing-packet',
-    contactEvidence: 'https://x.com/example/status/contact'
+    contactEvidence: 'https://x.com/example/status/contact',
+    messageHash: approvedRecord.messageSha256
   })
 );
 

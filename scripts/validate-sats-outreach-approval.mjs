@@ -142,7 +142,8 @@ assertRejects('pending approval transition', /not approved by the Executive Chai
     pipeline,
     approvalQueue: pendingQueue,
     approvalId: packet.approvalItem.id,
-    prospectIds: 'reviewed-team'
+    prospectIds: 'reviewed-team',
+    transitionedAtUtc: '2026-08-29T09:40:00.000Z'
   })
 );
 assertRejects('prospect not approved by item', /not included/, () =>
@@ -150,7 +151,8 @@ assertRejects('prospect not approved by item', /not included/, () =>
     pipeline,
     approvalQueue: approvedQueue,
     approvalId: packet.approvalItem.id,
-    prospectIds: 'second-reviewed-team'
+    prospectIds: 'second-reviewed-team',
+    transitionedAtUtc: '2026-08-29T09:40:00.000Z'
   })
 );
 assertRejects('unscoped outreach approval', /must explicitly name/, () =>
@@ -166,12 +168,22 @@ assertRejects('unscoped outreach approval', /must explicitly name/, () =>
       ]
     },
     approvalId: 'outreach-approval-20260829-unscoped',
-    prospectIds: 'reviewed-team'
+    prospectIds: 'reviewed-team',
+    transitionedAtUtc: '2026-08-29T09:40:00.000Z'
   })
 );
 assertRejects('reused outreach approval id', /already been used/, () =>
   applyOutreachApprovalTransition({
     pipeline: transitioned,
+    approvalQueue: approvedQueue,
+    approvalId: packet.approvalItem.id,
+    prospectIds: 'reviewed-team',
+    transitionedAtUtc: '2026-08-29T09:40:00.000Z'
+  })
+);
+assertRejects('missing transition timestamp', /transitionedAtUtc must be a valid timestamp/i, () =>
+  applyOutreachApprovalTransition({
+    pipeline,
     approvalQueue: approvedQueue,
     approvalId: packet.approvalItem.id,
     prospectIds: 'reviewed-team'

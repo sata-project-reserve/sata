@@ -38,6 +38,15 @@ if (artifact.includes(invoiceQueue.paymentPolicy.reserveAddress)) {
 if (/safe, profitable, backed, guaranteed, or investment grade/i.test(artifact)) {
   findings.push('artifact must not use prohibited rating language as an affirmative claim');
 }
+if (/\bTODO\b|placeholder|Complete this section/i.test(artifact)) {
+  findings.push('artifact must not ship placeholder review text');
+}
+if (!/pending verification against supplied public evidence/i.test(artifact)) {
+  findings.push('artifact must convert intake claims into evidence-pending review language');
+}
+if (!/Disclosure fix if evidence is missing/i.test(artifact)) {
+  findings.push('artifact must include concrete disclosure fixes for missing evidence');
+}
 
 if (findings.length > 0) {
   console.error('Transparency audit artifact check failed:');

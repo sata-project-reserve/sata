@@ -45,6 +45,8 @@ const reportGenerator = readText(join('scripts', 'generate-transparency-report.m
 const staticExporter = readText(join('scripts', 'prepare-sites-dist.mjs'));
 const auditPage = readText(join('app', 'services', 'transparency-audit', 'page.tsx'));
 const referralPage = readText(join('app', 'partners', 'referrals', 'page.tsx'));
+const operationsPage = readText(join('app', 'operations', 'page.tsx'));
+const collaboratorMeetingIntake = readJson(join('public', 'collaborator-meeting-intake.json'));
 
 const revenueStreams = revenuePlan.revenueStreams ?? [];
 for (const route of serviceRoutes) {
@@ -137,6 +139,56 @@ if (!auditPage.includes("publicPath('/services/sample-audit')")) {
 if (!referralPage.includes("publicPath('/services/sample-audit')")) {
   findings.push('/partners/referrals: public page must link to sample audit');
 }
+for (const required of [
+  'collaboratorMeetingIntake',
+  'Face-To-Face Review',
+  'Request Meeting Review',
+  'collaboratorMeetingIntake.issueIntakeUrl',
+  'collaboratorMeetingIntake.locationScope.primaryLocation',
+  'collaboratorMeetingIntake.boundary'
+]) {
+  if (!referralPage.includes(required)) {
+    findings.push(`/partners/referrals: collaborator meeting section missing ${required}`);
+  }
+}
+for (const required of [
+  'Referral Handoff Queue',
+  'referralPartnerHandoffQueue',
+  'referralPartnerHandoffPacket',
+  'writeReferralHandoffPacketCommand',
+  "publicPath('/referral-partner-handoff-packet.md')",
+  "publicPath('/referral-handoff-dispatch-brief.md')",
+  'recordReferralHandoffSentCommand',
+  'recordReferralHandoffResponseCommand',
+  'recordReferralLeadCommand'
+]) {
+  if (!operationsPage.includes(required)) {
+    findings.push(`/operations: referral handoff queue must expose ${required}`);
+  }
+}
+if (!/recordSentCommand/.test(operationsPage)) {
+  findings.push(
+    '/operations: referral handoff sent command must reuse the approved packet command'
+  );
+}
+if (!/--messageHash "<approved-terms-sha256>"/.test(operationsPage)) {
+  findings.push(
+    '/operations: referral handoff sent fallback command must require approved terms SHA-256'
+  );
+}
+for (const required of [
+  'Qualified Gross Path',
+  'Qualified Reserve Path',
+  'Qualified Planning Impact',
+  'Current Approved Ask',
+  'Qualified Revenue Path',
+  'Upgrade Gate',
+  'only after explicit fit'
+]) {
+  if (!operationsPage.includes(required)) {
+    findings.push(`/operations: manual outreach section must expose ${required}`);
+  }
+}
 if (!sitemap.includes(`https://sata-project-reserve.github.io/sata${sampleAuditRoute.path}`)) {
   findings.push(`${sampleAuditRoute.path}: public sitemap is missing route`);
 }
@@ -169,11 +221,15 @@ for (const sourcePath of publicRouteSources) {
     findings.push(`${sourcePath}: root-relative hrefs must use publicPath() for GitHub Pages`);
   }
   if (/src="\//.test(source)) {
-    findings.push(`${sourcePath}: root-relative image src values must use publicPath() for GitHub Pages`);
+    findings.push(
+      `${sourcePath}: root-relative image src values must use publicPath() for GitHub Pages`
+    );
   }
 }
 
-const sharedComponent = readText(join('app', 'services', '_components', 'high-value-service-page.tsx'));
+const sharedComponent = readText(
+  join('app', 'services', '_components', 'high-value-service-page.tsx')
+);
 for (const required of [
   /Executive Chairman\s+approval\s+of\s+scope,\s+invoice\s+terms,\s+and\s+settlement\s+path/i,
   /No agent receives funds, controls keys, or approves spending/i,
@@ -202,7 +258,9 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('Service pages check passed: offer routes, sitemap entries, and approval gates are aligned.');
+console.log(
+  'Service pages check passed: offer routes, sitemap entries, and approval gates are aligned.'
+);
 
 function readText(path) {
   return readFileSync(path, 'utf8');

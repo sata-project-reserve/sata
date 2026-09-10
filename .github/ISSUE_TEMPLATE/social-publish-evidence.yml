@@ -1,0 +1,64 @@
+name: Social Publish Evidence
+description: Submit evidence that an approved SATA social post was manually published.
+title: '[Social Publish Evidence]: '
+labels: ['social-publish-evidence', 'manual-evidence']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form only after an approved SATA social post has been manually published.
+
+        This form records evidence for review. It does not approve posts, publish posts, contact anyone, issue invoices, send payment instructions, grant tokens, or move assets.
+  - type: input
+    id: postId
+    attributes:
+      label: Social post ID
+      description: 'Example: btc-reserve-first-tranche'
+    validations:
+      required: true
+  - type: input
+    id: postUrl
+    attributes:
+      label: Published post URL
+      description: 'Example: https://x.com/SATAReserve/status/1234567890123456789'
+    validations:
+      required: true
+  - type: input
+    id: publicationEvidence
+    attributes:
+      label: Publication evidence URL or reference
+      description: Live post URL, screenshot reference, exported text, or other durable evidence.
+    validations:
+      required: true
+  - type: input
+    id: approvedContentSha256
+    attributes:
+      label: Approved content SHA-256
+      description: Copy this from the approved social queue or operations page command.
+    validations:
+      required: true
+  - type: textarea
+    id: exactPostText
+    attributes:
+      label: Exact post text published
+      description: Paste the exact post text that was published.
+    validations:
+      required: true
+  - type: input
+    id: publishedAtUtc
+    attributes:
+      label: Published at UTC
+      description: ISO timestamp of publication.
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      options:
+        - label: I published only the approved post text.
+          required: true
+        - label: I did not add price, return, buyer, liquidity, investment, market-support, or guaranteed-result claims.
+          required: true
+        - label: I did not include payment instructions, token grants, or asset movement instructions.
+          required: true

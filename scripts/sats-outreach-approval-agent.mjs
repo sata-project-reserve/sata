@@ -6,6 +6,7 @@ import {
   buildOutreachApprovalPacket,
   renderOutreachApprovalPacket
 } from './lib/prospect-outreach-approval.mjs';
+import { writeRevenueCyclePublicStatus } from './lib/revenue-cycle-public-state.mjs';
 
 const PIPELINE_PATH = join('public', 'sats-prospect-pipeline.json');
 const APPROVAL_QUEUE_PATH = join('public', 'executive-approval-queue.json');
@@ -96,6 +97,7 @@ async function writeDraft(args) {
     items: [...(approvalQueue.items ?? []), packet.approvalItem]
   };
   await writeFile(APPROVAL_QUEUE_PATH, `${JSON.stringify(updated, null, 2)}\n`);
+  await writeRevenueCyclePublicStatus();
   console.log(JSON.stringify(packet.approvalItem, null, 2));
 }
 
@@ -130,9 +132,11 @@ async function advance(args) {
     pipeline,
     approvalQueue,
     approvalId: options.approvalId,
-    prospectIds: options.prospects ?? options.prospect
+    prospectIds: options.prospects ?? options.prospect,
+    transitionedAtUtc: options.transitionedAtUtc
   });
   await writeFile(PIPELINE_PATH, `${JSON.stringify(updated, null, 2)}\n`);
+  await writeRevenueCyclePublicStatus();
   console.log(
     `Advanced ${String(options.prospects ?? options.prospect).split(',').length} prospect(s) to outreach-approved.`
   );

@@ -1,7 +1,10 @@
 import {
   assertConfirmedReceipt,
+  recordConfirmedReceipt,
   renderReceiptAllocationProposal
 } from './lib/sats-receipt-allocation-proposal.mjs';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 const reserveAddress = 'bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk';
 const approvedInvoice = {
@@ -63,6 +66,42 @@ assertIncludes(rendered, `Reserve address: ${reserveAddress}`);
 assertIncludes(rendered, 'Chairman review required');
 assertIncludes(rendered, 'does not authorize custody changes');
 
+const receiptAgent = readFileSync(join('scripts', 'sats-receipt-allocation-agent.mjs'), 'utf8');
+if (!/record-confirmed/.test(receiptAgent)) {
+  throw new Error('receipt agent must expose record-confirmed command');
+}
+if (!/recordConfirmedReceiptCommand/.test(receiptAgent)) {
+  throw new Error('receipt plan must expose the bounded record-confirmed command template');
+}
+if (!/confirmChairmanReceiptApproval/.test(receiptAgent)) {
+  throw new Error('receipt agent must require chairman receipt approval phrase');
+}
+if (!/--recordedAtUtc "<recorded-at-utc>"/.test(receiptAgent)) {
+  throw new Error('receipt plan must require an explicit recordedAtUtc timestamp');
+}
+
+const recordedLedger = recordConfirmedReceipt({
+  ledger: { ...ledger, receipts: [] },
+  queue,
+  receiptId: 'receipt-recorded-audit-1',
+  invoiceId: approvedInvoice.id,
+  receivedAtUtc: '2026-08-29T00:30:00Z',
+  source: 'SATA transparency audit service',
+  amount: '0.00043210',
+  amountSats: approvedInvoice.amountSats,
+  transactionId: '7a'.repeat(32),
+  receivedAddress: reserveAddress,
+  confirmations: '3',
+  deliverableUrl: 'https://github.com/sata-project-reserve/sata/issues/2',
+  confirmChairmanReceiptApproval:
+    'I am Executive Chairman and approve receipt receipt-recorded-audit-1',
+  recordedAtUtc: '2026-08-29T00:40:00Z'
+});
+if (recordedLedger.receipts.length !== 1) {
+  throw new Error('recordConfirmedReceipt must append one confirmed receipt');
+}
+assertIncludes(recordedLedger.receipts[0].receiptApprovedAtUtc, '2026-08-29T00:40:00.000Z');
+
 const rejectionCases = [
   {
     name: 'unconfirmed status',
@@ -99,6 +138,12 @@ const rejectionCases = [
     name: 'future receipt',
     receipt: { ...confirmedReceipt, id: 'receipt-future', receivedAtUtc: '2026-08-30T00:00:00Z' },
     expected: /cannot be in the future/
+  },
+  {
+    name: 'late receipt',
+    receipt: { ...confirmedReceipt, id: 'receipt-late', receivedAtUtc: '2026-08-29T01:01:00Z' },
+    generatedAtUtc: '2026-08-29T01:05:00Z',
+    expected: /within the approved invoice quote window/
   }
 ];
 
@@ -108,10 +153,62 @@ for (const testCase of rejectionCases) {
       receipt: testCase.receipt,
       ledger: { ...ledger, receipts: [testCase.receipt] },
       queue: testCase.queue ?? queue,
-      generatedAtUtc: '2026-08-29T00:45:00Z'
+      generatedAtUtc: testCase.generatedAtUtc ?? '2026-08-29T00:45:00Z'
     })
   );
 }
+assertRejects('missing receipt approval phrase', /exact Executive Chairman receipt approval phrase/i, () =>
+  recordConfirmedReceipt({
+    ledger: { ...ledger, receipts: [] },
+    queue,
+    receiptId: 'receipt-no-approval',
+    invoiceId: approvedInvoice.id,
+    receivedAtUtc: '2026-08-29T00:30:00Z',
+    source: 'SATA transparency audit service',
+    amount: '0.00043210',
+    amountSats: approvedInvoice.amountSats,
+    transactionId: '8b'.repeat(32),
+    receivedAddress: reserveAddress,
+    confirmations: '2',
+    deliverableUrl: 'https://github.com/sata-project-reserve/sata/issues/3',
+    confirmChairmanReceiptApproval: 'approved'
+  })
+);
+assertRejects('missing receipt recorded timestamp', /recordedAtUtc must be a valid timestamp/i, () =>
+  recordConfirmedReceipt({
+    ledger: { ...ledger, receipts: [] },
+    queue,
+    receiptId: 'receipt-no-recorded-at',
+    invoiceId: approvedInvoice.id,
+    receivedAtUtc: '2026-08-29T00:30:00Z',
+    source: 'SATA transparency audit service',
+    amount: '0.00043210',
+    amountSats: approvedInvoice.amountSats,
+    transactionId: '8c'.repeat(32),
+    receivedAddress: reserveAddress,
+    confirmations: '2',
+    deliverableUrl: 'https://github.com/sata-project-reserve/sata/issues/3',
+    confirmChairmanReceiptApproval:
+      'I am Executive Chairman and approve receipt receipt-no-recorded-at'
+  })
+);
+assertRejects('duplicate receipt record', /already exists/i, () =>
+  recordConfirmedReceipt({
+    ledger,
+    queue,
+    receiptId: confirmedReceipt.id,
+    invoiceId: approvedInvoice.id,
+    receivedAtUtc: '2026-08-29T00:30:00Z',
+    source: 'SATA transparency audit service',
+    amount: '0.00043210',
+    amountSats: approvedInvoice.amountSats,
+    transactionId: '9c'.repeat(32),
+    receivedAddress: reserveAddress,
+    confirmations: '2',
+    deliverableUrl: 'https://github.com/sata-project-reserve/sata/issues/4',
+    confirmChairmanReceiptApproval: `I am Executive Chairman and approve receipt ${confirmedReceipt.id}`
+  })
+);
 
 console.log(
   'Sats receipt allocation proposal check passed: only confirmed direct-reserve invoice receipts can render allocation proposals.'

@@ -26,6 +26,8 @@
     "paidPromotionCampaigns": 1,
     "paidPromotionsAwaitingVerification": 0,
     "paidPromotionsAwaitingConversion": 0,
+    "referralHandoffsActive": 0,
+    "referralHandoffsAwaitingResponse": 0,
     "followUpDueProspects": 0
   },
   "social": {
@@ -41,316 +43,733 @@
   ],
   "actionQueue": [
     {
-      "id": "send-outreach-packet-20260831-arnold-solana-transparency-audit-first-contact",
+      "id": "send-referral-handoff-diana-crypto-20260903-transparency-tweet",
       "priority": 1,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact and record contact evidence.",
+      "type": "manual-referral-handoff-send",
+      "title": "Send prepared no-upfront post-receipt referral terms to Diana Crypto and record sent evidence.",
       "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+      "command": "node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence \"<partner-terms-send-evidence>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18",
+      "artifact": "public/referral-partner-handoff-packet.md",
+      "evidenceRequired": "Partner terms sent evidence, explicit sentAtUtc timestamp, and approved terms SHA-256.",
+      "boundary": "Recording sent evidence does not approve upfront spend, posts, compensation, invoices, grants, or asset movement."
     },
     {
-      "id": "send-outreach-packet-20260831-npc-meme-transparency-audit-first-contact",
+      "id": "triage-live-replies",
       "priority": 2,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260831-npc-meme-transparency-audit-first-contact and record contact evidence.",
+      "type": "inbound-reply-triage-monitor",
+      "title": "Triage replies and DMs from live SATA attribution sources before cold outreach.",
       "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-npc-meme-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact",
-      "priority": 3,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-roach-solana-transparency-audit-first-contact",
-      "priority": 4,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-roach-solana-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-roach-solana-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-tradiecoin-transparency-audit-first-contact",
-      "priority": 5,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-tradiecoin-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-tradiecoin-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-fyborg-transparency-audit-first-contact",
-      "priority": 6,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-fyborg-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-fyborg-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-ssqueeze-transparency-audit-first-contact",
-      "priority": 7,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-ssqueeze-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-ssqueeze-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-foxclub-transparency-audit-first-contact",
-      "priority": 8,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-foxclub-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-foxclub-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-lastshift-transparency-audit-first-contact",
-      "priority": 9,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-lastshift-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-lastshift-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact",
-      "priority": 10,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-lilmeme-transparency-audit-first-contact",
-      "priority": 11,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-lilmeme-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-lilmeme-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-modest-money-transparency-audit-first-contact",
-      "priority": 12,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-modest-money-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-modest-money-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-funtom-transparency-audit-first-contact",
-      "priority": 13,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-funtom-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-funtom-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-spcx-transparency-audit-first-contact",
-      "priority": 14,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-spcx-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-spcx-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-ansem-season-transparency-audit-first-contact",
-      "priority": 15,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-ansem-season-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-ansem-season-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-meor-transparency-audit-first-contact",
-      "priority": 16,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-meor-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meor-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact",
-      "priority": 17,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-niulai-transparency-audit-first-contact",
-      "priority": 18,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-niulai-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-niulai-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-honk-solana-transparency-audit-first-contact",
-      "priority": 19,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-honk-solana-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-honk-solana-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact",
-      "priority": 20,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-bitdust-transparency-audit-first-contact",
-      "priority": 21,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-bitdust-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-bitdust-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+      "command": "npm run ops:inbound-reply-triage-plan",
+      "sources": [
+        {
+          "type": "paid-promotion-reply",
+          "id": "diana-crypto-20260903-transparency-tweet",
+          "url": "https://x.com/142C_/status/2086570576530010172",
+          "label": "Paid promotion from @142C_",
+          "triageCommand": "node scripts/inbound-reply-triage-agent.mjs markdown --sourceType paid-promotion-reply --sourceId diana-crypto-20260903-transparency-tweet --contactHandle \"<x-handle-or-contact>\" --publicProfileUrl \"<https-profile-url>\" --projectUrl \"<https-project-url>\" --offer transparency-audit --replyText \"<reply-or-dm-text>\" --evidence \"<reply-or-dm-evidence>\" --recordedAtUtc \"<recorded-at-utc>\""
+        },
+        {
+          "type": "published-social-reply",
+          "id": "pinned-proof-overview",
+          "url": "https://x.com/SATAReserve/status/2084248941801906474",
+          "label": "Published @SATAReserve post pinned-proof-overview",
+          "triageCommand": "node scripts/inbound-reply-triage-agent.mjs markdown --sourceType published-social-reply --sourceId pinned-proof-overview --contactHandle \"<x-handle-or-contact>\" --publicProfileUrl \"<https-profile-url>\" --projectUrl \"<https-project-url>\" --offer transparency-audit --replyText \"<reply-or-dm-text>\" --evidence \"<reply-or-dm-evidence>\" --recordedAtUtc \"<recorded-at-utc>\""
+        }
+      ],
+      "evidenceRequired": "Reply or DM text, live source id, profile URL, project URL, durable evidence, and explicit recordedAtUtc timestamp.",
+      "boundary": "Triage only. Do not contact leads, send payment instructions, create invoices, grant tokens, or move assets."
     },
     {
       "id": "send-outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact",
-      "priority": 22,
+      "priority": 3,
       "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact for sanctum-elysium-loam and record contact evidence.",
       "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact",
-      "priority": 23,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-cia-token-transparency-audit-first-contact",
-      "priority": 24,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-cia-token-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-kedol-token-transparency-audit-first-contact",
-      "priority": 25,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-kedol-token-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-kedol-token-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 1d37077645c8d720356f548899d61049e8f835d23a5990f2994b6415ba1d1122",
+      "outreachPriority": {
+        "score": 112,
+        "tier": "hot",
+        "reasons": [
+          "current offer value $50",
+          "qualified upgrade path $150",
+          "setup offer has higher reserve-sats leverage",
+          "public reporting/setup intent",
+          "reserve, treasury, custody, or multisig claims",
+          "authority or liquidity claims",
+          "multiple public evidence links",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "150",
       "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
       "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
     },
     {
       "id": "send-outreach-packet-20260903-meme-launch-transparency-audit-first-contact",
-      "priority": 26,
+      "priority": 4,
       "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact for meme-launch and record contact evidence.",
       "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash c6b13a9b08f8f021567acf82463cf0a8970e2a24d62ad60525019b4028339bc4",
+      "outreachPriority": {
+        "score": 100,
+        "tier": "hot",
+        "reasons": [
+          "current offer value $50",
+          "qualified upgrade path $150",
+          "setup offer has higher reserve-sats leverage",
+          "public reporting/setup intent",
+          "authority or liquidity claims",
+          "tooling, launchpad, or platform fit",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "150",
       "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
       "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
     },
     {
-      "id": "send-outreach-packet-20260903-pippin-smc-transparency-audit-first-contact",
-      "priority": 27,
+      "id": "send-outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact",
+      "priority": 5,
       "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-pippin-smc-transparency-audit-first-contact and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact for instar-meme-futures and record contact evidence.",
       "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-pippin-smc-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact",
-      "priority": 28,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
-      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
-      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
-    },
-    {
-      "id": "send-outreach-packet-20260903-troptionsmint-transparency-audit-first-contact",
-      "priority": 29,
-      "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-troptionsmint-transparency-audit-first-contact and record contact evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-troptionsmint-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 1feb4dff1091d637a6a3eedc88dbcc094183d7b49ce17d1add1fa6d8cb325a7a",
+      "outreachPriority": {
+        "score": 94,
+        "tier": "hot",
+        "reasons": [
+          "current offer value $50",
+          "qualified upgrade path $150",
+          "setup offer has higher reserve-sats leverage",
+          "reserve, treasury, custody, or multisig claims",
+          "authority or liquidity claims",
+          "tooling, launchpad, or platform fit",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "150",
       "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
       "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
     },
     {
       "id": "send-outreach-packet-20260903-soltokenlab-transparency-audit-first-contact",
-      "priority": 30,
+      "priority": 6,
       "type": "manual-outreach-send",
-      "title": "Send ready manual outreach packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact for soltokenlab and record contact evidence.",
       "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\"",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 8b7dfb9398938bb1b89505f2a6b31b87974425e4ab003dbb082aeee7621ad070",
+      "outreachPriority": {
+        "score": 94,
+        "tier": "hot",
+        "reasons": [
+          "current offer value $50",
+          "qualified upgrade path $150",
+          "setup offer has higher reserve-sats leverage",
+          "reserve, treasury, custody, or multisig claims",
+          "authority or liquidity claims",
+          "tooling, launchpad, or platform fit",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "150",
       "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
       "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
     },
     {
-      "id": "publish-social-btc-reserve-first-tranche",
+      "id": "send-outreach-packet-20260903-bitdust-transparency-audit-first-contact",
+      "priority": 7,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-bitdust-transparency-audit-first-contact for bitdust and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-bitdust-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash ab5485b74f010fd1af64290cfb03f801e6789843f97ff84c3c2f253c0d156d31",
+      "outreachPriority": {
+        "score": 90,
+        "tier": "hot",
+        "reasons": [
+          "current offer value $50",
+          "qualified upgrade path $150",
+          "setup offer has higher reserve-sats leverage",
+          "public reporting/setup intent",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "150",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact",
+      "priority": 8,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact for limelight-launchpad and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 76ae999cbb868517e040af99db37dba63f31d7e2c0a8502f6af347f14e9f01ca",
+      "outreachPriority": {
+        "score": 90,
+        "tier": "hot",
+        "reasons": [
+          "current offer value $50",
+          "qualified upgrade path $150",
+          "setup offer has higher reserve-sats leverage",
+          "public reporting/setup intent",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "150",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact",
+      "priority": 9,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact for solana-mint-forge and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 0f48ee2c0032db05c53f2b816d368d33f9ea991c83c3c0686b98f90e1a18b894",
+      "outreachPriority": {
+        "score": 90,
+        "tier": "hot",
+        "reasons": [
+          "current offer value $50",
+          "qualified upgrade path $150",
+          "setup offer has higher reserve-sats leverage",
+          "public reporting/setup intent",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "150",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-cia-token-transparency-audit-first-contact",
+      "priority": 10,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-cia-token-transparency-audit-first-contact for cia-token and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash c9a96c7b1ccc43959e39d1dca5a9b3874703366c4111a7d0d63297bc7b4974ca",
+      "outreachPriority": {
+        "score": 74,
+        "tier": "warm",
+        "reasons": [
+          "current offer value $50",
+          "public reporting/setup intent",
+          "reserve, treasury, custody, or multisig claims",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-lastshift-transparency-audit-first-contact",
+      "priority": 11,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-lastshift-transparency-audit-first-contact for lastshift and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-lastshift-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash a657229534841c7b064d7e936bf6149ac73e7eb527894b197a9af2409f3b8fb5",
+      "outreachPriority": {
+        "score": 74,
+        "tier": "warm",
+        "reasons": [
+          "current offer value $50",
+          "public reporting/setup intent",
+          "reserve, treasury, custody, or multisig claims",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-troptionsmint-transparency-audit-first-contact",
+      "priority": 12,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-troptionsmint-transparency-audit-first-contact for troptionsmint and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-troptionsmint-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash f6cec12cdbc84efc6d391c16866fb40a18782e33e9ac0fa3f7b24fb967c39d0b",
+      "outreachPriority": {
+        "score": 66,
+        "tier": "warm",
+        "reasons": [
+          "current offer value $50",
+          "qualified upgrade path $150",
+          "setup offer has higher reserve-sats leverage",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "150",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact",
+      "priority": 13,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact for black-bull-ansem and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 408cccaafe1b33cea6ab3e39c73ded59f2f348e72b4118e09431ba9654678b75",
+      "outreachPriority": {
+        "score": 56,
+        "tier": "warm",
+        "reasons": [
+          "current offer value $50",
+          "public reporting/setup intent",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-funtom-transparency-audit-first-contact",
+      "priority": 14,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-funtom-transparency-audit-first-contact for funtom and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-funtom-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 0dc079b78b109cd163d424a01a908b7ef2499867010fd65e857945041b9b3f47",
+      "outreachPriority": {
+        "score": 56,
+        "tier": "warm",
+        "reasons": [
+          "current offer value $50",
+          "public reporting/setup intent",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-fyborg-transparency-audit-first-contact",
+      "priority": 15,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-fyborg-transparency-audit-first-contact for fyborg and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-fyborg-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 1ea6577eff10884e2bdb74e67e3375ad2b19a103331c496e2a49bc2f91bf8176",
+      "outreachPriority": {
+        "score": 56,
+        "tier": "warm",
+        "reasons": [
+          "current offer value $50",
+          "public reporting/setup intent",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-kedol-token-transparency-audit-first-contact",
+      "priority": 16,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-kedol-token-transparency-audit-first-contact for kedol-token and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-kedol-token-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 11af6ea97d57509cf9173d9bbca676c15d4aef743bd18a278c7cbf75c0422264",
+      "outreachPriority": {
+        "score": 56,
+        "tier": "warm",
+        "reasons": [
+          "current offer value $50",
+          "public reporting/setup intent",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-lilmeme-transparency-audit-first-contact",
+      "priority": 17,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-lilmeme-transparency-audit-first-contact for lilmeme and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-lilmeme-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash fc55ed3d7920c0f66e4c1e8d8a1b99b3a0bda02ecc84482cbac632c3afda40f3",
+      "outreachPriority": {
+        "score": 54,
+        "tier": "warm",
+        "reasons": [
+          "current offer value $50",
+          "reserve, treasury, custody, or multisig claims",
+          "authority or liquidity claims",
+          "multiple public evidence links",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-meor-transparency-audit-first-contact",
+      "priority": 18,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-meor-transparency-audit-first-contact for meor and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meor-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash b228c7696e8704eaa2a6077879e6466e49b21d1a94e7e59039646abe3b3faa37",
+      "outreachPriority": {
+        "score": 50,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "reserve, treasury, custody, or multisig claims",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact",
+      "priority": 19,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact for bonkwifhat-bif and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 07f975376db0a805af310c833fc970db2aa0b1601efd4ac6c7820cbf1d1f286c",
+      "outreachPriority": {
+        "score": 36,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "multiple public evidence links",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260831-arnold-solana-transparency-audit-first-contact",
+      "priority": 20,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact for arnold-solana and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash c370ebac72102e729a6fc7b1155afa2dbd8b8a07ba154fddca993a223d349ae8",
+      "outreachPriority": {
+        "score": 32,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260831-npc-meme-transparency-audit-first-contact",
+      "priority": 21,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260831-npc-meme-transparency-audit-first-contact for npc-meme and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-npc-meme-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 3af76066ad19f59c6ec50a5d796412c0b6d4e5b5adec48de61676a901d9deb47",
+      "outreachPriority": {
+        "score": 32,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-ansem-season-transparency-audit-first-contact",
+      "priority": 22,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-ansem-season-transparency-audit-first-contact for ansem-season and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-ansem-season-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash a0eb4ba66f835e655b5e9f01e3685e95c7c95daff8165504e0c63b53f03cf34d",
+      "outreachPriority": {
+        "score": 32,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-foxclub-transparency-audit-first-contact",
+      "priority": 23,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-foxclub-transparency-audit-first-contact for foxclub and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-foxclub-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 4df9a11a77e13d7789a357cfc0998e3c5ee3d068e56289101140ae28bfa292b6",
+      "outreachPriority": {
+        "score": 32,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-honk-solana-transparency-audit-first-contact",
+      "priority": 24,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-honk-solana-transparency-audit-first-contact for honk-solana and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-honk-solana-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 03853b94571d8bcefe65f7e88452f21587372baf27d3bff827aae8523de115bf",
+      "outreachPriority": {
+        "score": 32,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact",
+      "priority": 25,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact for kerythos-kyrt and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 13a40e4256bb0a4d37815945d3bb4ff5211b4661ab2a37f060e106aa235c31c7",
+      "outreachPriority": {
+        "score": 32,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-modest-money-transparency-audit-first-contact",
+      "priority": 26,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-modest-money-transparency-audit-first-contact for modest-money and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-modest-money-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 425f77973eb6bdd56913944fc54b6118d27be6e4f275c52ab1acaf85606d1cab",
+      "outreachPriority": {
+        "score": 32,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-niulai-transparency-audit-first-contact",
+      "priority": 27,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-niulai-transparency-audit-first-contact for niulai and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-niulai-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 0d01e94ee5b5fa8b2bdb6cec5ae8b0272c8e32d607de286dd486c152420ee889",
+      "outreachPriority": {
+        "score": 32,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-pippin-smc-transparency-audit-first-contact",
+      "priority": 28,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-pippin-smc-transparency-audit-first-contact for pippin-smc and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-pippin-smc-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 739a4a361e687353b1e97264521dba55858291dbfdc54cd7513242612869b256",
+      "outreachPriority": {
+        "score": 32,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-roach-solana-transparency-audit-first-contact",
+      "priority": 29,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-roach-solana-transparency-audit-first-contact for roach-solana and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-roach-solana-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 8337c516e0f27cd4b37548222b62396082ea526d1ea4cda5e6bfc5a113165a90",
+      "outreachPriority": {
+        "score": 32,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-spcx-transparency-audit-first-contact",
+      "priority": 30,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-spcx-transparency-audit-first-contact for spcx and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-spcx-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 7b7fe87ef33d190ee810860a38c0d6f1d9cf23e6429435ed85bf61f9688dd9ec",
+      "outreachPriority": {
+        "score": 32,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-ssqueeze-transparency-audit-first-contact",
       "priority": 31,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-ssqueeze-transparency-audit-first-contact for ssqueeze and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-ssqueeze-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 078bc144b564ec08caba2e1afb3ff780db74a4e5846b56e5435b3ecbfbcaae8e",
+      "outreachPriority": {
+        "score": 32,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "send-outreach-packet-20260903-tradiecoin-transparency-audit-first-contact",
+      "priority": 32,
+      "type": "manual-outreach-send",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-tradiecoin-transparency-audit-first-contact for tradiecoin and record contact evidence.",
+      "requiredActor": "Executive Chairman or authorized human",
+      "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-tradiecoin-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash e66eae92c8c2a6ec9bd34859e7b35100f7461d877e37d812a60363776f2d3ca0",
+      "outreachPriority": {
+        "score": 32,
+        "tier": "standard",
+        "reasons": [
+          "current offer value $50",
+          "authority or liquidity claims",
+          "direct public project URL",
+          "chairman-approved outreach path"
+        ]
+      },
+      "qualifiedRevenueUsd": "50",
+      "evidenceRequired": "Contact URL, message permalink, email record, or other durable send evidence.",
+      "boundary": "Send the approved factual copy only; no price, return, buyer, liquidity, investment, or market-support claims."
+    },
+    {
+      "id": "approve-dubai-collaborator-meeting-intake-policy",
+      "priority": 33,
+      "type": "chairman-approval-needed",
+      "title": "Chairman decision needed for dubai-collaborator-meeting-intake-policy: Review Dubai collaborator meeting intake policy.",
+      "requiredActor": "Executive Chairman",
+      "command": "npm run ops:approve -- dubai-collaborator-meeting-intake-policy --confirm-chairman-approval \"I am Executive Chairman and approve dubai-collaborator-meeting-intake-policy\"",
+      "evidenceRequired": "2 evidence record(s) in executive approval queue.",
+      "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
+    },
+    {
+      "id": "publish-social-btc-reserve-first-tranche",
+      "priority": 34,
       "type": "manual-social-publish",
       "title": "Manually publish approved post btc-reserve-first-tranche and record the live URL for attribution.",
       "requiredActor": "Executive Chairman or authorized human",
-      "command": "npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl \"https://x.com/SATAReserve/status/<numeric-id>\" --evidence \"<live-post-screenshot-or-exported-text>\"",
+      "command": "npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl \"https://x.com/SATAReserve/status/<numeric-id>\" --evidence \"<live-post-screenshot-or-exported-text>\" --publishedAtUtc \"<published-at-utc>\" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e",
       "evidenceRequired": "Published @SATAReserve post URL plus screenshot or exported text.",
       "boundary": "Only chairman-approved factual posts may be published."
     }
   ],
-  "nextAction": "Send ready manual outreach packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact and record contact evidence.",
+  "nextAction": "Send prepared no-upfront post-receipt referral terms to Diana Crypto and record sent evidence.",
   "boundary": "Agents may prepare records, packets, and proposals. The Executive Chairman approves outreach, invoices, transactions, allocations, paid promotion, token grants, and any asset movement."
 }

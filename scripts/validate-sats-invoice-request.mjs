@@ -44,11 +44,24 @@ if (packet.mode !== 'chairman-gated-invoice-request-packet') {
   findings.push('packet mode must be chairman-gated-invoice-request-packet');
 }
 if (packet.requests[0]?.usdPrice !== '50') findings.push('packet must use invoice template price');
-if (packet.requests[0]?.paymentAddress !== invoiceQueue.paymentPolicy.reserveAddress) {
-  findings.push('packet payment address must use the invoice queue reserve address');
+if (
+  !/Hidden until a chairman-approved exact-sats invoice/i.test(
+    packet.requests[0]?.paymentAddressPolicy ?? ''
+  )
+) {
+  findings.push('packet must hide payment address until invoice approval');
+}
+if (JSON.stringify(packet).includes(invoiceQueue.paymentPolicy.reserveAddress)) {
+  findings.push('pre-approval invoice request packet must not render the reserve payment address');
 }
 if (!/chairman-selected-rate/.test(packet.requests[0]?.quoteCommand ?? '')) {
   findings.push('packet must require chairman-selected BTC/USD rate');
+}
+if (!/write-draft/.test(packet.requests[0]?.writeDraftCommand ?? '')) {
+  findings.push('packet must include a durable write-draft command');
+}
+if (!/--evidence/.test(packet.requests[0]?.writeDraftCommand ?? '')) {
+  findings.push('write-draft command must require invoice-request evidence');
 }
 if (!/Executive Chairman approval is required/i.test(packet.requests[0]?.approvalRequired ?? '')) {
   findings.push('packet must require Executive Chairman approval before sending');
@@ -60,12 +73,19 @@ if (!/does not approve an invoice/i.test(packet.boundary)) {
 for (const required of [
   /SATA Invoice Request Packet/i,
   /invoice-team/i,
+  /Payment address policy/i,
   /Quote command/i,
+  /Stage draft command/i,
   /sats-invoice-quote-agent/i,
   /Executive Chairman approval/i,
   /does not approve an invoice/i
 ]) {
   if (!required.test(rendered)) findings.push(`rendered packet missing ${required}`);
+}
+if (rendered.includes(invoiceQueue.paymentPolicy.reserveAddress)) {
+  findings.push(
+    'rendered invoice request packet must not expose reserve payment address before approval'
+  );
 }
 
 for (const testCase of [
@@ -104,7 +124,9 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('Sats invoice request check passed: invoice quote preparation requires invoice-requested prospects and preserves approval gates.');
+console.log(
+  'Sats invoice request check passed: invoice quote preparation requires invoice-requested prospects and preserves approval gates.'
+);
 
 function prospect({ id, stage, approved }) {
   return {

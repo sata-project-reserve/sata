@@ -5,6 +5,7 @@ import {
   recordProspectFollowUp,
   renderProspectFollowUp
 } from './lib/prospect-follow-up.mjs';
+import { writeRevenueCyclePublicStatus } from './lib/revenue-cycle-public-state.mjs';
 
 const PIPELINE_PATH = join('public', 'sats-prospect-pipeline.json');
 const [, , command = 'plan', ...args] = process.argv;
@@ -43,9 +44,11 @@ async function recordFollowUp(args) {
     pipeline,
     prospectId: options.prospect,
     followUpEvidence: options.evidence,
-    followUpChannel: options.channel
+    followUpChannel: options.channel,
+    followedUpAtUtc: options.followedUpAtUtc
   });
   await writeFile(PIPELINE_PATH, `${JSON.stringify(updated, null, 2)}\n`);
+  await writeRevenueCyclePublicStatus();
   console.log(`${options.prospect} follow-up recorded with evidence.`);
 }
 

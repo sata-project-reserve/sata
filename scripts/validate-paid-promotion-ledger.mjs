@@ -39,6 +39,9 @@ if (['paid-awaiting-post', 'post-reported-unverified'].includes(dianaCampaign?.s
   ) {
     findings.push('plan must expose live verification record command');
   }
+  if (!/--verifiedAtUtc "<verified-at-utc>"/.test(plan.awaitingVerification[0]?.recordLiveCommand ?? '')) {
+    findings.push('live verification command must require explicit verifiedAtUtc evidence');
+  }
 } else if (dianaCampaign?.status === 'live-verified') {
   if (plan.totals.awaitingVerification !== 0 || plan.totals.liveVerified !== 1) {
     findings.push('Diana test campaign must be counted as live verified after evidence is recorded');
@@ -53,6 +56,9 @@ if (['paid-awaiting-post', 'post-reported-unverified'].includes(dianaCampaign?.s
   if (!/confirmedReceiptsSats 0/.test(plan.liveVerified[0]?.recordConversionCommand ?? '')) {
     findings.push('conversion command must default to zero confirmed sats until evidence exists');
   }
+  if (!/--measuredAtUtc "<measured-at-utc>"/.test(plan.liveVerified[0]?.recordConversionCommand ?? '')) {
+    findings.push('conversion command must require explicit measuredAtUtc evidence');
+  }
   if (!/Wait 24 hours/i.test(plan.nextAction ?? '')) {
     findings.push('plan must advance live-verified campaigns to conversion measurement');
   }
@@ -60,14 +66,24 @@ if (['paid-awaiting-post', 'post-reported-unverified'].includes(dianaCampaign?.s
   if (plan.totals.completed !== 1 || plan.totals.liveVerified !== 0) {
     findings.push('Diana test campaign must be counted as completed after conversion is recorded');
   }
+  if (plan.postReceiptReferralHandoffCandidates?.length !== 1) {
+    findings.push('Diana completed zero-receipt campaign must become a referral handoff candidate');
+  }
+  if (
+    !/referral-partner-handoff-agent\.mjs render --campaign diana-crypto-20260903-transparency-tweet/.test(
+      plan.postReceiptReferralHandoffCandidates?.[0]?.renderHandoffCommand ?? ''
+    )
+  ) {
+    findings.push('Diana referral handoff candidate must expose the render command');
+  }
   if (dianaCampaign.conversion?.confirmedReceiptsSats !== '0') {
     findings.push('Diana completed conversion must not fabricate confirmed reserve sats');
   }
   if (!dianaCampaign.conversion?.evidence) {
     findings.push('Diana completed conversion must include conversion evidence');
   }
-  if (!/Do not repeat paid promotion unless/i.test(plan.nextAction ?? '')) {
-    findings.push('completed campaign plan must block repeat spend without a new approval');
+  if (!/post-receipt referral handoff/i.test(plan.nextAction ?? '')) {
+    findings.push('completed zero-receipt campaign plan must route to referral handoff');
   }
 } else {
   findings.push('Diana test campaign must be awaiting verification, live verified, or completed');
@@ -157,6 +173,14 @@ assertRejects('bad post url', /reportedPostUrl/i, () =>
     ]
   })
 );
+assertRejects('missing verification timestamp', /verifiedAtUtc must be a valid timestamp/i, () =>
+  recordPaidPromotionVerification({
+    ledger: transitionLedger,
+    campaignId: 'diana-crypto-20260903-transparency-tweet',
+    verifiedPostUrl: 'https://x.com/142C_/status/2086570576530010172',
+    evidence: 'signed-in-browser-screenshot-20260903'
+  })
+);
 
 assertRejects('fake sats conversion', /confirmedReceiptsSats/i, () =>
   validatePaidPromotionLedger({
@@ -178,6 +202,18 @@ assertRejects('conversion before verification', /live-verified status/i, () =>
     ledger: transitionLedger,
     campaignId: 'diana-crypto-20260903-transparency-tweet',
     evidence: 'analytics-log',
+    serviceInquiries: 0,
+    invoiceRequests: 0,
+    confirmedReceiptsSats: '0'
+  })
+);
+assertRejects('missing conversion timestamp', /measuredAtUtc must be a valid timestamp/i, () =>
+  recordPaidPromotionConversion({
+    ledger: verified,
+    campaignId: 'diana-crypto-20260903-transparency-tweet',
+    evidence: '24-hour-x-analytics-and-inquiry-log',
+    profileViewLift: 'profile views increased; exact analytics archived separately',
+    trackedClicks: 0,
     serviceInquiries: 0,
     invoiceRequests: 0,
     confirmedReceiptsSats: '0'

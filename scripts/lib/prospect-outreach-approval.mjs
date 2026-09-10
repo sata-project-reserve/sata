@@ -129,9 +129,10 @@ export function applyOutreachApprovalTransition({
   approvalQueue,
   approvalId,
   prospectIds,
-  transitionedAtUtc = new Date().toISOString()
+  transitionedAtUtc
 }) {
   assertInputs({ pipeline, approvalQueue });
+  parseDate(transitionedAtUtc, 'transitionedAtUtc');
   const approval = findApproval(approvalQueue, approvalId);
   if (approval?.status !== 'approved-by-chairman') {
     throw new Error(`${approvalId} is not approved by the Executive Chairman.`);
@@ -253,4 +254,12 @@ function normalizeIds(value) {
   if (value === undefined || value === null || value === '') return new Set();
   const ids = Array.isArray(value) ? value : String(value).split(',');
   return new Set(ids.map((id) => String(id).trim()).filter(Boolean));
+}
+
+function parseDate(value, label) {
+  const date = new Date(value);
+  if (!value || Number.isNaN(date.getTime())) {
+    throw new Error(`${label} must be a valid timestamp.`);
+  }
+  return value;
 }

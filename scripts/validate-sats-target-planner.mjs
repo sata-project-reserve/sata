@@ -45,8 +45,30 @@ if (!starter) {
     findings.push('full target must show starter-audit volume is not enough alone');
   }
 }
+if (!plan.currentPipeline) {
+  findings.push('target planner must include current pipeline coverage');
+} else {
+  if (plan.currentPipeline.manualOutreachActions !== 30) {
+    findings.push('current pipeline must count 30 ready manual outreach actions');
+  }
+  if (plan.currentPipeline.qualifiedRevenueUsd !== '2300.00') {
+    findings.push('current pipeline qualified revenue should total $2300 from ready manual outreach');
+  }
+  if (plan.currentPipeline.estimatedReserveSatsAtFullClose !== '1610000') {
+    findings.push('current pipeline should estimate 1610000 reserve sats at full close');
+  }
+  if (plan.currentPipeline.gapToNextMilestoneSatsAtFullClose !== '0') {
+    findings.push('current pipeline should cover the next 1M sats milestone at full close');
+  }
+  if (!/planning only/i.test(plan.assumptions.actualSatsRule)) {
+    findings.push('current pipeline math must remain planning-only');
+  }
+}
 if (!markdown.includes('BTC/USD assumption: 100000')) {
   findings.push('markdown must include the BTC/USD planning assumption');
+}
+if (!markdown.includes('## Current Outreach Coverage')) {
+  findings.push('markdown must include current outreach coverage');
 }
 if (!markdown.includes('full target requires higher-value setup/dashboard work')) {
   findings.push('markdown must include the operating read about higher-value work');

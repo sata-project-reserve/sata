@@ -32,6 +32,64 @@ export function renderReceiptAllocationProposal({ receipt, ledger, queue, genera
   ].join('\n');
 }
 
+export function recordConfirmedReceipt({
+  ledger,
+  queue,
+  receiptId,
+  invoiceId,
+  receivedAtUtc,
+  source,
+  currency = 'BTC',
+  amount,
+  amountSats,
+  transactionId,
+  receivedAddress,
+  confirmations,
+  deliverableUrl,
+  confirmChairmanReceiptApproval,
+  recordedAtUtc
+}) {
+  if (!ledger) throw new Error('Missing sats generation ledger.');
+  if (!queue) throw new Error('Missing invoice queue.');
+  const id = cleanLine(receiptId);
+  if (!id) throw new Error('receiptId is required.');
+  if ((ledger.receipts ?? []).some((receipt) => receipt.id === id)) {
+    throw new Error(`${id}: receipt already exists.`);
+  }
+  const requiredApproval = `I am Executive Chairman and approve receipt ${id}`;
+  if (cleanLine(confirmChairmanReceiptApproval) !== requiredApproval) {
+    throw new Error(`${id}: exact Executive Chairman receipt approval phrase is required.`);
+  }
+  const receipt = {
+    id,
+    invoiceId: cleanLine(invoiceId),
+    status: 'confirmed',
+    receivedAtUtc: normalizeTimestamp(receivedAtUtc, 'receivedAtUtc'),
+    source: cleanLine(source),
+    currency: cleanLine(currency || 'BTC'),
+    amount: cleanLine(amount),
+    amountSats: cleanLine(amountSats),
+    transactionId: cleanLine(transactionId),
+    receivedAddress: cleanLine(receivedAddress || queue.paymentPolicy?.reserveAddress),
+    confirmations: Number(confirmations),
+    chairmanApprovedBy: 'executive-chairman',
+    receiptApprovedAtUtc: normalizeTimestamp(recordedAtUtc, 'recordedAtUtc'),
+    deliverableUrl: cleanLine(deliverableUrl)
+  };
+  const nextLedger = {
+    ...ledger,
+    updatedAtUtc: receipt.receiptApprovedAtUtc,
+    receipts: [...(ledger.receipts ?? []), receipt]
+  };
+  assertConfirmedReceipt({
+    receipt,
+    ledger: nextLedger,
+    queue,
+    generatedAtUtc: receipt.receiptApprovedAtUtc
+  });
+  return nextLedger;
+}
+
 export function assertConfirmedReceipt({ receipt, ledger, queue, generatedAtUtc = new Date().toISOString() }) {
   const label = receipt?.id ?? '<missing-receipt>';
   if (!receipt) throw new Error('Missing receipt.');
@@ -91,6 +149,9 @@ export function assertConfirmedReceipt({ receipt, ledger, queue, generatedAtUtc 
   const receivedAt = toTime(receipt.receivedAtUtc, 'receivedAtUtc');
   const generatedAt = toTime(generatedAtUtc, 'generatedAtUtc');
   if (receivedAt > generatedAt) throw new Error(`${label}: receivedAtUtc cannot be in the future.`);
+  if (invoice.quoteExpiresAtUtc && receivedAt > toTime(invoice.quoteExpiresAtUtc, 'quoteExpiresAtUtc')) {
+    throw new Error(`${label}: receivedAtUtc must be within the approved invoice quote window.`);
+  }
 
   const duplicateReceipt = (ledger.receipts ?? []).filter((candidate) => candidate.id === receipt.id).length > 1;
   if (duplicateReceipt) throw new Error(`${label}: receipt id must be unique.`);
@@ -102,4 +163,12 @@ function toTime(value, label) {
   const time = new Date(value).getTime();
   if (!Number.isFinite(time)) throw new Error(`${label} must be a valid timestamp.`);
   return time;
+}
+
+function normalizeTimestamp(value, label) {
+  return new Date(toTime(value, label)).toISOString();
+}
+
+function cleanLine(value) {
+  return String(value ?? '').replace(/\s+/g, ' ').trim();
 }

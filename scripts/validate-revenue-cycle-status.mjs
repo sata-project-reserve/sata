@@ -54,6 +54,12 @@ const baseInputs = {
   paidPromotionLedger: {
     campaigns: []
   },
+  referralPartnerPolicy: {
+    status: 'approved-by-chairman'
+  },
+  referralPartnerHandoffQueue: {
+    handoffs: []
+  },
   approvalQueue: {
     items: []
   },
@@ -115,6 +121,28 @@ assertIncludes(
 );
 assertEqual(readyInvoiceStatus.social.livePostingEnabled, true);
 
+const manualSocialPublishStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  env: {},
+  socialQueue: {
+    mode: 'approved-only-automation',
+    posts: [
+      {
+        id: 'approved-social-post',
+        status: 'approved',
+        text: 'SATA publishes factual reserve and transparency updates. Not a price target.'
+      }
+    ]
+  }
+});
+validateRevenueCycleStatus(manualSocialPublishStatus);
+const manualSocialPublishAction = manualSocialPublishStatus.actionQueue.find(
+  (item) => item.type === 'manual-social-publish'
+);
+assertEqual(manualSocialPublishAction?.type, 'manual-social-publish');
+assertIncludes(manualSocialPublishAction?.command, '--contentHash ');
+assertIncludes(manualSocialPublishAction?.command, '--publishedAtUtc "<published-at-utc>"');
+
 const receiptStatus = buildRevenueCycleStatus({
   ...baseInputs,
   ledger: {
@@ -152,6 +180,28 @@ assertEqual(inboundInvoiceStatus.actionQueue[0]?.type, 'inbound-invoice-request-
 assertIncludes(
   inboundInvoiceStatus.nextAction,
   'Render chairman review packet for inbound invoice request hot-inbound-lead'
+);
+
+const outboundInvoiceStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  prospectPipeline: {
+    ...baseInputs.prospectPipeline,
+    prospects: [
+      {
+        id: 'invoice-requested-prospect',
+        stage: 'invoice-requested'
+      }
+    ]
+  },
+  env: {}
+});
+validateRevenueCycleStatus(outboundInvoiceStatus);
+const outboundInvoiceAction = outboundInvoiceStatus.actionQueue.find(
+  (item) => item.type === 'invoice-quote-inputs'
+);
+assertIncludes(
+  outboundInvoiceAction?.command,
+  'sats-invoice-request-agent.mjs render --prospects invoice-requested-prospect'
 );
 
 const inboundIntakeStatus = buildRevenueCycleStatus({
@@ -200,10 +250,69 @@ const readyOutreachPacketStatus = buildRevenueCycleStatus({
 validateRevenueCycleStatus(readyOutreachPacketStatus);
 assertEqual(readyOutreachPacketStatus.funnel.readyOutreachPackets, 1);
 assertEqual(readyOutreachPacketStatus.actionQueue[0]?.type, 'manual-outreach-send');
+assertIncludes(readyOutreachPacketStatus.actionQueue[0]?.command, '--sentAtUtc "<sent-at-utc>"');
+assertIncludes(
+  readyOutreachPacketStatus.actionQueue[0]?.command,
+  '--messageHash "<approved-message-sha256>"'
+);
 assertIncludes(
   readyOutreachPacketStatus.nextAction,
   'Send ready manual outreach packet outreach-packet-1'
 );
+
+const prioritizedOutreachStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  revenuePlan: {
+    ...baseInputs.revenuePlan,
+    revenueStreams: [
+      {
+        id: 'transparency-audit',
+        priceUsd: '50'
+      }
+    ]
+  },
+  prospectPipeline: {
+    ...baseInputs.prospectPipeline,
+    prospects: [
+      {
+        id: 'low-fit',
+        stage: 'outreach-approved',
+        observedClaim: 'Meme coin landing page.',
+        projectUrl: 'https://example.com/low'
+      },
+      {
+        id: 'high-fit',
+        stage: 'outreach-approved',
+        observedClaim:
+          'Whitepaper claims BTC reserve, multisig custody, mint authority controls, and liquidity lock.',
+        projectUrl: 'https://example.com/high',
+        evidence: ['https://example.com/high', 'https://example.com/high/whitepaper'],
+        chairmanApprovedBeforeOutreach: true
+      }
+    ]
+  },
+  outreachPacketQueue: {
+    packets: [
+      {
+        id: 'outreach-low-fit',
+        prospectId: 'low-fit',
+        offerId: 'transparency-audit',
+        status: 'ready-for-manual-send'
+      },
+      {
+        id: 'outreach-high-fit',
+        prospectId: 'high-fit',
+        offerId: 'transparency-audit',
+        status: 'ready-for-manual-send'
+      }
+    ]
+  },
+  env: {}
+});
+validateRevenueCycleStatus(prioritizedOutreachStatus);
+assertEqual(prioritizedOutreachStatus.actionQueue[0]?.id, 'send-outreach-high-fit');
+assertEqual(prioritizedOutreachStatus.actionQueue[0]?.outreachPriority?.tier, 'hot');
+assertEqual(prioritizedOutreachStatus.actionQueue[1]?.id, 'send-outreach-low-fit');
 
 const paidPromotionStatus = buildRevenueCycleStatus({
   ...baseInputs,
@@ -239,6 +348,146 @@ assertEqual(paidPromotionStatus.funnel.paidPromotionCampaigns, 1);
 assertEqual(paidPromotionStatus.funnel.paidPromotionsAwaitingVerification, 1);
 assertEqual(paidPromotionStatus.actionQueue[0]?.type, 'paid-promotion-verification');
 assertIncludes(paidPromotionStatus.nextAction, 'Verify paid promotion campaign campaign-1');
+
+const liveVerifiedPaidPromotionStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  paidPromotionLedger: {
+    campaigns: [
+      {
+        id: 'campaign-1',
+        status: 'live-verified'
+      }
+    ]
+  },
+  env: {}
+});
+validateRevenueCycleStatus(liveVerifiedPaidPromotionStatus);
+assertEqual(
+  liveVerifiedPaidPromotionStatus.actionQueue[0]?.type,
+  'paid-promotion-conversion-measurement'
+);
+assertIncludes(liveVerifiedPaidPromotionStatus.actionQueue[0]?.command, '--measuredAtUtc "<measured-at-utc>"');
+
+const completedPaidPromotionStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  paidPromotionLedger: {
+    campaigns: [
+      {
+        id: 'campaign-1',
+        status: 'completed',
+        promoter: {
+          displayName: 'Diana Crypto',
+          handle: '142C_'
+        },
+        reportedPostUrl: 'https://x.com/142C_/status/2086570576530010172',
+        conversion: {
+          confirmedReceiptsSats: '0'
+        }
+      }
+    ]
+  },
+  prospectPipeline: {
+    ...baseInputs.prospectPipeline,
+    prospects: [
+      {
+        id: 'prospect-1',
+        stage: 'outreach-approved'
+      }
+    ]
+  },
+  outreachPacketQueue: {
+    packets: [
+      {
+        id: 'outreach-packet-1',
+        status: 'ready-for-manual-send'
+      }
+    ]
+  },
+  env: {}
+});
+validateRevenueCycleStatus(completedPaidPromotionStatus);
+assertEqual(completedPaidPromotionStatus.actionQueue[0]?.type, 'post-receipt-referral-handoff');
+assertEqual(completedPaidPromotionStatus.actionQueue[1]?.type, 'inbound-reply-triage-monitor');
+assertIncludes(
+  completedPaidPromotionStatus.actionQueue[1]?.command,
+  'npm run ops:inbound-reply-triage-plan'
+);
+assertIncludes(
+  completedPaidPromotionStatus.actionQueue[1]?.sources?.[0]?.triageCommand,
+  'inbound-reply-triage-agent.mjs markdown'
+);
+assertIncludes(
+  completedPaidPromotionStatus.nextAction,
+  'Prepare and send Diana Crypto a no-upfront post-receipt referral role'
+);
+assertIncludes(
+  completedPaidPromotionStatus.actionQueue[0]?.command,
+  'referral-partner-handoff-agent.mjs write-packet --campaign campaign-1'
+);
+assertEqual(
+  completedPaidPromotionStatus.actionQueue[0]?.artifact,
+  'public/referral-partner-handoff-packet.md'
+);
+
+const preparedReferralPacketStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  paidPromotionLedger: completedPaidPromotionStatusInput().paidPromotionLedger,
+  referralPartnerHandoffPacket: {
+    mode: 'referral-partner-handoff-packet',
+    sourceCampaignId: 'campaign-1',
+    recordSentCommand:
+      'node scripts/referral-partner-handoff-agent.mjs record-sent --campaign campaign-1 --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18'
+  },
+  prospectPipeline: completedPaidPromotionStatusInput().prospectPipeline,
+  outreachPacketQueue: completedPaidPromotionStatusInput().outreachPacketQueue,
+  env: {}
+});
+validateRevenueCycleStatus(preparedReferralPacketStatus);
+assertEqual(preparedReferralPacketStatus.actionQueue[0]?.type, 'manual-referral-handoff-send');
+assertEqual(preparedReferralPacketStatus.actionQueue[1]?.type, 'inbound-reply-triage-monitor');
+assertIncludes(
+  preparedReferralPacketStatus.nextAction,
+  'Send prepared no-upfront post-receipt referral terms'
+);
+assertIncludes(
+  preparedReferralPacketStatus.actionQueue[0]?.command,
+  'record-sent --campaign campaign-1'
+);
+assertIncludes(preparedReferralPacketStatus.actionQueue[0]?.command, '--sentAtUtc "<sent-at-utc>"');
+assertIncludes(
+  preparedReferralPacketStatus.actionQueue[0]?.command,
+  '--messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18'
+);
+
+const sentReferralHandoffStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  paidPromotionLedger: completedPaidPromotionStatusInput().paidPromotionLedger,
+  referralPartnerHandoffQueue: {
+    handoffs: [
+      {
+        id: 'handoff-campaign-1',
+        sourceCampaignId: 'campaign-1',
+        status: 'sent-awaiting-response',
+        partner: {
+          id: 'diana-crypto'
+        }
+      }
+    ]
+  },
+  prospectPipeline: completedPaidPromotionStatusInput().prospectPipeline,
+  outreachPacketQueue: completedPaidPromotionStatusInput().outreachPacketQueue,
+  env: {}
+});
+validateRevenueCycleStatus(sentReferralHandoffStatus);
+assertEqual(sentReferralHandoffStatus.actionQueue[0]?.type, 'track-referral-handoff-response');
+assertIncludes(
+  sentReferralHandoffStatus.actionQueue[0]?.command,
+  '--respondedAtUtc "<responded-at-utc>"'
+);
+assertIncludes(
+  sentReferralHandoffStatus.nextAction,
+  'Record partner response for referral handoff handoff-campaign-1'
+);
 
 const pendingApprovalStatus = buildRevenueCycleStatus({
   ...baseInputs,
@@ -313,6 +562,7 @@ const expectedPublicStatus = buildRevenueCycleStatus({ ...publicInputs, env: {} 
 validateRevenueCycleStatus(expectedPublicStatus);
 const publishedPublicStatus = await readJson(join('public', 'revenue-cycle-status.json'));
 assertDeepEqual(publishedPublicStatus, expectedPublicStatus, 'public revenue-cycle-status.json');
+await assertRevenueStateMutatorsRefreshPublicStatus();
 
 console.log(
   'Revenue cycle status check passed: the operating dashboard preserves revenue-first reserve gates.'
@@ -357,11 +607,111 @@ async function readPublicInputs() {
     outreachPacketQueue: await readJson(join('public', 'service-outreach-packet-queue.json')),
     inboundLeadQueue: await readJson(join('public', 'inbound-service-lead-queue.json')),
     paidPromotionLedger: await readJson(join('public', 'paid-promotion-ledger.json')),
+    referralPartnerPolicy: await readJson(join('public', 'referral-partner-policy.json')),
+    referralPartnerHandoffQueue: await readJson(
+      join('public', 'referral-partner-handoff-queue.json')
+    ),
+    referralPartnerHandoffPacket: await readOptionalJson(
+      join('public', 'referral-partner-handoff-packet.json')
+    ),
     approvalQueue: await readJson(join('public', 'executive-approval-queue.json')),
     socialQueue: await readJson(join('public', 'social-agent-content-queue.json'))
   };
 }
 
+function completedPaidPromotionStatusInput() {
+  return {
+    paidPromotionLedger: {
+      campaigns: [
+        {
+          id: 'campaign-1',
+          status: 'completed',
+          promoter: {
+            displayName: 'Diana Crypto',
+            handle: '142C_'
+          },
+          reportedPostUrl: 'https://x.com/142C_/status/2086570576530010172',
+          conversion: {
+            confirmedReceiptsSats: '0'
+          }
+        }
+      ]
+    },
+    prospectPipeline: {
+      ...baseInputs.prospectPipeline,
+      prospects: [
+        {
+          id: 'prospect-1',
+          stage: 'outreach-approved'
+        }
+      ]
+    },
+    outreachPacketQueue: {
+      packets: [
+        {
+          id: 'outreach-packet-1',
+          status: 'ready-for-manual-send'
+        }
+      ]
+    }
+  };
+}
+
+async function assertRevenueStateMutatorsRefreshPublicStatus() {
+  const publicStateSource = await readFile('scripts/lib/revenue-cycle-public-state.mjs', 'utf8');
+  for (const expectedArtifact of [
+    'revenue-cycle-status.json',
+    'revenue-execution-brief.json',
+    'revenue-execution-brief.md',
+    'outreach-dispatch-brief.json',
+    'outreach-dispatch-brief.md',
+    'reply-conversion-brief.json',
+    'reply-conversion-brief.md',
+    'referral-handoff-dispatch-brief.json',
+    'referral-handoff-dispatch-brief.md'
+  ]) {
+    if (!publicStateSource.includes(expectedArtifact)) {
+      throw new Error(`Revenue public-state refresh must write ${expectedArtifact}.`);
+    }
+  }
+
+  const mutators = [
+    'scripts/approved-followthrough-agent.mjs',
+    'scripts/executive-approval-agent.mjs',
+    'scripts/inbound-service-lead-agent.mjs',
+    'scripts/paid-promotion-agent.mjs',
+    'scripts/reserve-growth-agent.mjs',
+    'scripts/sats-invoice-quote-agent.mjs',
+    'scripts/sats-outreach-approval-agent.mjs',
+    'scripts/sats-prospect-follow-up-agent.mjs',
+    'scripts/sats-prospect-response-agent.mjs',
+    'scripts/sats-prospect-review-agent.mjs',
+    'scripts/sats-prospect-stage-agent.mjs',
+    'scripts/service-outreach-packet-agent.mjs',
+    'scripts/x-social-agent.mjs'
+  ];
+
+  const staleMutators = [];
+  for (const path of mutators) {
+    const source = await readFile(path, 'utf8');
+    if (!source.includes('writeRevenueCyclePublicStatus')) staleMutators.push(path);
+  }
+  if (staleMutators.length > 0) {
+    throw new Error(
+      `Revenue state mutators must refresh public revenue-cycle status:\n- ${staleMutators.join('\n- ')}`
+    );
+  }
+}
+
 async function readJson(path) {
   return JSON.parse(await readFile(path, 'utf8'));
+}
+
+async function readOptionalJson(path) {
+  try {
+    return await readJson(path);
+  } catch (error) {
+    if (error.code === 'ENOENT') return null;
+    throw error;
+  }
 }

@@ -31,7 +31,7 @@ export function recordProspectContact({
   prospectId,
   contactEvidence,
   contactChannel = 'manual-dm-or-email',
-  contactedAtUtc = new Date().toISOString()
+  contactedAtUtc
 }) {
   if (!pipeline) throw new Error('Missing prospect pipeline.');
   const evidence = requireEvidence(contactEvidence, 'Contact evidence is required.');
@@ -40,16 +40,17 @@ export function recordProspectContact({
       throw new Error(`${prospect.id}: contact recording requires outreach-approved stage.`);
     }
     requireApprovedOutreachPath(prospect);
+    const contactedAt = parseDate(contactedAtUtc, 'contactedAtUtc');
     return {
       ...prospect,
       stage: 'contacted',
       contact: {
         channel: cleanLine(contactChannel),
         evidence,
-        contactedAtUtc,
+        contactedAtUtc: contactedAt,
         approvedOutreachStage: 'outreach-approved'
       },
-      stageUpdatedAtUtc: contactedAtUtc,
+      stageUpdatedAtUtc: contactedAt,
       stageNotes:
         'Contact evidence recorded after chairman-approved outreach. Invoice still requires explicit prospect request evidence.'
     };
@@ -62,7 +63,7 @@ export function recordInvoiceRequest({
   requestEvidence,
   requestedOfferId,
   confirmedCustomerRequestedInvoice,
-  requestedAtUtc = new Date().toISOString()
+  requestedAtUtc
 }) {
   if (!pipeline) throw new Error('Missing prospect pipeline.');
   if (confirmedCustomerRequestedInvoice !== true) {
@@ -79,16 +80,17 @@ export function recordInvoiceRequest({
     }
     const offerId = cleanLine(requestedOfferId ?? prospect.recommendedOfferId);
     if (!offerId) throw new Error(`${prospect.id}: requested offer id is required.`);
+    const requestedAt = parseDate(requestedAtUtc, 'requestedAtUtc');
     return {
       ...prospect,
       stage: 'invoice-requested',
       invoiceRequest: {
         requestedOfferId: offerId,
         evidence,
-        requestedAtUtc,
+        requestedAtUtc: requestedAt,
         confirmedCustomerRequestedInvoice: true
       },
-      stageUpdatedAtUtc: requestedAtUtc,
+      stageUpdatedAtUtc: requestedAt,
       stageNotes:
         'Explicit customer invoice request evidence recorded. Exact-sats invoice still requires Executive Chairman approval.'
     };
@@ -139,6 +141,9 @@ function validateContact(prospect, findings) {
       findings.push(`${prospect.id}: contact.${field} is required`);
     }
   }
+  if (prospect.contact?.contactedAtUtc && Number.isNaN(Date.parse(prospect.contact.contactedAtUtc))) {
+    findings.push(`${prospect.id}: contact.contactedAtUtc must be a valid date`);
+  }
 }
 
 function validateInvoiceRequest(prospect, findings) {
@@ -150,6 +155,12 @@ function validateInvoiceRequest(prospect, findings) {
     if (!cleanLine(prospect.invoiceRequest[field])) {
       findings.push(`${prospect.id}: invoiceRequest.${field} is required`);
     }
+  }
+  if (
+    prospect.invoiceRequest?.requestedAtUtc &&
+    Number.isNaN(Date.parse(prospect.invoiceRequest.requestedAtUtc))
+  ) {
+    findings.push(`${prospect.id}: invoiceRequest.requestedAtUtc must be a valid date`);
   }
   if (prospect.invoiceRequest.confirmedCustomerRequestedInvoice !== true) {
     findings.push(`${prospect.id}: invoiceRequest.confirmedCustomerRequestedInvoice must be true`);
@@ -166,6 +177,14 @@ function requireEvidence(value, message) {
   const evidence = cleanLine(value);
   if (evidence.length < 8) throw new Error(message);
   return evidence;
+}
+
+function parseDate(value, label) {
+  const cleaned = cleanLine(value);
+  if (!cleaned || Number.isNaN(Date.parse(cleaned))) {
+    throw new Error(`${label} must be a valid date.`);
+  }
+  return cleaned;
 }
 
 function summaryForPlan(prospect) {

@@ -782,6 +782,8 @@ async function buildPublishedRevenueCycleStatus(report) {
     prospectPipeline: await readRequiredJson(join('public', 'sats-prospect-pipeline.json')),
     outreachPacketQueue: await readRequiredJson(join('public', 'service-outreach-packet-queue.json')),
     paidPromotionLedger: await readRequiredJson(join('public', 'paid-promotion-ledger.json')),
+    referralPartnerPolicy: await readRequiredJson(join('public', 'referral-partner-policy.json')),
+    referralPartnerHandoffQueue: await readRequiredJson(join('public', 'referral-partner-handoff-queue.json')),
     approvalQueue: await readRequiredJson(join('public', 'executive-approval-queue.json')),
     socialQueue: await readRequiredJson(join('public', 'social-agent-content-queue.json')),
     env: {}

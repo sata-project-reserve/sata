@@ -1,9 +1,14 @@
 import approvalQueue from '@/public/executive-approval-queue.json';
 import inboundLeadQueue from '@/public/inbound-service-lead-queue.json';
+import outreachDispatchBrief from '@/public/outreach-dispatch-brief.json';
 import outreachPacketQueue from '@/public/service-outreach-packet-queue.json';
 import paidPromotionLedger from '@/public/paid-promotion-ledger.json';
 import prospectPipeline from '@/public/sats-prospect-pipeline.json';
+import referralPartnerHandoffPacket from '@/public/referral-partner-handoff-packet.json';
+import referralPartnerHandoffQueue from '@/public/referral-partner-handoff-queue.json';
 import referralPartnerPolicy from '@/public/referral-partner-policy.json';
+import replyConversionBrief from '@/public/reply-conversion-brief.json';
+import revenueExecutionBrief from '@/public/revenue-execution-brief.json';
 import revenuePlan from '@/public/revenue-operating-plan.json';
 import socialQueue from '@/public/social-agent-content-queue.json';
 import cycleStatus from '@/public/revenue-cycle-status.json';
@@ -20,11 +25,30 @@ export const metadata = {
 };
 
 const PUBLIC_BASE_URL = 'https://sata-project-reserve.github.io/sata';
+const CONTACT_EVIDENCE_INTAKE_URL =
+  'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml';
 
 type ApprovalItem = (typeof approvalQueue.items)[number];
 type PaidPromotionCampaign = (typeof paidPromotionLedger.campaigns)[number];
 type Prospect = (typeof prospectPipeline.prospects)[number];
+type RevenueExecutionAction = (typeof revenueExecutionBrief.topActions)[number];
+type ActionQueueItem = (typeof cycleStatus.actionQueue)[number] & {
+  artifact?: string;
+};
 type SocialPost = (typeof socialQueue.posts)[number];
+type ReferralPartnerHandoff = {
+  id: string;
+  sourceCampaignId: string;
+  partner: {
+    id: string;
+    displayName: string;
+    handle: string;
+  };
+  sourceEvidence: string;
+  sentEvidence: string;
+  status: string;
+  nextAction: string;
+};
 type InboundLead = {
   id: string;
   status: string;
@@ -89,13 +113,13 @@ function nextCommandAfterApproval(item: ApprovalItem, reviewBatch: Prospect[]) {
     const prospectIds =
       prospectIdsFromReviewSummary(item.summary) ||
       reviewBatch.map((prospect) => prospect.id).join(',');
-    return `node scripts/sats-prospect-stage-agent.mjs plan --approvalId ${item.id}, then node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${item.id} --prospects ${prospectIds}`;
+    return `node scripts/sats-prospect-stage-agent.mjs plan --approvalId ${item.id}, then node scripts/sats-prospect-stage-agent.mjs advance --approvalId ${item.id} --prospects ${prospectIds} --transitionedAtUtc "<transitioned-at-utc>"`;
   }
   if (item.id === 'reserve-growth-operating-policy') return 'npm run ops:reserve-plan';
   if (item.id === 'standard-promoter-intake-policy') return 'npm run ops:plan';
   if (item.id.startsWith('outreach-approval-')) {
     const prospectIds = outreachProspectIdsFromTitle(item.title);
-    return `node scripts/sats-outreach-approval-agent.mjs transition-plan --approvalId ${item.id}, then node scripts/sats-outreach-approval-agent.mjs advance --approvalId ${item.id} --prospects ${prospectIds || '<chairman-approved-prospect-ids>'}`;
+    return `node scripts/sats-outreach-approval-agent.mjs transition-plan --approvalId ${item.id}, then node scripts/sats-outreach-approval-agent.mjs advance --approvalId ${item.id} --prospects ${prospectIds || '<chairman-approved-prospect-ids>'} --transitionedAtUtc "<transitioned-at-utc>"`;
   }
   return 'npm run ops:cycle-plan';
 }
@@ -149,12 +173,30 @@ function dealsRequired(targetSats: bigint, satsPerDeal: bigint) {
   return Number((targetSats + satsPerDeal - 1n) / satsPerDeal);
 }
 
+function percentString(numerator: bigint, denominator: bigint) {
+  if (denominator <= 0n) return '0.00';
+  const percentBasisPoints = (numerator * 1_000_000n) / denominator;
+  return (Number(percentBasisPoints) / 10_000).toFixed(2);
+}
+
 function recordContactedCommand(prospect: Prospect) {
-  return `node scripts/sats-prospect-response-agent.mjs record-contacted --prospect ${prospect.id} --evidence "<contact-evidence-url-or-reference>" --channel "manual-dm-or-email"`;
+  const packet = outreachPacketQueue.packets.find(
+    (item) => item.prospectId === prospect.id && item.status === 'ready-for-manual-send'
+  );
+  return withSentAtUtcPlaceholder(
+    packet?.recordContactCommand ??
+      `node scripts/sats-prospect-response-agent.mjs record-contacted --prospect ${prospect.id} --evidence "<contact-evidence-url-or-reference>" --channel "manual-dm-or-email" --contactedAtUtc "<contacted-at-utc>"`
+  );
+}
+
+function withSentAtUtcPlaceholder(command: string) {
+  if (!/service-outreach-packet-agent\.mjs mark-sent/.test(command)) return command;
+  if (/--sentAtUtc\b/.test(command)) return command;
+  return `${command} --sentAtUtc "<sent-at-utc>"`;
 }
 
 function recordInvoiceRequestCommand(prospect: Prospect) {
-  return `node scripts/sats-prospect-response-agent.mjs record-invoice-request --prospect ${prospect.id} --offer ${prospect.recommendedOfferId} --evidence "<invoice-request-evidence-url-or-reference>" --confirmedCustomerRequestedInvoice true`;
+  return `node scripts/sats-prospect-response-agent.mjs record-invoice-request --prospect ${prospect.id} --offer ${prospect.recommendedOfferId} --evidence "<invoice-request-evidence-url-or-reference>" --confirmedCustomerRequestedInvoice true --requestedAtUtc "<requested-at-utc>"`;
 }
 
 function approveSocialPostCommand(post: SocialPost) {
@@ -166,11 +208,12 @@ function rejectSocialPostCommand(post: SocialPost) {
 }
 
 function recordPublishedSocialPostCommand(post: SocialPost) {
-  return `npm run social:agent -- record-published --post ${post.id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>"`;
+  const contentHash = 'contentSha256' in post ? post.contentSha256 : '<approved-post-sha256>';
+  return `npm run social:agent -- record-published --post ${post.id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash ${contentHash}`;
 }
 
 function recordInboundLeadCommand(source: InboundSource) {
-  return `node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sourceType ${source.type} --sourceId ${source.id} --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --evidence "<reply-or-dm-evidence>" --customerAskedForInvoice false`;
+  return `node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sourceType ${source.type} --sourceId ${source.id} --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --evidence "<reply-or-dm-evidence>" --customerAskedForInvoice false --recordedAtUtc "<recorded-at-utc>"`;
 }
 
 function renderInboundInvoiceRequestCommand(lead: InboundLead) {
@@ -178,11 +221,48 @@ function renderInboundInvoiceRequestCommand(lead: InboundLead) {
 }
 
 function recordPaidPromotionConversionCommand(campaign: PaidPromotionCampaign) {
-  return `node scripts/paid-promotion-agent.mjs record-conversion --campaign ${campaign.id} --evidence "<24h-analytics-and-inquiry-log>" --profileViewLift "<profile-view-change-or-not-recorded>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0`;
+  return `node scripts/paid-promotion-agent.mjs record-conversion --campaign ${campaign.id} --evidence "<24h-analytics-and-inquiry-log>" --profileViewLift "<profile-view-change-or-not-recorded>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0 --measuredAtUtc "<measured-at-utc>"`;
 }
 
 function referralPartnerPacketCommand() {
   return 'npm run ops:referral-packet-plan -- --partner "diana-crypto" --displayName "Diana Crypto" --handle "142C_" --sourceEvidence "<dm-or-reply-evidence>" --requestedCompensation "post-receipt referral share"';
+}
+
+function renderReferralHandoffCommand(campaign: PaidPromotionCampaign) {
+  return `node scripts/referral-partner-handoff-agent.mjs render --campaign ${campaign.id}`;
+}
+
+function writeReferralHandoffPacketCommand(campaign: PaidPromotionCampaign) {
+  return `node scripts/referral-partner-handoff-agent.mjs write-packet --campaign ${campaign.id}`;
+}
+
+function publicArtifactPath(artifact: string) {
+  return publicPath(`/${artifact.replace(/^public\//, '')}`);
+}
+
+function recordReferralHandoffSentCommand(campaign: PaidPromotionCampaign) {
+  if (
+    referralPartnerHandoffPacket.sourceCampaignId === campaign.id &&
+    referralPartnerHandoffPacket.recordSentCommand
+  ) {
+    return referralPartnerHandoffPacket.recordSentCommand;
+  }
+  return `node scripts/referral-partner-handoff-agent.mjs record-sent --campaign ${campaign.id} --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash "<approved-terms-sha256>"`;
+}
+
+function recordReferralHandoffResponseCommand(handoff: ReferralPartnerHandoff) {
+  return `node scripts/referral-partner-handoff-agent.mjs record-response --handoff ${handoff.id} --accepted true --evidence "<partner-response-evidence>" --respondedAtUtc "<responded-at-utc>"`;
+}
+
+function recordReferralLeadCommand(handoff: ReferralPartnerHandoff) {
+  return `node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sourceType manual-referral --sourceId referral-partner-${handoff.partner.id} --contactHandle "<customer-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --evidence "<referral-and-customer-interest-evidence>" --customerAskedForInvoice false --recordedAtUtc "<recorded-at-utc>" --convertedAtUtc "<converted-at-utc>"`;
+}
+
+function referralPolicySummary() {
+  if (referralPartnerPolicy.status === 'approved-by-chairman') {
+    return 'Approved post-receipt partner compensation policy ready for gated referral packet generation.';
+  }
+  return 'Draft post-receipt partner compensation policy awaiting chairman decision.';
 }
 
 export default function OperationsPage() {
@@ -210,34 +290,48 @@ export default function OperationsPage() {
     (post) => post.status === 'ready-for-review'
   );
   const approvedSocialPosts = socialQueue.posts.filter((post) => post.status === 'approved');
-  const readyOutreachPackets = outreachPacketQueue.packets.filter(
-    (packet) => packet.status === 'ready-for-manual-send'
-  );
-  const outreachDispatchSprint = readyOutreachPackets.slice(0, 5);
+  const outreachDispatchSprint = outreachDispatchBrief.readyManualSends;
   const outreachDispatchRemainder = Math.max(
-    readyOutreachPackets.length - outreachDispatchSprint.length,
+    outreachDispatchBrief.readyManualSendCount - outreachDispatchSprint.length,
     0
   );
-  const outreachDispatchPriceByOffer = Object.fromEntries(
-    revenuePlan.revenueStreams.map((stream) => [stream.id, Number(stream.priceUsd)])
+  const outreachDispatchGrossRevenueUsd = Number(
+    outreachDispatchBrief.sprintEconomics.grossRevenueUsd
   );
-  const outreachDispatchGrossRevenueUsd = outreachDispatchSprint.reduce(
-    (total, packet) => total + (outreachDispatchPriceByOffer[packet.offerId] ?? 0),
-    0
+  const outreachDispatchQualifiedGrossRevenueUsd = Number(
+    outreachDispatchBrief.sprintEconomics.qualifiedGrossRevenueUsd
   );
   const outreachDispatchReserveAllocationPercent =
-    revenuePlan.allocationPolicy.postReceiptAllocationPercent.btcReserve;
-  const outreachDispatchReserveUsd =
-    (outreachDispatchGrossRevenueUsd * outreachDispatchReserveAllocationPercent) / 100;
-  const outreachDispatchReserveSatsAtPlanningRate = satsFromUsd(
-    outreachDispatchReserveUsd,
-    100000
+    outreachDispatchBrief.sprintEconomics.reserveAllocationPercent;
+  const outreachDispatchReserveUsd = Number(
+    outreachDispatchBrief.sprintEconomics.reserveAllocationUsd
   );
+  const outreachDispatchQualifiedReserveUsd = Number(
+    outreachDispatchBrief.sprintEconomics.qualifiedReserveAllocationUsd
+  );
+  const outreachDispatchReserveSatsAtPlanningRate =
+    outreachDispatchBrief.sprintEconomics.reserveSatsAtPlanningRate;
+  const outreachDispatchQualifiedReserveSatsAtPlanningRate =
+    outreachDispatchBrief.sprintEconomics.qualifiedReserveSatsAtPlanningRate;
   const paidPromotionsAwaitingVerification = paidPromotionLedger.campaigns.filter((campaign) =>
     ['paid-awaiting-post', 'post-reported-unverified'].includes(campaign.status)
   );
   const liveVerifiedPaidPromotions = paidPromotionLedger.campaigns.filter(
     (campaign) => campaign.status === 'live-verified'
+  );
+  const referralHandoffs = referralPartnerHandoffQueue.handoffs as ReferralPartnerHandoff[];
+  const recordedReferralHandoffCampaignIds = new Set(
+    referralHandoffs.map((handoff) => handoff.sourceCampaignId)
+  );
+  const referralHandoffCandidates = paidPromotionLedger.campaigns.filter(
+    (campaign) =>
+      campaign.status === 'completed' &&
+      BigInt(campaign.conversion.confirmedReceiptsSats) === 0n &&
+      referralPartnerPolicy.status === 'approved-by-chairman' &&
+      !recordedReferralHandoffCampaignIds.has(campaign.id)
+  );
+  const activeReferralHandoffs = referralHandoffs.filter(
+    (handoff) => !['converted-to-lead', 'declined', 'closed-no-response'].includes(handoff.status)
   );
   const inboundLeads = inboundLeadQueue.leads as InboundLead[];
   const inboundInvoiceRequests = inboundLeads.filter(
@@ -264,25 +358,8 @@ export default function OperationsPage() {
   const referralPolicyApprovalItem = approvalQueue.items.find(
     (item) => item.id === referralPartnerPolicy.approvalItemId
   );
-  const revenueExecutionActions = [
-    ...paidPromotionsAwaitingVerification.map((campaign) => ({
-      id: `verify-${campaign.id}`,
-      type: 'paid-promotion-verification',
-      title: `Verify ${campaign.id} before counting results.`,
-      reason: 'Paid attention cannot be measured or repeated until the live post evidence is recorded.',
-      command: `node scripts/paid-promotion-agent.mjs record-live --campaign ${campaign.id} --post ${campaign.reportedPostUrl} --evidence "<live-post-screenshot-or-exported-text>"`,
-      evidence:
-        'Signed-in screenshot or exported text showing disclosure, unchanged copy, timestamp, and post URL.'
-    })),
-    ...outreachDispatchSprint.map((packet) => ({
-      id: `send-${packet.id}`,
-      type: 'manual-outreach-send',
-      title: `Send approved transparency-audit outreach to ${packet.prospectId}.`,
-      reason: 'The shortest direct path to reserve sats is a paid audit customer requesting an invoice.',
-      command: packet.recordContactCommand,
-      evidence: 'Message permalink, email record, or other durable contact proof.'
-    }))
-  ];
+  const revenueExecutionActions: RevenueExecutionAction[] = revenueExecutionBrief.topActions;
+  const actionQueue = cycleStatus.actionQueue as ActionQueueItem[];
   const paidAttributionLinks = paidPromotionLedger.campaigns.map((campaign) => ({
     id: campaign.id,
     promoter: campaign.promoter.handle,
@@ -339,6 +416,25 @@ export default function OperationsPage() {
       dealsToFullTarget: dealsRequired(remainingSats, reserveSatsPerDeal)
     };
   });
+  const manualOutreachActions = cycleStatus.actionQueue.filter(
+    (item) => item.type === 'manual-outreach-send'
+  );
+  const manualOutreachQualifiedRevenueUsd = manualOutreachActions.reduce(
+    (total, item) => total + Number((item as { qualifiedRevenueUsd?: string }).qualifiedRevenueUsd ?? 0),
+    0
+  );
+  const manualOutreachReserveSats = satsFromUsd(
+    (manualOutreachQualifiedRevenueUsd * reserveAllocationPercent) / 100,
+    btcUsdPlanningAssumption
+  );
+  const nextMilestoneCloseRate = percentString(
+    nextMilestoneAdditionalSats,
+    manualOutreachReserveSats
+  );
+  const nextMilestoneCoverage = percentString(
+    manualOutreachReserveSats,
+    nextMilestoneAdditionalSats
+  );
 
   return (
     <main className="public-page">
@@ -369,6 +465,21 @@ export default function OperationsPage() {
             </a>
             <a className="button-link" href={publicPath('/service-outreach-packet-queue.json')}>
               Outreach Queue
+            </a>
+            <a className="button-link" href={CONTACT_EVIDENCE_INTAKE_URL}>
+              Contact Evidence
+            </a>
+            <a className="button-link" href={publicPath('/outreach-dispatch-brief.md')}>
+              Dispatch Brief
+            </a>
+            <a className="button-link" href={publicPath('/reply-conversion-brief.md')}>
+              Reply Brief
+            </a>
+            <a className="button-link" href={publicPath('/referral-handoff-dispatch-brief.md')}>
+              Referral Handoff Brief
+            </a>
+            <a className="button-link" href={publicPath('/revenue-execution-brief.md')}>
+              Execution Brief
             </a>
             <a className="button-link" href={publicPath('/partners/referrals')}>
               Referral Partners
@@ -469,11 +580,30 @@ export default function OperationsPage() {
       <section className="public-band">
         <div className="section-heading">
           <h2>Revenue Execution Brief</h2>
-          <p>Today&apos;s narrow operating batch for turning attention into measurable sats.</p>
+          <p>{revenueExecutionBrief.nextAction}</p>
         </div>
         <div className="notice">
-          <strong>Terminal Brief</strong>
-          <span>Run npm run ops:execution-brief-markdown for the copy-ready execution plan.</span>
+          <strong>Public Brief</strong>
+          <span>
+            Generated {revenueExecutionBrief.generatedAtUtc}.{' '}
+            <a href={publicPath('/revenue-execution-brief.json')}>JSON</a> ·{' '}
+            <a href={publicPath('/revenue-execution-brief.md')}>Markdown</a> · run{' '}
+            <code>npm run ops:execution-brief-write</code> after state changes.
+          </span>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Brief Actions</span>
+            <strong>{revenueExecutionBrief.topActions.length}</strong>
+          </div>
+          <div className="metric">
+            <span>Brief Confirmed Reserve</span>
+            <strong>{revenueExecutionBrief.northStar.confirmedSats} sats</strong>
+          </div>
+          <div className="metric">
+            <span>Brief Remaining</span>
+            <strong>{revenueExecutionBrief.northStar.remainingSats} sats</strong>
+          </div>
         </div>
         <div className="warning-list">
           {revenueExecutionActions.map((action, index) => (
@@ -481,11 +611,13 @@ export default function OperationsPage() {
               <span>
                 Brief {index + 1} {action.type}
               </span>
-              <strong>{action.title}</strong>
-              <p>{action.reason}</p>
+              <strong>{action.objective}</strong>
+              <p>{action.whyItCanCreateSats}</p>
               <div className="command-list">
                 <span>Evidence Required</span>
-                <code>{action.evidence}</code>
+                <code>{action.evidenceRequired}</code>
+                <span>Stop Rule</span>
+                <code>{action.stopRule}</code>
                 <span>Command</span>
                 <code>{action.command}</code>
               </div>
@@ -502,9 +634,9 @@ export default function OperationsPage() {
         <div className="notice">
           <strong>Assumption</strong>
           <span>
-            BTC/USD {btcUsdPlanningAssumption.toLocaleString('en-US')};{' '}
-            {reserveAllocationPercent}% of post-receipt revenue allocated to reserve. Actual sats
-            are recorded only after confirmed receipt or approved allocation.
+            BTC/USD {btcUsdPlanningAssumption.toLocaleString('en-US')}; {reserveAllocationPercent}%
+            of post-receipt revenue allocated to reserve. Actual sats are recorded only after
+            confirmed receipt or approved allocation.
           </span>
         </div>
         <div className="summary-grid">
@@ -519,6 +651,22 @@ export default function OperationsPage() {
           <div className="metric">
             <span>Terminal Plan</span>
             <strong>npm run ops:sats-target-markdown</strong>
+          </div>
+          <div className="metric">
+            <span>Ready Outreach Value</span>
+            <strong>${manualOutreachQualifiedRevenueUsd.toLocaleString('en-US')}</strong>
+          </div>
+          <div className="metric">
+            <span>Ready Outreach Reserve Sats</span>
+            <strong>{manualOutreachReserveSats.toString()} sats</strong>
+          </div>
+          <div className="metric">
+            <span>Next Milestone Coverage</span>
+            <strong>{nextMilestoneCoverage}%</strong>
+          </div>
+          <div className="metric">
+            <span>Close Rate Needed</span>
+            <strong>{nextMilestoneCloseRate}%</strong>
           </div>
         </div>
         <div className="warning-list">
@@ -652,7 +800,9 @@ export default function OperationsPage() {
                 <span>Plan Command</span>
                 <code>npm run ops:inbound-invoice-request-plan</code>
                 <span>Boundary</span>
-                <code>No exact-sats invoice or payment instruction before Executive Chairman approval.</code>
+                <code>
+                  No exact-sats invoice or payment instruction before Executive Chairman approval.
+                </code>
               </div>
             </div>
           ) : null}
@@ -667,7 +817,9 @@ export default function OperationsPage() {
                 <span>Render Chairman Packet</span>
                 <code>{renderInboundInvoiceRequestCommand(lead)}</code>
                 <span>Boundary</span>
-                <code>No exact-sats invoice or payment instruction before Executive Chairman approval.</code>
+                <code>
+                  No exact-sats invoice or payment instruction before Executive Chairman approval.
+                </code>
               </div>
             </div>
           ))}
@@ -680,7 +832,7 @@ export default function OperationsPage() {
           <p>Executable revenue-cycle actions, ordered by current operating priority.</p>
         </div>
         <div className="warning-list">
-          {cycleStatus.actionQueue.map((action) => (
+          {actionQueue.map((action) => (
             <div className="proof-block" key={action.id}>
               <span>
                 #{action.priority} {action.type}
@@ -692,6 +844,14 @@ export default function OperationsPage() {
                 <code>{action.requiredActor}</code>
                 <span>Evidence Required</span>
                 <code>{action.evidenceRequired}</code>
+                {action.artifact ? (
+                  <>
+                    <span>Artifact</span>
+                    <code>
+                      <a href={publicArtifactPath(action.artifact)}>{action.artifact}</a>
+                    </code>
+                  </>
+                ) : null}
                 <span>Command</span>
                 <code>{action.command}</code>
               </div>
@@ -826,8 +986,112 @@ export default function OperationsPage() {
 
       <section className="public-band">
         <div className="section-heading">
+          <h2>Referral Handoff Queue</h2>
+          <p>
+            Completed zero-receipt promotion can become post-receipt referral flow without repeat
+            upfront spend.
+          </p>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Handoff Candidates</span>
+            <strong>{referralHandoffCandidates.length}</strong>
+          </div>
+          <div className="metric">
+            <span>Active Handoffs</span>
+            <strong>{activeReferralHandoffs.length}</strong>
+          </div>
+          <div className="metric">
+            <span>Awaiting Response</span>
+            <strong>
+              {
+                activeReferralHandoffs.filter(
+                  (handoff) => handoff.status === 'sent-awaiting-response'
+                ).length
+              }
+            </strong>
+          </div>
+          <div className="metric">
+            <span>Accepted Awaiting Lead</span>
+            <strong>
+              {
+                activeReferralHandoffs.filter(
+                  (handoff) => handoff.status === 'accepted-awaiting-referred-lead'
+                ).length
+              }
+            </strong>
+          </div>
+        </div>
+        <div className="notice">
+          <strong>Boundary</strong>
+          <span>{referralPartnerHandoffQueue.boundary}</span>
+        </div>
+        <div className="warning-list">
+          {referralHandoffCandidates.map((campaign) => (
+            <div className="proof-block" key={`handoff-candidate-${campaign.id}`}>
+              <span>post-receipt candidate</span>
+              <strong>
+                {campaign.promoter.displayName} @{campaign.promoter.handle}
+              </strong>
+              <p>{campaign.nextAction}</p>
+              <div className="command-list">
+                <span>Source Post</span>
+                <code>{campaign.verifiedPostUrl ?? campaign.reportedPostUrl}</code>
+                <span>Write Packet</span>
+                <code>{writeReferralHandoffPacketCommand(campaign)}</code>
+                <span>Packet Artifact</span>
+                <code>
+                  <a href={publicPath('/referral-partner-handoff-packet.md')}>
+                    public/referral-partner-handoff-packet.md
+                  </a>
+                </code>
+                <span>Render Terms</span>
+                <code>{renderReferralHandoffCommand(campaign)}</code>
+                <span>Record Sent Evidence</span>
+                <code>{recordReferralHandoffSentCommand(campaign)}</code>
+              </div>
+            </div>
+          ))}
+          {activeReferralHandoffs.map((handoff) => (
+            <div className="proof-block" key={handoff.id}>
+              <span>{handoff.status}</span>
+              <strong>
+                {handoff.partner.displayName} @{handoff.partner.handle}
+              </strong>
+              <p>{handoff.nextAction}</p>
+              <div className="command-list">
+                <span>Source Evidence</span>
+                <code>{handoff.sourceEvidence}</code>
+                <span>Sent Evidence</span>
+                <code>{handoff.sentEvidence}</code>
+                {handoff.status === 'sent-awaiting-response' ? (
+                  <>
+                    <span>Record Response</span>
+                    <code>{recordReferralHandoffResponseCommand(handoff)}</code>
+                  </>
+                ) : null}
+                {handoff.status === 'accepted-awaiting-referred-lead' ? (
+                  <>
+                    <span>Record Referred Lead</span>
+                    <code>{recordReferralLeadCommand(handoff)}</code>
+                  </>
+                ) : null}
+              </div>
+            </div>
+          ))}
+          {referralHandoffCandidates.length === 0 && activeReferralHandoffs.length === 0 ? (
+            <div className="proof-block">
+              <span>clear</span>
+              <strong>No referral handoff is waiting on evidence.</strong>
+            </div>
+          ) : null}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
           <h2>Referral Partner Policy</h2>
-          <p>Draft post-receipt partner compensation policy awaiting chairman decision.</p>
+          <p>{referralPolicySummary()}</p>
         </div>
         <div className="summary-grid">
           <div className="metric">
@@ -837,7 +1101,10 @@ export default function OperationsPage() {
           <div className="metric">
             <span>Max Referral Share</span>
             <strong>
-              {referralPartnerPolicy.compensationModel.maximumReferralSharePercentOfNetServiceRevenue}
+              {
+                referralPartnerPolicy.compensationModel
+                  .maximumReferralSharePercentOfNetServiceRevenue
+              }
               %
             </strong>
           </div>
@@ -916,6 +1183,10 @@ export default function OperationsPage() {
             <strong>${outreachDispatchGrossRevenueUsd.toLocaleString('en-US')}</strong>
           </div>
           <div className="metric">
+            <span>Qualified Gross Path</span>
+            <strong>${outreachDispatchQualifiedGrossRevenueUsd.toLocaleString('en-US')}</strong>
+          </div>
+          <div className="metric">
             <span>Reserve Allocation Target</span>
             <strong>
               ${outreachDispatchReserveUsd.toLocaleString('en-US')} at{' '}
@@ -923,37 +1194,63 @@ export default function OperationsPage() {
             </strong>
           </div>
           <div className="metric">
+            <span>Qualified Reserve Path</span>
+            <strong>
+              ${outreachDispatchQualifiedReserveUsd.toLocaleString('en-US')} at{' '}
+              {outreachDispatchReserveAllocationPercent}%
+            </strong>
+          </div>
+          <div className="metric">
             <span>Planning Reserve Impact</span>
             <strong>{outreachDispatchReserveSatsAtPlanningRate.toString()} sats</strong>
+          </div>
+          <div className="metric">
+            <span>Qualified Planning Impact</span>
+            <strong>{outreachDispatchQualifiedReserveSatsAtPlanningRate.toString()} sats</strong>
           </div>
         </div>
         <div className="notice">
           <strong>Dispatch Sprint</strong>
           <span>
-            Showing {outreachDispatchSprint.length} of {readyOutreachPackets.length} ready packets.
-            Backlog after this sprint: {outreachDispatchRemainder}. Run npm run
-            ops:outreach-dispatch-plan for copy-ready instructions.
+            Showing {outreachDispatchSprint.length} of {outreachDispatchBrief.readyManualSendCount}{' '}
+            ready packets. Backlog after this sprint: {outreachDispatchRemainder}.{' '}
+            <a href={publicPath('/outreach-dispatch-brief.json')}>JSON</a> ·{' '}
+            <a href={publicPath('/outreach-dispatch-brief.md')}>Markdown</a> · run{' '}
+            <code>npm run ops:outreach-dispatch-write</code> after state changes.
           </span>
         </div>
         <div className="notice">
           <strong>First Conversion Goal</strong>
-          <span>
-            Get one explicit invoice request from this manual sprint before expanding spend or
-            outreach volume.
-          </span>
+          <span>{outreachDispatchBrief.sprintEconomics.firstConversionGoal}</span>
         </div>
         <div className="warning-list">
           {outreachDispatchSprint.map((packet) => (
-            <div className="proof-block" key={packet.id}>
-              <span>{packet.status}</span>
+            <div className="proof-block" key={packet.packetId}>
+              <span>{packet.offerId}</span>
               <strong>{packet.prospectId}</strong>
-              <code>{packet.id}</code>
-              <code>manual_outreach:{packet.id}</code>
-              <p>{packet.sendInstructions}</p>
+              <code>{packet.packetId}</code>
+              <code>{packet.trackingLabel}</code>
+              <p>{outreachDispatchBrief.dispatchRule}</p>
+              <div className="command-list">
+                <span>Current Approved Ask</span>
+                <code>
+                  {packet.currentOfferId} / ${packet.currentAskUsd}
+                </code>
+                <span>Qualified Revenue Path</span>
+                <code>${packet.qualifiedRevenueUsd}</code>
+                {packet.conversionPlan ? (
+                  <>
+                    <span>Upgrade Gate</span>
+                    <code>
+                      {packet.conversionPlan.upgradeOfferId} only after explicit fit
+                    </code>
+                  </>
+                ) : null}
+              </div>
               <pre className="preview">{packet.message}</pre>
               <div className="command-list">
                 <span>Record Contact</span>
-                <code>{packet.recordContactCommand}</code>
+                <code>{withSentAtUtcPlaceholder(packet.recordContactCommand)}</code>
               </div>
             </div>
           ))}
@@ -965,7 +1262,51 @@ export default function OperationsPage() {
           <h2>Reply Conversion</h2>
           <p>Evidence commands for turning approved outreach into invoice-ready revenue records.</p>
         </div>
+        <div className="notice">
+          <strong>Public Brief</strong>
+          <span>
+            Generated {replyConversionBrief.generatedAtUtc}.{' '}
+            <a href={publicPath('/reply-conversion-brief.json')}>JSON</a> ·{' '}
+            <a href={publicPath('/reply-conversion-brief.md')}>Markdown</a> · run{' '}
+            <code>npm run ops:reply-conversion-write</code> after reply-state changes.
+          </span>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Outreach Approved</span>
+            <strong>{replyConversionBrief.counts.outreachApprovedProspects}</strong>
+          </div>
+          <div className="metric">
+            <span>Sent Outreach Packets</span>
+            <strong>{replyConversionBrief.counts.sentOutreachPackets}</strong>
+          </div>
+          <div className="metric">
+            <span>Contacted Prospects</span>
+            <strong>{replyConversionBrief.counts.contactedProspects}</strong>
+          </div>
+          <div className="metric">
+            <span>Invoice Requests</span>
+            <strong>{replyConversionBrief.counts.invoiceRequestedProspects}</strong>
+          </div>
+          <div className="metric">
+            <span>Inbound Invoice Requests</span>
+            <strong>{replyConversionBrief.counts.inboundInvoiceRequests}</strong>
+          </div>
+        </div>
+        <div className="notice">
+          <strong>Reply Next Action</strong>
+          <span>
+            {replyConversionBrief.nextAction} Submit manual send evidence through{' '}
+            <a href={CONTACT_EVIDENCE_INTAKE_URL}>the contact evidence form</a>.
+          </span>
+        </div>
         <div className="warning-list">
+          {replyConversionBrief.stopRules.map((rule) => (
+            <div className="proof-block" key={rule}>
+              <span>stop rule</span>
+              <strong>{rule}</strong>
+            </div>
+          ))}
           {outreachApprovedProspects.map((prospect) => (
             <div className="proof-block" key={`contact-${prospect.id}`}>
               <span>after approved outreach is sent</span>

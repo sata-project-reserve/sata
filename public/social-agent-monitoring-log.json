@@ -33,12 +33,25 @@
           "bookmarks": 0,
           "notes": "Observed from public X profile HTML."
         }
-      ]
+      ],
+      "contentSha256": "d16b7674ba7824cdb77d028a3a366660e979938636ccdf4f35e6339cd5cfc7c0"
     }
   ],
   "monitoringRules": {
-    "cadence": ["15m-after-post", "1h-after-post", "24h-after-post", "daily-while-pinned"],
-    "track": ["views", "replies", "reposts", "likes", "bookmarks", "quote-posts-if-visible"],
+    "cadence": [
+      "15m-after-post",
+      "1h-after-post",
+      "24h-after-post",
+      "daily-while-pinned"
+    ],
+    "track": [
+      "views",
+      "replies",
+      "reposts",
+      "likes",
+      "bookmarks",
+      "quote-posts-if-visible"
+    ],
     "escalateOn": [
       "questions about redemption or backing",
       "claims that liquidity is fully locked",

@@ -1,0 +1,56 @@
+{
+  "schema_version": "sata-reserve.capital-command.v1",
+  "generated_at": "2026-09-10T08:28:46.486Z",
+  "data_classification": "PUBLIC",
+  "sata_token": {
+    "asset_id": "solana:SATA_TOKEN",
+    "display_symbol": "SATA",
+    "mint": "A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
+    "supply_raw": "999996853349945910",
+    "decimals": 9,
+    "authority_status": {
+      "mint_authority": null,
+      "freeze_authority": null
+    },
+    "liquidity_pool": "CYRZoXLjgNFTQJnvyJpym1wfTAEoGz6kJMYJFb5hUd8e",
+    "liquidity_status": "POOL_OPEN",
+    "lp_lock_status": "LOCKED_BY_RAYDIUM_BURN_AND_EARN"
+  },
+  "sata_pref_reference": {
+    "asset_id": "robinhood:SATA_PREF",
+    "display_symbol": "SATA",
+    "instrument_id": "a3cd0523-a915-4dc6-879a-393599e1cfc9",
+    "ownership_system": "CAPITAL_COMMAND",
+    "included_for_namespace_disambiguation_only": true
+  },
+  "btc_reserve": {
+    "sats": "500000",
+    "btc": "0.005",
+    "target_sats": "1000000000",
+    "progress_percent": "0.05%",
+    "proof_status": "verified-balance-and-published-proof",
+    "address": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
+    "last_verified_at": "2026-09-10T03:45:52.070Z"
+  },
+  "reserve_policy": {
+    "policy_id": "LEGACY_SATA_RESERVE_POLICY",
+    "allocation_policy": "70_BTC_RESERVE_20_LIQUIDITY_10_OPERATING",
+    "status": "RESEARCH_NOT_CAPITAL_COMMAND_ACTIVE"
+  },
+  "revenue_ops": {
+    "verified_revenue": "0",
+    "pending_revenue": "0",
+    "approved_reserve_allocation": "0"
+  },
+  "transparency": {
+    "report_version": 1,
+    "latest_report_timestamp": "2026-09-10T03:45:50.954Z"
+  },
+  "health": {
+    "status": "HEALTHY",
+    "warnings": [
+      "sata-supply-equals-launch-initial: 999996853349945910",
+      "metadata-mutability-disclosed: mutable"
+    ]
+  }
+}

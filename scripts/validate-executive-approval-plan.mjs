@@ -46,6 +46,9 @@ for (const prospectReview of prospectReviews) {
   if (!/sats-prospect-stage-agent\.mjs advance/i.test(prospectReview.nextCommandAfterApproval)) {
     findings.push(`${prospectReview.id}: prospect review approval must point to the bounded prospect stage transition`);
   }
+  if (!/--transitionedAtUtc "<transitioned-at-utc>"/.test(prospectReview.nextCommandAfterApproval)) {
+    findings.push(`${prospectReview.id}: prospect review advance command must require explicit transitionedAtUtc evidence`);
+  }
   if (prospectReview.nextCommandAfterApproval.includes('<chairman-selected-prospect-ids>')) {
     findings.push(`${prospectReview.id}: prospect review approval must include concrete prospect ids`);
   }
@@ -60,6 +63,9 @@ const outreachReviews = plan.chairmanReview.filter((item) => item.id.startsWith(
 for (const outreachReview of outreachReviews) {
   if (!/sats-outreach-approval-agent\.mjs advance/i.test(outreachReview.nextCommandAfterApproval)) {
     findings.push(`${outreachReview.id}: outreach approval must point to the bounded outreach transition`);
+  }
+  if (!/--transitionedAtUtc "<transitioned-at-utc>"/.test(outreachReview.nextCommandAfterApproval)) {
+    findings.push(`${outreachReview.id}: outreach advance command must require explicit transitionedAtUtc evidence`);
   }
   const expectedProspectIds = prospectIdsFromOutreachApprovalTitle(outreachReview.title).join(',');
   if (

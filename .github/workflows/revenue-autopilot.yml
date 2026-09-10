@@ -37,6 +37,18 @@ jobs:
       - name: Refresh revenue cycle status
         run: npm run ops:cycle-write
 
+      - name: Refresh outreach dispatch brief
+        run: npm run ops:outreach-dispatch-write
+
+      - name: Refresh revenue execution brief
+        run: npm run ops:execution-brief-write
+
+      - name: Refresh reply conversion brief
+        run: npm run ops:reply-conversion-write
+
+      - name: Refresh referral handoff dispatch brief
+        run: npm run ops:referral-handoff-dispatch-write
+
       - name: Validate approval queue
         run: npm run ops:check
 
@@ -58,6 +70,21 @@ jobs:
       - name: Validate service outreach packets
         run: npm run ops:outreach-check
 
+      - name: Validate social publish evidence workflow
+        run: npm run ops:social-publish-evidence-check
+
+      - name: Validate referral handoff evidence workflow
+        run: npm run ops:referral-handoff-evidence-check
+
+      - name: Validate referral handoff response evidence workflow
+        run: npm run ops:referral-handoff-response-evidence-check
+
+      - name: Validate referral handoff dispatch brief
+        run: npm run ops:referral-handoff-dispatch-check
+
+      - name: Validate outreach dispatch brief
+        run: npm run ops:outreach-dispatch-check
+
       - name: Validate paid promotion ledger
         run: npm run ops:paid-promotion-check
 
@@ -67,6 +94,9 @@ jobs:
       - name: Validate inbound service leads
         run: npm run ops:inbound-lead-check
 
+      - name: Validate inbound reply triage
+        run: npm run ops:inbound-reply-triage-check
+
       - name: Validate inbound invoice request packets
         run: npm run ops:inbound-invoice-request-check
 
@@ -75,6 +105,9 @@ jobs:
 
       - name: Validate revenue execution brief
         run: npm run ops:execution-brief-check
+
+      - name: Validate reply conversion brief
+        run: npm run ops:reply-conversion-check
 
       - name: Validate revenue attribution
         run: npm run ops:attribution-check
@@ -94,6 +127,14 @@ jobs:
             public/paid-promotion-ledger.json \
             public/referral-partner-policy.json \
             public/revenue-cycle-status.json \
+            public/revenue-execution-brief.json \
+            public/revenue-execution-brief.md \
+            public/outreach-dispatch-brief.json \
+            public/outreach-dispatch-brief.md \
+            public/reply-conversion-brief.json \
+            public/reply-conversion-brief.md \
+            public/referral-handoff-dispatch-brief.json \
+            public/referral-handoff-dispatch-brief.md \
             public/sats-prospect-pipeline.json \
             public/service-outreach-packet-queue.json
 

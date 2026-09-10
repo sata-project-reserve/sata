@@ -34,6 +34,13 @@ export function buildSatsTargetPlan({
       reserveAllocationPercent
     })
   );
+  const currentPipeline = buildCurrentPipelineCoverage({
+    status,
+    nextMilestoneAdditionalSats,
+    remainingSats,
+    btcUsd,
+    reserveAllocationPercent
+  });
 
   return {
     project: status.project,
@@ -70,6 +77,7 @@ export function buildSatsTargetPlan({
       })
     ],
     scenarios,
+    currentPipeline,
     operatingRead:
       'The $50 starter audit can prove the loop, but the full target requires higher-value setup/dashboard work, grants, donations, or chairman-approved asset allocation proposals.',
     nextAction:
@@ -91,6 +99,9 @@ export function validateSatsTargetPlan(plan) {
   if (!Array.isArray(plan.scenarios) || plan.scenarios.length < 3) {
     findings.push('plan must include every revenue stream scenario');
   }
+  if (!plan.currentPipeline || typeof plan.currentPipeline !== 'object') {
+    findings.push('plan must include current pipeline coverage');
+  }
   if (!/planning only/i.test(plan.assumptions?.actualSatsRule ?? '')) {
     findings.push('assumptions must mark the plan as planning only');
   }
@@ -108,6 +119,18 @@ export function validateSatsTargetPlan(plan) {
     }
     if (!Number.isSafeInteger(scenario.dealsToNextMilestone) || scenario.dealsToNextMilestone < 0) {
       findings.push(`${scenario.offerId}: dealsToNextMilestone must be a non-negative integer`);
+    }
+  }
+  for (const field of [
+    'manualOutreachActions',
+    'qualifiedRevenueUsd',
+    'estimatedReserveSatsAtFullClose',
+    'nextMilestoneCoveragePercent',
+    'requiredCloseRateToNextMilestonePercent',
+    'gapToNextMilestoneSatsAtFullClose'
+  ]) {
+    if (plan.currentPipeline && plan.currentPipeline[field] === undefined) {
+      findings.push(`currentPipeline.${field} is required`);
     }
   }
   if (PROHIBITED_PATTERN.test(JSON.stringify(plan))) {
@@ -157,8 +180,68 @@ export function renderSatsTargetMarkdown(plan) {
     );
   }
 
+  lines.push(
+    '',
+    '## Current Outreach Coverage',
+    `Manual outreach actions: ${plan.currentPipeline.manualOutreachActions}`,
+    `Qualified revenue if all current manual sends close: $${plan.currentPipeline.qualifiedRevenueUsd}`,
+    `Estimated sats to reserve at full close: ${plan.currentPipeline.estimatedReserveSatsAtFullClose}`,
+    `Next milestone coverage: ${plan.currentPipeline.nextMilestoneCoveragePercent}%`,
+    `Required close rate for next milestone: ${plan.currentPipeline.requiredCloseRateToNextMilestonePercent}%`,
+    `Gap to next milestone at full close: ${plan.currentPipeline.gapToNextMilestoneSatsAtFullClose} sats`,
+    plan.currentPipeline.operatingRead
+  );
+
   lines.push('', '## Operating Read', plan.operatingRead, '', '## Next Action', plan.nextAction);
   return `${lines.join('\n')}\n`;
+}
+
+function buildCurrentPipelineCoverage({
+  status,
+  nextMilestoneAdditionalSats,
+  remainingSats,
+  btcUsd,
+  reserveAllocationPercent
+}) {
+  const manualOutreachActions = (status.actionQueue ?? []).filter(
+    (item) => item.type === 'manual-outreach-send'
+  );
+  const qualifiedRevenueUsd = manualOutreachActions.reduce(
+    (total, item) => total + Number(item.qualifiedRevenueUsd ?? 0),
+    0
+  );
+  const estimatedReserveUsd = (qualifiedRevenueUsd * reserveAllocationPercent) / 100;
+  const estimatedReserveSatsAtFullClose = usdToSats({ usd: estimatedReserveUsd, btcUsd });
+  const gapToNextMilestoneSatsAtFullClose =
+    nextMilestoneAdditionalSats > estimatedReserveSatsAtFullClose
+      ? nextMilestoneAdditionalSats - estimatedReserveSatsAtFullClose
+      : 0n;
+
+  return {
+    source: 'current manual-outreach-send action queue',
+    manualOutreachActions: manualOutreachActions.length,
+    readyOutreachPackets: Number(status.funnel?.readyOutreachPackets ?? 0),
+    qualifiedRevenueUsd: roundUsd(qualifiedRevenueUsd),
+    estimatedReserveUsdAtFullClose: roundUsd(estimatedReserveUsd),
+    estimatedReserveSatsAtFullClose: estimatedReserveSatsAtFullClose.toString(),
+    nextMilestoneCoveragePercent: percentString({
+      numerator: estimatedReserveSatsAtFullClose,
+      denominator: nextMilestoneAdditionalSats
+    }),
+    fullTargetCoveragePercent: percentString({
+      numerator: estimatedReserveSatsAtFullClose,
+      denominator: remainingSats
+    }),
+    requiredCloseRateToNextMilestonePercent: percentString({
+      numerator: nextMilestoneAdditionalSats,
+      denominator: estimatedReserveSatsAtFullClose
+    }),
+    gapToNextMilestoneSatsAtFullClose: gapToNextMilestoneSatsAtFullClose.toString(),
+    operatingRead:
+      gapToNextMilestoneSatsAtFullClose === 0n
+        ? 'The current ready outreach queue can cover the next sats milestone if enough qualified prospects close and receipts are allocated.'
+        : 'The current ready outreach queue cannot cover the next sats milestone at full close; add higher-value qualified prospects or approved non-custodial revenue sources.'
+  };
 }
 
 function buildScenario({
@@ -232,6 +315,12 @@ function satsToUsd({ sats, btcUsd }) {
 
 function roundUsd(value) {
   return value.toFixed(2);
+}
+
+function percentString({ numerator, denominator }) {
+  if (denominator <= 0n) return '0.00';
+  const percentBasisPoints = (numerator * 1_000_000n) / denominator;
+  return (Number(percentBasisPoints) / 10_000).toFixed(2);
 }
 
 function cleanLine(value) {

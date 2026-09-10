@@ -57,11 +57,15 @@
   "allocations": [],
   "requiredReceiptFields": [
     "id",
+    "invoiceId",
     "receivedAtUtc",
     "source",
     "currency",
     "amount",
+    "amountSats",
     "transactionId",
+    "receivedAddress",
+    "confirmations",
     "chairmanApprovedBy",
     "deliverableUrl"
   ],

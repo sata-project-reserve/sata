@@ -1,3 +1,7 @@
+import { createHash } from 'node:crypto';
+import { buildLiveReplySources } from './live-reply-sources.mjs';
+import { prioritizeOutreachPackets } from './prospect-priority.mjs';
+
 export function buildRevenueCycleStatus({
   report,
   revenuePlan,
@@ -7,6 +11,9 @@ export function buildRevenueCycleStatus({
   outreachPacketQueue = { packets: [] },
   inboundLeadQueue = { leads: [] },
   paidPromotionLedger = { campaigns: [] },
+  referralPartnerPolicy = null,
+  referralPartnerHandoffQueue = { handoffs: [] },
+  referralPartnerHandoffPacket = null,
   approvalQueue = { items: [] },
   socialQueue,
   env = process.env
@@ -20,6 +27,8 @@ export function buildRevenueCycleStatus({
     outreachPacketQueue,
     inboundLeadQueue,
     paidPromotionLedger,
+    referralPartnerPolicy,
+    referralPartnerHandoffQueue,
     approvalQueue,
     socialQueue
   });
@@ -44,6 +53,11 @@ export function buildRevenueCycleStatus({
   const readyOutreachPackets = (outreachPacketQueue.packets ?? []).filter(
     (packet) => packet.status === 'ready-for-manual-send'
   );
+  const prioritizedReadyOutreachPackets = prioritizeOutreachPackets({
+    packets: readyOutreachPackets,
+    prospectPipeline,
+    revenuePlan
+  });
   const inboundInvoiceRequests = (inboundLeadQueue.leads ?? []).filter(
     (lead) => lead.status === 'invoice-requested-needs-chairman-review'
   );
@@ -54,11 +68,25 @@ export function buildRevenueCycleStatus({
     (lead) => lead.status === 'needs-intake'
   );
   const paidPromotionCampaigns = paidPromotionLedger.campaigns ?? [];
+  const liveReplySources = buildLiveReplySources({ paidPromotionLedger, socialQueue });
   const paidPromotionsAwaitingVerification = paidPromotionCampaigns.filter((campaign) =>
     ['paid-awaiting-post', 'post-reported-unverified'].includes(campaign.status)
   );
   const paidPromotionsAwaitingConversion = paidPromotionCampaigns.filter(
     (campaign) => campaign.status === 'live-verified'
+  );
+  const recordedReferralHandoffCampaignIds = new Set(
+    (referralPartnerHandoffQueue.handoffs ?? []).map((handoff) => handoff.sourceCampaignId)
+  );
+  const paidPromotionsReadyForReferralHandoff = paidPromotionCampaigns.filter(
+    (campaign) =>
+      campaign.status === 'completed' &&
+      BigInt(campaign.conversion?.confirmedReceiptsSats ?? '0') === 0n &&
+      referralPartnerPolicy?.status === 'approved-by-chairman' &&
+      !recordedReferralHandoffCampaignIds.has(campaign.id)
+  );
+  const activeReferralHandoffs = (referralPartnerHandoffQueue.handoffs ?? []).filter(
+    (handoff) => !['converted-to-lead', 'declined', 'closed-no-response'].includes(handoff.status)
   );
   const followUpAfterHours = Number(prospectPipeline.dailyCadence?.followUpAfterHours ?? 48);
   const generatedAt = new Date(env.SATA_REVENUE_CYCLE_GENERATED_AT_UTC ?? new Date().toISOString());
@@ -91,11 +119,16 @@ export function buildRevenueCycleStatus({
     inboundInvoiceRequests,
     paidPromotionsAwaitingVerification,
     paidPromotionsAwaitingConversion,
+    paidPromotionsReadyForReferralHandoff,
+    activeReferralHandoffs,
+    referralPartnerHandoffPacket,
     followUpDueProspects,
     approvedPosts,
     livePostingEnabled,
     prospectPipeline,
-    approvalQueue
+    approvalQueue,
+    prioritizedReadyOutreachPackets,
+    liveReplySources
   });
 
   return {
@@ -129,6 +162,10 @@ export function buildRevenueCycleStatus({
       paidPromotionCampaigns: paidPromotionCampaigns.length,
       paidPromotionsAwaitingVerification: paidPromotionsAwaitingVerification.length,
       paidPromotionsAwaitingConversion: paidPromotionsAwaitingConversion.length,
+      referralHandoffsActive: activeReferralHandoffs.length,
+      referralHandoffsAwaitingResponse: activeReferralHandoffs.filter(
+        (handoff) => handoff.status === 'sent-awaiting-response'
+      ).length,
       followUpDueProspects: followUpDueProspects.length
     },
     social: {
@@ -178,10 +215,127 @@ export function validateRevenueCycleStatus(status) {
     if (/pump|guarantee|wash|fake engagement|private key|seed phrase/i.test(item.title ?? '')) {
       findings.push(`${item.id ?? '<missing-id>'}: actionQueue title contains prohibited wording`);
     }
+    if (
+      item.type === 'manual-outreach-send' &&
+      !/--sentAtUtc "<sent-at-utc>"/.test(item.command ?? '')
+    ) {
+      findings.push(
+        `${item.id ?? '<missing-id>'}: manual outreach command must require explicit sentAtUtc evidence`
+      );
+    }
+    if (
+      item.type === 'manual-outreach-send' &&
+      !/--messageHash (?:[0-9a-f]{64}|"<approved-message-sha256>")(?=\s|$)/.test(item.command ?? '')
+    ) {
+      findings.push(
+        `${item.id ?? '<missing-id>'}: manual outreach command must require approved message SHA-256`
+      );
+    }
+    if (item.type === 'manual-outreach-send' && item.outreachPriority) {
+      if (!Number.isSafeInteger(item.outreachPriority.score) || item.outreachPriority.score < 0) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: manual outreach action must expose a non-negative outreach priority score`
+        );
+      }
+      if (!['hot', 'warm', 'standard'].includes(item.outreachPriority.tier)) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: manual outreach action must expose a known outreach priority tier`
+        );
+      }
+      if (!Array.isArray(item.outreachPriority.reasons)) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: manual outreach action must expose outreach priority reasons`
+        );
+      }
+      if (
+        item.qualifiedRevenueUsd &&
+        (!Number.isSafeInteger(Number(item.qualifiedRevenueUsd)) ||
+          Number(item.qualifiedRevenueUsd) < 0)
+      ) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: manual outreach action qualified revenue must be non-negative`
+        );
+      }
+    }
+    if (
+      item.type === 'manual-social-publish' &&
+      !/--contentHash [a-f0-9]{64}\b/.test(item.command ?? '')
+    ) {
+      findings.push(
+        `${item.id ?? '<missing-id>'}: manual social publish command must require approved post content SHA-256`
+      );
+    }
+    if (
+      item.type === 'manual-social-publish' &&
+      !/--publishedAtUtc "<published-at-utc>"/.test(item.command ?? '')
+    ) {
+      findings.push(
+        `${item.id ?? '<missing-id>'}: manual social publish command must require explicit publishedAtUtc evidence`
+      );
+    }
+    if (
+      item.type === 'manual-referral-handoff-send' &&
+      !/referral-partner-handoff-agent\.mjs record-sent/.test(item.command ?? '')
+    ) {
+      findings.push(
+        `${item.id ?? '<missing-id>'}: referral handoff send action must record sent evidence`
+      );
+    }
+    if (
+      item.type === 'manual-referral-handoff-send' &&
+      !/--sentAtUtc "<sent-at-utc>"/.test(item.command ?? '')
+    ) {
+      findings.push(
+        `${item.id ?? '<missing-id>'}: referral handoff send action must require explicit sentAtUtc evidence`
+      );
+    }
+    if (
+      item.type === 'manual-referral-handoff-send' &&
+      !/--messageHash [a-f0-9]{64}\b/.test(item.command ?? '')
+    ) {
+      findings.push(
+        `${item.id ?? '<missing-id>'}: referral handoff send action must require approved terms SHA-256`
+      );
+    }
+    if (item.type === 'inbound-reply-triage-monitor') {
+      if (item.command !== 'npm run ops:inbound-reply-triage-plan') {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: reply triage action must expose the inbound reply triage plan`
+        );
+      }
+      if (!Array.isArray(item.sources) || item.sources.length === 0) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: reply triage action must include live attribution sources`
+        );
+      }
+      for (const source of item.sources ?? []) {
+        if (
+          !source.id ||
+          !source.url ||
+          !/inbound-reply-triage-agent\.mjs markdown/.test(source.triageCommand ?? '')
+        ) {
+          findings.push(
+            `${item.id ?? '<missing-id>'}: reply triage sources must include id, url, and triage command`
+          );
+        }
+      }
+    }
     if (!/Chairman|authorized human|agent|customer/i.test(item.requiredActor ?? '')) {
       findings.push(
         `${item.id ?? '<missing-id>'}: actionQueue requiredActor must name the responsible boundary`
       );
+    }
+  }
+  const manualOutreachActions = (status.actionQueue ?? []).filter(
+    (item) => item.type === 'manual-outreach-send' && item.outreachPriority
+  );
+  for (let index = 1; index < manualOutreachActions.length; index += 1) {
+    if (
+      manualOutreachActions[index - 1].outreachPriority.score <
+      manualOutreachActions[index].outreachPriority.score
+    ) {
+      findings.push('manual outreach actions must remain sorted by descending outreach priority');
+      break;
     }
   }
   if (!/Executive Chairman approves/i.test(status.boundary ?? '')) {
@@ -202,11 +356,16 @@ function buildActionQueue({
   inboundInvoiceRequests,
   paidPromotionsAwaitingVerification,
   paidPromotionsAwaitingConversion,
+  paidPromotionsReadyForReferralHandoff,
+  activeReferralHandoffs,
+  referralPartnerHandoffPacket,
   followUpDueProspects,
   approvedPosts,
   livePostingEnabled,
   prospectPipeline,
-  approvalQueue
+  approvalQueue,
+  prioritizedReadyOutreachPackets,
+  liveReplySources
 }) {
   const actions = [];
   const approvalItems = approvalQueue.items ?? [];
@@ -293,14 +452,94 @@ function buildActionQueue({
     });
   }
 
-  for (const packet of readyOutreachPackets) {
+  for (const campaign of paidPromotionsReadyForReferralHandoff) {
+    const displayName = cleanLine(campaign.promoter?.displayName || campaign.promoter?.handle);
+    const preparedPacket = matchingReferralHandoffPacket({
+      packet: referralPartnerHandoffPacket,
+      campaignId: campaign.id
+    });
+    if (preparedPacket) {
+      actions.push({
+        id: `send-referral-handoff-${campaign.id}`,
+        priority: actions.length + 1,
+        type: 'manual-referral-handoff-send',
+        title: `Send prepared no-upfront post-receipt referral terms to ${displayName} and record sent evidence.`,
+        requiredActor: 'Executive Chairman or authorized human',
+        command: preparedPacket.recordSentCommand,
+        artifact: 'public/referral-partner-handoff-packet.md',
+        evidenceRequired:
+          'Partner terms sent evidence, explicit sentAtUtc timestamp, and approved terms SHA-256.',
+        boundary:
+          'Recording sent evidence does not approve upfront spend, posts, compensation, invoices, grants, or asset movement.'
+      });
+      continue;
+    }
+    actions.push({
+      id: `referral-handoff-${campaign.id}`,
+      priority: actions.length + 1,
+      type: 'post-receipt-referral-handoff',
+      title: `Prepare and send ${displayName} a no-upfront post-receipt referral role after completed campaign ${campaign.id}.`,
+      requiredActor: 'Executive Chairman or authorized human',
+      command: `node scripts/referral-partner-handoff-agent.mjs write-packet --campaign ${campaign.id}`,
+      artifact: 'public/referral-partner-handoff-packet.md',
+      evidenceRequired:
+        'Partner terms sent evidence after the approved handoff packet is manually sent.',
+      boundary:
+        'Referral handoff does not approve upfront spend, posts, compensation, invoices, grants, or asset movement.'
+    });
+  }
+
+  for (const handoff of activeReferralHandoffs) {
+    actions.push({
+      id: `track-referral-handoff-${handoff.id}`,
+      priority: actions.length + 1,
+      type: 'track-referral-handoff-response',
+      title:
+        handoff.status === 'accepted-awaiting-referred-lead'
+          ? `Record referred customer evidence for accepted partner handoff ${handoff.id}.`
+          : `Record partner response for referral handoff ${handoff.id}.`,
+      requiredActor: 'Executive Chairman or authorized human',
+      command:
+        handoff.status === 'accepted-awaiting-referred-lead'
+          ? `node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sourceType manual-referral --sourceId referral-partner-${handoff.partner.id} --contactHandle "<customer-handle-or-contact>" --publicProfileUrl "<https-customer-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --evidence "<referral-and-customer-interest-evidence>" --customerAskedForInvoice false --recordedAtUtc "<recorded-at-utc>" --convertedAtUtc "<converted-at-utc>"`
+          : `node scripts/referral-partner-handoff-agent.mjs record-response --handoff ${handoff.id} --accepted true --evidence "<partner-response-evidence>" --respondedAtUtc "<responded-at-utc>"`,
+      evidenceRequired:
+        handoff.status === 'accepted-awaiting-referred-lead'
+          ? 'Referred customer identity, project URL, contact path, and customer interest evidence.'
+          : 'Partner response evidence accepting or declining post-receipt referral terms.',
+      boundary:
+        'Tracking a referral handoff does not approve compensation, invoices, payment instructions, token grants, or asset movement.'
+    });
+  }
+
+  if (liveReplySources.length > 0) {
+    actions.push({
+      id: 'triage-live-replies',
+      priority: actions.length + 1,
+      type: 'inbound-reply-triage-monitor',
+      title: 'Triage replies and DMs from live SATA attribution sources before cold outreach.',
+      requiredActor: 'Executive Chairman or authorized human',
+      command: 'npm run ops:inbound-reply-triage-plan',
+      sources: liveReplySources,
+      evidenceRequired:
+        'Reply or DM text, live source id, profile URL, project URL, durable evidence, and explicit recordedAtUtc timestamp.',
+      boundary:
+        'Triage only. Do not contact leads, send payment instructions, create invoices, grant tokens, or move assets.'
+    });
+  }
+
+  for (const packet of prioritizedReadyOutreachPackets) {
     actions.push({
       id: `send-${packet.id}`,
       priority: actions.length + 1,
       type: 'manual-outreach-send',
-      title: `Send ready manual outreach packet ${packet.id} and record contact evidence.`,
+      title: packet.prospectId
+        ? `Send priority-scored manual outreach packet ${packet.id} for ${packet.prospectId} and record contact evidence.`
+        : `Send ready manual outreach packet ${packet.id} and record contact evidence.`,
       requiredActor: 'Executive Chairman or authorized human',
-      command: packet.recordContactCommand,
+      command: withSentAtUtcPlaceholder(packet.recordContactCommand, packet.id),
+      outreachPriority: packet.priority,
+      qualifiedRevenueUsd: packet.qualifiedRevenueUsd,
       evidenceRequired:
         'Contact URL, message permalink, email record, or other durable send evidence.',
       boundary:
@@ -315,7 +554,7 @@ function buildActionQueue({
       type: 'paid-promotion-conversion-measurement',
       title: `Record 24-hour conversion measurement for paid promotion campaign ${campaign.id}.`,
       requiredActor: 'Executive Chairman or authorized human',
-      command: `node scripts/paid-promotion-agent.mjs record-conversion --campaign ${campaign.id} --evidence "<24h-analytics-and-inquiry-log>" --profileViewLift "<profile-view-change-or-not-recorded>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0`,
+      command: `node scripts/paid-promotion-agent.mjs record-conversion --campaign ${campaign.id} --evidence "<24h-analytics-and-inquiry-log>" --profileViewLift "<profile-view-change-or-not-recorded>" --trackedClicks 0 --serviceInquiries 0 --invoiceRequests 0 --confirmedReceiptsSats 0 --measuredAtUtc "<measured-at-utc>"`,
       evidenceRequired:
         '24-hour analytics, inquiry log, invoice request count, and confirmed receipt record if any.',
       boundary:
@@ -364,7 +603,7 @@ function buildActionQueue({
       type: 'advance-approved-outreach',
       title: `Advance chairman-approved outreach prospects for ${item.id}.`,
       requiredActor: 'agent',
-      command: `node scripts/sats-outreach-approval-agent.mjs advance --approvalId ${item.id} --prospects ${prospectIds.join(',')}`,
+      command: `node scripts/sats-outreach-approval-agent.mjs advance --approvalId ${item.id} --prospects ${prospectIds.join(',')} --transitionedAtUtc "<transitioned-at-utc>"`,
       evidenceRequired: 'Approved outreach approval item and matching chairman-review prospects.',
       boundary: 'Advancing prospect state does not send outreach.'
     });
@@ -378,7 +617,7 @@ function buildActionQueue({
       type: 'invoice-quote-inputs',
       title: `Prepare exact-sats invoice quote inputs for invoice-requested prospect ${invoiceRequested.id}.`,
       requiredActor: 'agent prepares quote inputs; Executive Chairman approves invoice',
-      command: `node scripts/sats-invoice-quote-agent.mjs plan --prospect ${invoiceRequested.id}`,
+      command: `node scripts/sats-invoice-request-agent.mjs render --prospects ${invoiceRequested.id}`,
       evidenceRequired: 'Customer request for invoice and public reserve address match.',
       boundary: 'No invoice or payment instruction may be sent before chairman approval.'
     });
@@ -469,7 +708,7 @@ function buildActionQueue({
       type: 'manual-social-publish',
       title: `Manually publish approved post ${approvedPosts[0].id} and record the live URL for attribution.`,
       requiredActor: 'Executive Chairman or authorized human',
-      command: `npm run social:agent -- record-published --post ${approvedPosts[0].id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>"`,
+      command: `npm run social:agent -- record-published --post ${approvedPosts[0].id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash ${socialPostContentHash(approvedPosts[0])}`,
       evidenceRequired: 'Published @SATAReserve post URL plus screenshot or exported text.',
       boundary: 'Only chairman-approved factual posts may be published.'
     });
@@ -529,6 +768,7 @@ function assertInputs({
   paidPromotionLedger,
   approvalQueue,
   inboundLeadQueue,
+  referralPartnerPolicy,
   socialQueue
 }) {
   const required = {
@@ -558,4 +798,56 @@ function formatSatsAsBtc(sats) {
   const whole = sats / 100_000_000n;
   const fraction = (sats % 100_000_000n).toString().padStart(8, '0').replace(/0+$/, '');
   return fraction ? `${whole}.${fraction}` : whole.toString();
+}
+
+function cleanLine(value) {
+  return String(value ?? '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function socialPostContentHash(post) {
+  return (
+    post?.contentSha256 ??
+    createHash('sha256').update(normalizeContent(post?.text), 'utf8').digest('hex')
+  );
+}
+
+function normalizeContent(value) {
+  return String(value ?? '').replaceAll('\r\n', '\n');
+}
+
+function withSentAtUtcPlaceholder(command, packetId) {
+  const value = cleanLine(
+    command ??
+      `node scripts/service-outreach-packet-agent.mjs mark-sent --packet ${packetId} --evidence "<contact-evidence-url-or-reference>" --messageHash "<approved-message-sha256>"`
+  );
+  if (!/service-outreach-packet-agent\.mjs mark-sent/.test(value)) return value;
+  let next = value;
+  if (!/--sentAtUtc\b/.test(next)) {
+    next = `${next} --sentAtUtc "<sent-at-utc>"`;
+  }
+  if (!/--messageHash\b/.test(next)) {
+    next = `${next} --messageHash "<approved-message-sha256>"`;
+  }
+  return next;
+}
+
+function matchingReferralHandoffPacket({ packet, campaignId }) {
+  if (!packet || typeof packet !== 'object') return null;
+  if (packet.mode !== 'referral-partner-handoff-packet') return null;
+  if (packet.sourceCampaignId !== campaignId) return null;
+  if (!/referral-partner-handoff-agent\.mjs record-sent/.test(packet.recordSentCommand ?? '')) {
+    return null;
+  }
+  if (!/--sentAtUtc "<sent-at-utc>"/.test(packet.recordSentCommand ?? '')) return null;
+  if (!/--messageHash [a-f0-9]{64}\b/.test(packet.recordSentCommand ?? '')) return null;
+  return packet;
+}
+
+function kebab(value) {
+  return cleanLine(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }

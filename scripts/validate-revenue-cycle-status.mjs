@@ -154,6 +154,28 @@ assertIncludes(
   'Render chairman review packet for inbound invoice request hot-inbound-lead'
 );
 
+const inboundIntakeStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  inboundLeadQueue: {
+    leads: [
+      {
+        id: 'warm-inbound-lead',
+        status: 'needs-intake',
+        customerAskedForInvoice: false
+      }
+    ]
+  },
+  env: {}
+});
+validateRevenueCycleStatus(inboundIntakeStatus);
+assertEqual(inboundIntakeStatus.funnel.openInboundLeads, 1);
+assertEqual(inboundIntakeStatus.funnel.inboundLeadsNeedingIntake, 1);
+assertEqual(inboundIntakeStatus.actionQueue[0]?.type, 'inbound-intake-reply');
+assertIncludes(
+  inboundIntakeStatus.nextAction,
+  'Send intake-fields reply for inbound lead warm-inbound-lead'
+);
+
 const readyOutreachPacketStatus = buildRevenueCycleStatus({
   ...baseInputs,
   prospectPipeline: {

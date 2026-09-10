@@ -100,17 +100,49 @@ if (!/inbound-invoice-request-agent\.mjs render --lead hot-lead/.test(inboundInv
   findings.push('inbound invoice request brief action must preserve the render command');
 }
 
+const inboundIntakeBrief = buildRevenueExecutionBrief({
+  status: {
+    ...status,
+    funnel: {
+      ...status.funnel,
+      openInboundLeads: 1,
+      inboundLeadsNeedingIntake: 1
+    },
+    actionQueue: [
+      {
+        id: 'inbound-intake-warm-lead',
+        type: 'inbound-intake-reply',
+        title: 'Send intake-fields reply for inbound lead warm-lead.',
+        command: 'npm run ops:inbound-lead-plan',
+        evidenceRequired: 'Inbound evidence plus exact compliant reply.'
+      },
+      ...(status.actionQueue ?? [])
+    ]
+  },
+  paidPromotionLedger,
+  outreachPacketQueue,
+  maxManualSends: 5,
+  generatedAtUtc: '2026-09-03T20:00:00.000Z'
+});
+validateRevenueExecutionBrief(inboundIntakeBrief);
+if (inboundIntakeBrief.topActions[0]?.type !== 'inbound-intake-reply') {
+  findings.push('inbound intake replies must outrank manual outreach in the execution brief');
+}
+if (!/ops:inbound-lead-plan/.test(inboundIntakeBrief.topActions[0]?.command ?? '')) {
+  findings.push('inbound intake brief action must preserve the compliant reply command');
+}
+
 const maintenanceBrief = buildRevenueExecutionBrief({
   status: {
     ...status,
     nextAction: 'Continue qualifying evidence-backed prospects.',
-      funnel: {
-        ...status.funnel,
-        readyOutreachPackets: 0,
-        paidPromotionCampaigns: 0,
-        paidPromotionsAwaitingVerification: 0,
-        paidPromotionsAwaitingConversion: 0
-      }
+    funnel: {
+      ...status.funnel,
+      readyOutreachPackets: 0,
+      paidPromotionCampaigns: 0,
+      paidPromotionsAwaitingVerification: 0,
+      paidPromotionsAwaitingConversion: 0
+    }
   },
   paidPromotionLedger: {
     ...paidPromotionLedger,

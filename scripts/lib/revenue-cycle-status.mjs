@@ -47,6 +47,12 @@ export function buildRevenueCycleStatus({
   const inboundInvoiceRequests = (inboundLeadQueue.leads ?? []).filter(
     (lead) => lead.status === 'invoice-requested-needs-chairman-review'
   );
+  const openInboundLeads = (inboundLeadQueue.leads ?? []).filter(
+    (lead) => lead.status !== 'closed-invalid'
+  );
+  const inboundLeadsNeedingIntake = openInboundLeads.filter(
+    (lead) => lead.status === 'needs-intake'
+  );
   const paidPromotionCampaigns = paidPromotionLedger.campaigns ?? [];
   const paidPromotionsAwaitingVerification = paidPromotionCampaigns.filter((campaign) =>
     ['paid-awaiting-post', 'post-reported-unverified'].includes(campaign.status)
@@ -81,6 +87,7 @@ export function buildRevenueCycleStatus({
     approvedInvoices,
     receiptsAwaitingAllocation,
     readyOutreachPackets,
+    inboundLeadsNeedingIntake,
     inboundInvoiceRequests,
     paidPromotionsAwaitingVerification,
     paidPromotionsAwaitingConversion,
@@ -116,6 +123,8 @@ export function buildRevenueCycleStatus({
       receiptsAwaitingAllocation: receiptsAwaitingAllocation.length,
       recordedAllocations: allocations.length,
       readyOutreachPackets: readyOutreachPackets.length,
+      openInboundLeads: openInboundLeads.length,
+      inboundLeadsNeedingIntake: inboundLeadsNeedingIntake.length,
       inboundInvoiceRequestsNeedingChairmanReview: inboundInvoiceRequests.length,
       paidPromotionCampaigns: paidPromotionCampaigns.length,
       paidPromotionsAwaitingVerification: paidPromotionsAwaitingVerification.length,
@@ -189,6 +198,7 @@ function buildActionQueue({
   approvedInvoices,
   receiptsAwaitingAllocation,
   readyOutreachPackets,
+  inboundLeadsNeedingIntake,
   inboundInvoiceRequests,
   paidPromotionsAwaitingVerification,
   paidPromotionsAwaitingConversion,
@@ -251,6 +261,20 @@ function buildActionQueue({
       command: `node scripts/inbound-invoice-request-agent.mjs render --lead ${lead.id}`,
       evidenceRequired: 'Inbound lead evidence and explicit customer invoice request.',
       boundary: 'No exact-sats invoice or payment instruction may be sent before chairman approval.'
+    });
+  }
+
+  for (const lead of inboundLeadsNeedingIntake) {
+    actions.push({
+      id: `inbound-intake-${lead.id}`,
+      priority: actions.length + 1,
+      type: 'inbound-intake-reply',
+      title: `Send intake-fields reply for inbound lead ${lead.id}.`,
+      requiredActor: 'Executive Chairman or authorized human',
+      command: 'npm run ops:inbound-lead-plan',
+      evidenceRequired: 'Inbound reply or DM evidence plus the exact compliant intake reply sent.',
+      boundary:
+        'No invoice, payment instruction, paid work, token grant, public commitment, or asset movement is approved by intake follow-up.'
     });
   }
 

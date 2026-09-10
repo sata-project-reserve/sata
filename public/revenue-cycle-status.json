@@ -20,6 +20,8 @@
     "receiptsAwaitingAllocation": 0,
     "recordedAllocations": 0,
     "readyOutreachPackets": 30,
+    "openInboundLeads": 0,
+    "inboundLeadsNeedingIntake": 0,
     "inboundInvoiceRequestsNeedingChairmanReview": 0,
     "paidPromotionCampaigns": 1,
     "paidPromotionsAwaitingVerification": 0,

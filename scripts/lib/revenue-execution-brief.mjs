@@ -24,6 +24,9 @@ export function buildRevenueExecutionBrief({
   const inboundInvoiceRequests = (status.actionQueue ?? []).filter(
     (action) => action.type === 'inbound-invoice-request-packet'
   );
+  const inboundIntakeReplies = (status.actionQueue ?? []).filter(
+    (action) => action.type === 'inbound-intake-reply'
+  );
   const actions = [];
 
   for (const request of inboundInvoiceRequests) {
@@ -38,6 +41,21 @@ export function buildRevenueExecutionBrief({
       evidenceRequired: request.evidenceRequired,
       stopRule:
         'Render quote inputs only. Do not send an exact-sats invoice or payment instruction before chairman approval.'
+    });
+  }
+
+  for (const reply of inboundIntakeReplies) {
+    actions.push({
+      id: reply.id,
+      type: reply.type,
+      priority: actions.length + 1,
+      objective: reply.title,
+      whyItCanCreateSats:
+        'A warm inbound reply can become a paid audit faster than cold outreach if the required intake fields are collected.',
+      command: reply.command,
+      evidenceRequired: reply.evidenceRequired,
+      stopRule:
+        'Send only the compliant intake-fields reply. Do not include payment instructions or new promotional claims.'
     });
   }
 

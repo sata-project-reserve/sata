@@ -49,6 +49,9 @@ jobs:
       - name: Refresh referral handoff dispatch brief
         run: npm run ops:referral-handoff-dispatch-write
 
+      - name: Refresh social dispatch brief
+        run: npm run ops:social-dispatch-write
+
       - name: Validate approval queue
         run: npm run ops:check
 
@@ -72,6 +75,9 @@ jobs:
 
       - name: Validate social publish evidence workflow
         run: npm run ops:social-publish-evidence-check
+
+      - name: Validate social dispatch brief
+        run: npm run ops:social-dispatch-check
 
       - name: Validate referral handoff evidence workflow
         run: npm run ops:referral-handoff-evidence-check
@@ -135,6 +141,8 @@ jobs:
             public/reply-conversion-brief.md \
             public/referral-handoff-dispatch-brief.json \
             public/referral-handoff-dispatch-brief.md \
+            public/social-dispatch-brief.json \
+            public/social-dispatch-brief.md \
             public/sats-prospect-pipeline.json \
             public/service-outreach-packet-queue.json
 

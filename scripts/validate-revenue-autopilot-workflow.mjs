@@ -30,6 +30,7 @@ for (const requiredCommand of [
   'npm run ops:execution-brief-write',
   'npm run ops:reply-conversion-write',
   'npm run ops:referral-handoff-dispatch-write',
+  'npm run ops:social-dispatch-write',
   'npm run ops:check',
   'npm run ops:approval-plan-check',
   'npm run ops:approval-followthrough-check',
@@ -38,6 +39,7 @@ for (const requiredCommand of [
   'npm run ops:outreach-approval-check',
   'npm run ops:outreach-check',
   'npm run ops:social-publish-evidence-check',
+  'npm run ops:social-dispatch-check',
   'npm run ops:referral-handoff-evidence-check',
   'npm run ops:referral-handoff-response-evidence-check',
   'npm run ops:referral-handoff-dispatch-check',
@@ -55,10 +57,12 @@ for (const [before, after] of [
   ['npm run ops:cycle-write', 'npm run ops:execution-brief-write'],
   ['npm run ops:cycle-write', 'npm run ops:reply-conversion-write'],
   ['npm run ops:cycle-write', 'npm run ops:referral-handoff-dispatch-write'],
+  ['npm run ops:cycle-write', 'npm run ops:social-dispatch-write'],
   ['npm run ops:outreach-dispatch-write', 'npm run ops:outreach-dispatch-check'],
   ['npm run ops:execution-brief-write', 'npm run ops:execution-brief-check'],
   ['npm run ops:reply-conversion-write', 'npm run ops:reply-conversion-check'],
-  ['npm run ops:referral-handoff-dispatch-write', 'npm run ops:referral-handoff-dispatch-check']
+  ['npm run ops:referral-handoff-dispatch-write', 'npm run ops:referral-handoff-dispatch-check'],
+  ['npm run ops:social-dispatch-write', 'npm run ops:social-dispatch-check']
 ]) {
   const beforeIndex = workflow.indexOf(before);
   const afterIndex = workflow.indexOf(after);
@@ -92,7 +96,9 @@ for (const generatedArtifact of [
   'public/reply-conversion-brief.json',
   'public/reply-conversion-brief.md',
   'public/referral-handoff-dispatch-brief.json',
-  'public/referral-handoff-dispatch-brief.md'
+  'public/referral-handoff-dispatch-brief.md',
+  'public/social-dispatch-brief.json',
+  'public/social-dispatch-brief.md'
 ]) {
   if (!workflow.includes(generatedArtifact)) {
     findings.push(`revenue autopilot must commit ${generatedArtifact}`);
@@ -104,8 +110,10 @@ for (const requiredCommand of [
   'npm run ops:execution-brief-write',
   'npm run ops:reply-conversion-write',
   'npm run ops:referral-handoff-dispatch-write',
+  'npm run ops:social-dispatch-write',
   'npm run ops:cycle-check',
   'npm run ops:social-publish-evidence-check',
+  'npm run ops:social-dispatch-check',
   'npm run ops:outreach-dispatch-check',
   'npm run ops:execution-brief-check',
   'npm run ops:reply-conversion-check',
@@ -144,10 +152,12 @@ for (const [before, after] of [
   ['npm run ops:cycle-write', 'npm run ops:execution-brief-write'],
   ['npm run ops:cycle-write', 'npm run ops:reply-conversion-write'],
   ['npm run ops:cycle-write', 'npm run ops:referral-handoff-dispatch-write'],
+  ['npm run ops:cycle-write', 'npm run ops:social-dispatch-write'],
   ['npm run ops:outreach-dispatch-write', 'npm run ops:outreach-dispatch-check'],
   ['npm run ops:execution-brief-write', 'npm run ops:execution-brief-check'],
   ['npm run ops:reply-conversion-write', 'npm run ops:reply-conversion-check'],
-  ['npm run ops:referral-handoff-dispatch-write', 'npm run ops:referral-handoff-dispatch-check']
+  ['npm run ops:referral-handoff-dispatch-write', 'npm run ops:referral-handoff-dispatch-check'],
+  ['npm run ops:social-dispatch-write', 'npm run ops:social-dispatch-check']
 ]) {
   const beforeIndex = transparencyWorkflow.indexOf(before);
   const afterIndex = transparencyWorkflow.indexOf(after);

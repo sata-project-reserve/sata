@@ -20,7 +20,9 @@ const publicFiles = [
   join('out', 'reply-conversion-brief.json'),
   join('out', 'reply-conversion-brief.md'),
   join('out', 'referral-handoff-dispatch-brief.json'),
-  join('out', 'referral-handoff-dispatch-brief.md')
+  join('out', 'referral-handoff-dispatch-brief.md'),
+  join('out', 'social-dispatch-brief.json'),
+  join('out', 'social-dispatch-brief.md')
 ];
 
 for (const htmlFile of htmlFiles) {
@@ -40,6 +42,7 @@ for (const htmlFile of htmlFiles) {
       /href="\/revenue-/,
       /href="\/reply-/,
       /href="\/referral-/,
+      /href="\/social-/,
       /href="\/service-/,
       /src="\/mainnet\//,
       /href="\/mainnet\//,

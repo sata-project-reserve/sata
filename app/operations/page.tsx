@@ -10,6 +10,7 @@ import referralPartnerPolicy from '@/public/referral-partner-policy.json';
 import replyConversionBrief from '@/public/reply-conversion-brief.json';
 import revenueExecutionBrief from '@/public/revenue-execution-brief.json';
 import revenuePlan from '@/public/revenue-operating-plan.json';
+import socialDispatchBrief from '@/public/social-dispatch-brief.json';
 import socialQueue from '@/public/social-agent-content-queue.json';
 import cycleStatus from '@/public/revenue-cycle-status.json';
 import report from '@/public/transparency/latest.json';
@@ -478,6 +479,9 @@ export default function OperationsPage() {
             <a className="button-link" href={publicPath('/referral-handoff-dispatch-brief.md')}>
               Referral Handoff Brief
             </a>
+            <a className="button-link" href={publicPath('/social-dispatch-brief.md')}>
+              Social Dispatch Brief
+            </a>
             <a className="button-link" href={publicPath('/revenue-execution-brief.md')}>
               Execution Brief
             </a>
@@ -919,6 +923,59 @@ export default function OperationsPage() {
               <span>{approvedSocialPosts.length - 5} additional approved posts are queued.</span>
             </div>
           ) : null}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Social Dispatch Brief</h2>
+          <p>{socialDispatchBrief.nextAction}</p>
+        </div>
+        <div className="notice">
+          <strong>Public Brief</strong>
+          <span>
+            Generated {socialDispatchBrief.generatedAtUtc}.{' '}
+            <a href={publicPath('/social-dispatch-brief.json')}>JSON</a> .{' '}
+            <a href={publicPath('/social-dispatch-brief.md')}>Markdown</a> . run{' '}
+            <code>npm run ops:social-dispatch-write</code> after state changes.
+          </span>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Approved Posts</span>
+            <strong>{socialDispatchBrief.counts.approved}</strong>
+          </div>
+          <div className="metric">
+            <span>Dispatch Batch</span>
+            <strong>{socialDispatchBrief.readyManualPosts.length}</strong>
+          </div>
+          <div className="metric">
+            <span>Backlog</span>
+            <strong>{socialDispatchBrief.queuedRemainderCount}</strong>
+          </div>
+          <div className="metric">
+            <span>Live Posting Enabled</span>
+            <strong>{String(socialDispatchBrief.livePostingEnabled)}</strong>
+          </div>
+        </div>
+        <div className="warning-list">
+          {socialDispatchBrief.readyManualPosts.map((post) => (
+            <div className="proof-block" key={post.id}>
+              <span>{post.type}</span>
+              <strong>{post.id}</strong>
+              <pre className="preview">{post.text}</pre>
+              <div className="command-list">
+                <span>Approved Content SHA-256</span>
+                <code>{post.contentSha256}</code>
+                <span>Evidence Intake</span>
+                <code>
+                  <a href={post.evidenceIssueUrl}>{post.evidenceIssueUrl}</a>
+                </code>
+                <span>Record Published URL</span>
+                <code>{post.recordPublishedCommand}</code>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 

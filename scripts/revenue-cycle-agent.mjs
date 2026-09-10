@@ -48,7 +48,9 @@ async function writeStatus() {
           'public/reply-conversion-brief.json',
           'public/reply-conversion-brief.md',
           'public/referral-handoff-dispatch-brief.json',
-          'public/referral-handoff-dispatch-brief.md'
+          'public/referral-handoff-dispatch-brief.md',
+          'public/social-dispatch-brief.json',
+          'public/social-dispatch-brief.md'
         ],
         actions: status.actionQueue.length
       },

@@ -34,6 +34,8 @@ on:
       - 'public/reply-conversion-brief.md'
       - 'public/referral-handoff-dispatch-brief.json'
       - 'public/referral-handoff-dispatch-brief.md'
+      - 'public/social-dispatch-brief.json'
+      - 'public/social-dispatch-brief.md'
       - 'public/sats-generation-ledger.json'
       - 'public/sats-invoice-queue.json'
       - 'public/inbound-service-lead-queue.json'
@@ -154,6 +156,9 @@ jobs:
       - name: Refresh referral handoff dispatch brief
         run: npm run ops:referral-handoff-dispatch-write
 
+      - name: Refresh social dispatch brief
+        run: npm run ops:social-dispatch-write
+
       - name: Validate revenue cycle status
         run: npm run ops:cycle-check
 
@@ -238,6 +243,9 @@ jobs:
       - name: Validate referral handoff dispatch brief
         run: npm run ops:referral-handoff-dispatch-check
 
+      - name: Validate social dispatch brief
+        run: npm run ops:social-dispatch-check
+
       - name: Validate outreach dispatch brief
         run: npm run ops:outreach-dispatch-check
 
@@ -282,7 +290,7 @@ jobs:
           git config user.email "sata-report-bot@users.noreply.github.com"
 
           base_sha="$(git rev-parse HEAD)"
-          git add public/transparency public/revenue-cycle-status.json public/revenue-execution-brief.json public/revenue-execution-brief.md public/outreach-dispatch-brief.json public/outreach-dispatch-brief.md public/reply-conversion-brief.json public/reply-conversion-brief.md public/referral-handoff-dispatch-brief.json public/referral-handoff-dispatch-brief.md public/health.json public/sitemap.xml public/robots.txt
+          git add public/transparency public/revenue-cycle-status.json public/revenue-execution-brief.json public/revenue-execution-brief.md public/outreach-dispatch-brief.json public/outreach-dispatch-brief.md public/reply-conversion-brief.json public/reply-conversion-brief.md public/referral-handoff-dispatch-brief.json public/referral-handoff-dispatch-brief.md public/social-dispatch-brief.json public/social-dispatch-brief.md public/health.json public/sitemap.xml public/robots.txt
 
           if git diff --cached --quiet; then
             echo "No public report changes to commit."
@@ -342,6 +350,8 @@ jobs:
             public/reply-conversion-brief.md
             public/referral-handoff-dispatch-brief.json
             public/referral-handoff-dispatch-brief.md
+            public/social-dispatch-brief.json
+            public/social-dispatch-brief.md
             public/sitemap.xml
             public/robots.txt
 

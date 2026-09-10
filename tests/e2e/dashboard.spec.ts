@@ -236,7 +236,10 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(
     page.getByRole('heading', { name: 'Approved Social Publishing Queue' })
   ).toBeVisible();
-  const approvedSocialBlock = page
+  const approvedSocialSection = page
+    .locator('section')
+    .filter({ has: page.getByRole('heading', { name: 'Approved Social Publishing Queue' }) });
+  const approvedSocialBlock = approvedSocialSection
     .locator('.proof-block')
     .filter({ hasText: 'btc-reserve-first-tranche' })
     .filter({ hasText: 'Record Published URL' });
@@ -245,6 +248,29 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   ).toBeVisible();
   await expect(
     approvedSocialBlock.getByText(
+      'npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e'
+    )
+  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Social Dispatch Brief' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Social Dispatch Brief' })).toHaveAttribute(
+    'href',
+    '/social-dispatch-brief.md'
+  );
+  const socialDispatchSection = page
+    .locator('section')
+    .filter({ has: page.getByRole('heading', { name: 'Social Dispatch Brief' }) });
+  const socialDispatchBlock = socialDispatchSection
+    .locator('.proof-block')
+    .filter({ hasText: 'btc-reserve-first-tranche' })
+    .filter({ hasText: 'Approved Content SHA-256' });
+  await expect(
+    socialDispatchBlock.getByText(
+      '4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e',
+      { exact: true }
+    )
+  ).toBeVisible();
+  await expect(
+    socialDispatchBlock.getByText(
       'npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e'
     )
   ).toBeVisible();

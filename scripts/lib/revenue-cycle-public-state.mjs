@@ -18,6 +18,10 @@ import {
   buildReferralHandoffDispatchBrief,
   renderReferralHandoffDispatchMarkdown
 } from '../referral-handoff-dispatch-brief-agent.mjs';
+import {
+  buildSocialDispatchBrief,
+  renderSocialDispatchMarkdown
+} from '../social-dispatch-brief-agent.mjs';
 
 export const REVENUE_CYCLE_PUBLIC_PATHS = {
   report: join('public', 'transparency', 'latest.json'),
@@ -63,6 +67,8 @@ export async function writeRevenueCyclePublicStatus({
   replyConversionBriefMarkdownPath = join('public', 'reply-conversion-brief.md'),
   referralHandoffDispatchBriefJsonPath = join('public', 'referral-handoff-dispatch-brief.json'),
   referralHandoffDispatchBriefMarkdownPath = join('public', 'referral-handoff-dispatch-brief.md'),
+  socialDispatchBriefJsonPath = join('public', 'social-dispatch-brief.json'),
+  socialDispatchBriefMarkdownPath = join('public', 'social-dispatch-brief.md'),
   reportOverride = null,
   env = process.env
 } = {}) {
@@ -113,6 +119,12 @@ export async function writeRevenueCyclePublicStatus({
     packetArtifact: inputs.referralPartnerHandoffPacket,
     generatedAtUtc
   });
+  const socialDispatchBrief = buildSocialDispatchBrief({
+    status,
+    queue: inputs.socialQueue,
+    maxManualPosts: 5,
+    generatedAtUtc
+  });
   await writeFile(statusPath, `${JSON.stringify(status, null, 2)}\n`);
   await Promise.all([
     writeFile(revenueExecutionBriefJsonPath, `${JSON.stringify(revenueExecutionBrief, null, 2)}\n`),
@@ -137,6 +149,11 @@ export async function writeRevenueCyclePublicStatus({
     writeFile(
       referralHandoffDispatchBriefMarkdownPath,
       renderReferralHandoffDispatchMarkdown(referralHandoffDispatchBrief)
+    ),
+    writeFile(socialDispatchBriefJsonPath, `${JSON.stringify(socialDispatchBrief, null, 2)}\n`),
+    writeFile(
+      socialDispatchBriefMarkdownPath,
+      renderSocialDispatchMarkdown(socialDispatchBrief)
     )
   ]);
   return status;

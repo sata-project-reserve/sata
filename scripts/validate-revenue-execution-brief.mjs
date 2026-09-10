@@ -69,6 +69,37 @@ if (/\b(private key|seed phrase|guaranteed buyers|fake engagement|bots|raids|pri
   findings.push('brief markdown contains prohibited operating language');
 }
 
+const inboundInvoiceBrief = buildRevenueExecutionBrief({
+  status: {
+    ...status,
+    funnel: {
+      ...status.funnel,
+      inboundInvoiceRequestsNeedingChairmanReview: 1
+    },
+    actionQueue: [
+      {
+        id: 'inbound-invoice-request-hot-lead',
+        type: 'inbound-invoice-request-packet',
+        title: 'Render chairman review packet for inbound invoice request hot-lead.',
+        command: 'node scripts/inbound-invoice-request-agent.mjs render --lead hot-lead',
+        evidenceRequired: 'Inbound evidence and explicit invoice request.'
+      },
+      ...(status.actionQueue ?? [])
+    ]
+  },
+  paidPromotionLedger,
+  outreachPacketQueue,
+  maxManualSends: 5,
+  generatedAtUtc: '2026-09-03T20:00:00.000Z'
+});
+validateRevenueExecutionBrief(inboundInvoiceBrief);
+if (inboundInvoiceBrief.topActions[0]?.type !== 'inbound-invoice-request-packet') {
+  findings.push('inbound invoice requests must outrank manual outreach in the execution brief');
+}
+if (!/inbound-invoice-request-agent\.mjs render --lead hot-lead/.test(inboundInvoiceBrief.topActions[0]?.command ?? '')) {
+  findings.push('inbound invoice request brief action must preserve the render command');
+}
+
 const maintenanceBrief = buildRevenueExecutionBrief({
   status: {
     ...status,

@@ -21,7 +21,25 @@ export function buildRevenueExecutionBrief({
   );
   const topPackets = readyPackets.slice(0, maxManualSends);
   const awaitingVerification = paidPromotionPlan.awaitingVerification ?? [];
+  const inboundInvoiceRequests = (status.actionQueue ?? []).filter(
+    (action) => action.type === 'inbound-invoice-request-packet'
+  );
   const actions = [];
+
+  for (const request of inboundInvoiceRequests) {
+    actions.push({
+      id: request.id,
+      type: request.type,
+      priority: actions.length + 1,
+      objective: request.title,
+      whyItCanCreateSats:
+        'Explicit invoice demand is the closest non-custodial path from attention to a chairman-reviewed quote.',
+      command: request.command,
+      evidenceRequired: request.evidenceRequired,
+      stopRule:
+        'Render quote inputs only. Do not send an exact-sats invoice or payment instruction before chairman approval.'
+    });
+  }
 
   for (const campaign of awaitingVerification) {
     actions.push({

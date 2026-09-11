@@ -55,6 +55,9 @@ jobs:
       - name: Refresh settlement options brief
         run: npm run ops:settlement-options-write
 
+      - name: Refresh sats target plan
+        run: npm run ops:sats-target-write
+
       - name: Validate approval queue
         run: npm run ops:check
 
@@ -151,6 +154,8 @@ jobs:
             public/social-dispatch-brief.md \
             public/settlement-options-brief.json \
             public/settlement-options-brief.md \
+            public/sats-target-plan.json \
+            public/sats-target-plan.md \
             public/sats-prospect-pipeline.json \
             public/service-outreach-packet-queue.json
 

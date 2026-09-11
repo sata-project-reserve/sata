@@ -4,6 +4,13 @@ const SERVICE_INTEREST_PATTERN =
   /\b(audit|transparency|report|dashboard|proof|authority|liquidity|reserve|disclosure|claims?|token|contract|website|interested|need this|how (?:does|would) this work)\b/i;
 const PROHIBITED_PATTERN =
   /\b(pump|guaranteed buyers|fake engagement|bots|raids|price prediction|price guarantee|redemption promise|market-support|market support|investment return)\b/i;
+const ALLOWED_SOURCE_TYPES = new Set([
+  'paid-promotion-reply',
+  'published-social-reply',
+  'x-dm',
+  'github-issue',
+  'manual-referral'
+]);
 
 export function buildInboundReplyTriage({
   queue,
@@ -15,7 +22,7 @@ export function buildInboundReplyTriage({
   offer = 'transparency-audit',
   replyText,
   evidence,
-  recordedAtUtc = '<recorded-at-utc>',
+  recordedAtUtc,
   generatedAtUtc = new Date().toISOString()
 }) {
   if (!queue || typeof queue !== 'object') throw new Error('Missing inbound lead queue.');
@@ -34,6 +41,9 @@ export function buildInboundReplyTriage({
     evidence: cleanLine(evidence),
     recordedAtUtc: cleanLine(recordedAtUtc)
   };
+  if (classification.recordable === true) {
+    validateRecordableInput(inputSummary);
+  }
 
   const leadId = kebab(inputSummary.contactHandle || inputSummary.sourceId);
   const recordLeadCommand =
@@ -193,6 +203,38 @@ function buildRecordLeadCommand({ leadId, inputSummary, customerAskedForInvoice 
     `--customerAskedForInvoice ${customerAskedForInvoice ? 'true' : 'false'}`,
     `--recordedAtUtc ${quote(inputSummary.recordedAtUtc || '<recorded-at-utc>')}`
   ].join(' ');
+}
+
+function validateRecordableInput(inputSummary) {
+  const findings = [];
+  for (const field of [
+    'sourceType',
+    'sourceId',
+    'contactHandle',
+    'publicProfileUrl',
+    'projectUrl',
+    'evidence',
+    'recordedAtUtc'
+  ]) {
+    if (!inputSummary[field]) findings.push(field);
+  }
+  if (findings.length > 0) {
+    throw new Error(`Recordable inbound reply triage requires: ${findings.join(', ')}.`);
+  }
+  if (!ALLOWED_SOURCE_TYPES.has(inputSummary.sourceType)) {
+    throw new Error(`Unsupported sourceType: ${inputSummary.sourceType}.`);
+  }
+  for (const field of ['publicProfileUrl', 'projectUrl']) {
+    if (!/^https?:\/\/\S+$/i.test(inputSummary[field])) {
+      throw new Error(`${field} must be an http(s) URL.`);
+    }
+  }
+  if (inputSummary.evidence.length < 8) {
+    throw new Error('evidence must be a durable reference.');
+  }
+  if (Number.isNaN(Date.parse(inputSummary.recordedAtUtc))) {
+    throw new Error('recordedAtUtc must be a valid ISO timestamp.');
+  }
 }
 
 function nextCommandForRecordedLead({ leadId, customerAskedForInvoice }) {

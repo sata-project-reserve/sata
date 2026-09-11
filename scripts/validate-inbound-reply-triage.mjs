@@ -115,6 +115,42 @@ if (!/replyText/.test(agent)) {
 assertThrows('missing reply text', /replyText is required/i, () =>
   buildInboundReplyTriage({ ...base, replyText: '' })
 );
+assertThrows('missing recorded timestamp', /requires: recordedAtUtc/i, () =>
+  buildInboundReplyTriage({
+    ...base,
+    recordedAtUtc: '',
+    replyText: 'I am interested in the transparency audit.'
+  })
+);
+assertThrows('bad recorded timestamp', /recordedAtUtc must be a valid ISO timestamp/i, () =>
+  buildInboundReplyTriage({
+    ...base,
+    recordedAtUtc: 'not-a-date',
+    replyText: 'Looks good. Can you send the invoice?'
+  })
+);
+assertThrows('bad profile URL', /publicProfileUrl must be an http\(s\) URL/i, () =>
+  buildInboundReplyTriage({
+    ...base,
+    publicProfileUrl: 'not-a-url',
+    replyText: 'I am interested in the transparency audit.'
+  })
+);
+assertThrows('bad source type', /Unsupported sourceType/i, () =>
+  buildInboundReplyTriage({
+    ...base,
+    sourceType: 'telegram',
+    replyText: 'I am interested in the transparency audit.'
+  })
+);
+
+const nonRecordableWithoutMetadata = buildInboundReplyTriage({
+  queue,
+  replyText: 'Just browsing.'
+});
+if (nonRecordableWithoutMetadata.recordLeadCommand !== null) {
+  findings.push('non-recordable replies without metadata must not expose record commands');
+}
 
 if (findings.length > 0) {
   console.error('Inbound reply triage check failed:');

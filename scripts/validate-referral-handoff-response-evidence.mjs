@@ -60,9 +60,13 @@ for (const required of [
   /Partner accepted terms/,
   /Response evidence URL or reference/,
   /Exact response summary/,
+  /Responded at UTC/,
   /does not approve compensation/i
 ]) {
   if (!required.test(form)) findings.push(`issue form missing ${required}`);
+}
+if (!/id: respondedAtUtc[\s\S]*?required: true/.test(form)) {
+  findings.push('issue form must require respondedAtUtc because record-response rejects missing timestamps');
 }
 if (/payment address|send payment|private key|seed phrase/i.test(form)) {
   findings.push('issue form must not request payments or wallet secrets');
@@ -97,6 +101,9 @@ if (!/--evidence "https:\/\/x\.com\/example\/status\/110"/.test(draft.operatorCo
 }
 if (!/--respondedAtUtc "2026-09-10T12:30:00.000Z"/.test(draft.operatorCommand ?? '')) {
   findings.push('operator command must preserve respondedAtUtc when provided');
+}
+if (!/respondedAtUtc: options\.respondedAtUtc/.test(agent)) {
+  findings.push('referral handoff agent must pass respondedAtUtc through to record-response');
 }
 if (!/does not approve .*compensation/i.test(draft.boundary ?? '')) {
   findings.push('draft boundary must block compensation approval');
@@ -146,6 +153,45 @@ if (unsafeDraft.readyToRecord) {
 }
 if (!unsafeDraft.findings.some((finding) => /prohibited/i.test(finding))) {
   findings.push('unsafe response summary must report prohibited wording');
+}
+
+const missingTimestampIssue = {
+  ...issue,
+  body: issue.body.replace(/\n\n### Responded at UTC\n2026-09-10T12:30:00\.000Z\n/, '\n')
+};
+const missingTimestampDraft = buildReferralHandoffResponseEvidenceDraft({
+  issue: missingTimestampIssue,
+  queue
+});
+if (missingTimestampDraft.readyToRecord) {
+  findings.push('missing respondedAtUtc issue must not be ready to record');
+}
+if (
+  !missingTimestampDraft.findings.some((finding) =>
+    /Missing required fields: respondedAtUtc/i.test(finding)
+  )
+) {
+  findings.push('missing respondedAtUtc issue must report missing timestamp');
+}
+
+const malformedTimestampIssue = {
+  ...issue,
+  body: issue.body.replace(
+    '### Responded at UTC\n2026-09-10T12:30:00.000Z',
+    '### Responded at UTC\nnot-a-date'
+  )
+};
+const malformedTimestampDraft = buildReferralHandoffResponseEvidenceDraft({
+  issue: malformedTimestampIssue,
+  queue
+});
+if (malformedTimestampDraft.readyToRecord) {
+  findings.push('malformed respondedAtUtc issue must not be ready to record');
+}
+if (
+  !malformedTimestampDraft.findings.some((finding) => /valid ISO timestamp/i.test(finding))
+) {
+  findings.push('malformed respondedAtUtc issue must report timestamp format error');
 }
 
 if (findings.length > 0) {

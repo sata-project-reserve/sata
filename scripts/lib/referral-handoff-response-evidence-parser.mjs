@@ -10,7 +10,8 @@ const REQUIRED_FIELDS = [
   'handoffId',
   'partnerAccepted',
   'responseEvidenceUrl',
-  'exactResponseSummary'
+  'exactResponseSummary',
+  'respondedAtUtc'
 ];
 
 export function parseReferralHandoffResponseEvidenceIssueBody(body) {
@@ -67,6 +68,9 @@ export function buildReferralHandoffResponseEvidenceDraft({ issue, queue }) {
   }
   if (hasProhibitedPositiveClaims(intake.exactResponseSummary)) {
     findings.push('Exact response summary contains prohibited or secret-requesting language.');
+  }
+  if (intake.respondedAtUtc && Number.isNaN(new Date(intake.respondedAtUtc).getTime())) {
+    findings.push('Responded at UTC must be a valid ISO timestamp.');
   }
 
   const operatorCommand =

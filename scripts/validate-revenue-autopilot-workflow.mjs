@@ -40,6 +40,7 @@ for (const requiredCommand of [
   'npm run ops:prospect-follow-up-check',
   'npm run ops:outreach-approval-check',
   'npm run ops:outreach-check',
+  'npm run ops:outreach-contact-evidence-check',
   'npm run ops:social-publish-evidence-check',
   'npm run ops:social-dispatch-check',
   'npm run ops:referral-handoff-evidence-check',

@@ -14,7 +14,8 @@ const REQUIRED_FIELDS = [
   'contactChannel',
   'contactEvidenceUrl',
   'approvedMessageSha256',
-  'exactMessageSent'
+  'exactMessageSent',
+  'sentAtUtc'
 ];
 
 export function parseOutreachContactEvidenceIssueBody(body) {
@@ -91,6 +92,9 @@ export function buildOutreachContactEvidenceDraft({ issue, packetQueue, pipeline
   ) {
     findings.push('Exact message contains prohibited or secret-requesting language.');
   }
+  if (intake.sentAtUtc && Number.isNaN(new Date(intake.sentAtUtc).getTime())) {
+    findings.push('Sent at UTC must be a valid ISO timestamp.');
+  }
 
   const command =
     findings.length === 0
@@ -149,9 +153,7 @@ function buildMarkSentCommand({ packetId, evidence, channel, sentAtUtc, messageH
     `--evidence "${escapeCommandValue(evidence)}"`,
     `--channel "${escapeCommandValue(channel)}"`
   ];
-  if (cleanValue(sentAtUtc)) {
-    parts.push(`--sentAtUtc "${escapeCommandValue(sentAtUtc)}"`);
-  }
+  parts.push(`--sentAtUtc "${escapeCommandValue(sentAtUtc)}"`);
   if (cleanValue(messageHash)) {
     parts.push(`--messageHash ${escapeCommandValue(messageHash)}`);
   }

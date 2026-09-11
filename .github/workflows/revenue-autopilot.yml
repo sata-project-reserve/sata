@@ -79,6 +79,9 @@ jobs:
       - name: Validate service outreach packets
         run: npm run ops:outreach-check
 
+      - name: Validate outreach contact evidence workflow
+        run: npm run ops:outreach-contact-evidence-check
+
       - name: Validate social publish evidence workflow
         run: npm run ops:social-publish-evidence-check
 

@@ -26,10 +26,14 @@ for (const required of [
   /Contact evidence URL or reference/,
   /Approved message SHA-256/,
   /Exact message sent/,
+  /Sent at UTC/,
   /chairman-approved factual outreach copy/i,
   /does not approve an invoice/i
 ]) {
   if (!required.test(form)) findings.push(`issue form missing ${required}`);
+}
+if (!/id: sentAtUtc[\s\S]*?required: true/.test(form)) {
+  findings.push('issue form must require sentAtUtc because mark-sent rejects missing timestamps');
 }
 if (/payment address|send payment|private key|seed phrase/i.test(form)) {
   findings.push('issue form must not request payments or wallet secrets');
@@ -154,6 +158,45 @@ if (malformedHashDraft.readyToRecord) {
 }
 if (!malformedHashDraft.findings.some((finding) => /64-character lowercase hex/i.test(finding))) {
   findings.push('malformed approved message hash issue must report format error');
+}
+
+const missingTimestampIssue = {
+  ...issueFixture,
+  body: issueFixture.body.replace(/\n\n### Sent at UTC\n2026-09-10T10:00:00\.000Z\n/, '\n')
+};
+const missingTimestampDraft = buildOutreachContactEvidenceDraft({
+  issue: missingTimestampIssue,
+  packetQueue,
+  pipeline
+});
+if (missingTimestampDraft.readyToRecord) {
+  findings.push('missing sentAtUtc issue must not be ready to record');
+}
+if (
+  !missingTimestampDraft.findings.some((finding) =>
+    /Missing required fields: sentAtUtc/i.test(finding)
+  )
+) {
+  findings.push('missing sentAtUtc issue must report missing timestamp');
+}
+
+const malformedTimestampIssue = {
+  ...issueFixture,
+  body: issueFixture.body.replace(
+    '### Sent at UTC\n2026-09-10T10:00:00.000Z',
+    '### Sent at UTC\nnot-a-date'
+  )
+};
+const malformedTimestampDraft = buildOutreachContactEvidenceDraft({
+  issue: malformedTimestampIssue,
+  packetQueue,
+  pipeline
+});
+if (malformedTimestampDraft.readyToRecord) {
+  findings.push('malformed sentAtUtc issue must not be ready to record');
+}
+if (!malformedTimestampDraft.findings.some((finding) => /valid ISO timestamp/i.test(finding))) {
+  findings.push('malformed sentAtUtc issue must report timestamp format error');
 }
 
 if (workflow) {

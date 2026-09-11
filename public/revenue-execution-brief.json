@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "mode": "sats-revenue-execution-brief",
-  "generatedAtUtc": "2026-09-11T12:05:09.504Z",
+  "generatedAtUtc": "2026-09-11T14:26:06.642Z",
   "northStar": {
     "confirmedSats": "500000",
     "targetSats": "1000000000",

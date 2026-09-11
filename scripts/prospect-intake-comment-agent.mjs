@@ -69,6 +69,13 @@ export function renderProspectIntakeComment(draft) {
     prospectDraft ? `- Stage: ${prospectDraft.stage}` : null,
     prospectDraft ? `- Chairman approved before outreach: ${prospectDraft.chairmanApprovedBeforeOutreach}` : null,
     '',
+    prospectDraft ? 'Operator command:' : 'Operator command not prepared:',
+    prospectDraft ? '```sh' : '- Complete required fields first.',
+    prospectDraft
+      ? `node scripts/prospect-intake-agent.mjs record-from-issue-json "<issue-json-path>" --recordedAtUtc "<recorded-at-utc>"`
+      : null,
+    prospectDraft ? '```' : null,
+    '',
     `Next required action: ${draft.nextRequiredAction}`,
     '',
     'Boundaries:',

@@ -71,6 +71,26 @@ export function buildProspectIntakeDraft({ issue, pipeline }) {
   };
 }
 
+export function recordProspectIntakeDraft({ issue, pipeline, recordedAtUtc }) {
+  const draft = buildProspectIntakeDraft({ issue, pipeline });
+  if (!draft.prospectDraft) {
+    throw new Error(`Prospect intake is incomplete: ${draft.missingRequiredFields.join(', ')}`);
+  }
+  const recordedAt = normalizeIsoDate(recordedAtUtc, 'recordedAtUtc');
+  const candidate = {
+    ...draft.prospectDraft,
+    stageUpdatedAtUtc: recordedAt,
+    intakeRecordedAtUtc: recordedAt
+  };
+  assertNoDuplicateProspect({ pipeline, candidate });
+
+  return {
+    ...pipeline,
+    updatedAtUtc: recordedAt,
+    prospects: [...(pipeline.prospects ?? []), candidate]
+  };
+}
+
 function normalizeLabel(value) {
   return String(value).trim().toLowerCase();
 }
@@ -88,6 +108,28 @@ function compact(values) {
     .flatMap((value) => String(value ?? '').split(/\n+/))
     .map((value) => value.trim())
     .filter(Boolean);
+}
+
+function assertNoDuplicateProspect({ pipeline, candidate }) {
+  for (const prospect of pipeline.prospects ?? []) {
+    if (prospect.id === candidate.id) {
+      throw new Error(`${candidate.id}: prospect already exists.`);
+    }
+    if (prospect.projectUrl === candidate.projectUrl) {
+      throw new Error(`${candidate.id}: prospect projectUrl already exists in ${prospect.id}.`);
+    }
+    if (prospect.publicProfileUrl === candidate.publicProfileUrl) {
+      throw new Error(`${candidate.id}: prospect publicProfileUrl already exists in ${prospect.id}.`);
+    }
+  }
+}
+
+function normalizeIsoDate(value, label) {
+  const date = new Date(value);
+  if (!value || Number.isNaN(date.getTime())) {
+    throw new Error(`${label} must be a valid timestamp.`);
+  }
+  return date.toISOString();
 }
 
 function slugify(value) {

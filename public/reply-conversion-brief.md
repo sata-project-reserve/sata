@@ -1,6 +1,6 @@
 # SATA Reserve Token Reply Conversion Brief
 
-Generated: 2026-09-11T09:41:21.163Z
+Generated: 2026-09-11T11:14:50.594Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -16,6 +16,58 @@ Inbound invoice requests: 0
 
 ## Next Action
 Send outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact exactly as approved, then record contact evidence.
+
+## Invoice Conversion Sprint
+Status: awaiting-manual-contact-send
+Objective: Create one chairman-reviewable exact-sats invoice path from the highest-probability revenue evidence without exposing payment instructions early.
+Next evidence gate: Send the approved outreach manually and record durable contact evidence.
+Planning BTC/USD: 100000
+Current ask reserve impact: 50000 sats
+Qualified path reserve impact: 150000 sats
+Stop rule: Stop at the next evidence gate. Do not send payment instructions, approve invoices, count reserve progress, or move assets from this sprint.
+
+### Candidate
+ID: sanctum-elysium-loam
+Type: approved-outreach-awaiting-contact
+Offer: transparency-audit
+Current ask: $50
+Qualified ask: $150
+Evidence: Manual send evidence before the prospect can be treated as contacted.
+Evidence form: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml
+Approved message SHA-256: 1d37077645c8d720356f548899d61049e8f835d23a5990f2994b6415ba1d1122
+
+### Approved Sprint Copy
+
+```text
+Hi sanctum-elysium-loam,
+
+Hey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
+
+Public profile reviewed: https://sanctumelysium.com/whitepaper.html
+Project page reviewed: https://sanctumelysium.com/whitepaper.html
+
+Service page: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_audit_service
+Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_sample_audit
+Intake form: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam&template=transparency-audit-intake.yml
+
+Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.
+```
+
+### Sprint Commands
+
+#### Record manual contact evidence
+The top prospect still needs a durable record that approved outreach was sent.
+
+```sh
+node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 1d37077645c8d720356f548899d61049e8f835d23a5990f2994b6415ba1d1122
+```
+
+#### Wait for explicit invoice request
+Payment instructions stay locked until the customer asks for an invoice.
+
+```sh
+npm run ops:prospect-response-plan
+```
 
 ## Conversion Stages
 

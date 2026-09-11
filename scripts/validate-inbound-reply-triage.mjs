@@ -42,6 +42,13 @@ if (!/--customerAskedForInvoice true/.test(invoice.recordLeadCommand ?? '')) {
 if (!/--recordedAtUtc "2026-09-10T15:00:00.000Z"/.test(invoice.recordLeadCommand ?? '')) {
   findings.push('triage record command must require explicit recordedAtUtc evidence');
 }
+if (
+  !/inbound-invoice-request-agent\.mjs render --lead "example-buyer"/.test(
+    invoice.nextCommandAfterRecord ?? ''
+  )
+) {
+  findings.push('invoice reply must expose the inbound invoice request render command after record');
+}
 assertNoPaymentAddress(invoice, 'invoice triage');
 if (!/Payment instructions are not sent until approved/i.test(invoice.replyTemplateText ?? '')) {
   findings.push('invoice reply template must not send payment instructions before approval');
@@ -60,6 +67,9 @@ if (intake.leadStatus !== 'needs-intake') {
 }
 if (/--customerAskedForInvoice true/.test(intake.recordLeadCommand ?? '')) {
   findings.push('intake reply must not become an invoice request');
+}
+if (intake.nextCommandAfterRecord !== 'npm run ops:inbound-lead-plan') {
+  findings.push('intake reply must continue to the inbound lead plan after record');
 }
 assertNoPaymentAddress(intake, 'intake triage');
 
@@ -81,7 +91,9 @@ for (const required of [
   /SATA Inbound Reply Triage/i,
   /invoice-request-needs-chairman-review/i,
   /Record Command/i,
+  /After Record Command/i,
   /inbound-service-lead-agent\.mjs record-lead/i,
+  /inbound-invoice-request-agent\.mjs render --lead "example-buyer"/i,
   /Exact-sats invoices require separate Executive Chairman approval/i,
   /does not contact the lead/i
 ]) {

@@ -44,6 +44,13 @@ export function buildInboundReplyTriage({
           customerAskedForInvoice: classification.customerAskedForInvoice
         })
       : null;
+  const nextCommandAfterRecord =
+    classification.recordable === true
+      ? nextCommandForRecordedLead({
+          leadId,
+          customerAskedForInvoice: classification.customerAskedForInvoice
+        })
+      : null;
 
   return {
     project: queue.project,
@@ -57,6 +64,7 @@ export function buildInboundReplyTriage({
     replyTemplateId: classification.replyTemplateId,
     replyTemplateText: template.text,
     recordLeadCommand,
+    nextCommandAfterRecord,
     nextAction: classification.nextAction,
     stopRules: [
       'Do not send payment instructions from triage.',
@@ -90,6 +98,17 @@ export function renderInboundReplyTriage(triage) {
     lines.push('', '```sh', triage.recordLeadCommand, '```');
   } else {
     lines.push('', 'Do not record this as a service lead. Close or ignore unless the human has separate evidence of legitimate service interest.');
+  }
+
+  if (triage.nextCommandAfterRecord) {
+    lines.push(
+      '',
+      '## After Record Command',
+      '',
+      '```sh',
+      triage.nextCommandAfterRecord,
+      '```'
+    );
   }
 
   lines.push('', '## Next Action', '', triage.nextAction, '', '## Stop Rules');
@@ -174,6 +193,13 @@ function buildRecordLeadCommand({ leadId, inputSummary, customerAskedForInvoice 
     `--customerAskedForInvoice ${customerAskedForInvoice ? 'true' : 'false'}`,
     `--recordedAtUtc ${quote(inputSummary.recordedAtUtc || '<recorded-at-utc>')}`
   ].join(' ');
+}
+
+function nextCommandForRecordedLead({ leadId, customerAskedForInvoice }) {
+  if (customerAskedForInvoice) {
+    return `node scripts/inbound-invoice-request-agent.mjs render --lead ${quote(leadId || '<lead-id>')}`;
+  }
+  return 'npm run ops:inbound-lead-plan';
 }
 
 function quote(value) {

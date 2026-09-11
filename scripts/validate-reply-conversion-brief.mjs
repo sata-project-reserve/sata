@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
@@ -71,6 +72,67 @@ if (!brief.conversionStages.some((stage) => stage.id === 'render-outbound-invoic
 }
 if (!brief.conversionStages.some((stage) => stage.id === 'render-inbound-invoice-request-packet')) {
   findings.push('brief must include inbound invoice packet rendering stage');
+}
+if (!brief.invoiceConversionSprint || typeof brief.invoiceConversionSprint !== 'object') {
+  findings.push('brief must include an invoice conversion sprint');
+} else {
+  const sprint = brief.invoiceConversionSprint;
+  if (!/exact-sats invoice path/i.test(sprint.objective ?? '')) {
+    findings.push('invoice conversion sprint must stay focused on exact-sats invoice conversion');
+  }
+  if (!/Stop at the next evidence gate/i.test(sprint.stopRule ?? '')) {
+    findings.push('invoice conversion sprint must stop at the next evidence gate');
+  }
+  if (!/^\d+$/.test(sprint.reserveImpactIfCurrentAskClosesSats ?? '')) {
+    findings.push('invoice conversion sprint current ask impact must be integer sats');
+  }
+  if (!/^\d+$/.test(sprint.reserveImpactIfQualifiedUpgradeClosesSats ?? '')) {
+    findings.push('invoice conversion sprint qualified impact must be integer sats');
+  }
+  if (!Array.isArray(sprint.commands) || sprint.commands.length === 0) {
+    findings.push('invoice conversion sprint must expose at least one bounded command');
+  }
+  for (const command of sprint.commands ?? []) {
+    if (!command.label || !command.reason || !command.command) {
+      findings.push('invoice conversion sprint commands require label, reason, and command');
+    }
+    if (/paymentAddress|reserveAddress|bc1/i.test(command.command ?? '')) {
+      findings.push('invoice conversion sprint must not expose payment addresses in commands');
+    }
+    if (/(private key|seed phrase|pump|guaranteed buyers|fake engagement)/i.test(command.command ?? '')) {
+      findings.push('invoice conversion sprint command contains prohibited language');
+    }
+  }
+  if (sprint.candidate) {
+    if (!sprint.candidate.id || !sprint.candidate.type || !sprint.candidate.evidenceRequired) {
+      findings.push('invoice conversion sprint candidate requires id, type, and evidenceRequired');
+    }
+    if (
+      !Number.isSafeInteger(Number(sprint.candidate.currentAskUsd)) ||
+      Number(sprint.candidate.currentAskUsd) <= 0
+    ) {
+      findings.push('invoice conversion sprint candidate must expose a positive current ask');
+    }
+    if (
+      !Number.isSafeInteger(Number(sprint.candidate.qualifiedAskUsd)) ||
+      Number(sprint.candidate.qualifiedAskUsd) <= 0
+    ) {
+      findings.push('invoice conversion sprint candidate must expose a positive qualified ask');
+    }
+    if (sprint.candidate.type === 'approved-outreach-awaiting-contact') {
+      if (!sprint.candidate.contactEvidenceFormUrl?.includes('outreach-contact-evidence.yml')) {
+        findings.push('invoice conversion sprint must expose the contact evidence form');
+      }
+      if (!sprint.candidate.approvedMessage || !sprint.candidate.approvedMessageSha256) {
+        findings.push('invoice conversion sprint must include approved outreach copy and hash');
+      } else if (sha256(sprint.candidate.approvedMessage) !== sprint.candidate.approvedMessageSha256) {
+        findings.push('invoice conversion sprint approved message hash must match the copy');
+      }
+      if (!String(sprint.commands?.[0]?.command ?? '').includes(sprint.candidate.approvedMessageSha256)) {
+        findings.push('invoice conversion sprint contact command must include the approved message hash');
+      }
+    }
+  }
 }
 const firstManualOutreachAction = (status.actionQueue ?? []).find(
   (item) => item.type === 'manual-outreach-send'
@@ -174,6 +236,17 @@ if (!markdown.includes('## Next Action')) {
 if (!markdown.includes('## Stop Rules')) {
   findings.push('markdown must include stop rules section');
 }
+if (!markdown.includes('## Invoice Conversion Sprint')) {
+  findings.push('markdown must include invoice conversion sprint section');
+}
+if (brief.invoiceConversionSprint?.candidate?.approvedMessage) {
+  if (!markdown.includes('### Approved Sprint Copy')) {
+    findings.push('markdown must include approved sprint copy when a send candidate exists');
+  }
+  if (!markdown.includes(brief.invoiceConversionSprint.candidate.approvedMessageSha256)) {
+    findings.push('markdown must include approved sprint copy SHA-256');
+  }
+}
 if (!markdown.includes('utm_source=manual_outreach')) {
   findings.push('markdown must include tracked manual outreach URLs');
 }
@@ -262,4 +335,15 @@ function readOptionalText(path) {
 
 function normalizeMarkdown(value) {
   return String(value ?? '').replace(/\r\n/g, '\n');
+}
+
+function sha256(value) {
+  return createHash('sha256')
+    .update(
+      String(value ?? '')
+        .replace(/\r/g, '')
+        .trim(),
+      'utf8'
+    )
+    .digest('hex');
 }

@@ -386,8 +386,18 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
       .locator('.preview')
       .filter({ hasText: 'Hi sanctum-elysium-loam' })
       .filter({ hasText: 'SATA runs a small transparency audit service for crypto teams.' })
+      .first()
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Reply Conversion' })).toBeVisible();
+  await expect(page.getByText('Invoice Conversion Sprint')).toBeVisible();
+  await expect(page.getByText('awaiting-manual-contact-send')).toBeVisible();
+  await expect(page.getByText('Qualified Path Impact')).toBeVisible();
+  await expect(page.getByText('150000 sats')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'contact evidence intake' })).toHaveAttribute(
+    'href',
+    'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml'
+  );
+  await expect(page.getByText('Approved Message SHA-256')).toBeVisible();
   await expect(
     page
       .getByText(

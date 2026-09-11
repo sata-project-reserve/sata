@@ -8,6 +8,7 @@ import {
 } from './lib/sats-invoice-quote.mjs';
 
 const queue = JSON.parse(readFileSync(join('public', 'sats-invoice-queue.json'), 'utf8'));
+const agentSource = readFileSync(join('scripts', 'sats-invoice-quote-agent.mjs'), 'utf8');
 const approvalQueue = {
   project: 'SATA Reserve Token',
   mode: 'executive-chairman-final-approval',
@@ -48,6 +49,21 @@ if (!/Draft quote only/i.test(quote.boundary)) {
 }
 if (!/payment instruction is sent/i.test(quote.boundary)) {
   findings.push('quote boundary must require approval before payment instructions are sent');
+}
+if (!/options\.offerId\s*\?\?=\s*options\.offer/.test(agentSource)) {
+  findings.push('CLI parser must accept --offer as an offerId alias');
+}
+if (!/options\.quoteSource\s*\?\?=\s*options\.source/.test(agentSource)) {
+  findings.push('CLI parser must accept --source as a quoteSource alias');
+}
+if (!/options\.invoiceId\s*\?\?=\s*options\.invoice/.test(agentSource)) {
+  findings.push('CLI parser must preserve --invoice for finalize-approved');
+}
+if (!/options\.approvalId\s*\?\?=\s*options\.approval/.test(agentSource)) {
+  findings.push('CLI parser must preserve --approval for finalize-approved');
+}
+if (!/return options;/.test(agentSource)) {
+  findings.push('CLI parser must preserve extra flags such as --evidence and approval confirmations');
 }
 
 const staged = stageInvoiceQuoteForChairmanReview({

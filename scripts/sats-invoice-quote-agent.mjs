@@ -162,14 +162,14 @@ function parseOptions(values) {
     options[key.slice(2)] = value;
   }
 
-  return {
-    offerId: options.offerId ?? options.offer,
-    customer: options.customer,
-    btcUsd: options.btcUsd,
-    quoteSource: options.quoteSource ?? options.source,
-    createdAtUtc: options.createdAtUtc,
-    ttlMinutes: options.ttlMinutes
-  };
+  options.offerId ??= options.offer;
+  options.quoteSource ??= options.source;
+  options.invoiceId ??= options.invoice;
+  options.invoice ??= options.invoiceId;
+  options.approvalId ??= options.approval;
+  options.approval ??= options.approvalId;
+
+  return options;
 }
 
 async function readJson(path) {

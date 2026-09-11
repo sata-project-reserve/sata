@@ -3,6 +3,9 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { prioritizeOutreachPackets } from './lib/prospect-priority.mjs';
 
+const CONTACT_EVIDENCE_INTAKE_URL =
+  'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml';
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [, , command = 'plan'] = process.argv;
   const [status, prospectPipeline, outreachPacketQueue, inboundLeadQueue, revenuePlan] = await Promise.all([
@@ -99,6 +102,13 @@ export function buildReplyConversionBrief({
         'Render a chairman review packet only. Do not send payment instructions before approval.'
     }))
     .slice(0, maxItems);
+  const invoiceConversionSprint = buildInvoiceConversionSprint({
+    inboundInvoiceRequests,
+    invoiceRequested,
+    contacted,
+    outreachApproved,
+    revenuePlan
+  });
 
   const conversionStages = [
     {
@@ -161,6 +171,7 @@ export function buildReplyConversionBrief({
     eligibleInvoiceRequestRecording: contacted,
     eligibleOutboundInvoicePackets: invoiceRequested,
     inboundInvoiceRequests,
+    invoiceConversionSprint,
     nextAction: nextReplyAction({
       inboundInvoiceRequests,
       invoiceRequested,
@@ -201,6 +212,56 @@ export function renderReplyConversionMarkdown(brief) {
     '',
     '## Next Action',
     brief.nextAction,
+    '',
+    '## Invoice Conversion Sprint',
+    `Status: ${brief.invoiceConversionSprint.status}`,
+    `Objective: ${brief.invoiceConversionSprint.objective}`,
+    `Next evidence gate: ${brief.invoiceConversionSprint.nextEvidenceGate}`,
+    `Planning BTC/USD: ${brief.invoiceConversionSprint.planningBtcUsd}`,
+    `Current ask reserve impact: ${brief.invoiceConversionSprint.reserveImpactIfCurrentAskClosesSats} sats`,
+    `Qualified path reserve impact: ${brief.invoiceConversionSprint.reserveImpactIfQualifiedUpgradeClosesSats} sats`,
+    `Stop rule: ${brief.invoiceConversionSprint.stopRule}`,
+    '',
+    '### Candidate',
+    brief.invoiceConversionSprint.candidate
+      ? [
+          `ID: ${brief.invoiceConversionSprint.candidate.id}`,
+          `Type: ${brief.invoiceConversionSprint.candidate.type}`,
+          `Offer: ${brief.invoiceConversionSprint.candidate.currentOfferId}`,
+          `Current ask: $${brief.invoiceConversionSprint.candidate.currentAskUsd}`,
+          `Qualified ask: $${brief.invoiceConversionSprint.candidate.qualifiedAskUsd}`,
+          `Evidence: ${brief.invoiceConversionSprint.candidate.evidenceRequired}`,
+          ...(brief.invoiceConversionSprint.candidate.contactEvidenceFormUrl
+            ? [`Evidence form: ${brief.invoiceConversionSprint.candidate.contactEvidenceFormUrl}`]
+            : []),
+          ...(brief.invoiceConversionSprint.candidate.approvedMessageSha256
+            ? [
+                `Approved message SHA-256: ${brief.invoiceConversionSprint.candidate.approvedMessageSha256}`
+              ]
+            : [])
+        ].join('\n')
+      : 'No candidate is available.',
+    ...(brief.invoiceConversionSprint.candidate?.approvedMessage
+      ? [
+          '',
+          '### Approved Sprint Copy',
+          '',
+          '```text',
+          brief.invoiceConversionSprint.candidate.approvedMessage,
+          '```'
+        ]
+      : []),
+    '',
+    '### Sprint Commands',
+    ...brief.invoiceConversionSprint.commands.flatMap((command) => [
+      '',
+      `#### ${command.label}`,
+      command.reason,
+      '',
+      '```sh',
+      command.command,
+      '```'
+    ]),
     '',
     '## Conversion Stages'
   ];
@@ -324,6 +385,8 @@ function contactRecordFor({ prospect, packet, revenuePlan, revenueStreamsById })
     publicProfileUrl: prospect.publicProfileUrl,
     packetId: packet.id,
     tracking: packet.tracking ?? null,
+    approvedMessage: packet.message,
+    approvedMessageSha256: packet.messageSha256,
     priority: packet.priority,
     qualifiedRevenueUsd: packet.qualifiedRevenueUsd,
     conversionPlan: shouldShowUpgradePath
@@ -382,6 +445,221 @@ function invoicePacketRecordFor(prospect) {
     boundary:
       'Prepare chairman review inputs only. Exact-sats invoice and payment instructions still require approval.'
   };
+}
+
+function buildInvoiceConversionSprint({
+  inboundInvoiceRequests,
+  invoiceRequested,
+  contacted,
+  outreachApproved,
+  revenuePlan
+}) {
+  const planningBtcUsd = '100000';
+  const objective =
+    'Create one chairman-reviewable exact-sats invoice path from the highest-probability revenue evidence without exposing payment instructions early.';
+  const current =
+    inboundInvoiceRequests[0] ?? invoiceRequested[0] ?? contacted[0] ?? outreachApproved[0] ?? null;
+  const candidate = current ? sprintCandidateFor({ item: current, revenuePlan }) : null;
+  const currentAskUsd = Number(candidate?.currentAskUsd ?? 0);
+  const qualifiedAskUsd = Number(candidate?.qualifiedAskUsd ?? currentAskUsd);
+  const offerId = candidate?.currentOfferId || candidate?.recommendedOfferId || 'transparency-audit';
+  const customerId = candidate?.id ?? '<customer-or-prospect-id>';
+  const evidencePlaceholder = candidate?.invoiceEvidencePlaceholder ?? '<invoice-request-evidence-url-or-reference>';
+  const status = sprintStatusFor({ inboundInvoiceRequests, invoiceRequested, contacted, outreachApproved });
+
+  return {
+    status,
+    objective,
+    planningBtcUsd,
+    candidate,
+    nextEvidenceGate: nextEvidenceGateFor(status),
+    reserveImpactIfCurrentAskClosesSats: usdToSats({
+      usd: currentAskUsd,
+      btcUsd: Number(planningBtcUsd)
+    }).toString(),
+    reserveImpactIfQualifiedUpgradeClosesSats: usdToSats({
+      usd: Math.max(currentAskUsd, qualifiedAskUsd),
+      btcUsd: Number(planningBtcUsd)
+    }).toString(),
+    commands: sprintCommandsFor({
+      status,
+      current,
+      offerId,
+      customerId,
+      evidencePlaceholder
+    }),
+    stopRule:
+      'Stop at the next evidence gate. Do not send payment instructions, approve invoices, count reserve progress, or move assets from this sprint.'
+  };
+}
+
+function sprintCandidateFor({ item, revenuePlan }) {
+  if (item.leadId) {
+    return {
+      id: item.leadId,
+      type: 'inbound-invoice-request',
+      currentOfferId: item.requestedOfferId,
+      recommendedOfferId: item.requestedOfferId,
+      currentAskUsd: priceForOffer({ offerId: item.requestedOfferId, revenuePlan }),
+      qualifiedAskUsd: priceForOffer({ offerId: item.requestedOfferId, revenuePlan }),
+      evidenceRequired: 'Inbound lead evidence plus explicit customer invoice request.',
+      invoiceEvidencePlaceholder: item.evidence || '<inbound-invoice-request-evidence>'
+    };
+  }
+  if (item.requestedOfferId) {
+    return {
+      id: item.prospectId,
+      type: 'outbound-invoice-request-recorded',
+      currentOfferId: item.requestedOfferId,
+      recommendedOfferId: item.requestedOfferId,
+      currentAskUsd: priceForOffer({ offerId: item.requestedOfferId, revenuePlan }),
+      qualifiedAskUsd: priceForOffer({ offerId: item.requestedOfferId, revenuePlan }),
+      evidenceRequired: 'Recorded invoice request evidence plus prior contact evidence.',
+      invoiceEvidencePlaceholder: item.requestEvidence || '<invoice-request-evidence-url-or-reference>'
+    };
+  }
+  if (item.contactEvidence !== undefined) {
+    return {
+      id: item.prospectId,
+      type: 'contacted-awaiting-invoice-request',
+      currentOfferId: item.recommendedOfferId,
+      recommendedOfferId: item.recommendedOfferId,
+      currentAskUsd: priceForOffer({ offerId: item.recommendedOfferId, revenuePlan }),
+      qualifiedAskUsd: priceForOffer({ offerId: item.recommendedOfferId, revenuePlan }),
+      evidenceRequired: 'Customer reply explicitly asking for an invoice.',
+      invoiceEvidencePlaceholder: '<invoice-request-evidence-url-or-reference>'
+    };
+  }
+  return {
+    id: item.prospectId,
+    type: 'approved-outreach-awaiting-contact',
+    currentOfferId: item.currentOfferId,
+    recommendedOfferId: item.recommendedOfferId,
+    currentAskUsd: item.currentAskUsd,
+    qualifiedAskUsd: item.qualifiedRevenueUsd ?? item.recommendedAskUsd ?? item.currentAskUsd,
+    evidenceRequired: 'Manual send evidence before the prospect can be treated as contacted.',
+    invoiceEvidencePlaceholder: '<invoice-request-evidence-url-or-reference>',
+    contactEvidenceFormUrl: CONTACT_EVIDENCE_INTAKE_URL,
+    approvedMessage: item.approvedMessage,
+    approvedMessageSha256: item.approvedMessageSha256
+  };
+}
+
+function sprintStatusFor({ inboundInvoiceRequests, invoiceRequested, contacted, outreachApproved }) {
+  if (inboundInvoiceRequests[0]) return 'ready-for-inbound-chairman-review-packet';
+  if (invoiceRequested[0]) return 'ready-for-outbound-chairman-review-packet';
+  if (contacted[0]) return 'awaiting-explicit-customer-invoice-request';
+  if (outreachApproved[0]) return 'awaiting-manual-contact-send';
+  return 'no-revenue-conversion-candidate';
+}
+
+function nextEvidenceGateFor(status) {
+  switch (status) {
+    case 'ready-for-inbound-chairman-review-packet':
+      return 'Render the inbound invoice request packet for chairman review.';
+    case 'ready-for-outbound-chairman-review-packet':
+      return 'Render the outbound invoice request packet for chairman review.';
+    case 'awaiting-explicit-customer-invoice-request':
+      return 'Record only a customer reply that explicitly asks for an invoice.';
+    case 'awaiting-manual-contact-send':
+      return 'Send the approved outreach manually and record durable contact evidence.';
+    default:
+      return 'Create or qualify a compliant revenue lead before invoice work.';
+  }
+}
+
+function sprintCommandsFor({ status, current, offerId, customerId, evidencePlaceholder }) {
+  if (!current) {
+    return [
+      {
+        label: 'Find candidate',
+        reason: 'No conversion candidate is currently available.',
+        command: 'npm run ops:cycle-plan'
+      }
+    ];
+  }
+  if (status === 'ready-for-inbound-chairman-review-packet') {
+    return [
+      {
+        label: 'Render inbound review packet',
+        reason: 'The customer already asked for an invoice through an inbound path.',
+        command: current.renderCommand
+      }
+    ];
+  }
+  if (status === 'ready-for-outbound-chairman-review-packet') {
+    return [
+      {
+        label: 'Render outbound review packet',
+        reason: 'The prospect is already invoice-requested; prepare chairman quote inputs.',
+        command: current.renderCommand
+      },
+      quoteCommand({ offerId, customerId }),
+      writeDraftCommand({ offerId, customerId, evidencePlaceholder })
+    ];
+  }
+  if (status === 'awaiting-explicit-customer-invoice-request') {
+    return [
+      {
+        label: 'Record invoice request evidence',
+        reason: 'Use this only after the contacted customer explicitly asks for an invoice.',
+        command: current.recordInvoiceRequestCommand
+      },
+      {
+        label: 'Render outbound review packet',
+        reason: 'After recording the request, prepare chairman quote inputs.',
+        command: `node scripts/sats-invoice-request-agent.mjs render --prospects "${customerId}"`
+      }
+    ];
+  }
+  return [
+    {
+      label: 'Record manual contact evidence',
+      reason: 'The top prospect still needs a durable record that approved outreach was sent.',
+      command: current.recordSentContactCommand
+    },
+    {
+      label: 'Wait for explicit invoice request',
+      reason: 'Payment instructions stay locked until the customer asks for an invoice.',
+      command: 'npm run ops:prospect-response-plan'
+    }
+  ];
+}
+
+function quoteCommand({ offerId, customerId }) {
+  return {
+    label: 'Preview exact-sats quote',
+    reason: 'Preview only with a chairman-selected BTC/USD rate and source.',
+    command: `node scripts/sats-invoice-quote-agent.mjs quote-template --offer ${offerId} --customer "${customerId}" --btcUsd "<chairman-selected-rate>" --source "<quote-source>"`
+  };
+}
+
+function writeDraftCommand({ offerId, customerId, evidencePlaceholder }) {
+  return {
+    label: 'Stage draft for chairman approval',
+    reason: 'Stages a draft invoice and approval item only; it does not send payment instructions.',
+    command: `node scripts/sats-invoice-quote-agent.mjs write-draft --offer ${offerId} --customer "${customerId}" --btcUsd "<chairman-selected-rate>" --source "<quote-source>" --evidence "${evidencePlaceholder}"`
+  };
+}
+
+function priceForOffer({ offerId, revenuePlan }) {
+  const plannedPrice = (revenuePlan?.revenueStreams ?? []).find(
+    (stream) => stream.id === offerId
+  )?.priceUsd;
+  if (plannedPrice) return plannedPrice;
+  switch (offerId) {
+    case 'transparency-report-setup':
+      return '150';
+    case 'full-proof-dashboard':
+      return '300';
+    default:
+      return '50';
+  }
+}
+
+function usdToSats({ usd, btcUsd }) {
+  if (!Number.isFinite(usd) || !Number.isFinite(btcUsd) || usd <= 0 || btcUsd <= 0) return 0n;
+  return BigInt(Math.ceil((usd / btcUsd) * 100_000_000));
 }
 
 function nextReplyAction({

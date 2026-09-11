@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 import approvalQueue from '@/public/executive-approval-queue.json';
 import inboundLeadQueue from '@/public/inbound-service-lead-queue.json';
 import outreachDispatchBrief from '@/public/outreach-dispatch-brief.json';
@@ -1429,6 +1431,70 @@ export default function OperationsPage() {
             <a href={CONTACT_EVIDENCE_INTAKE_URL}>the contact evidence form</a>.
           </span>
         </div>
+        <div className="notice">
+          <strong>Invoice Conversion Sprint</strong>
+          <span>
+            {replyConversionBrief.invoiceConversionSprint.objective} Status:{' '}
+            <code>{replyConversionBrief.invoiceConversionSprint.status}</code>.
+          </span>
+        </div>
+        <div className="summary-grid">
+          <div className="metric">
+            <span>Current Ask Impact</span>
+            <strong>
+              {replyConversionBrief.invoiceConversionSprint.reserveImpactIfCurrentAskClosesSats}{' '}
+              sats
+            </strong>
+          </div>
+          <div className="metric">
+            <span>Qualified Path Impact</span>
+            <strong>
+              {
+                replyConversionBrief.invoiceConversionSprint
+                  .reserveImpactIfQualifiedUpgradeClosesSats
+              }{' '}
+              sats
+            </strong>
+          </div>
+          <div className="metric">
+            <span>Next Evidence Gate</span>
+            <strong>{replyConversionBrief.invoiceConversionSprint.nextEvidenceGate}</strong>
+          </div>
+        </div>
+        {replyConversionBrief.invoiceConversionSprint.candidate ? (
+          <div className="proof-block">
+            <span>{replyConversionBrief.invoiceConversionSprint.candidate.type}</span>
+            <strong>{replyConversionBrief.invoiceConversionSprint.candidate.id}</strong>
+            <p>{replyConversionBrief.invoiceConversionSprint.candidate.evidenceRequired}</p>
+            {'contactEvidenceFormUrl' in replyConversionBrief.invoiceConversionSprint.candidate ? (
+              <p>
+                Evidence form:{' '}
+                <a href={replyConversionBrief.invoiceConversionSprint.candidate.contactEvidenceFormUrl}>
+                  contact evidence intake
+                </a>
+              </p>
+            ) : null}
+            {'approvedMessageSha256' in replyConversionBrief.invoiceConversionSprint.candidate ? (
+              <div className="command-list">
+                <span>Approved Message SHA-256</span>
+                <code>{replyConversionBrief.invoiceConversionSprint.candidate.approvedMessageSha256}</code>
+              </div>
+            ) : null}
+            {'approvedMessage' in replyConversionBrief.invoiceConversionSprint.candidate ? (
+              <pre className="preview">
+                {replyConversionBrief.invoiceConversionSprint.candidate.approvedMessage}
+              </pre>
+            ) : null}
+            <div className="command-list">
+              {replyConversionBrief.invoiceConversionSprint.commands.map((command) => (
+                <Fragment key={command.label}>
+                  <span>{command.label}</span>
+                  <code>{command.command}</code>
+                </Fragment>
+              ))}
+            </div>
+          </div>
+        ) : null}
         <div className="warning-list">
           {replyConversionBrief.stopRules.map((rule) => (
             <div className="proof-block" key={rule}>

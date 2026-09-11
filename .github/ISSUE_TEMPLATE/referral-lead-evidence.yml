@@ -1,0 +1,101 @@
+name: Referral Lead Evidence
+description: Submit evidence that an accepted referral partner referred a potential SATA service customer.
+title: '[Referral Lead Evidence]: '
+labels: ['referral-lead-evidence', 'manual-evidence']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form only after a referral handoff has been recorded as accepted.
+
+        This form records referred-customer evidence for review. It does not approve compensation, invoices, payment instructions, paid work, token grants, public commitments, or asset movement.
+  - type: input
+    id: handoffId
+    attributes:
+      label: Referral handoff ID
+      description: 'Example: handoff-diana-crypto-20260903-transparency-tweet'
+    validations:
+      required: true
+  - type: input
+    id: customerLeadId
+    attributes:
+      label: Customer lead ID
+      description: Kebab-case lead id for the referred customer.
+    validations:
+      required: true
+  - type: input
+    id: customerHandle
+    attributes:
+      label: Customer handle or contact
+      description: X handle, GitHub handle, email reference, or durable contact label.
+    validations:
+      required: true
+  - type: input
+    id: publicProfileUrl
+    attributes:
+      label: Customer public profile URL
+      description: Public profile URL for the referred customer.
+    validations:
+      required: true
+  - type: input
+    id: projectUrl
+    attributes:
+      label: Customer project URL
+      description: Public project, token, docs, or website URL to review.
+    validations:
+      required: true
+  - type: input
+    id: requestedOfferId
+    attributes:
+      label: Requested offer ID
+      description: 'Example: transparency-audit'
+    validations:
+      required: true
+  - type: input
+    id: referralEvidenceUrl
+    attributes:
+      label: Referral evidence URL or reference
+      description: Message permalink, email archive reference, screenshot reference, or other durable evidence.
+    validations:
+      required: true
+  - type: textarea
+    id: customerInterestSummary
+    attributes:
+      label: Customer interest summary
+      description: Summarize the referred customer's service interest. Do not include payment instructions, token grants, or promotional claims.
+    validations:
+      required: true
+  - type: dropdown
+    id: customerAskedForInvoice
+    attributes:
+      label: Customer asked for invoice
+      options:
+        - 'false'
+        - 'true'
+    validations:
+      required: true
+  - type: input
+    id: recordedAtUtc
+    attributes:
+      label: Recorded at UTC
+      description: ISO timestamp when this referred lead evidence was recorded.
+    validations:
+      required: true
+  - type: input
+    id: convertedAtUtc
+    attributes:
+      label: Converted at UTC
+      description: ISO timestamp when the referral became a customer lead.
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      options:
+        - label: The referral handoff was already accepted and recorded before this lead evidence.
+          required: true
+        - label: This evidence does not approve referral compensation, invoices, payment instructions, token grants, or asset movement.
+          required: true
+        - label: I did not add price, return, buyer, liquidity, investment, market-support, or guaranteed-result claims.
+          required: true

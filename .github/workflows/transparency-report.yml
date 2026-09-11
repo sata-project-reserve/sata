@@ -10,10 +10,12 @@ on:
       - '.github/workflows/outreach-contact-evidence.yml'
       - '.github/workflows/social-publish-evidence.yml'
       - '.github/workflows/collaborator-meeting-intake.yml'
+      - '.github/workflows/referral-lead-evidence.yml'
       - '.github/ISSUE_TEMPLATE/transparency-audit-intake.yml'
       - '.github/ISSUE_TEMPLATE/outreach-contact-evidence.yml'
       - '.github/ISSUE_TEMPLATE/social-publish-evidence.yml'
       - '.github/ISSUE_TEMPLATE/collaborator-meeting-intake.yml'
+      - '.github/ISSUE_TEMPLATE/referral-lead-evidence.yml'
       - 'app/**'
       - 'components/**'
       - 'lib/**'
@@ -50,6 +52,7 @@ on:
       - 'tests/fixtures/outreach-contact-evidence-issue.json'
       - 'tests/fixtures/social-publish-evidence-issue.json'
       - 'tests/fixtures/collaborator-meeting-intake-issue.json'
+      - 'tests/fixtures/referral-lead-evidence-issue.json'
       - 'public/social-agent-profile.json'
       - 'public/social-agent-content-queue.json'
       - 'public/social-agent-monitoring-log.json'
@@ -252,6 +255,9 @@ jobs:
 
       - name: Validate referral handoff response evidence workflow
         run: npm run ops:referral-handoff-response-evidence-check
+
+      - name: Validate referral lead evidence workflow
+        run: npm run ops:referral-lead-evidence-check
 
       - name: Validate referral handoff dispatch brief
         run: npm run ops:referral-handoff-dispatch-check

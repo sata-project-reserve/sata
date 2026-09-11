@@ -94,6 +94,9 @@ jobs:
       - name: Validate referral handoff response evidence workflow
         run: npm run ops:referral-handoff-response-evidence-check
 
+      - name: Validate referral lead evidence workflow
+        run: npm run ops:referral-lead-evidence-check
+
       - name: Validate referral handoff dispatch brief
         run: npm run ops:referral-handoff-dispatch-check
 

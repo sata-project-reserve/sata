@@ -45,6 +45,7 @@ for (const requiredCommand of [
   'npm run ops:social-dispatch-check',
   'npm run ops:referral-handoff-evidence-check',
   'npm run ops:referral-handoff-response-evidence-check',
+  'npm run ops:referral-lead-evidence-check',
   'npm run ops:referral-handoff-dispatch-check',
   'npm run ops:outreach-dispatch-check',
   'npm run ops:paid-promotion-check',
@@ -131,6 +132,7 @@ for (const requiredCommand of [
   'npm run ops:reply-conversion-check',
   'npm run ops:referral-handoff-evidence-check',
   'npm run ops:referral-handoff-response-evidence-check',
+  'npm run ops:referral-lead-evidence-check',
   'npm run ops:referral-handoff-dispatch-check',
   'npm run ops:settlement-options-check'
 ]) {
@@ -143,6 +145,7 @@ for (const requiredCommand of [
   'npm run ops:social-dispatch-check',
   'npm run ops:settlement-options-check',
   'npm run ops:collaborator-meeting-check',
+  'npm run ops:referral-lead-evidence-check',
   'npm run social:check'
 ]) {
   if (!ciWorkflow.includes(requiredCommand)) {
@@ -152,11 +155,14 @@ for (const requiredCommand of [
 for (const requiredPath of [
   '.github/workflows/social-publish-evidence.yml',
   '.github/workflows/collaborator-meeting-intake.yml',
+  '.github/workflows/referral-lead-evidence.yml',
   '.github/ISSUE_TEMPLATE/social-publish-evidence.yml',
   '.github/ISSUE_TEMPLATE/collaborator-meeting-intake.yml',
+  '.github/ISSUE_TEMPLATE/referral-lead-evidence.yml',
   'public/collaborator-meeting-intake.json',
   'tests/fixtures/social-publish-evidence-issue.json',
-  'tests/fixtures/collaborator-meeting-intake-issue.json'
+  'tests/fixtures/collaborator-meeting-intake-issue.json',
+  'tests/fixtures/referral-lead-evidence-issue.json'
 ]) {
   if (!transparencyWorkflow.includes(requiredPath)) {
     findings.push(`transparency publisher path filters must include ${requiredPath}`);

@@ -52,6 +52,8 @@
     "ops:referral-handoff-evidence-plan": "node scripts/referral-handoff-evidence-agent.mjs plan",
     "ops:referral-handoff-response-evidence-check": "node scripts/validate-referral-handoff-response-evidence.mjs",
     "ops:referral-handoff-response-evidence-plan": "node scripts/referral-handoff-response-evidence-agent.mjs plan",
+    "ops:referral-lead-evidence-check": "node scripts/validate-referral-lead-evidence.mjs",
+    "ops:referral-lead-evidence-plan": "node scripts/referral-lead-evidence-agent.mjs plan",
     "ops:service-pages-check": "node scripts/validate-service-pages.mjs",
     "ops:social-dispatch-check": "node scripts/validate-social-dispatch-brief.mjs",
     "ops:social-dispatch-plan": "node scripts/social-dispatch-brief-agent.mjs markdown",

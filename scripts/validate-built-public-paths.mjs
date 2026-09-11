@@ -24,7 +24,9 @@ const publicFiles = [
   join('out', 'social-dispatch-brief.json'),
   join('out', 'social-dispatch-brief.md'),
   join('out', 'settlement-options-brief.json'),
-  join('out', 'settlement-options-brief.md')
+  join('out', 'settlement-options-brief.md'),
+  join('out', 'sats-target-plan.json'),
+  join('out', 'sats-target-plan.md')
 ];
 
 for (const htmlFile of htmlFiles) {

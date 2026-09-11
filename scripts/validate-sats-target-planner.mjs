@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   buildSatsTargetPlan,
@@ -9,6 +10,12 @@ import {
 const status = await readJson(join('public', 'revenue-cycle-status.json'));
 const revenuePlan = await readJson(join('public', 'revenue-operating-plan.json'));
 const satsLedger = await readJson(join('public', 'sats-generation-ledger.json'));
+const packageJson = await readJson('package.json');
+const targetAgent = readFileSync(join('scripts', 'sats-target-agent.mjs'), 'utf8');
+const transparencyWorkflow = readFileSync(
+  join('.github', 'workflows', 'transparency-report.yml'),
+  'utf8'
+);
 const plan = buildSatsTargetPlan({
   status,
   revenuePlan,
@@ -72,6 +79,30 @@ if (!markdown.includes('## Current Outreach Coverage')) {
 }
 if (!markdown.includes('full target requires higher-value setup/dashboard work')) {
   findings.push('markdown must include the operating read about higher-value work');
+}
+if (packageJson.scripts?.['ops:sats-target-write'] !== 'node scripts/sats-target-agent.mjs write') {
+  findings.push('package.json must expose ops:sats-target-write');
+}
+if (!/TARGET_JSON_PATH\s*=\s*join\('public', 'sats-target-plan\.json'\)/.test(targetAgent)) {
+  findings.push('sats target agent must write public/sats-target-plan.json');
+}
+if (!/TARGET_MARKDOWN_PATH\s*=\s*join\('public', 'sats-target-plan\.md'\)/.test(targetAgent)) {
+  findings.push('sats target agent must write public/sats-target-plan.md');
+}
+if (!existsSync(join('public', 'sats-target-plan.json'))) {
+  findings.push('public/sats-target-plan.json must exist');
+}
+if (!existsSync(join('public', 'sats-target-plan.md'))) {
+  findings.push('public/sats-target-plan.md must exist');
+}
+for (const expected of [
+  'npm run ops:sats-target-write',
+  'public/sats-target-plan.json',
+  'public/sats-target-plan.md'
+]) {
+  if (!transparencyWorkflow.includes(expected)) {
+    findings.push(`transparency report workflow must publish ${expected}`);
+  }
 }
 if (/\b(private key|seed phrase|guaranteed buyers|fake engagement|bots|raids|price prediction|price guarantee|redemption promise)\b/i.test(markdown)) {
   findings.push('target planner markdown contains prohibited operating language');

@@ -660,7 +660,9 @@ export default function OperationsPage() {
           </div>
           <div className="metric">
             <span>Terminal Plan</span>
-            <strong>npm run ops:sats-target-markdown</strong>
+            <strong>
+              <a href={publicPath('/sats-target-plan.md')}>public/sats-target-plan.md</a>
+            </strong>
           </div>
           <div className="metric">
             <span>Ready Outreach Value</span>

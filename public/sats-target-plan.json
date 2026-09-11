@@ -1,0 +1,79 @@
+{
+  "project": "SATA Reserve Token",
+  "mode": "sats-target-planner",
+  "generatedAtUtc": "2026-09-11T15:57:49.084Z",
+  "assumptions": {
+    "btcUsd": "100000",
+    "btcUsdSource": "operator planning assumption, not a live quote",
+    "reserveAllocationPercent": "70",
+    "actualSatsRule": "Use this for planning only; record actual sats only after confirmed receipt or approved allocation."
+  },
+  "target": {
+    "confirmedSats": "500000",
+    "nextMilestoneSats": "1000000",
+    "nextMilestoneAdditionalSats": "500000",
+    "targetSats": "1000000000",
+    "remainingSats": "999500000"
+  },
+  "milestones": [
+    {
+      "id": "next-1m-sats",
+      "label": "Reach 1,000,000 sats reserve",
+      "additionalSats": "500000",
+      "netReserveUsd": "500.00",
+      "grossRevenueUsd": "714.29"
+    },
+    {
+      "id": "full-1b-sats",
+      "label": "Reach 1,000,000,000 sats reserve",
+      "additionalSats": "999500000",
+      "netReserveUsd": "999500.00",
+      "grossRevenueUsd": "1427857.14"
+    }
+  ],
+  "scenarios": [
+    {
+      "offerId": "transparency-audit",
+      "label": "Transparency audit for crypto teams",
+      "priceUsd": "50",
+      "estimatedReserveUsdPerDeal": "35.00",
+      "estimatedReserveSatsPerDeal": "35000",
+      "dealsToNextMilestone": 15,
+      "dealsToFullTarget": 28558
+    },
+    {
+      "offerId": "transparency-report-setup",
+      "label": "Transparency report setup",
+      "priceUsd": "150",
+      "estimatedReserveUsdPerDeal": "105.00",
+      "estimatedReserveSatsPerDeal": "105000",
+      "dealsToNextMilestone": 5,
+      "dealsToFullTarget": 9520
+    },
+    {
+      "offerId": "full-proof-dashboard",
+      "label": "Full proof dashboard and workflow setup",
+      "priceUsd": "300",
+      "estimatedReserveUsdPerDeal": "210.00",
+      "estimatedReserveSatsPerDeal": "210000",
+      "dealsToNextMilestone": 3,
+      "dealsToFullTarget": 4760
+    }
+  ],
+  "currentPipeline": {
+    "source": "current manual-outreach-send action queue",
+    "manualOutreachActions": 30,
+    "readyOutreachPackets": 30,
+    "qualifiedRevenueUsd": "2300.00",
+    "estimatedReserveUsdAtFullClose": "1610.00",
+    "estimatedReserveSatsAtFullClose": "1610000",
+    "nextMilestoneCoveragePercent": "322.00",
+    "fullTargetCoveragePercent": "0.16",
+    "requiredCloseRateToNextMilestonePercent": "31.06",
+    "gapToNextMilestoneSatsAtFullClose": "0",
+    "operatingRead": "The current ready outreach queue can cover the next sats milestone if enough qualified prospects close and receipts are allocated."
+  },
+  "operatingRead": "The $50 starter audit can prove the loop, but the full target requires higher-value setup/dashboard work, grants, donations, or chairman-approved asset allocation proposals.",
+  "nextAction": "Use the first five tracked outreach links to seek one paid audit request, then quote exact sats only after a customer asks for an invoice.",
+  "boundary": "This planner does not approve prices, invoices, payments, trading, promotion, token grants, or asset movement."
+}

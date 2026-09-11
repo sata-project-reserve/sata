@@ -1,21 +1,28 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+async function openLaunchStep(page: Page, name: RegExp, heading: string) {
+  await expect(async () => {
+    await page.getByRole('button', { name }).click();
+    await expect(page.getByRole('heading', { name: heading })).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 10000 });
+}
 
 test('dashboard renders wallet safety status', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: 'SATA Token Launcher' })).toBeVisible();
   await expect(page.getByText(/Mainnet: (locked|unlocked)/)).toBeVisible();
   await expect(page.getByText('Signing must occur inside MetaMask')).toBeVisible();
 });
 
 test('token form displays base-unit supply', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: /Configure token/ }).click();
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await openLaunchStep(page, /Configure token/, 'Configure token');
   await expect(page.getByText('Base-unit supply: 1000000000000000000')).toBeVisible();
 });
 
 test('liquidity planner exposes permanent LP lock controls', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: /Liquidity planner/ }).click();
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await openLaunchStep(page, /Liquidity planner/, 'Liquidity planner');
   await expect(page.getByText('Raydium Burn & Earn LP locking is permanent')).toBeVisible();
   await expect(page.getByLabel('LP lock confirmation phrase')).toHaveAttribute(
     'placeholder',
@@ -176,6 +183,10 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByRole('heading', { name: 'Target Math' })).toBeVisible();
   await expect(page.getByText('BTC/USD 100,000')).toBeVisible();
   await expect(page.getByText('Deals To 1B Sats').first()).toBeVisible();
+  await expect(page.getByRole('link', { name: 'public/sats-target-plan.md' })).toHaveAttribute(
+    'href',
+    '/sats-target-plan.md'
+  );
   await expect(page.getByRole('heading', { name: 'Attribution Links' })).toBeVisible();
   await expect(page.getByText('utm_source=x_142c').first()).toBeVisible();
   await expect(page.getByText('utm_source=manual_outreach').first()).toBeVisible();

@@ -35,10 +35,14 @@ for (const required of [
   /Sent evidence URL or reference/,
   /Approved terms SHA-256/,
   /Exact referral terms sent/,
+  /Sent at UTC/,
   /approved post-receipt referral handoff terms/i,
   /does not approve a partner/i
 ]) {
   if (!required.test(form)) findings.push(`issue form missing ${required}`);
+}
+if (!/id: sentAtUtc[\s\S]*?required: true/.test(form)) {
+  findings.push('issue form must require sentAtUtc because record-sent rejects missing timestamps');
 }
 if (/payment address|send payment|private key|seed phrase/i.test(form)) {
   findings.push('issue form must not request payments or wallet secrets');
@@ -195,6 +199,42 @@ if (malformedHashDraft.readyToRecord) {
 }
 if (!malformedHashDraft.findings.some((finding) => /64-character lowercase hex/i.test(finding))) {
   findings.push('malformed approved terms hash issue must report format error');
+}
+
+const missingTimestampIssue = {
+  ...issueFixture,
+  body: issueFixture.body.replace(/\n\n### Sent at UTC\n2026-09-10T12:00:00\.000Z\n/, '\n')
+};
+const missingTimestampDraft = buildReferralHandoffEvidenceDraft({
+  issue: missingTimestampIssue,
+  queue,
+  paidPromotionLedger,
+  referralPartnerPolicy,
+  inboundQueue
+});
+if (missingTimestampDraft.readyToRecord) {
+  findings.push('missing sentAtUtc issue must not be ready to record');
+}
+if (!missingTimestampDraft.findings.some((finding) => /Missing required fields: sentAtUtc/i.test(finding))) {
+  findings.push('missing sentAtUtc issue must report missing timestamp');
+}
+
+const malformedTimestampIssue = {
+  ...issueFixture,
+  body: issueFixture.body.replace('### Sent at UTC\n2026-09-10T12:00:00.000Z', '### Sent at UTC\nnot-a-date')
+};
+const malformedTimestampDraft = buildReferralHandoffEvidenceDraft({
+  issue: malformedTimestampIssue,
+  queue,
+  paidPromotionLedger,
+  referralPartnerPolicy,
+  inboundQueue
+});
+if (malformedTimestampDraft.readyToRecord) {
+  findings.push('malformed sentAtUtc issue must not be ready to record');
+}
+if (!malformedTimestampDraft.findings.some((finding) => /valid ISO timestamp/i.test(finding))) {
+  findings.push('malformed sentAtUtc issue must report timestamp format error');
 }
 
 if (findings.length > 0) {

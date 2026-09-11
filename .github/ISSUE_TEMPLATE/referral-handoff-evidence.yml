@@ -48,9 +48,9 @@ body:
     id: sentAtUtc
     attributes:
       label: Sent at UTC
-      description: Optional ISO timestamp if known, otherwise the operator command will use the current time.
+      description: ISO timestamp when the approved terms were sent.
     validations:
-      required: false
+      required: true
   - type: checkboxes
     id: acknowledgements
     attributes:

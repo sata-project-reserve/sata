@@ -14,7 +14,8 @@ const REQUIRED_FIELDS = [
   'partnerHandle',
   'sentEvidenceUrl',
   'approvedTermsSha256',
-  'exactTermsSent'
+  'exactTermsSent',
+  'sentAtUtc'
 ];
 
 export function parseReferralHandoffEvidenceIssueBody(body) {
@@ -98,6 +99,9 @@ export function buildReferralHandoffEvidenceDraft({
   }
   if (hasProhibitedPositiveClaims(intake.exactTermsSent)) {
     findings.push('Exact referral terms contain prohibited or secret-requesting language.');
+  }
+  if (intake.sentAtUtc && Number.isNaN(new Date(intake.sentAtUtc).getTime())) {
+    findings.push('Sent at UTC must be a valid ISO timestamp.');
   }
 
   const operatorCommand =

@@ -1,6 +1,6 @@
 # SATA Reserve Token Outreach Dispatch Brief
 
-Generated: 2026-09-13T18:12:49.474Z
+Generated: 2026-09-13T20:50:13.332Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary

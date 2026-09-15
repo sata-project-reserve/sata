@@ -326,9 +326,23 @@ export function buildRevenueExecutionBrief({
     ...primaryActions.slice(0, primaryActionLimit),
     ...measurementActions.slice(0, 1)
   ];
-  const estimatedIfOneStarterClosesSats = usdToSatsEstimate({
-    usd: 50,
-    btcUsd: Number(status.conversionAssumptions?.btcUsd ?? 100000)
+  const primaryOfferId = revenuePlan?.nextCycle?.primaryOfferId ?? 'transparency-audit';
+  const primaryOffer = revenueStreamsById.get(primaryOfferId);
+  const primaryOfferUsd = primaryOffer?.priceUsd ?? '0';
+  const planningBtcUsd = Number(
+    revenuePlan?.planningAssumptions?.btcUsd ?? status.conversionAssumptions?.btcUsd ?? 100000
+  );
+  const reserveAllocationPercent = Number(
+    revenuePlan?.allocationPolicy?.postReceiptAllocationPercent?.btcReserve ?? 70
+  );
+  const grossSatsIfPrimaryCloses = usdToSatsEstimate({
+    usd: Number(primaryOfferUsd),
+    btcUsd: planningBtcUsd
+  });
+  const reserveSatsIfPrimaryCloses = usdToReserveSatsEstimate({
+    usd: Number(primaryOfferUsd),
+    btcUsd: planningBtcUsd,
+    reserveAllocationPercent
   });
 
   return {
@@ -355,8 +369,13 @@ export function buildRevenueExecutionBrief({
       'Manual outreach packets must be sent by a human and then marked with durable evidence.'
     ],
     unitEconomics: {
-      starterAuditUsd: '50',
-      illustrativeSatsAtBtcUsd100k: estimatedIfOneStarterClosesSats.toString(),
+      primaryOfferId,
+      starterAuditUsd: String(primaryOfferUsd),
+      btcUsd: String(planningBtcUsd),
+      reserveAllocationPercent: String(reserveAllocationPercent),
+      grossSatsAtPlanningRate: grossSatsIfPrimaryCloses.toString(),
+      reserveSatsAtPlanningRate: reserveSatsIfPrimaryCloses.toString(),
+      illustrativeSatsAtBtcUsd100k: grossSatsIfPrimaryCloses.toString(),
       note: 'This is planning math only; record actual sats only after a confirmed direct-reserve receipt.'
     },
     topActions,

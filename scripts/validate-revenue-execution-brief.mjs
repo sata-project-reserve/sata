@@ -43,6 +43,31 @@ try {
   findings.push(error.message);
 }
 
+const primaryOfferId = revenuePlan.nextCycle?.primaryOfferId;
+const primaryOffer = revenuePlan.revenueStreams?.find((stream) => stream.id === primaryOfferId);
+const expectedReserveSats = String(
+  Math.floor(
+    ((Number(primaryOffer?.priceUsd ?? 0) *
+      Number(revenuePlan.allocationPolicy?.postReceiptAllocationPercent?.btcReserve ?? 70)) /
+      100 /
+      Number(revenuePlan.planningAssumptions?.btcUsd ?? 100000)) *
+      100_000_000
+  )
+);
+
+if (brief.unitEconomics?.primaryOfferId !== primaryOfferId) {
+  findings.push('unit economics must use the revenue plan primary offer');
+}
+if (brief.unitEconomics?.starterAuditUsd !== primaryOffer?.priceUsd) {
+  findings.push('unit economics starter audit price must match the active revenue plan');
+}
+if (brief.unitEconomics?.reserveSatsAtPlanningRate !== expectedReserveSats) {
+  findings.push('unit economics reserve sats must match active price, BTC/USD, and allocation assumptions');
+}
+if (brief.unitEconomics?.starterAuditUsd === '50') {
+  findings.push('unit economics must not use the deprecated $50 starter audit assumption');
+}
+
 if (status.funnel.paidPromotionsAwaitingVerification > 0) {
   if (brief.topActions[0]?.type !== 'paid-promotion-verification') {
     findings.push(
@@ -486,6 +511,12 @@ if (publicBrief) {
     validateRevenueExecutionBrief(publicBrief);
   } catch (error) {
     findings.push(`public revenue execution brief is invalid: ${error.message}`);
+  }
+  if (publicBrief.unitEconomics?.starterAuditUsd !== primaryOffer?.priceUsd) {
+    findings.push('public revenue-execution-brief.json must expose current primary-offer pricing');
+  }
+  if (publicBrief.unitEconomics?.reserveSatsAtPlanningRate !== expectedReserveSats) {
+    findings.push('public revenue-execution-brief.json must expose current reserve-sats unit economics');
   }
   const expectedPublicBrief = buildRevenueExecutionBrief({
     status,

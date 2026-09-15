@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "mode": "sats-revenue-execution-brief",
-  "generatedAtUtc": "2026-09-15T12:49:34.715Z",
+  "generatedAtUtc": "2026-09-15T12:52:52.000Z",
   "northStar": {
     "confirmedSats": "500000",
     "targetSats": "1000000000",
@@ -33,8 +33,13 @@
     "Manual outreach packets must be sent by a human and then marked with durable evidence."
   ],
   "unitEconomics": {
-    "starterAuditUsd": "50",
-    "illustrativeSatsAtBtcUsd100k": "50000",
+    "primaryOfferId": "transparency-audit",
+    "starterAuditUsd": "249",
+    "btcUsd": "100000",
+    "reserveAllocationPercent": "70",
+    "grossSatsAtPlanningRate": "249000",
+    "reserveSatsAtPlanningRate": "174300",
+    "illustrativeSatsAtBtcUsd100k": "249000",
     "note": "This is planning math only; record actual sats only after a confirmed direct-reserve receipt."
   },
   "topActions": [

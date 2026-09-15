@@ -5,6 +5,7 @@ import {
   buildRevenueCycleStatus,
   validateRevenueCycleStatus
 } from './lib/revenue-cycle-status.mjs';
+import { planningUsdToReserveSatsFloor } from './lib/planning-sats.mjs';
 
 const reserveAddress = 'bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk';
 const readyOutreachMessage =
@@ -382,6 +383,70 @@ assertIncludes(
   'Planning only'
 );
 assertEqual(prioritizedOutreachStatus.actionQueue[1]?.id, 'send-outreach-low-fit');
+
+const upgradeOutreachStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  revenuePlan: {
+    ...baseInputs.revenuePlan,
+    planningAssumptions: {
+      btcUsd: '100000',
+      btcUsdSource: 'operator planning assumption, not a live quote'
+    },
+    allocationPolicy: {
+      postReceiptAllocationPercent: {
+        btcReserve: '70'
+      }
+    },
+    revenueStreams: [
+      {
+        id: 'transparency-audit',
+        priceUsd: '249'
+      },
+      {
+        id: 'transparency-report-setup',
+        priceUsd: '999'
+      }
+    ]
+  },
+  prospectPipeline: {
+    ...baseInputs.prospectPipeline,
+    prospects: [
+      {
+        id: 'upgrade-fit',
+        stage: 'outreach-approved',
+        recommendedOfferId: 'transparency-report-setup',
+        observedClaim: 'Whitepaper claims BTC reserve, public reporting, and liquidity lock.',
+        projectUrl: 'https://example.com/upgrade',
+        chairmanApprovedBeforeOutreach: true
+      }
+    ]
+  },
+  outreachPacketQueue: {
+    packets: [
+      {
+        ...readyOutreachPacket('outreach-upgrade-fit', {
+          prospectId: 'upgrade-fit',
+          offerId: 'transparency-audit'
+        })
+      }
+    ]
+  },
+  socialQueue: {
+    ...baseInputs.socialQueue,
+    posts: []
+  },
+  env: {}
+});
+validateRevenueCycleStatus(upgradeOutreachStatus);
+assertEqual(
+  upgradeOutreachStatus.actionQueue[0]?.reserveImpactPlanning?.qualifiedReserveSats,
+  planningUsdToReserveSatsFloor({
+    usd: '999',
+    btcUsd: '100000',
+    reserveAllocationPercent: '70'
+  }).toString()
+);
+assertEqual(upgradeOutreachStatus.actionQueue[0]?.reserveImpactPlanning?.qualifiedReserveSats, '699300');
 
 const socialBeforeOutreachStatus = buildRevenueCycleStatus({
   ...baseInputs,

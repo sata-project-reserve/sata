@@ -1,6 +1,6 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-09-15T13:00:16.682Z
+Generated: 2026-09-15T13:04:56.321Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -104,7 +104,7 @@ Why: The shortest route to new reserve sats is a paid transparency-audit custome
 Priority: 122 / hot
 Current approved ask: transparency-audit / $249
 Qualified revenue path: $999
-Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+Planning reserve impact: 174300 sats current ask / 699300 sats qualified path
 Planning basis: 70% reserve allocation at BTC/USD 100000
 Upgrade path: transparency-report-setup only after explicit fit
 Evidence: Durable proof of manual send, such as a message permalink, email record, or contact screenshot reference.
@@ -143,7 +143,7 @@ Why: The shortest route to new reserve sats is a paid transparency-audit custome
 Priority: 110 / hot
 Current approved ask: transparency-audit / $249
 Qualified revenue path: $999
-Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+Planning reserve impact: 174300 sats current ask / 699300 sats qualified path
 Planning basis: 70% reserve allocation at BTC/USD 100000
 Upgrade path: transparency-report-setup only after explicit fit
 Evidence: Durable proof of manual send, such as a message permalink, email record, or contact screenshot reference.
@@ -182,7 +182,7 @@ node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packe
   Priority: 122 / hot
   Current approved ask: transparency-audit / $249
   Qualified revenue path: $999
-  Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+  Planning reserve impact: 174300 sats current ask / 699300 sats qualified path
   Planning basis: 70% reserve allocation at BTC/USD 100000
   Upgrade path: transparency-report-setup only after explicit fit
   Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_audit_service
@@ -216,7 +216,7 @@ node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packe
   Priority: 110 / hot
   Current approved ask: transparency-audit / $249
   Qualified revenue path: $999
-  Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+  Planning reserve impact: 174300 sats current ask / 699300 sats qualified path
   Planning basis: 70% reserve allocation at BTC/USD 100000
   Upgrade path: transparency-report-setup only after explicit fit
   Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_meme_launch_transparency_audit_first_contact&utm_content=meme_launch_audit_service
@@ -250,7 +250,7 @@ node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packe
   Priority: 104 / hot
   Current approved ask: transparency-audit / $249
   Qualified revenue path: $999
-  Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+  Planning reserve impact: 174300 sats current ask / 699300 sats qualified path
   Planning basis: 70% reserve allocation at BTC/USD 100000
   Upgrade path: transparency-report-setup only after explicit fit
   Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures_audit_service
@@ -284,7 +284,7 @@ node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packe
   Priority: 104 / hot
   Current approved ask: transparency-audit / $249
   Qualified revenue path: $999
-  Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+  Planning reserve impact: 174300 sats current ask / 699300 sats qualified path
   Planning basis: 70% reserve allocation at BTC/USD 100000
   Upgrade path: transparency-report-setup only after explicit fit
   Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_soltokenlab_transparency_audit_first_contact&utm_content=soltokenlab_audit_service

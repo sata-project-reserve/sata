@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "mode": "manual-outreach-dispatch-brief",
-  "generatedAtUtc": "2026-09-15T13:00:16.682Z",
+  "generatedAtUtc": "2026-09-15T13:04:56.321Z",
   "reserve": {
     "confirmedSats": "500000",
     "confirmedBtc": "0.005",
@@ -69,7 +69,7 @@
         "btcUsdSource": "operator planning assumption, not a live quote",
         "reserveAllocationPercent": "70",
         "currentAskReserveSats": "174300",
-        "qualifiedReserveSats": "699299",
+        "qualifiedReserveSats": "699300",
         "actualSatsRule": "Planning only. Record actual sats only after confirmed receipt and chairman-approved allocation."
       }
     },
@@ -127,7 +127,7 @@
         "btcUsdSource": "operator planning assumption, not a live quote",
         "reserveAllocationPercent": "70",
         "currentAskReserveSats": "174300",
-        "qualifiedReserveSats": "699299",
+        "qualifiedReserveSats": "699300",
         "actualSatsRule": "Planning only. Record actual sats only after confirmed receipt and chairman-approved allocation."
       }
     },
@@ -185,7 +185,7 @@
         "btcUsdSource": "operator planning assumption, not a live quote",
         "reserveAllocationPercent": "70",
         "currentAskReserveSats": "174300",
-        "qualifiedReserveSats": "699299",
+        "qualifiedReserveSats": "699300",
         "actualSatsRule": "Planning only. Record actual sats only after confirmed receipt and chairman-approved allocation."
       }
     },
@@ -243,7 +243,7 @@
         "btcUsdSource": "operator planning assumption, not a live quote",
         "reserveAllocationPercent": "70",
         "currentAskReserveSats": "174300",
-        "qualifiedReserveSats": "699299",
+        "qualifiedReserveSats": "699300",
         "actualSatsRule": "Planning only. Record actual sats only after confirmed receipt and chairman-approved allocation."
       }
     },

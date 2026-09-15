@@ -5,6 +5,7 @@ import {
   renderRevenueExecutionMarkdown,
   validateRevenueExecutionBrief
 } from './lib/revenue-execution-brief.mjs';
+import { planningUsdToReserveSatsFloor } from './lib/planning-sats.mjs';
 
 const status = await readJson(join('public', 'revenue-cycle-status.json'));
 const paidPromotionLedger = await readJson(join('public', 'paid-promotion-ledger.json'));
@@ -45,15 +46,20 @@ try {
 
 const primaryOfferId = revenuePlan.nextCycle?.primaryOfferId;
 const primaryOffer = revenuePlan.revenueStreams?.find((stream) => stream.id === primaryOfferId);
-const expectedReserveSats = String(
-  Math.floor(
-    ((Number(primaryOffer?.priceUsd ?? 0) *
-      Number(revenuePlan.allocationPolicy?.postReceiptAllocationPercent?.btcReserve ?? 70)) /
-      100 /
-      Number(revenuePlan.planningAssumptions?.btcUsd ?? 100000)) *
-      100_000_000
-  )
-);
+const expectedReserveSats = planningUsdToReserveSatsFloor({
+  usd: primaryOffer?.priceUsd ?? 0,
+  btcUsd: revenuePlan.planningAssumptions?.btcUsd ?? 100000,
+  reserveAllocationPercent:
+    revenuePlan.allocationPolicy?.postReceiptAllocationPercent?.btcReserve ?? 70
+}).toString();
+const expectedSetupReserveSats = planningUsdToReserveSatsFloor({
+  usd:
+    revenuePlan.revenueStreams?.find((stream) => stream.id === 'transparency-report-setup')
+      ?.priceUsd ?? 0,
+  btcUsd: revenuePlan.planningAssumptions?.btcUsd ?? 100000,
+  reserveAllocationPercent:
+    revenuePlan.allocationPolicy?.postReceiptAllocationPercent?.btcReserve ?? 70
+}).toString();
 
 if (brief.unitEconomics?.primaryOfferId !== primaryOfferId) {
   findings.push('unit economics must use the revenue plan primary offer');
@@ -139,6 +145,11 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
         findings.push(`${action.id}: higher-value manual outreach action must expose a conversion plan`);
       } else if (!/only after/i.test(action.conversionPlan.rule ?? '')) {
         findings.push(`${action.id}: conversion plan must preserve explicit-fit gating`);
+      }
+      if (action.reserveImpactPlanning?.qualifiedReserveSats !== expectedSetupReserveSats) {
+        findings.push(
+          `${action.id}: higher-value reserve planning sats must use decimal-safe revenue plan math`
+        );
       }
     }
   }
@@ -264,6 +275,11 @@ for (const item of brief.manualSendBatch) {
       findings.push(`${item.packetId}: higher-value manual send batch item must expose a conversion plan`);
     } else if (!/only after/i.test(item.conversionPlan.rule ?? '')) {
       findings.push(`${item.packetId}: conversion plan must preserve explicit-fit gating`);
+    }
+    if (item.reserveImpactPlanning?.qualifiedReserveSats !== expectedSetupReserveSats) {
+      findings.push(
+        `${item.packetId}: higher-value manual send reserve planning sats must use decimal-safe revenue plan math`
+      );
     }
   }
   if (!item.tracking || typeof item.tracking !== 'object') {

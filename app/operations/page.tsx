@@ -168,7 +168,18 @@ function cleanTrackingValue(value: string) {
 }
 
 function satsFromUsd(usd: number, btcUsd: number) {
-  return BigInt(Math.floor((usd / btcUsd) * 100_000_000));
+  const usdScaled = decimalToScaledBigInt(usd, 6);
+  const btcUsdScaled = decimalToScaledBigInt(btcUsd, 6);
+  if (usdScaled <= 0n || btcUsdScaled <= 0n) return 0n;
+  return (usdScaled * 100_000_000n) / btcUsdScaled;
+}
+
+function decimalToScaledBigInt(value: number, scaleDigits: number) {
+  if (!Number.isFinite(value) || value <= 0) return 0n;
+  const parts = value.toFixed(scaleDigits).split('.');
+  const whole = parts[0] ?? '0';
+  const fraction = parts[1] ?? '';
+  return BigInt(whole) * 10n ** BigInt(scaleDigits) + BigInt(fraction);
 }
 
 function dealsRequired(targetSats: bigint, satsPerDeal: bigint) {

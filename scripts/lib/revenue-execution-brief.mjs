@@ -3,6 +3,10 @@ import { buildPaidPromotionPlan } from './paid-promotion-ledger.mjs';
 import { prioritizeOutreachPackets } from './prospect-priority.mjs';
 import { buildLiveReplySources } from './live-reply-sources.mjs';
 import { buildInboundReplyTriagePlan } from './inbound-reply-triage.mjs';
+import {
+  planningUsdToReserveSatsFloor,
+  planningUsdToSatsFloor
+} from './planning-sats.mjs';
 
 const PROHIBITED_PATTERN =
   /\b(private key|seed phrase|wash trading|guaranteed return|guaranteed buyers|fake engagement|bots|raids|price prediction|price guarantee|redemption promise)\b/i;
@@ -1182,13 +1186,11 @@ function assertBriefInputs({ status, paidPromotionLedger, outreachPacketQueue, m
 }
 
 function usdToSatsEstimate({ usd, btcUsd }) {
-  if (!Number.isFinite(usd) || !Number.isFinite(btcUsd) || btcUsd <= 0) return 0n;
-  return BigInt(Math.floor((usd / btcUsd) * 100_000_000));
+  return planningUsdToSatsFloor({ usd, btcUsd });
 }
 
 function usdToReserveSatsEstimate({ usd, btcUsd, reserveAllocationPercent }) {
-  if (!Number.isFinite(reserveAllocationPercent) || reserveAllocationPercent <= 0) return 0n;
-  return usdToSatsEstimate({ usd: (usd * reserveAllocationPercent) / 100, btcUsd });
+  return planningUsdToReserveSatsFloor({ usd, btcUsd, reserveAllocationPercent });
 }
 
 function cleanLine(value) {

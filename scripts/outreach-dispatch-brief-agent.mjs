@@ -2,6 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { prioritizeOutreachPackets } from './lib/prospect-priority.mjs';
+import { planningUsdToReserveSatsFloor } from './lib/planning-sats.mjs';
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [, , command = 'plan', ...args] = process.argv;
@@ -106,12 +107,16 @@ export function buildOutreachDispatchBrief({
     (sprintGrossRevenueUsd * Number(reserveAllocationPercent)) / 100;
   const sprintQualifiedReserveAllocationUsd =
     (sprintQualifiedRevenueUsd * Number(reserveAllocationPercent)) / 100;
-  const sprintReserveSatsAtPlanningRate = Math.floor(
-    (sprintReserveAllocationUsd / planningBtcUsd) * 100_000_000
-  );
-  const sprintQualifiedReserveSatsAtPlanningRate = Math.floor(
-    (sprintQualifiedReserveAllocationUsd / planningBtcUsd) * 100_000_000
-  );
+  const sprintReserveSatsAtPlanningRate = planningUsdToReserveSatsFloor({
+    usd: sprintGrossRevenueUsd,
+    btcUsd: planningBtcUsd,
+    reserveAllocationPercent
+  });
+  const sprintQualifiedReserveSatsAtPlanningRate = planningUsdToReserveSatsFloor({
+    usd: sprintQualifiedRevenueUsd,
+    btcUsd: planningBtcUsd,
+    reserveAllocationPercent
+  });
   const pendingOutreachApprovals = (approvalQueue.items ?? [])
     .filter(
       (item) =>
@@ -146,8 +151,8 @@ export function buildOutreachDispatchBrief({
       qualifiedGrossRevenueUsd: String(sprintQualifiedRevenueUsd),
       reserveAllocationUsd: sprintReserveAllocationUsd.toFixed(2),
       qualifiedReserveAllocationUsd: sprintQualifiedReserveAllocationUsd.toFixed(2),
-      reserveSatsAtPlanningRate: String(sprintReserveSatsAtPlanningRate),
-      qualifiedReserveSatsAtPlanningRate: String(sprintQualifiedReserveSatsAtPlanningRate),
+      reserveSatsAtPlanningRate: sprintReserveSatsAtPlanningRate.toString(),
+      qualifiedReserveSatsAtPlanningRate: sprintQualifiedReserveSatsAtPlanningRate.toString(),
       grossRevenueBasis:
         'grossRevenueUsd is the current approved starter-offer path; qualifiedGrossRevenueUsd is upgrade-path planning only.',
       firstConversionGoal:
@@ -317,10 +322,7 @@ function reserveImpactPlanning({ revenuePlan, currentAskUsd, qualifiedRevenueUsd
 }
 
 function usdToReserveSatsEstimate({ usd, btcUsd, reserveAllocationPercent }) {
-  if (!Number.isFinite(usd) || usd <= 0) return 0n;
-  if (!Number.isFinite(btcUsd) || btcUsd <= 0) return 0n;
-  if (!Number.isFinite(reserveAllocationPercent) || reserveAllocationPercent <= 0) return 0n;
-  return BigInt(Math.floor(((usd * reserveAllocationPercent) / 100 / btcUsd) * 100_000_000));
+  return planningUsdToReserveSatsFloor({ usd, btcUsd, reserveAllocationPercent });
 }
 
 function withSentAtUtcPlaceholder(command, packetId) {

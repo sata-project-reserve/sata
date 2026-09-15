@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "mode": "sats-target-planner",
-  "generatedAtUtc": "2026-09-15T13:00:06.249Z",
+  "generatedAtUtc": "2026-09-15T13:05:35.508Z",
   "assumptions": {
     "btcUsd": "100000",
     "btcUsdSource": "operator planning assumption, not a live quote",
@@ -46,7 +46,7 @@
       "label": "Transparency report setup",
       "priceUsd": "999",
       "estimatedReserveUsdPerDeal": "699.30",
-      "estimatedReserveSatsPerDeal": "699299",
+      "estimatedReserveSatsPerDeal": "699300",
       "dealsToNextMilestone": 1,
       "dealsToFullTarget": 1430
     },

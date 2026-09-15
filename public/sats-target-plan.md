@@ -1,6 +1,6 @@
 # SATA Reserve Token Sats Target Plan
 
-Generated: 2026-09-15T13:00:06.249Z
+Generated: 2026-09-15T13:05:35.508Z
 BTC/USD assumption: 100000
 Reserve allocation assumption: 70%
 
@@ -31,7 +31,7 @@ Deals to full target: 5735
 ### Transparency report setup
 Offer: transparency-report-setup
 Price: $999
-Sats to reserve per closed deal: 699299
+Sats to reserve per closed deal: 699300
 Deals to next milestone: 1
 Deals to full target: 1430
 

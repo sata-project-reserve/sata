@@ -1,3 +1,5 @@
+import { planningUsdToReserveSatsFloor } from './planning-sats.mjs';
+
 const DEFAULT_BTC_USD = 100000;
 const SATS_PER_BTC = 100_000_000n;
 const PROHIBITED_PATTERN =
@@ -215,7 +217,11 @@ function buildCurrentPipelineCoverage({
     0
   );
   const estimatedReserveUsd = (qualifiedRevenueUsd * reserveAllocationPercent) / 100;
-  const estimatedReserveSatsAtFullClose = usdToSats({ usd: estimatedReserveUsd, btcUsd });
+  const estimatedReserveSatsAtFullClose = planningUsdToReserveSatsFloor({
+    usd: qualifiedRevenueUsd,
+    btcUsd,
+    reserveAllocationPercent
+  });
   const gapToNextMilestoneSatsAtFullClose =
     nextMilestoneAdditionalSats > estimatedReserveSatsAtFullClose
       ? nextMilestoneAdditionalSats - estimatedReserveSatsAtFullClose
@@ -257,7 +263,11 @@ function buildScenario({
 }) {
   const priceUsd = Number(stream.priceUsd);
   const reserveUsdPerDeal = (priceUsd * reserveAllocationPercent) / 100;
-  const reserveSatsPerDeal = usdToSats({ usd: reserveUsdPerDeal, btcUsd });
+  const reserveSatsPerDeal = planningUsdToReserveSatsFloor({
+    usd: stream.priceUsd,
+    btcUsd,
+    reserveAllocationPercent
+  });
   return {
     offerId: stream.id,
     label: stream.label,
@@ -307,10 +317,6 @@ function dealsRequired({ targetSats, satsPerDeal }) {
   if (targetSats <= 0n) return 0;
   if (satsPerDeal <= 0n) return Number.MAX_SAFE_INTEGER;
   return Number((targetSats + satsPerDeal - 1n) / satsPerDeal);
-}
-
-function usdToSats({ usd, btcUsd }) {
-  return BigInt(Math.floor((usd / btcUsd) * Number(SATS_PER_BTC)));
 }
 
 function satsToUsd({ sats, btcUsd }) {

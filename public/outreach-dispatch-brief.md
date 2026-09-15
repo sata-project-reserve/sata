@@ -1,6 +1,6 @@
 # SATA Reserve Token Outreach Dispatch Brief
 
-Generated: 2026-09-15T13:00:16.682Z
+Generated: 2026-09-15T13:04:56.321Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -27,7 +27,7 @@ Packet: outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-c
 Offer: transparency-audit / $249
 Current approved ask: transparency-audit / $249
 Qualified revenue path: $999
-Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+Planning reserve impact: 174300 sats current ask / 699300 sats qualified path
 Planning basis: 70% reserve allocation at BTC/USD 100000
 Upgrade path: transparency-report-setup only after explicit fit
 Priority: 122 / hot - current offer value $249; qualified upgrade path $999; setup offer has higher reserve-sats leverage; public reporting/setup intent; reserve, treasury, custody, or multisig claims; authority or liquidity claims; multiple public evidence links; direct public project URL; chairman-approved outreach path
@@ -63,7 +63,7 @@ Packet: outreach-packet-20260903-meme-launch-transparency-audit-first-contact
 Offer: transparency-audit / $249
 Current approved ask: transparency-audit / $249
 Qualified revenue path: $999
-Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+Planning reserve impact: 174300 sats current ask / 699300 sats qualified path
 Planning basis: 70% reserve allocation at BTC/USD 100000
 Upgrade path: transparency-report-setup only after explicit fit
 Priority: 110 / hot - current offer value $249; qualified upgrade path $999; setup offer has higher reserve-sats leverage; public reporting/setup intent; authority or liquidity claims; tooling, launchpad, or platform fit; direct public project URL; chairman-approved outreach path
@@ -99,7 +99,7 @@ Packet: outreach-packet-20260903-instar-meme-futures-transparency-audit-first-co
 Offer: transparency-audit / $249
 Current approved ask: transparency-audit / $249
 Qualified revenue path: $999
-Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+Planning reserve impact: 174300 sats current ask / 699300 sats qualified path
 Planning basis: 70% reserve allocation at BTC/USD 100000
 Upgrade path: transparency-report-setup only after explicit fit
 Priority: 104 / hot - current offer value $249; qualified upgrade path $999; setup offer has higher reserve-sats leverage; reserve, treasury, custody, or multisig claims; authority or liquidity claims; tooling, launchpad, or platform fit; direct public project URL; chairman-approved outreach path
@@ -135,7 +135,7 @@ Packet: outreach-packet-20260903-soltokenlab-transparency-audit-first-contact
 Offer: transparency-audit / $249
 Current approved ask: transparency-audit / $249
 Qualified revenue path: $999
-Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+Planning reserve impact: 174300 sats current ask / 699300 sats qualified path
 Planning basis: 70% reserve allocation at BTC/USD 100000
 Upgrade path: transparency-report-setup only after explicit fit
 Priority: 104 / hot - current offer value $249; qualified upgrade path $999; setup offer has higher reserve-sats leverage; reserve, treasury, custody, or multisig claims; authority or liquidity claims; tooling, launchpad, or platform fit; direct public project URL; chairman-approved outreach path

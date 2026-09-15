@@ -4,6 +4,7 @@ import {
   buildOutreachDispatchBrief,
   renderOutreachDispatchMarkdown
 } from './outreach-dispatch-brief-agent.mjs';
+import { planningUsdToReserveSatsFloor } from './lib/planning-sats.mjs';
 
 const status = readJson(join('public', 'revenue-cycle-status.json'));
 const packetQueue = readJson(join('public', 'service-outreach-packet-queue.json'));
@@ -15,6 +16,14 @@ const markdown = renderOutreachDispatchMarkdown(brief);
 const publicBrief = readOptionalJson(join('public', 'outreach-dispatch-brief.json'));
 const publicMarkdown = readOptionalText(join('public', 'outreach-dispatch-brief.md'));
 const findings = [];
+const expectedSetupReserveSats = planningUsdToReserveSatsFloor({
+  usd:
+    revenuePlan.revenueStreams?.find((stream) => stream.id === 'transparency-report-setup')
+      ?.priceUsd ?? 0,
+  btcUsd: revenuePlan.planningAssumptions?.btcUsd ?? 100000,
+  reserveAllocationPercent:
+    revenuePlan.allocationPolicy?.postReceiptAllocationPercent?.btcReserve ?? 70
+}).toString();
 
 if (brief.mode !== 'manual-outreach-dispatch-brief') {
   findings.push('brief mode must be manual-outreach-dispatch-brief');
@@ -139,6 +148,11 @@ for (const packet of brief.readyManualSends) {
       if ((packet.conversionPlan.qualificationQuestions ?? []).length < 2) {
         findings.push(`${packet.packetId}: conversion plan must include qualification questions`);
       }
+    }
+    if (packet.reserveImpactPlanning?.qualifiedReserveSats !== expectedSetupReserveSats) {
+      findings.push(
+        `${packet.packetId}: higher-value ready packet reserve planning sats must use decimal-safe revenue plan math`
+      );
     }
   }
   const reserveImpact = packet.reserveImpactPlanning;

@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { buildLiveReplySources } from './live-reply-sources.mjs';
 import { prioritizeOutreachPackets } from './prospect-priority.mjs';
 import { buildInboundReplyTriagePlan } from './inbound-reply-triage.mjs';
+import { planningUsdToReserveSatsFloor } from './planning-sats.mjs';
 
 export function buildRevenueCycleStatus({
   report,
@@ -1090,10 +1091,7 @@ function reserveImpactPlanning({ revenuePlan, currentAskUsd, qualifiedRevenueUsd
 }
 
 function usdToSats({ usd, btcUsd, reserveAllocationPercent }) {
-  if (!Number.isFinite(usd) || usd <= 0) return 0n;
-  if (!Number.isFinite(btcUsd) || btcUsd <= 0) return 0n;
-  if (!Number.isFinite(reserveAllocationPercent) || reserveAllocationPercent <= 0) return 0n;
-  return BigInt(Math.floor(((usd * reserveAllocationPercent) / 100 / btcUsd) * 100_000_000));
+  return planningUsdToReserveSatsFloor({ usd, btcUsd, reserveAllocationPercent });
 }
 
 function kebab(value) {

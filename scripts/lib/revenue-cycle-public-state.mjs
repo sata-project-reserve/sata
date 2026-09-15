@@ -123,6 +123,7 @@ export async function writeRevenueCyclePublicStatus({
     referralPartnerPolicy: inputs.referralPartnerPolicy,
     inboundQueue: inputs.inboundLeadQueue,
     packetArtifact: inputs.referralPartnerHandoffPacket,
+    revenuePlan: inputs.revenuePlan,
     generatedAtUtc
   });
   const socialDispatchBrief = buildSocialDispatchBrief({

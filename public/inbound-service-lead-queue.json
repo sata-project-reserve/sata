@@ -50,7 +50,7 @@
     {
       "id": "request-intake-fields",
       "purpose": "Ask an inbound lead for the minimum fields required to qualify paid transparency-audit work.",
-      "text": "Thanks for reaching out. If you want SATA to review transparency claims, send the project name, token or contract address, public website/X link, and the specific authority, liquidity, reserve, or disclosure claims you want checked. Starter audit is $50. Any exact BTC invoice and payment instructions require Executive Chairman approval first."
+      "text": "Thanks for reaching out. If you want SATA to review transparency claims, send the project name, token or contract address, public website/X link, and the specific authority, liquidity, reserve, or disclosure claims you want checked. SATA Transparency Audit is $249. Any exact BTC invoice and payment instructions require Executive Chairman approval first."
     },
     {
       "id": "invoice-request-boundary",

@@ -82,11 +82,18 @@ export function buildOutreachDispatchBrief({
       })),
     prospectPipeline,
     revenuePlan
-  });
+  }).map((packet) => ({
+    ...packet,
+    reserveImpactPlanning: reserveImpactPlanning({
+      revenuePlan,
+      currentAskUsd: packet.currentAskUsd ?? packet.targetRevenueUsd,
+      qualifiedRevenueUsd: packet.qualifiedRevenueUsd ?? packet.currentAskUsd ?? packet.targetRevenueUsd
+    })
+  }));
   const sprintPackets = readyPackets.slice(0, maxManualSends);
   const reserveAllocationPercent =
     revenuePlan?.allocationPolicy?.postReceiptAllocationPercent?.btcReserve ?? 70;
-  const planningBtcUsd = 100000;
+  const planningBtcUsd = Number(revenuePlan?.planningAssumptions?.btcUsd ?? 100000);
   const sprintGrossRevenueUsd = sprintPackets.reduce(
     (total, packet) => total + Number(packet.targetRevenueUsd),
     0
@@ -131,6 +138,9 @@ export function buildOutreachDispatchBrief({
     readyManualSends: sprintPackets,
     sprintEconomics: {
       planningBtcUsd: String(planningBtcUsd),
+      planningBtcUsdSource:
+        revenuePlan?.planningAssumptions?.btcUsdSource ??
+        'operator planning assumption, not a live quote',
       reserveAllocationPercent: String(reserveAllocationPercent),
       grossRevenueUsd: String(sprintGrossRevenueUsd),
       qualifiedGrossRevenueUsd: String(sprintQualifiedRevenueUsd),
@@ -180,6 +190,7 @@ export function renderOutreachDispatchMarkdown(brief) {
     `Qualified upgrade path if scoped customers convert: $${brief.sprintEconomics.qualifiedGrossRevenueUsd}.`,
     `Reserve allocation target at ${brief.sprintEconomics.reserveAllocationPercent}%: $${brief.sprintEconomics.reserveAllocationUsd} current / $${brief.sprintEconomics.qualifiedReserveAllocationUsd} qualified.`,
     `Planning reserve impact at BTC/USD ${brief.sprintEconomics.planningBtcUsd}: ${brief.sprintEconomics.reserveSatsAtPlanningRate} sats.`,
+    `Planning BTC/USD source: ${brief.sprintEconomics.planningBtcUsdSource}.`,
     `Qualified planning reserve impact: ${brief.sprintEconomics.qualifiedReserveSatsAtPlanningRate} sats.`,
     brief.sprintEconomics.grossRevenueBasis,
     brief.sprintEconomics.firstConversionGoal,
@@ -199,6 +210,8 @@ export function renderOutreachDispatchMarkdown(brief) {
       Number(packet.qualifiedRevenueUsd) > Number(packet.targetRevenueUsd)
         ? [`Qualified revenue path: $${packet.qualifiedRevenueUsd}`]
         : []),
+      `Planning reserve impact: ${packet.reserveImpactPlanning.currentAskReserveSats} sats current ask / ${packet.reserveImpactPlanning.qualifiedReserveSats} sats qualified path`,
+      `Planning basis: ${packet.reserveImpactPlanning.reserveAllocationPercent}% reserve allocation at BTC/USD ${packet.reserveImpactPlanning.btcUsd}`,
       ...(packet.conversionPlan?.upgradeOfferId
         ? [`Upgrade path: ${packet.conversionPlan.upgradeOfferId} only after explicit fit`]
         : []),
@@ -274,6 +287,40 @@ function commercialContextFor({ packet, prospect, revenuePlan, revenueStreamsByI
         }
       : null
   };
+}
+
+function reserveImpactPlanning({ revenuePlan, currentAskUsd, qualifiedRevenueUsd }) {
+  const btcUsd = Number(revenuePlan?.planningAssumptions?.btcUsd ?? 100000);
+  const reserveAllocationPercent = Number(
+    revenuePlan?.allocationPolicy?.postReceiptAllocationPercent?.btcReserve ?? 70
+  );
+  return {
+    basis: 'planning-only',
+    btcUsd: String(btcUsd),
+    btcUsdSource:
+      revenuePlan?.planningAssumptions?.btcUsdSource ??
+      'operator planning assumption, not a live quote',
+    reserveAllocationPercent: String(reserveAllocationPercent),
+    currentAskReserveSats: usdToReserveSatsEstimate({
+      usd: Number(currentAskUsd ?? 0),
+      btcUsd,
+      reserveAllocationPercent
+    }).toString(),
+    qualifiedReserveSats: usdToReserveSatsEstimate({
+      usd: Number(qualifiedRevenueUsd ?? currentAskUsd ?? 0),
+      btcUsd,
+      reserveAllocationPercent
+    }).toString(),
+    actualSatsRule:
+      'Planning only. Record actual sats only after confirmed receipt and chairman-approved allocation.'
+  };
+}
+
+function usdToReserveSatsEstimate({ usd, btcUsd, reserveAllocationPercent }) {
+  if (!Number.isFinite(usd) || usd <= 0) return 0n;
+  if (!Number.isFinite(btcUsd) || btcUsd <= 0) return 0n;
+  if (!Number.isFinite(reserveAllocationPercent) || reserveAllocationPercent <= 0) return 0n;
+  return BigInt(Math.floor(((usd * reserveAllocationPercent) / 100 / btcUsd) * 100_000_000));
 }
 
 function withSentAtUtcPlaceholder(command, packetId) {

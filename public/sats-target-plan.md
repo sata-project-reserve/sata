@@ -1,6 +1,6 @@
 # SATA Reserve Token Sats Target Plan
 
-Generated: 2026-09-15T07:44:32.261Z
+Generated: 2026-09-15T12:46:18.625Z
 BTC/USD assumption: 100000
 Reserve allocation assumption: 70%
 
@@ -21,38 +21,38 @@ Gross revenue at allocation rate: $1427857.14
 
 ## Revenue Scenarios
 
-### Transparency audit for crypto teams
+### SATA Transparency Audit
 Offer: transparency-audit
-Price: $50
-Sats to reserve per closed deal: 35000
-Deals to next milestone: 15
-Deals to full target: 28558
+Price: $249
+Sats to reserve per closed deal: 174300
+Deals to next milestone: 3
+Deals to full target: 5735
 
 ### Transparency report setup
 Offer: transparency-report-setup
-Price: $150
-Sats to reserve per closed deal: 105000
-Deals to next milestone: 5
-Deals to full target: 9520
+Price: $999
+Sats to reserve per closed deal: 699299
+Deals to next milestone: 1
+Deals to full target: 1430
 
-### Full proof dashboard and workflow setup
+### Continuous transparency monitoring
 Offer: full-proof-dashboard
-Price: $300
-Sats to reserve per closed deal: 210000
-Deals to next milestone: 3
-Deals to full target: 4760
+Price: $4999
+Sats to reserve per closed deal: 3499300
+Deals to next milestone: 1
+Deals to full target: 286
 
 ## Current Outreach Coverage
 Manual outreach actions: 30
-Qualified revenue if all current manual sends close: $2300.00
-Estimated sats to reserve at full close: 1610000
-Next milestone coverage: 322.00%
-Required close rate for next milestone: 31.06%
+Qualified revenue if all current manual sends close: $13470.00
+Estimated sats to reserve at full close: 9429000
+Next milestone coverage: 1885.80%
+Required close rate for next milestone: 5.30%
 Gap to next milestone at full close: 0 sats
 The current ready outreach queue can cover the next sats milestone if enough qualified prospects close and receipts are allocated.
 
 ## Operating Read
-The $50 starter audit can prove the loop, but the full target requires higher-value setup/dashboard work, grants, donations, or chairman-approved asset allocation proposals.
+The $249 SATA Transparency Audit can prove the loop, but the full target requires recurring monitoring revenue, larger scoped setup work, grants, donations, or chairman-approved asset allocation proposals.
 
 ## Next Action
 Use the first five tracked outreach links to seek one paid audit request, then quote exact sats only after a customer asks for an invoice.

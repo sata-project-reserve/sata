@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
+  recordConfirmedAllocation,
   recordConfirmedReceipt,
   renderReceiptAllocationProposal
 } from './lib/sats-receipt-allocation-proposal.mjs';
@@ -22,9 +23,12 @@ switch (command) {
   case 'record-confirmed':
     await writeConfirmedReceipt(parseOptions(args));
     break;
+  case 'record-allocation':
+    await writeConfirmedAllocation(parseOptions(args));
+    break;
   default:
     throw new Error(
-      `Unknown receipt allocation command: ${command}. Use plan, render <receipt-id>, or record-confirmed.`
+      `Unknown receipt allocation command: ${command}. Use plan, render <receipt-id>, record-confirmed, or record-allocation.`
     );
 }
 
@@ -56,8 +60,10 @@ function printPlan() {
           : 'Wait for a confirmed direct-reserve BTC receipt that matches a chairman-approved invoice.',
         recordConfirmedReceiptCommand:
           'node scripts/sats-receipt-allocation-agent.mjs record-confirmed --receipt "<receipt-id>" --invoice "<approved-invoice-id>" --receivedAtUtc "<received-at-utc>" --source "<service-source>" --amount "<btc-amount>" --amountSats "<exact-sats>" --transactionId "<bitcoin-txid>" --receivedAddress "<published-reserve-address>" --confirmations "<confirmations>" --deliverableUrl "<delivery-evidence-url>" --recordedAtUtc "<recorded-at-utc>" --confirmChairmanReceiptApproval "I am Executive Chairman and approve receipt <receipt-id>"',
+        recordConfirmedAllocationCommand:
+          'node scripts/sats-receipt-allocation-agent.mjs record-allocation --allocation "<allocation-id>" --receipt "<confirmed-receipt-id>" --allocatedAtUtc "<allocated-at-utc>" --transparencyReportUrl "<published-transparency-report-url>" --confirmChairmanAllocationApproval "I am Executive Chairman and approve allocation <allocation-id>"',
         boundary:
-          'This agent renders allocation proposals and records chairman-approved receipt evidence only. It cannot verify private keys, move BTC, spend SOL/SATA, or approve ledger updates.'
+          'This agent renders allocation proposals and records chairman-approved receipt/allocation evidence only. It cannot verify private keys, move BTC, spend SOL/SATA, or approve ledger updates.'
       },
       null,
       2
@@ -92,6 +98,21 @@ async function writeConfirmedReceipt(options) {
   await writeFile(LEDGER_PATH, `${JSON.stringify(nextLedger, null, 2)}\n`);
   await writeRevenueCyclePublicStatus();
   console.log(JSON.stringify({ wrote: LEDGER_PATH, receipts: nextLedger.receipts.length }, null, 2));
+}
+
+async function writeConfirmedAllocation(options) {
+  const nextLedger = recordConfirmedAllocation({
+    ledger,
+    queue,
+    allocationId: options.allocation,
+    receiptId: options.receipt,
+    allocatedAtUtc: options.allocatedAtUtc,
+    transparencyReportUrl: options.transparencyReportUrl,
+    confirmChairmanAllocationApproval: options.confirmChairmanAllocationApproval
+  });
+  await writeFile(LEDGER_PATH, `${JSON.stringify(nextLedger, null, 2)}\n`);
+  await writeRevenueCyclePublicStatus();
+  console.log(JSON.stringify({ wrote: LEDGER_PATH, allocations: nextLedger.allocations.length }, null, 2));
 }
 
 async function readJson(path) {

@@ -11,6 +11,7 @@ const playwrightBin = path.join(rootDir, 'node_modules', '@playwright', 'test', 
 const port = process.env.PLAYWRIGHT_PORT ?? '3001';
 const baseUrl = `http://127.0.0.1:${port}`;
 const args = process.argv.slice(2);
+const testArgs = withDefaultPlaywrightArgs(args);
 
 let server;
 let shuttingDown = false;
@@ -26,6 +27,21 @@ function spawnNode(script, scriptArgs, extraEnv = {}) {
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function hasOption(argsList, optionName) {
+  return argsList.some((arg) => arg === optionName || arg.startsWith(`${optionName}=`));
+}
+
+function withDefaultPlaywrightArgs(argsList) {
+  const nextArgs = [...argsList];
+  if (!hasOption(nextArgs, '--workers') && !hasOption(nextArgs, '-j')) {
+    nextArgs.push('--workers=2');
+  }
+  if (!hasOption(nextArgs, '--timeout')) {
+    nextArgs.push('--timeout=60000');
+  }
+  return nextArgs;
 }
 
 async function waitForServer() {
@@ -133,7 +149,7 @@ try {
 
   await waitForServer();
 
-  const testRunner = spawnNode(playwrightBin, ['test', ...args], {
+  const testRunner = spawnNode(playwrightBin, ['test', ...testArgs], {
     PLAYWRIGHT_BASE_URL: baseUrl,
     SATA_PLAYWRIGHT_EXTERNAL_SERVER: 'true'
   });

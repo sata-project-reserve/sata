@@ -344,8 +344,12 @@ export function refreshReadyOutreachPackets({
       projectUrl: prospect.projectUrl,
       tracking: trackingForManualPacket(packet)
     });
-    const recordContactCommand = recordContactCommandForPacket(packet);
     const messageSha256 = sha256(message);
+    const recordContactCommand = recordContactCommandForPacket({
+      ...packet,
+      message,
+      messageSha256
+    });
     if (
       packet.message === message &&
       packet.messageSha256 === messageSha256 &&

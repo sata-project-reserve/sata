@@ -90,6 +90,57 @@ export function recordConfirmedReceipt({
   return nextLedger;
 }
 
+export function recordConfirmedAllocation({
+  ledger,
+  queue,
+  allocationId,
+  receiptId,
+  allocatedAtUtc,
+  transparencyReportUrl,
+  confirmChairmanAllocationApproval
+}) {
+  if (!ledger) throw new Error('Missing sats generation ledger.');
+  if (!queue) throw new Error('Missing invoice queue.');
+  const id = cleanLine(allocationId);
+  if (!id) throw new Error('allocationId is required.');
+  if ((ledger.allocations ?? []).some((allocation) => allocation.id === id)) {
+    throw new Error(`${id}: allocation already exists.`);
+  }
+  const receipt = (ledger.receipts ?? []).find((candidate) => candidate.id === cleanLine(receiptId));
+  if (!receipt) throw new Error(`${id}: receiptId does not match a ledger receipt.`);
+  if ((ledger.allocations ?? []).some((allocation) => allocation.receiptId === receipt.id)) {
+    throw new Error(`${id}: receipt already has an allocation record.`);
+  }
+  const requiredApproval = `I am Executive Chairman and approve allocation ${id}`;
+  if (cleanLine(confirmChairmanAllocationApproval) !== requiredApproval) {
+    throw new Error(`${id}: exact Executive Chairman allocation approval phrase is required.`);
+  }
+
+  const allocation = {
+    id,
+    receiptId: receipt.id,
+    allocatedAtUtc: normalizeTimestamp(allocatedAtUtc, 'allocatedAtUtc'),
+    allocatedTo: 'btcReserve',
+    currency: receipt.currency,
+    amount: receipt.amount,
+    actualSatsAdded: receipt.amountSats,
+    transactionId: receipt.transactionId,
+    transparencyReportUrl: cleanLine(transparencyReportUrl)
+  };
+  const nextLedger = {
+    ...ledger,
+    updatedAtUtc: allocation.allocatedAtUtc,
+    allocations: [...(ledger.allocations ?? []), allocation]
+  };
+  assertConfirmedAllocation({
+    allocation,
+    ledger: nextLedger,
+    queue,
+    generatedAtUtc: allocation.allocatedAtUtc
+  });
+  return nextLedger;
+}
+
 export function assertConfirmedReceipt({ receipt, ledger, queue, generatedAtUtc = new Date().toISOString() }) {
   const label = receipt?.id ?? '<missing-receipt>';
   if (!receipt) throw new Error('Missing receipt.');
@@ -133,6 +184,13 @@ export function assertConfirmedReceipt({ receipt, ledger, queue, generatedAtUtc 
   if (/placeholder|to-be-filled|quote-required/i.test(receipt.transactionId)) {
     throw new Error(`${label}: transactionId must be the real Bitcoin transaction id.`);
   }
+  if (!/^[a-fA-F0-9]{64}$/.test(receipt.transactionId)) {
+    throw new Error(`${label}: transactionId must be a 64-character Bitcoin transaction id hex string.`);
+  }
+  const amountAsSats = parseBtcAmountToSats(receipt.amount, label);
+  if (amountAsSats.toString() !== receipt.amountSats) {
+    throw new Error(`${label}: BTC amount must match amountSats exactly.`);
+  }
 
   const invoice = (queue.invoices ?? []).find((candidate) => candidate.id === receipt.invoiceId);
   if (!invoice) throw new Error(`${label}: invoiceId does not match an invoice queue entry.`);
@@ -159,6 +217,99 @@ export function assertConfirmedReceipt({ receipt, ledger, queue, generatedAtUtc 
   return { invoice };
 }
 
+export function assertConfirmedAllocation({
+  allocation,
+  ledger,
+  queue,
+  generatedAtUtc = new Date().toISOString()
+}) {
+  const label = allocation?.id ?? '<missing-allocation>';
+  if (!allocation) throw new Error('Missing allocation.');
+  if (!ledger) throw new Error('Missing sats generation ledger.');
+  if (!queue) throw new Error('Missing invoice queue.');
+
+  const requiredFields = ledger.requiredAllocationFields ?? [
+    'id',
+    'receiptId',
+    'allocatedAtUtc',
+    'allocatedTo',
+    'currency',
+    'amount',
+    'actualSatsAdded',
+    'transactionId',
+    'transparencyReportUrl'
+  ];
+  for (const field of requiredFields) {
+    if (!allocation[field] || typeof allocation[field] !== 'string') {
+      throw new Error(`${label}: missing allocation field ${field}.`);
+    }
+  }
+
+  if (allocation.allocatedTo !== 'btcReserve') {
+    throw new Error(`${label}: allocatedTo must be btcReserve for direct-reserve sats accounting.`);
+  }
+  if (allocation.currency !== 'BTC') {
+    throw new Error(`${label}: currency must be BTC.`);
+  }
+  if (!/^\d+$/.test(allocation.actualSatsAdded) || BigInt(allocation.actualSatsAdded) <= 0n) {
+    throw new Error(`${label}: actualSatsAdded must be a positive integer string.`);
+  }
+  if (/placeholder|to-be-filled|quote-required|regenerate/i.test(allocation.transactionId)) {
+    throw new Error(`${label}: transactionId must be the real Bitcoin transaction id.`);
+  }
+  if (!/^[a-fA-F0-9]{64}$/.test(allocation.transactionId)) {
+    throw new Error(`${label}: transactionId must be a 64-character Bitcoin transaction id hex string.`);
+  }
+  if (
+    /placeholder|to-be-filled|regenerate/i.test(allocation.transparencyReportUrl) ||
+    !/^https:\/\/.+\/transparency(\/|$)/i.test(allocation.transparencyReportUrl)
+  ) {
+    throw new Error(`${label}: transparencyReportUrl must be a published transparency report URL.`);
+  }
+
+  const receipt = (ledger.receipts ?? []).find((candidate) => candidate.id === allocation.receiptId);
+  if (!receipt) throw new Error(`${label}: receiptId does not match a ledger receipt.`);
+  assertConfirmedReceipt({ receipt, ledger, queue, generatedAtUtc });
+
+  if (allocation.amount !== receipt.amount) {
+    throw new Error(`${label}: amount must match the confirmed receipt amount.`);
+  }
+  if (allocation.actualSatsAdded !== receipt.amountSats) {
+    throw new Error(`${label}: actualSatsAdded must match the confirmed receipt amountSats.`);
+  }
+  if (allocation.transactionId !== receipt.transactionId) {
+    throw new Error(`${label}: transactionId must match the confirmed receipt transactionId.`);
+  }
+
+  const allocatedAt = toTime(allocation.allocatedAtUtc, 'allocatedAtUtc');
+  const generatedAt = toTime(generatedAtUtc, 'generatedAtUtc');
+  const receivedAt = toTime(receipt.receivedAtUtc, 'receivedAtUtc');
+  if (allocatedAt > generatedAt) throw new Error(`${label}: allocatedAtUtc cannot be in the future.`);
+  if (allocatedAt < receivedAt) {
+    throw new Error(`${label}: allocatedAtUtc cannot be before the receipt receivedAtUtc.`);
+  }
+  if (receipt.receiptApprovedAtUtc) {
+    const receiptApprovedAt = toTime(receipt.receiptApprovedAtUtc, 'receiptApprovedAtUtc');
+    if (allocatedAt < receiptApprovedAt) {
+      throw new Error(`${label}: allocatedAtUtc cannot be before receipt approval.`);
+    }
+  }
+
+  const duplicateAllocationId = (ledger.allocations ?? []).filter(
+    (candidate) => candidate.id === allocation.id
+  ).length > 1;
+  if (duplicateAllocationId) throw new Error(`${label}: allocation id must be unique.`);
+
+  const duplicateReceiptAllocation = (ledger.allocations ?? []).filter(
+    (candidate) => candidate.receiptId === allocation.receiptId
+  ).length > 1;
+  if (duplicateReceiptAllocation) {
+    throw new Error(`${label}: receiptId can only be allocated once.`);
+  }
+
+  return { receipt };
+}
+
 function toTime(value, label) {
   const time = new Date(value).getTime();
   if (!Number.isFinite(time)) throw new Error(`${label} must be a valid timestamp.`);
@@ -171,4 +322,15 @@ function normalizeTimestamp(value, label) {
 
 function cleanLine(value) {
   return String(value ?? '').replace(/\s+/g, ' ').trim();
+}
+
+function parseBtcAmountToSats(value, label) {
+  const raw = cleanLine(value);
+  if (!/^\d+(\.\d{1,8})?$/.test(raw)) {
+    throw new Error(`${label}: amount must be a BTC decimal with at most 8 decimal places.`);
+  }
+  const [whole, fraction = ''] = raw.split('.');
+  const sats = BigInt(whole) * 100_000_000n + BigInt(fraction.padEnd(8, '0'));
+  if (sats <= 0n) throw new Error(`${label}: amount must be greater than zero.`);
+  return sats;
 }

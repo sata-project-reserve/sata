@@ -24,8 +24,11 @@ for (const required of [
 
 const streams = plan.revenueStreams ?? [];
 if (streams.length < 3) findings.push('revenueStreams must include at least three offers');
-if (!streams.some((stream) => stream.id === 'transparency-audit' && stream.priceUsd === '50')) {
-  findings.push('revenueStreams must include a $50 transparency-audit entry');
+if (!streams.some((stream) => stream.id === 'transparency-audit' && stream.priceUsd === '249')) {
+  findings.push('revenueStreams must include a $249 transparency-audit entry');
+}
+if (!streams.some((stream) => stream.id === 'full-proof-dashboard' && stream.priceUsd === '4999')) {
+  findings.push('revenueStreams must include a $4999 continuous monitoring entry');
 }
 for (const stream of streams) {
   for (const field of ['id', 'label', 'priceUsd', 'deliverable', 'paymentTiming']) {
@@ -44,6 +47,9 @@ if ((upgradePolicy.defaultPath ?? []).length < 3) {
 }
 if (!(upgradePolicy.qualificationQuestions ?? []).some((question) => /automated dashboard/i.test(question))) {
   findings.push('upgradePolicy.qualificationQuestions must qualify dashboard demand');
+}
+if (!(upgradePolicy.defaultPath ?? []).some((step) => /\$249/.test(step))) {
+  findings.push('upgradePolicy.defaultPath must start from the $249 audit offer');
 }
 const upgradeStopRules = (upgradePolicy.stopRules ?? []).join('\n');
 for (const required of [
@@ -66,8 +72,23 @@ if (plan.allocationPolicy?.requiresChairmanApprovalBeforeConversion !== true) {
   findings.push('allocationPolicy must require chairman approval before conversion');
 }
 
+const planning = plan.planningAssumptions ?? {};
+if (!/^\d+(\.\d+)?$/.test(planning.btcUsd ?? '') || Number(planning.btcUsd) <= 0) {
+  findings.push('planningAssumptions.btcUsd must be a positive decimal string');
+}
+if (!/operator planning assumption, not a live quote/i.test(planning.btcUsdSource ?? '')) {
+  findings.push('planningAssumptions.btcUsdSource must mark BTC/USD as an operator planning assumption');
+}
+if (!/fresh chairman-selected BTC\/USD rate/i.test(planning.reserveImpactRule ?? '')) {
+  findings.push('planningAssumptions.reserveImpactRule must require a fresh chairman-selected invoice rate');
+}
+if (!/confirmed receipt and chairman-approved allocation/i.test(planning.actualSatsRule ?? '')) {
+  findings.push('planningAssumptions.actualSatsRule must require confirmed receipt and chairman-approved allocation');
+}
+
 const rules = (plan.goToMarketRules ?? []).join('\n');
 for (const required of [
+  /Revenue First/i,
   /proof tooling|public reporting/i,
   /Sponsored|Paid Partnership/i,
   /fake engagement|bots|raids|investor lists/i,
@@ -95,6 +116,18 @@ if (!/No price guarantee/i.test(plan.publicLanguage?.requiredCaveat ?? '')) {
 }
 if (!/no revenue guarantee/i.test(plan.publicLanguage?.requiredCaveat ?? '')) {
   findings.push('publicLanguage.requiredCaveat must include no-revenue-guarantee language');
+}
+if (plan.nextCycle?.targetClosedRevenueUsd !== '996') {
+  findings.push('nextCycle.targetClosedRevenueUsd must target four $249 audits');
+}
+if (plan.nextCycle?.minimumAcceptableFirstDealUsd !== '249') {
+  findings.push('nextCycle.minimumAcceptableFirstDealUsd must be $249');
+}
+const successCriteria = (plan.nextCycle?.successCriteria ?? []).join('\n');
+for (const required of [/Customers/i, /Revenue/i, /Reserve sats/i, /Recurring revenue/i]) {
+  if (!required.test(successCriteria)) {
+    findings.push(`nextCycle.successCriteria missing revenue-first metric ${required}`);
+  }
 }
 
 if (findings.length > 0) {

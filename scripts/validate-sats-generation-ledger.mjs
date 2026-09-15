@@ -1,6 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { assertConfirmedReceipt } from './lib/sats-receipt-allocation-proposal.mjs';
+import {
+  assertConfirmedAllocation,
+  assertConfirmedReceipt
+} from './lib/sats-receipt-allocation-proposal.mjs';
 
 const ledger = JSON.parse(readFileSync(join('public', 'sats-generation-ledger.json'), 'utf8'));
 const invoiceQueue = JSON.parse(readFileSync(join('public', 'sats-invoice-queue.json'), 'utf8'));
@@ -67,12 +70,29 @@ if (!/receiptRecording/.test(satsAgent) || !/sats-receipt-allocation-agent\.mjs 
 if (!/--recordedAtUtc "<recorded-at-utc>"/.test(satsAgent)) {
   findings.push('sats plan confirmed-receipt command must require explicit recordedAtUtc evidence');
 }
+if (!/recordConfirmedAllocationCommand/.test(satsAgent) || !/sats-receipt-allocation-agent\.mjs record-allocation/.test(satsAgent)) {
+  findings.push('sats plan must expose the bounded confirmed-allocation recording command');
+}
+if (!/--allocatedAtUtc "<allocated-at-utc>"/.test(satsAgent)) {
+  findings.push('sats plan confirmed-allocation command must require explicit allocatedAtUtc evidence');
+}
+if (!/confirmChairmanAllocationApproval/.test(satsAgent)) {
+  findings.push('sats plan confirmed-allocation command must require chairman allocation approval phrase');
+}
+if (!/allocationReceiptIds/.test(satsAgent) || /receipt\.allocatedAtUtc/.test(satsAgent)) {
+  findings.push('sats plan must count awaiting allocations from ledger.allocations receiptId records');
+}
 
 for (const allocationItem of ledger.allocations ?? []) {
   for (const field of ledger.requiredAllocationFields ?? []) {
     if (!allocationItem[field]) {
       findings.push(`${allocationItem.id ?? '<missing-allocation-id>'}: missing allocation field ${field}`);
     }
+  }
+  try {
+    assertConfirmedAllocation({ allocation: allocationItem, ledger, queue: invoiceQueue });
+  } catch (error) {
+    findings.push(`${allocationItem.id ?? '<missing-allocation-id>'}: ${error.message}`);
   }
 }
 
@@ -96,4 +116,4 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('Sats generation ledger check passed: pipeline and receipt gates are enforceable.');
+console.log('Sats generation ledger check passed: pipeline, receipt, and allocation gates are enforceable.');

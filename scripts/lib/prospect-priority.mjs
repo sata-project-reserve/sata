@@ -51,7 +51,7 @@ export function prioritizeOutreachPackets({ packets, prospectPipeline, revenuePl
         targetRevenueUsd,
         qualifiedRevenueUsd
       });
-      return { ...packet, qualifiedRevenueUsd, priority };
+      return { ...packet, targetRevenueUsd, qualifiedRevenueUsd, priority };
     })
     .sort((left, right) => {
       const byScore = right.priority.score - left.priority.score;

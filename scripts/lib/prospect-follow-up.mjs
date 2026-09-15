@@ -50,7 +50,7 @@ export function renderProspectFollowUp({
     '',
     'Quick follow-up on the SATA transparency audit note.',
     'If this is useful, send the public token or contract address plus the authority, liquidity, reserve, or disclosure claims you want checked.',
-    'The starter audit remains $50, but no invoice is issued and no payment details are provided unless you explicitly ask to proceed and the SATA Executive Chairman approves the exact-sats invoice.',
+    'The SATA Transparency Audit remains $249, but no invoice is issued and no payment details are provided unless you explicitly ask to proceed and the SATA Executive Chairman approves the exact-sats invoice.',
     '',
     'Service page: https://sata-project-reserve.github.io/sata/services/transparency-audit',
     'Intake form: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml',

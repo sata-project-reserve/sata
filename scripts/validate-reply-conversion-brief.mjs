@@ -89,6 +89,30 @@ if (!brief.invoiceConversionSprint || typeof brief.invoiceConversionSprint !== '
   if (!/^\d+$/.test(sprint.reserveImpactIfQualifiedUpgradeClosesSats ?? '')) {
     findings.push('invoice conversion sprint qualified impact must be integer sats');
   }
+  if (sprint.reserveAllocationPercent !== '70') {
+    findings.push('invoice conversion sprint must expose the 70% reserve allocation basis');
+  }
+  if (sprint.planningBtcUsd !== revenuePlan.planningAssumptions?.btcUsd) {
+    findings.push('invoice conversion sprint BTC/USD must come from revenue-operating-plan.json');
+  }
+  if (sprint.planningBtcUsdSource !== revenuePlan.planningAssumptions?.btcUsdSource) {
+    findings.push('invoice conversion sprint BTC/USD source must come from revenue-operating-plan.json');
+  }
+  if (!/planning only/i.test(sprint.actualSatsRule ?? '')) {
+    findings.push('invoice conversion sprint must mark reserve impact as planning-only');
+  }
+  if (
+    sprint.candidate?.currentAskUsd === '50' &&
+    sprint.reserveImpactIfCurrentAskClosesSats !== '35000'
+  ) {
+    findings.push('invoice conversion sprint current ask must use 70% reserve allocation');
+  }
+  if (
+    sprint.candidate?.qualifiedAskUsd === '150' &&
+    sprint.reserveImpactIfQualifiedUpgradeClosesSats !== '105000'
+  ) {
+    findings.push('invoice conversion sprint qualified path must use 70% reserve allocation');
+  }
   if (!Array.isArray(sprint.commands) || sprint.commands.length === 0) {
     findings.push('invoice conversion sprint must expose at least one bounded command');
   }
@@ -98,6 +122,14 @@ if (!brief.invoiceConversionSprint || typeof brief.invoiceConversionSprint !== '
     }
     if (/paymentAddress|reserveAddress|bc1/i.test(command.command ?? '')) {
       findings.push('invoice conversion sprint must not expose payment addresses in commands');
+    }
+    if (/sats-invoice-quote-agent\.mjs (?:quote-template|write-draft)/.test(command.command ?? '')) {
+      if (!/--createdAtUtc "<quote-created-at-utc>"/.test(command.command ?? '')) {
+        findings.push('invoice conversion sprint quote commands must require quote-created-at-utc');
+      }
+      if (!/--ttlMinutes 30/.test(command.command ?? '')) {
+        findings.push('invoice conversion sprint quote commands must include bounded quote ttl');
+      }
     }
     if (/(private key|seed phrase|pump|guaranteed buyers|fake engagement)/i.test(command.command ?? '')) {
       findings.push('invoice conversion sprint command contains prohibited language');

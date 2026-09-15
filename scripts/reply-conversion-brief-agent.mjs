@@ -218,8 +218,11 @@ export function renderReplyConversionMarkdown(brief) {
     `Objective: ${brief.invoiceConversionSprint.objective}`,
     `Next evidence gate: ${brief.invoiceConversionSprint.nextEvidenceGate}`,
     `Planning BTC/USD: ${brief.invoiceConversionSprint.planningBtcUsd}`,
+    `Planning BTC/USD source: ${brief.invoiceConversionSprint.planningBtcUsdSource}`,
+    `Reserve allocation: ${brief.invoiceConversionSprint.reserveAllocationPercent}%`,
     `Current ask reserve impact: ${brief.invoiceConversionSprint.reserveImpactIfCurrentAskClosesSats} sats`,
     `Qualified path reserve impact: ${brief.invoiceConversionSprint.reserveImpactIfQualifiedUpgradeClosesSats} sats`,
+    `Actual sats rule: ${brief.invoiceConversionSprint.actualSatsRule}`,
     `Stop rule: ${brief.invoiceConversionSprint.stopRule}`,
     '',
     '### Candidate',
@@ -454,7 +457,12 @@ function buildInvoiceConversionSprint({
   outreachApproved,
   revenuePlan
 }) {
-  const planningBtcUsd = '100000';
+  const planningBtcUsd = String(revenuePlan?.planningAssumptions?.btcUsd ?? '100000');
+  const planningBtcUsdSource =
+    revenuePlan?.planningAssumptions?.btcUsdSource ?? 'operator planning assumption, not a live quote';
+  const reserveAllocationPercent = String(
+    revenuePlan?.allocationPolicy?.postReceiptAllocationPercent?.btcReserve ?? 70
+  );
   const objective =
     'Create one chairman-reviewable exact-sats invoice path from the highest-probability revenue evidence without exposing payment instructions early.';
   const current =
@@ -471,16 +479,23 @@ function buildInvoiceConversionSprint({
     status,
     objective,
     planningBtcUsd,
+    planningBtcUsdSource,
+    reserveAllocationPercent,
     candidate,
     nextEvidenceGate: nextEvidenceGateFor(status),
-    reserveImpactIfCurrentAskClosesSats: usdToSats({
+    reserveImpactIfCurrentAskClosesSats: usdToReserveSats({
       usd: currentAskUsd,
-      btcUsd: Number(planningBtcUsd)
+      btcUsd: Number(planningBtcUsd),
+      reserveAllocationPercent: Number(reserveAllocationPercent)
     }).toString(),
-    reserveImpactIfQualifiedUpgradeClosesSats: usdToSats({
+    reserveImpactIfQualifiedUpgradeClosesSats: usdToReserveSats({
       usd: Math.max(currentAskUsd, qualifiedAskUsd),
-      btcUsd: Number(planningBtcUsd)
+      btcUsd: Number(planningBtcUsd),
+      reserveAllocationPercent: Number(reserveAllocationPercent)
     }).toString(),
+    actualSatsRule:
+      revenuePlan?.planningAssumptions?.actualSatsRule ??
+      'Planning only. Record actual sats only after confirmed receipt and chairman-approved allocation.',
     commands: sprintCommandsFor({
       status,
       current,
@@ -630,7 +645,7 @@ function quoteCommand({ offerId, customerId }) {
   return {
     label: 'Preview exact-sats quote',
     reason: 'Preview only with a chairman-selected BTC/USD rate and source.',
-    command: `node scripts/sats-invoice-quote-agent.mjs quote-template --offer ${offerId} --customer "${customerId}" --btcUsd "<chairman-selected-rate>" --source "<quote-source>"`
+    command: `node scripts/sats-invoice-quote-agent.mjs quote-template --offer ${quoteShell(offerId)} --customer ${quoteShell(customerId)} --btcUsd "<chairman-selected-rate>" --source "<quote-source>" --createdAtUtc "<quote-created-at-utc>" --ttlMinutes 30`
   };
 }
 
@@ -638,8 +653,12 @@ function writeDraftCommand({ offerId, customerId, evidencePlaceholder }) {
   return {
     label: 'Stage draft for chairman approval',
     reason: 'Stages a draft invoice and approval item only; it does not send payment instructions.',
-    command: `node scripts/sats-invoice-quote-agent.mjs write-draft --offer ${offerId} --customer "${customerId}" --btcUsd "<chairman-selected-rate>" --source "<quote-source>" --evidence "${evidencePlaceholder}"`
+    command: `node scripts/sats-invoice-quote-agent.mjs write-draft --offer ${quoteShell(offerId)} --customer ${quoteShell(customerId)} --btcUsd "<chairman-selected-rate>" --source "<quote-source>" --createdAtUtc "<quote-created-at-utc>" --ttlMinutes 30 --evidence ${quoteShell(evidencePlaceholder)}`
   };
+}
+
+function quoteShell(value) {
+  return `"${String(value).replaceAll('"', '\\"')}"`;
 }
 
 function priceForOffer({ offerId, revenuePlan }) {
@@ -660,6 +679,11 @@ function priceForOffer({ offerId, revenuePlan }) {
 function usdToSats({ usd, btcUsd }) {
   if (!Number.isFinite(usd) || !Number.isFinite(btcUsd) || usd <= 0 || btcUsd <= 0) return 0n;
   return BigInt(Math.ceil((usd / btcUsd) * 100_000_000));
+}
+
+function usdToReserveSats({ usd, btcUsd, reserveAllocationPercent }) {
+  if (!Number.isFinite(reserveAllocationPercent) || reserveAllocationPercent <= 0) return 0n;
+  return usdToSats({ usd: (usd * reserveAllocationPercent) / 100, btcUsd });
 }
 
 function nextReplyAction({

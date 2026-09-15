@@ -71,7 +71,7 @@ const findings = [];
 
 for (const required of [
   /transparency audit/i,
-  /starter audit is \$50/i,
+  /\$249 Transparency Audit/i,
   /No price promotion/i,
   /no investor targeting/i,
   /no market-support promises/i,

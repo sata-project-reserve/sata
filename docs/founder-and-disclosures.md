@@ -15,7 +15,7 @@ SATA is an independent personal project. It is not affiliated with, sponsored by
 
 ## Current Context
 
-SATA is intentionally described as early-stage and founder-led. The founder currently controls a large portion of the token supply, and owner-held unlocked LP remains removable. This concentration is disclosed as a material risk, not hidden.
+SATA is intentionally described as early-stage and founder-led. The founder currently controls a large portion of the token supply. The latest transparency report shows no owner unlocked LP balance, but any future owner-held LP remains removable unless it is separately locked, burned, or transferred to accountable multisig control. Founder concentration and any owner-controlled liquidity are disclosed as material risks, not hidden.
 
 The intended long-term direction is to reduce unilateral control over time through transparent actions such as:
 

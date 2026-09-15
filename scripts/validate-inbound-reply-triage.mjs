@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
+  buildInboundReplyTriagePlan,
   buildInboundReplyTriage,
   renderInboundReplyTriage
 } from './lib/inbound-reply-triage.mjs';
@@ -9,6 +10,60 @@ const queue = readJson(join('public', 'inbound-service-lead-queue.json'));
 const invoiceQueue = readJson(join('public', 'sats-invoice-queue.json'));
 const agent = readFileSync(join('scripts', 'inbound-reply-triage-agent.mjs'), 'utf8');
 const findings = [];
+
+const plan = buildInboundReplyTriagePlan({
+  queue,
+  liveAttributionSources: [
+    {
+      type: 'paid-promotion-reply',
+      id: 'diana-crypto-20260903-transparency-tweet',
+      triageCommand:
+        'node scripts/inbound-reply-triage-agent.mjs markdown --sourceType paid-promotion-reply --sourceId diana-crypto-20260903-transparency-tweet --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>"'
+    }
+  ]
+});
+if (plan.mode !== 'inbound-reply-triage-plan') {
+  findings.push('triage plan must expose inbound-reply-triage-plan mode');
+}
+for (const expected of [
+  'sourceType',
+  'sourceId',
+  'contactHandle',
+  'publicProfileUrl',
+  'projectUrl',
+  'replyText',
+  'evidence',
+  'recordedAtUtc'
+]) {
+  if (!plan.requiredEvidenceFields?.includes(expected)) {
+    findings.push(`triage plan must require evidence field ${expected}`);
+  }
+}
+const invoiceRule = plan.classificationRules?.find(
+  (rule) => rule.classification === 'invoice-request-needs-chairman-review'
+);
+if (!invoiceRule?.customerAskedForInvoice) {
+  findings.push('triage plan invoice rule must preserve customerAskedForInvoice true');
+}
+if (invoiceRule?.suggestedReplyTemplateId !== 'invoice-request-boundary') {
+  findings.push('triage plan invoice rule must use invoice-request-boundary template');
+}
+if (!/inbound-invoice-request-agent\.mjs render/.test(invoiceRule?.nextCommandAfterRecord ?? '')) {
+  findings.push('triage plan invoice rule must route to inbound invoice request rendering');
+}
+const intakeRule = plan.classificationRules?.find((rule) => rule.classification === 'needs-intake-fields');
+if (intakeRule?.customerAskedForInvoice !== false) {
+  findings.push('triage plan intake rule must keep customerAskedForInvoice false');
+}
+const rejectRule = plan.classificationRules?.find(
+  (rule) => rule.classification === 'reject-prohibited-promotion'
+);
+if (rejectRule?.nextCommandAfterRecord !== null) {
+  findings.push('triage plan reject rule must not expose a record-followup command');
+}
+if (!plan.stopRules?.some((rule) => /Do not send payment instructions/i.test(rule))) {
+  findings.push('triage plan must block payment instructions');
+}
 
 const base = {
   queue,
@@ -105,8 +160,8 @@ if (rendered.includes(invoiceQueue.paymentPolicy.reserveAddress)) {
 if (!/buildInboundLeadPlan/.test(agent)) {
   findings.push('triage agent plan must use the live inbound lead plan sources');
 }
-if (!/inbound-reply-triage-plan/.test(agent)) {
-  findings.push('triage agent must expose a plan mode');
+if (!/buildInboundReplyTriagePlan/.test(agent)) {
+  findings.push('triage agent plan must use the shared triage plan builder');
 }
 if (!/replyText/.test(agent)) {
   findings.push('triage agent must require replyText input');

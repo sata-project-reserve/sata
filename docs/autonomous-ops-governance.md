@@ -44,6 +44,7 @@ Responsibilities:
 
 - draft factual posts from the latest transparency report;
 - publish only repository-approved queue items when automation is enabled;
+- surface manual publish tasks when automation is disabled and record live URLs only after human publication evidence exists;
 - record post URLs and monitoring state;
 - avoid hype, price claims, coordinated-buy language, and undisclosed paid promotion.
 
@@ -170,11 +171,11 @@ Sats generation is tracked in `public/sats-generation-ledger.json`. Run `npm run
 
 Invoice controls are tracked in `public/sats-invoice-queue.json`. Run `npm run ops:invoice-plan` to view invoice templates and `npm run ops:invoice-check` to validate quote and custody rules.
 
-Invoice quote preparation is handled by `scripts/sats-invoice-quote-agent.mjs`. Run `npm run ops:invoice-quote-plan` to view quoting boundaries, and `node scripts/sats-invoice-quote-agent.mjs quote-template --offer transparency-audit --customer "<customer>" --btcUsd "<manual-rate>" --source "<quote-source>"` to draft exact-sats invoice fields for chairman approval.
+Invoice quote preparation is handled by `scripts/sats-invoice-quote-agent.mjs`. Run `npm run ops:invoice-quote-plan` to view quoting boundaries, and `node scripts/sats-invoice-quote-agent.mjs quote-template --offer transparency-audit --customer "<customer>" --btcUsd "<manual-rate>" --source "<quote-source>" --createdAtUtc "<quote-created-at-utc>" --ttlMinutes 30` to draft exact-sats invoice fields for chairman approval.
 
 Approved customer payment packets are handled by `scripts/sats-invoice-payment-packet-agent.mjs`. Run `npm run ops:invoice-payment-plan` to view approved invoices, and `node scripts/sats-invoice-payment-packet-agent.mjs render <invoice-id>` only after the invoice record is `approved-by-chairman` with exact sats and an unexpired quote.
 
-Confirmed receipt allocation proposals are handled by `scripts/sats-receipt-allocation-agent.mjs`. Run `npm run ops:receipt-plan` to view confirmed direct-reserve invoice receipts awaiting allocation records, and `node scripts/sats-receipt-allocation-agent.mjs render <receipt-id>` only after the transaction has been independently confirmed at the published reserve address.
+Confirmed receipt allocation proposals are handled by `scripts/sats-receipt-allocation-agent.mjs`. Run `npm run ops:receipt-plan` to view confirmed direct-reserve invoice receipts awaiting allocation records, and `node scripts/sats-receipt-allocation-agent.mjs render <receipt-id>` only after the transaction has been independently confirmed at the published reserve address. Recording an allocation is a separate post-approval step: `node scripts/sats-receipt-allocation-agent.mjs record-allocation --allocation "<allocation-id>" --receipt "<receipt-id>" --allocatedAtUtc "<allocated-at-utc>" --transparencyReportUrl "<published-transparency-report-url>" --confirmChairmanAllocationApproval "I am Executive Chairman and approve allocation <allocation-id>"`. This records ledger evidence only; it does not move assets.
 
 Prospect controls are tracked in `public/sats-prospect-pipeline.json`. Run `npm run ops:prospect-plan` to view buyer segments and daily cadence, and `npm run ops:prospect-check` to validate outreach boundaries.
 

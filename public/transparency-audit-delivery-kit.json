@@ -5,7 +5,7 @@
   "mode": "transparency-audit-delivery-kit",
   "objective": "Deliver paid transparency audits quickly and consistently so legitimate service revenue can increase confirmed BTC reserve sats.",
   "primaryOfferId": "transparency-audit",
-  "priceUsd": "50",
+  "priceUsd": "249",
   "paymentDependency": "Use sats-invoice-queue.json for chairman-approved BTC invoices before delivery.",
   "prospectDependency": "Use sats-prospect-pipeline.json to qualify evidence-backed buyers before outreach.",
   "intakeUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml",
@@ -31,13 +31,15 @@
       "Scope and limitations",
       "Public inputs reviewed",
       "Token authority review",
+      "Supply and concentration analysis",
       "Liquidity and lock evidence review",
       "Reserve or treasury claim review",
       "Ownership and concentration disclosure review",
       "Disclosure gaps",
       "Risk language",
       "Recommended fixes",
-      "Evidence links"
+      "Evidence links",
+      "Machine-readable JSON summary"
     ],
     "requiredDisclosures": [
       "This is a public-evidence review, not legal, tax, or investment advice.",

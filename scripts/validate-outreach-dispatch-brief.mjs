@@ -43,6 +43,12 @@ if (!/focused manual sprint/i.test(brief.dispatchRule ?? '')) {
 if (brief.sprintEconomics?.reserveAllocationPercent !== '70') {
   findings.push('sprint economics must preserve the 70 percent BTC reserve allocation policy');
 }
+if (brief.sprintEconomics?.planningBtcUsd !== revenuePlan.planningAssumptions?.btcUsd) {
+  findings.push('sprint economics BTC/USD must come from revenue-operating-plan.json');
+}
+if (brief.sprintEconomics?.planningBtcUsdSource !== revenuePlan.planningAssumptions?.btcUsdSource) {
+  findings.push('sprint economics BTC/USD source must come from revenue-operating-plan.json');
+}
 if (Number(brief.sprintEconomics?.qualifiedGrossRevenueUsd) < Number(brief.sprintEconomics?.grossRevenueUsd)) {
   findings.push('qualified sprint revenue must be at least current approved sprint revenue');
 }
@@ -135,6 +141,35 @@ for (const packet of brief.readyManualSends) {
       }
     }
   }
+  const reserveImpact = packet.reserveImpactPlanning;
+  if (!reserveImpact || typeof reserveImpact !== 'object') {
+    findings.push(`${packet.packetId}: ready packet must expose planning reserve impact`);
+  } else {
+    if (reserveImpact.basis !== 'planning-only') {
+      findings.push(`${packet.packetId}: reserve impact must be planning-only`);
+    }
+    if (reserveImpact.reserveAllocationPercent !== '70') {
+      findings.push(`${packet.packetId}: reserve impact must use the 70 percent BTC reserve allocation policy`);
+    }
+    if (!/operator planning assumption/i.test(reserveImpact.btcUsdSource ?? '')) {
+      findings.push(`${packet.packetId}: reserve impact must identify BTC/USD as an operator planning assumption`);
+    }
+    if (
+      !Number.isSafeInteger(Number(reserveImpact.currentAskReserveSats)) ||
+      Number(reserveImpact.currentAskReserveSats) <= 0
+    ) {
+      findings.push(`${packet.packetId}: reserve impact must include current-ask reserve sats`);
+    }
+    if (
+      !Number.isSafeInteger(Number(reserveImpact.qualifiedReserveSats)) ||
+      Number(reserveImpact.qualifiedReserveSats) < Number(reserveImpact.currentAskReserveSats)
+    ) {
+      findings.push(`${packet.packetId}: qualified reserve sats must be at or above current-ask reserve sats`);
+    }
+    if (!/planning only/i.test(reserveImpact.actualSatsRule ?? '')) {
+      findings.push(`${packet.packetId}: reserve impact must preserve actual-sats recording rule`);
+    }
+  }
   if (!packet.message.includes('No price promotion')) {
     findings.push(`${packet.packetId}: ready message must preserve no-price-promotion language`);
   }
@@ -194,6 +229,15 @@ if (!markdown.includes('Tracked service: https://') || !markdown.includes('utm_s
 }
 if (!markdown.includes('Current approved ask:')) {
   findings.push('markdown must separate the current approved ask from the qualified revenue path');
+}
+if (!markdown.includes('Planning reserve impact:')) {
+  findings.push('markdown must expose per-packet planning reserve impact');
+}
+if (!markdown.includes('Planning BTC/USD source: operator planning assumption, not a live quote.')) {
+  findings.push('markdown must expose the sprint BTC/USD planning source');
+}
+if (!markdown.includes('Planning basis: 70% reserve allocation at BTC/USD 100000')) {
+  findings.push('markdown must expose the reserve-impact planning basis');
 }
 if (!markdown.includes('Upgrade path:')) {
   findings.push('markdown must expose the explicit-fit upgrade path');

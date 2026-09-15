@@ -13,11 +13,11 @@
   },
   "invoices": [
     {
-      "id": "invoice-template-transparency-audit-50",
+      "id": "invoice-template-transparency-audit-249",
       "status": "template",
       "offerId": "transparency-audit",
       "customer": "to-be-filled-after-qualified-lead",
-      "usdPrice": "50",
+      "usdPrice": "249",
       "settlementCurrency": "BTC",
       "paymentAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
       "amountSats": "quote-required-before-sending",
@@ -25,7 +25,7 @@
       "quoteCreatedAtUtc": "quote-required-before-sending",
       "quoteExpiresAtUtc": "quote-required-before-sending",
       "chairmanApprovalRequired": true,
-      "deliverable": "One-page public-readiness audit covering token authorities, liquidity lock, reserve claims, and disclosure gaps.",
+      "deliverable": "SATA Transparency Audit covering token authorities, supply and concentration, LP ownership or lock evidence, reserve claims, risk disclosures, machine-readable JSON, and a public or private final report.",
       "postPaymentActions": [
         "wait for Bitcoin transaction confirmation",
         "record transaction id in sats-generation-ledger.json receipts",
@@ -35,11 +35,11 @@
       "publicDisclosure": "Service revenue may be paid directly into the BTC reserve. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment."
     },
     {
-      "id": "invoice-template-transparency-report-setup-150",
+      "id": "invoice-template-transparency-report-setup-999",
       "status": "template",
       "offerId": "transparency-report-setup",
       "customer": "to-be-filled-after-qualified-lead",
-      "usdPrice": "150",
+      "usdPrice": "999",
       "settlementCurrency": "BTC",
       "paymentAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
       "amountSats": "quote-required-before-sending",
@@ -47,7 +47,7 @@
       "quoteCreatedAtUtc": "quote-required-before-sending",
       "quoteExpiresAtUtc": "quote-required-before-sending",
       "chairmanApprovalRequired": true,
-      "deliverable": "Repo-based public report template, disclosure checklist, and deployment instructions for a client project.",
+      "deliverable": "Repo-based public report template, disclosure checklist, deployment instructions, and first reporting refresh for a client project.",
       "postPaymentActions": [
         "wait for Bitcoin transaction confirmation",
         "record transaction id in sats-generation-ledger.json receipts",
@@ -57,11 +57,11 @@
       "publicDisclosure": "Service revenue may be paid directly into the BTC reserve. No price guarantee, no redemption promise, no revenue guarantee, and no market-support commitment."
     },
     {
-      "id": "invoice-template-full-proof-dashboard-300",
+      "id": "invoice-template-continuous-transparency-monitoring-4999",
       "status": "template",
       "offerId": "full-proof-dashboard",
       "customer": "to-be-filled-after-qualified-lead",
-      "usdPrice": "300",
+      "usdPrice": "4999",
       "settlementCurrency": "BTC",
       "paymentAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
       "amountSats": "quote-required-before-sending",
@@ -69,7 +69,7 @@
       "quoteCreatedAtUtc": "quote-required-before-sending",
       "quoteExpiresAtUtc": "quote-required-before-sending",
       "chairmanApprovalRequired": true,
-      "deliverable": "Automated public report workflow, proof dashboard, public JSON endpoints, and operating runbook.",
+      "deliverable": "Continuous transparency monitoring with automated public report workflow, proof dashboard, public JSON endpoints, monthly evidence refresh, and operating runbook.",
       "postPaymentActions": [
         "wait for Bitcoin transaction confirmation",
         "record transaction id in sats-generation-ledger.json receipts",

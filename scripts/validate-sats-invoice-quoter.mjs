@@ -26,11 +26,11 @@ const quote = buildInvoiceQuoteDraft({
 });
 const findings = [];
 
-if (calculateSatsFromUsd({ usd: '50', btcUsd: '100000' }).toString() !== '50000') {
-  findings.push('quote calculator must convert $50 at $100,000/BTC to 50,000 sats');
+if (calculateSatsFromUsd({ usd: '249', btcUsd: '100000' }).toString() !== '249000') {
+  findings.push('quote calculator must convert $249 at $100,000/BTC to 249,000 sats');
 }
 if (quote.status !== 'draft') findings.push('quote output must remain a draft');
-if (quote.amountSats !== '50000')
+if (quote.amountSats !== '249000')
   findings.push('quote amountSats must be exact for the fixture rate');
 if (quote.quoteCreatedAtUtc !== '2026-08-28T00:00:00.000Z') {
   findings.push('quoteCreatedAtUtc must preserve the provided ISO timestamp');
@@ -107,6 +107,34 @@ assertRejects('quote missing createdAtUtc', /createdAtUtc must be a valid date/i
     customer: 'Example Proof Token',
     btcUsd: '100000',
     quoteSource: 'Manual test rate'
+  })
+);
+assertRejects('future quote createdAtUtc', /createdAtUtc cannot be in the future/i, () =>
+  buildInvoiceQuoteDraft({
+    queue,
+    offerId: 'transparency-audit',
+    customer: 'Example Future Quote Token',
+    btcUsd: '100000',
+    quoteSource: 'Manual test rate',
+    createdAtUtc: '2026-08-28T01:00:00.000Z',
+    generatedAtUtc: '2026-08-28T00:00:00.000Z'
+  })
+);
+assertRejects('future staged quote', /quoteCreatedAtUtc cannot be in the future/i, () =>
+  stageInvoiceQuoteForChairmanReview({
+    invoiceQueue: {
+      ...queue,
+      invoices: queue.invoices.filter((invoice) => invoice.id !== quote.id)
+    },
+    approvalQueue,
+    quote: {
+      ...quote,
+      id: 'invoice-future-staged-quote-transparency-audit-20260828',
+      quoteCreatedAtUtc: '2026-08-28T01:00:00.000Z',
+      quoteExpiresAtUtc: '2026-08-28T01:30:00.000Z'
+    },
+    evidence: 'Customer invoice request evidence URL',
+    generatedAtUtc: '2026-08-28T00:00:00.000Z'
   })
 );
 assertRejects('unapproved finalize', /must be approved-by-chairman first/, () =>

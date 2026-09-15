@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "mode": "manual-social-dispatch-brief",
-  "generatedAtUtc": "2026-09-15T07:44:31.972Z",
+  "generatedAtUtc": "2026-09-15T12:46:19.507Z",
   "account": {
     "displayName": "SATA",
     "handle": "SATAReserve",
@@ -12,13 +12,13 @@
   "livePostingEnabled": false,
   "maxManualPosts": 5,
   "counts": {
-    "approved": "7",
+    "approved": "8",
     "readyForReview": "2",
     "published": "1",
     "hold": "1"
   },
-  "readyManualPostCount": 7,
-  "queuedRemainderCount": 2,
+  "readyManualPostCount": 8,
+  "queuedRemainderCount": 3,
   "readyManualPosts": [
     {
       "id": "btc-reserve-first-tranche",
@@ -75,13 +75,13 @@
     {
       "id": "transparency-service-offer",
       "type": "revenue",
-      "text": "SATA offers $50 transparency audits: authority, liquidity-lock, BTC reserve, and disclosure checks.\n\nThe BTC reserve is not a redemption promise or guaranteed price floor. Locked status must be verified.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit",
-      "contentSha256": "7e53c3087aeb869aeae52efd2e65d39e2f009c5cd3bd89ed663e248183724b08",
+      "text": "SATA offers $249 Transparency Audits: authority, supply, LP lock/ownership, reserve claims, risk disclosures, and JSON.\n\nReserve work is not a redemption promise. Locked LP must be verified.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit",
+      "contentSha256": "4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448",
       "approvedBy": "owner",
       "approvalRole": null,
       "approvedAtUtc": "2026-08-26T12:45:00Z",
       "evidenceIssueUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml",
-      "recordPublishedCommand": "npm run social:agent -- record-published --post transparency-service-offer --postUrl \"https://x.com/SATAReserve/status/<numeric-id>\" --evidence \"<live-post-screenshot-or-exported-text>\" --publishedAtUtc \"<published-at-utc>\" --contentHash 7e53c3087aeb869aeae52efd2e65d39e2f009c5cd3bd89ed663e248183724b08",
+      "recordPublishedCommand": "npm run social:agent -- record-published --post transparency-service-offer --postUrl \"https://x.com/SATAReserve/status/<numeric-id>\" --evidence \"<live-post-screenshot-or-exported-text>\" --publishedAtUtc \"<published-at-utc>\" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448",
       "publicationInstructions": "Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.",
       "stopRule": "Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, or move assets."
     }

@@ -234,7 +234,7 @@
       "preparedBy": "codex-ops",
       "summary": "Use existing SATA proof tooling and public credibility to sell transparency services, then allocate approved proceeds toward BTC reserve growth, liquidity, and operating budget.",
       "rationale": "The project should generate operating revenue from the transparency/reporting infrastructure it already built instead of relying on new chairman-funded BTC tranches.",
-      "proposedAction": "Approve revenue cycle 001 from revenue-operating-plan.json: sell $50 transparency audits first, then $150 report setup and $300 full proof-dashboard setup when qualified prospects ask for deeper work. Payment instructions, deliverables, conversions, reserve additions, and liquidity actions require chairman approval before execution.",
+      "proposedAction": "Approve revenue cycle 001 from revenue-operating-plan.json: sell $249 SATA Transparency Audits first, then $999 report setup and $4999/month continuous transparency monitoring when qualified prospects ask for deeper work. Payment instructions, deliverables, conversions, reserve additions, and liquidity actions require chairman approval before execution.",
       "execution": "manual-chairman-action",
       "requiredChairmanApproval": true,
       "riskReview": [

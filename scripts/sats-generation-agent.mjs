@@ -30,6 +30,11 @@ function printPlan() {
   const remainingSats = targetSats > currentSats ? targetSats - currentSats : 0n;
   const receipts = ledger.receipts ?? [];
   const allocations = ledger.allocations ?? [];
+  const confirmedReceipts = receipts.filter((receipt) => receipt.status === 'confirmed');
+  const allocationReceiptIds = new Set(allocations.map((allocation) => allocation.receiptId));
+  const receiptsAwaitingAllocation = confirmedReceipts.filter(
+    (receipt) => !allocationReceiptIds.has(receipt.id)
+  );
   const prospects = prospectPipeline.prospects ?? [];
   const openPipeline = (ledger.pipeline ?? []).filter((item) =>
     ['approved-for-outreach', 'qualified-only', 'proposal-sent'].includes(item.stage)
@@ -60,7 +65,7 @@ function printPlan() {
         nextAction: nextPipelineItem?.nextAction ?? ledger.nextOperatingAction,
         prospectNextAction: prospectPipeline.nextOperatingAction,
         activeProspects: prospects.length,
-        receiptsAwaitingAllocation: receipts.filter((receipt) => !receipt.allocatedAtUtc).length,
+        receiptsAwaitingAllocation: receiptsAwaitingAllocation.length,
         recordedAllocations: allocations.length,
         receiptRecording: {
           commandTemplate:
@@ -76,6 +81,18 @@ function printPlan() {
           ],
           boundary:
             'Recording a receipt updates local ledger evidence only; it does not verify keys, move BTC, approve allocations, or send payment instructions.'
+        },
+        allocationRecording: {
+          recordConfirmedAllocationCommand:
+            'node scripts/sats-receipt-allocation-agent.mjs record-allocation --allocation "<allocation-id>" --receipt "<confirmed-receipt-id>" --allocatedAtUtc "<allocated-at-utc>" --transparencyReportUrl "<published-transparency-report-url>" --confirmChairmanAllocationApproval "I am Executive Chairman and approve allocation <allocation-id>"',
+          requiredEvidence: [
+            'confirmed receipt id',
+            'published transparency report URL',
+            'explicit allocation timestamp',
+            'Executive Chairman allocation approval phrase'
+          ],
+          boundary:
+            'Recording an allocation updates local ledger evidence only; it derives sats and transaction id from the confirmed receipt and does not move BTC, SOL, SATA, LP tokens, or operating funds.'
         },
         invoiceTemplates: (invoiceQueue.invoices ?? [])
           .filter((invoice) => invoice.status === 'template')

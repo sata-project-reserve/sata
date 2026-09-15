@@ -62,7 +62,7 @@ if (!/--evidence "https:\/\/x\.com\/example\/status\/108"/.test(draft.operatorCo
 if (!/--sentAtUtc "2026-09-10T10:00:00.000Z"/.test(draft.operatorCommand ?? '')) {
   findings.push('operator command must preserve the submitted sentAtUtc timestamp');
 }
-if (!/--messageHash c370ebac72102e729a6fc7b1155afa2dbd8b8a07ba154fddca993a223d349ae8/.test(draft.operatorCommand ?? '')) {
+if (!/--messageHash 5b2a05f62888e3bdab910a5efb623f04a637e0627c0565cd26d56d34af2868a7/.test(draft.operatorCommand ?? '')) {
   findings.push('operator command must include approved message SHA-256');
 }
 if (/sats-prospect-response-agent\.mjs record-contacted/.test(draft.operatorCommand ?? '')) {
@@ -125,7 +125,7 @@ if (!wrongProspectDraft.findings.some((finding) => /Packet prospect mismatch/i.t
 const wrongHashIssue = {
   ...issueFixture,
   body: issueFixture.body.replace(
-    '### Approved message SHA-256\nc370ebac72102e729a6fc7b1155afa2dbd8b8a07ba154fddca993a223d349ae8',
+    '### Approved message SHA-256\n5b2a05f62888e3bdab910a5efb623f04a637e0627c0565cd26d56d34af2868a7',
     `### Approved message SHA-256\n${'0'.repeat(64)}`
   )
 };
@@ -144,7 +144,7 @@ if (!wrongHashDraft.findings.some((finding) => /SHA-256 does not match/i.test(fi
 const malformedHashIssue = {
   ...issueFixture,
   body: issueFixture.body.replace(
-    '### Approved message SHA-256\nc370ebac72102e729a6fc7b1155afa2dbd8b8a07ba154fddca993a223d349ae8',
+    '### Approved message SHA-256\n5b2a05f62888e3bdab910a5efb623f04a637e0627c0565cd26d56d34af2868a7',
     '### Approved message SHA-256\nnot-a-valid-hash'
   )
 };

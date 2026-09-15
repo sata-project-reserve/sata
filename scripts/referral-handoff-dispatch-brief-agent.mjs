@@ -8,20 +8,29 @@ const EVIDENCE_INTAKE_URL =
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [, , command = 'plan'] = process.argv;
-  const [queue, paidPromotionLedger, referralPartnerPolicy, inboundQueue, packetArtifact] =
+  const [
+    queue,
+    paidPromotionLedger,
+    referralPartnerPolicy,
+    inboundQueue,
+    packetArtifact,
+    revenuePlan
+  ] =
     await Promise.all([
       readJson(join('public', 'referral-partner-handoff-queue.json')),
       readJson(join('public', 'paid-promotion-ledger.json')),
       readJson(join('public', 'referral-partner-policy.json')),
       readJson(join('public', 'inbound-service-lead-queue.json')),
-      readOptionalJson(join('public', 'referral-partner-handoff-packet.json'))
+      readOptionalJson(join('public', 'referral-partner-handoff-packet.json')),
+      readJson(join('public', 'revenue-operating-plan.json'))
     ]);
   const brief = buildReferralHandoffDispatchBrief({
     queue,
     paidPromotionLedger,
     referralPartnerPolicy,
     inboundQueue,
-    packetArtifact
+    packetArtifact,
+    revenuePlan
   });
 
   switch (command) {
@@ -48,6 +57,7 @@ export function buildReferralHandoffDispatchBrief({
   referralPartnerPolicy,
   inboundQueue,
   packetArtifact = null,
+  revenuePlan = null,
   generatedAtUtc = new Date().toISOString()
 }) {
   const plan = buildReferralPartnerHandoffPlan({
@@ -70,6 +80,7 @@ export function buildReferralHandoffDispatchBrief({
       evidenceIssueUrl: EVIDENCE_INTAKE_URL,
       approvedTermsSha256: candidate.packet.termsSha256,
       exactTerms: candidate.packet.replyTemplate,
+      reserveImpactPlanning: buildReserveImpactPlanning({ revenuePlan }),
       recordSentCommand: artifactCommand || candidate.recordSentCommand,
       recordReferredLeadCommand: candidate.packet.recordReferredLeadCommand,
       sendInstructions:
@@ -93,6 +104,65 @@ export function buildReferralHandoffDispatchBrief({
     boundary:
       'This brief coordinates manual referral handoff dispatch only. It does not send messages, approve partners, approve compensation, issue invoices, provide payment instructions, publish posts, grant tokens, move assets, or record state.'
   };
+}
+
+function buildReserveImpactPlanning({ revenuePlan }) {
+  const primaryOfferId = revenuePlan?.nextCycle?.primaryOfferId ?? 'transparency-audit';
+  const primaryOffer = findRevenueStream(revenuePlan, primaryOfferId);
+  const qualifiedOffer = findRevenueStream(revenuePlan, 'transparency-report-setup') ?? primaryOffer;
+  const btcUsd = String(revenuePlan?.planningAssumptions?.btcUsd ?? '100000');
+  const reserveAllocationPercent = String(
+    revenuePlan?.allocationPolicy?.postReceiptAllocationPercent?.btcReserve ?? 70
+  );
+
+  return {
+    basis: 'planning-only',
+    primaryOfferId,
+    primaryOfferUsd: String(primaryOffer?.priceUsd ?? '50'),
+    qualifiedUpgradeOfferId: qualifiedOffer?.id ?? primaryOfferId,
+    qualifiedUpgradeUsd: String(qualifiedOffer?.priceUsd ?? primaryOffer?.priceUsd ?? '50'),
+    btcUsd,
+    btcUsdSource:
+      revenuePlan?.planningAssumptions?.btcUsdSource ??
+      'operator planning assumption, not a live quote',
+    reserveAllocationPercent,
+    primaryOfferReserveSats: estimateReserveSats({
+      usd: primaryOffer?.priceUsd ?? '50',
+      reserveAllocationPercent,
+      btcUsd
+    }),
+    qualifiedUpgradeReserveSats: estimateReserveSats({
+      usd: qualifiedOffer?.priceUsd ?? primaryOffer?.priceUsd ?? '50',
+      reserveAllocationPercent,
+      btcUsd
+    }),
+    trigger:
+      'Count zero sats until a referred customer pays, the receipt is confirmed, and allocation is chairman-approved.',
+    actualSatsRule:
+      revenuePlan?.planningAssumptions?.actualSatsRule ??
+      'Planning only. Record actual sats only after confirmed receipt and chairman-approved allocation.'
+  };
+}
+
+function findRevenueStream(revenuePlan, id) {
+  return (revenuePlan?.revenueStreams ?? []).find((stream) => stream.id === id) ?? null;
+}
+
+function estimateReserveSats({ usd, reserveAllocationPercent, btcUsd }) {
+  const usdCents = parseDecimalToScale(String(usd), 2);
+  const percentBps = parseDecimalToScale(String(reserveAllocationPercent), 2);
+  const btcUsdCents = parseDecimalToScale(String(btcUsd), 2);
+  if (btcUsdCents <= 0n) return '0';
+  return ((usdCents * percentBps * 100_000_000n) / (10_000n * btcUsdCents)).toString();
+}
+
+function parseDecimalToScale(value, decimals) {
+  const text = String(value ?? '').trim();
+  const match = /^(\d+)(?:\.(\d+))?$/.exec(text);
+  if (!match) return 0n;
+  const whole = match[1];
+  const fraction = (match[2] ?? '').padEnd(decimals, '0').slice(0, decimals);
+  return BigInt(`${whole}${fraction}`);
 }
 
 export function renderReferralHandoffDispatchMarkdown(brief) {
@@ -122,6 +192,10 @@ export function renderReferralHandoffDispatchMarkdown(brief) {
       `Source evidence: ${item.sourceEvidence}`,
       `Packet artifact: ${item.artifact}`,
       `Approved terms SHA-256: ${item.approvedTermsSha256}`,
+      `Planning reserve impact: ${item.reserveImpactPlanning.primaryOfferReserveSats} sats primary / ${item.reserveImpactPlanning.qualifiedUpgradeReserveSats} sats qualified upgrade`,
+      `Planning basis: ${item.reserveImpactPlanning.reserveAllocationPercent}% reserve allocation at BTC/USD ${item.reserveImpactPlanning.btcUsd}`,
+      `Planning BTC/USD source: ${item.reserveImpactPlanning.btcUsdSource}.`,
+      `Counting rule: ${item.reserveImpactPlanning.trigger}`,
       item.sendInstructions,
       item.stopRule,
       '',

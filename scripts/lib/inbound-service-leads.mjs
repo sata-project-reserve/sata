@@ -197,7 +197,7 @@ export function validateInboundLeadQueue(queue) {
     if (!/Executive Chairman approval|exact BTC invoice/i.test(template.text)) {
       findings.push(`${template.id}: reply template must preserve invoice approval gate`);
     }
-    if (!/no price guarantee|Starter audit is \$50/i.test(template.text)) {
+    if (!/no price guarantee|SATA Transparency Audit.*\$249/i.test(template.text)) {
       findings.push(`${template.id}: reply template must preserve offer or risk boundary`);
     }
     assertNoProhibitedPositiveClaims(template.text, `${template.id}: reply template`, findings);

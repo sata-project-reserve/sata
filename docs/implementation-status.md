@@ -68,7 +68,7 @@ Coverage remains low for UI, wallet execution, and live on-chain builders becaus
 - Mainnet token creation was performed by the owner through MetaMask, then verified read-only by `scripts/verify-mainnet-mint.mjs`.
 - Mint and freeze authority revocations were performed by the owner through MetaMask and verified on-chain.
 - Raydium liquidity pool creation was performed by the owner through MetaMask and is now verified read-only by the transparency report.
-- A Raydium Burn & Earn LP lock is verified, but the owner still holds unlocked LP tokens that remain removable unless separately locked or burned.
+- A Raydium Burn & Earn LP lock is verified. Use the latest generated transparency report for the current owner unlocked LP balance; any future owner-held LP remains removable unless separately locked, burned, or transferred to accountable multisig control.
 - Bitcoin reserve address has a confirmed 500,000 sat first tranche and verified signed address-control proof.
 - No canary trade executed.
 - Metadata assets were prepared and hosted at the configured public HTTPS asset URLs before mainnet creation.
@@ -79,6 +79,6 @@ Coverage remains low for UI, wallet execution, and live on-chain builders becaus
 - Mainnet token mint exists and is verified; exact public addresses are recorded in the generated launch artifacts.
 - Mint and freeze authorities are revoked.
 - Raydium CPMM pool exists and is verified by read-only transparency reporting.
-- Raydium Burn & Earn lock is verified, with a public disclosure that owner-held unlocked LP remains removable.
+- Raydium Burn & Earn lock is verified. The latest generated transparency report discloses the current owner unlocked LP balance and whether any owner-held LP remains removable.
 - Bitcoin reserve is verified by confirmed balance and signed address-control proof.
 - GMGN tradability can only be reported after independent post-launch checks confirm current buy and sell routes through GMGN.

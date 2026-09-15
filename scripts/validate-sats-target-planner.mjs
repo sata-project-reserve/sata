@@ -20,7 +20,6 @@ const plan = buildSatsTargetPlan({
   status,
   revenuePlan,
   satsLedger,
-  btcUsd: 100000,
   generatedAtUtc: '2026-09-03T22:00:00.000Z'
 });
 const markdown = renderSatsTargetMarkdown(plan);
@@ -42,11 +41,11 @@ const starter = plan.scenarios.find((scenario) => scenario.offerId === 'transpar
 if (!starter) {
   findings.push('starter transparency-audit scenario is required');
 } else {
-  if (starter.estimatedReserveSatsPerDeal !== '35000') {
-    findings.push('starter audit should add 35000 planning sats at $100k BTC and 70% allocation');
+  if (starter.estimatedReserveSatsPerDeal !== '174300') {
+    findings.push('starter audit should add 174300 planning sats at $100k BTC and 70% allocation');
   }
-  if (starter.dealsToNextMilestone !== 15) {
-    findings.push('starter audit should require 15 deals to reach the next 1M sats milestone');
+  if (starter.dealsToNextMilestone !== 3) {
+    findings.push('starter audit should require 3 deals to reach the next 1M sats milestone');
   }
   if (starter.dealsToFullTarget <= 1000) {
     findings.push('full target must show starter-audit volume is not enough alone');
@@ -58,11 +57,11 @@ if (!plan.currentPipeline) {
   if (plan.currentPipeline.manualOutreachActions !== 30) {
     findings.push('current pipeline must count 30 ready manual outreach actions');
   }
-  if (plan.currentPipeline.qualifiedRevenueUsd !== '2300.00') {
-    findings.push('current pipeline qualified revenue should total $2300 from ready manual outreach');
+  if (plan.currentPipeline.qualifiedRevenueUsd !== '13470.00') {
+    findings.push('current pipeline qualified revenue should total $13470 from ready manual outreach');
   }
-  if (plan.currentPipeline.estimatedReserveSatsAtFullClose !== '1610000') {
-    findings.push('current pipeline should estimate 1610000 reserve sats at full close');
+  if (plan.currentPipeline.estimatedReserveSatsAtFullClose !== '9429000') {
+    findings.push('current pipeline should estimate 9429000 reserve sats at full close');
   }
   if (plan.currentPipeline.gapToNextMilestoneSatsAtFullClose !== '0') {
     findings.push('current pipeline should cover the next 1M sats milestone at full close');
@@ -71,13 +70,19 @@ if (!plan.currentPipeline) {
     findings.push('current pipeline math must remain planning-only');
   }
 }
+if (plan.assumptions.btcUsd !== revenuePlan.planningAssumptions?.btcUsd) {
+  findings.push('target planner BTC/USD assumption must come from revenue-operating-plan.json by default');
+}
+if (plan.assumptions.btcUsdSource !== revenuePlan.planningAssumptions?.btcUsdSource) {
+  findings.push('target planner BTC/USD source must come from revenue-operating-plan.json by default');
+}
 if (!markdown.includes('BTC/USD assumption: 100000')) {
   findings.push('markdown must include the BTC/USD planning assumption');
 }
 if (!markdown.includes('## Current Outreach Coverage')) {
   findings.push('markdown must include current outreach coverage');
 }
-if (!markdown.includes('full target requires higher-value setup/dashboard work')) {
+if (!markdown.includes('full target requires recurring monitoring')) {
   findings.push('markdown must include the operating read about higher-value work');
 }
 if (packageJson.scripts?.['ops:sats-target-write'] !== 'node scripts/sats-target-agent.mjs write') {

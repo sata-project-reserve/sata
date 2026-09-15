@@ -1,6 +1,6 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-09-15T07:44:31.527Z
+Generated: 2026-09-15T12:46:19.507Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -53,6 +53,13 @@ node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-cry
 Type: inbound-reply-triage-monitor
 Why: Fast reply triage turns warm attention into intake records or chairman invoice-review packets without exposing payment instructions.
 Sources: diana-crypto-20260903-transparency-tweet (https://x.com/142C_/status/2086570576530010172), pinned-proof-overview (https://x.com/SATAReserve/status/2084248941801906474)
+Required evidence fields: sourceType, sourceId, contactHandle, publicProfileUrl, projectUrl, replyText, evidence, recordedAtUtc
+
+Triage decision rules:
+- invoice-request-needs-chairman-review: Reply explicitly asks for an invoice, payment method, where to send funds, or says they are ready to pay/start. -> invoice-requested-needs-chairman-review
+- needs-intake-fields: Reply shows legitimate interest in audit, transparency, report, dashboard, authority, liquidity, reserve, disclosure, token, contract, or website review but does not request an invoice. -> needs-intake
+- reject-prohibited-promotion: Reply asks for disallowed promotional activity covered by the inbound triage policy. -> closed-invalid
+- monitor-no-service-intent: Reply does not show service interest or an invoice request. -> closed-invalid
 Evidence: Reply or DM text, live source id, profile URL, project URL, durable evidence, and explicit recordedAtUtc timestamp.
 
 Operator checklist:
@@ -65,22 +72,50 @@ Stop rule: Triage only. Do not contact leads, send payment instructions, create 
 npm run ops:inbound-reply-triage-plan
 ```
 
-### 3. Send approved transparency-audit outreach to sanctum-elysium-loam.
+### 3. Manually publish approved post btc-reserve-first-tranche and record the live URL for attribution.
+Type: manual-social-publish
+Why: Chairman-approved factual posts can create attributable inbound attention without autonomous posting or paid promotion.
+Evidence: Published @SATAReserve post URL plus screenshot or exported text.
+Approved message SHA-256: 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e
+
+Approved send copy:
+
+```text
+SATA has a dedicated Bitcoin reserve address with signed address-control proof. Current first tranche: 500,000 sats.
+
+The BTC reserve is not a redemption promise or guaranteed price floor.
+
+https://sata-project-reserve.github.io/sata/transparency
+```
+
+Operator checklist:
+- Open the approved social content queue and confirm the post content matches the content hash.
+- Publish manually from the project account, then capture the live URL, screenshot or export, and UTC publish time.
+- Run record-published only after the live post evidence exists; do not alter the approved copy.
+Stop rule: Publish only the approved post content manually, then record the live URL and evidence; do not change copy or enable live automation.
+
+```sh
+npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e
+```
+
+### 4. Send approved transparency-audit outreach to sanctum-elysium-loam.
 Type: manual-outreach-send
 Why: The shortest route to new reserve sats is a paid transparency-audit customer requesting an invoice.
-Priority: 112 / hot
-Current approved ask: transparency-audit / $50
-Qualified revenue path: $150
+Priority: 122 / hot
+Current approved ask: transparency-audit / $249
+Qualified revenue path: $999
+Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+Planning basis: 70% reserve allocation at BTC/USD 100000
 Upgrade path: transparency-report-setup only after explicit fit
 Evidence: Durable proof of manual send, such as a message permalink, email record, or contact screenshot reference.
-Approved message SHA-256: 1d37077645c8d720356f548899d61049e8f835d23a5990f2994b6415ba1d1122
+Approved message SHA-256: 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
 
 Approved send copy:
 
 ```text
 Hi sanctum-elysium-loam,
 
-Hey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
+Hey, SATA runs a $249 Transparency Audit for crypto teams. We review public authority, supply and concentration, LP ownership or lock evidence, reserve claims, and disclosure gaps, then provide a concise report and machine-readable JSON. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
 
 Public profile reviewed: https://sanctumelysium.com/whitepaper.html
 Project page reviewed: https://sanctumelysium.com/whitepaper.html
@@ -99,25 +134,27 @@ Operator checklist:
 Stop rule: Send the approved copy only. Do not add investment, return, liquidity, or trading claims.
 
 ```sh
-node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 1d37077645c8d720356f548899d61049e8f835d23a5990f2994b6415ba1d1122
+node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
 ```
 
-### 4. Send approved transparency-audit outreach to meme-launch.
+### 5. Send approved transparency-audit outreach to meme-launch.
 Type: manual-outreach-send
 Why: The shortest route to new reserve sats is a paid transparency-audit customer requesting an invoice.
-Priority: 100 / hot
-Current approved ask: transparency-audit / $50
-Qualified revenue path: $150
+Priority: 110 / hot
+Current approved ask: transparency-audit / $249
+Qualified revenue path: $999
+Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+Planning basis: 70% reserve allocation at BTC/USD 100000
 Upgrade path: transparency-report-setup only after explicit fit
 Evidence: Durable proof of manual send, such as a message permalink, email record, or contact screenshot reference.
-Approved message SHA-256: c6b13a9b08f8f021567acf82463cf0a8970e2a24d62ad60525019b4028339bc4
+Approved message SHA-256: 28ed7b84f82ae8b4f07961b70ab46a494d3b04349e0d0408e3d1e9bab30d090a
 
 Approved send copy:
 
 ```text
 Hi meme-launch,
 
-Hey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
+Hey, SATA runs a $249 Transparency Audit for crypto teams. We review public authority, supply and concentration, LP ownership or lock evidence, reserve claims, and disclosure gaps, then provide a concise report and machine-readable JSON. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
 
 Public profile reviewed: https://memelaunchs.com/results
 Project page reviewed: https://memelaunchs.com/results
@@ -136,62 +173,27 @@ Operator checklist:
 Stop rule: Send the approved copy only. Do not add investment, return, liquidity, or trading claims.
 
 ```sh
-node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash c6b13a9b08f8f021567acf82463cf0a8970e2a24d62ad60525019b4028339bc4
-```
-
-### 5. Send approved transparency-audit outreach to instar-meme-futures.
-Type: manual-outreach-send
-Why: The shortest route to new reserve sats is a paid transparency-audit customer requesting an invoice.
-Priority: 94 / hot
-Current approved ask: transparency-audit / $50
-Qualified revenue path: $150
-Upgrade path: transparency-report-setup only after explicit fit
-Evidence: Durable proof of manual send, such as a message permalink, email record, or contact screenshot reference.
-Approved message SHA-256: 1feb4dff1091d637a6a3eedc88dbcc094183d7b49ce17d1add1fa6d8cb325a7a
-
-Approved send copy:
-
-```text
-Hi instar-meme-futures,
-
-Hey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
-
-Public profile reviewed: https://instarbrands.com/pages/meme-futures
-Project page reviewed: https://instarbrands.com/pages/meme-futures
-
-Service page: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures_audit_service
-Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures_sample_audit
-Intake form: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures&template=transparency-audit-intake.yml
-
-Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.
-```
-
-Operator checklist:
-- Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact.
-- Send only the packet message as written, then capture durable evidence and UTC send time.
-- Run the mark-sent command only after the manual send evidence exists.
-Stop rule: Send the approved copy only. Do not add investment, return, liquidity, or trading claims.
-
-```sh
-node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 1feb4dff1091d637a6a3eedc88dbcc094183d7b49ce17d1add1fa6d8cb325a7a
+node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 28ed7b84f82ae8b4f07961b70ab46a494d3b04349e0d0408e3d1e9bab30d090a
 ```
 
 ## Manual Send Batch
 
 - sanctum-elysium-loam: https://sanctumelysium.com/whitepaper.html
-  Priority: 112 / hot
-  Current approved ask: transparency-audit / $50
-  Qualified revenue path: $150
+  Priority: 122 / hot
+  Current approved ask: transparency-audit / $249
+  Qualified revenue path: $999
+  Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+  Planning basis: 70% reserve allocation at BTC/USD 100000
   Upgrade path: transparency-report-setup only after explicit fit
   Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_audit_service
   Sample: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_sample_audit
   Intake: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam&template=transparency-audit-intake.yml
-  Approved message SHA-256: 1d37077645c8d720356f548899d61049e8f835d23a5990f2994b6415ba1d1122
+  Approved message SHA-256: 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
   Approved send copy:
 ```text
 Hi sanctum-elysium-loam,
 
-Hey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
+Hey, SATA runs a $249 Transparency Audit for crypto teams. We review public authority, supply and concentration, LP ownership or lock evidence, reserve claims, and disclosure gaps, then provide a concise report and machine-readable JSON. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
 
 Public profile reviewed: https://sanctumelysium.com/whitepaper.html
 Project page reviewed: https://sanctumelysium.com/whitepaper.html
@@ -207,23 +209,25 @@ Any invoice, paid work, token grant, or payment instruction requires Executive C
   - Send only the packet message as written, then capture durable evidence and UTC send time.
   - Run the mark-sent command only after the manual send evidence exists.
 ```sh
-node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 1d37077645c8d720356f548899d61049e8f835d23a5990f2994b6415ba1d1122
+node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
 ```
 
 - meme-launch: https://memelaunchs.com/results
-  Priority: 100 / hot
-  Current approved ask: transparency-audit / $50
-  Qualified revenue path: $150
+  Priority: 110 / hot
+  Current approved ask: transparency-audit / $249
+  Qualified revenue path: $999
+  Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+  Planning basis: 70% reserve allocation at BTC/USD 100000
   Upgrade path: transparency-report-setup only after explicit fit
   Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_meme_launch_transparency_audit_first_contact&utm_content=meme_launch_audit_service
   Sample: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_meme_launch_transparency_audit_first_contact&utm_content=meme_launch_sample_audit
   Intake: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_meme_launch_transparency_audit_first_contact&utm_content=meme_launch&template=transparency-audit-intake.yml
-  Approved message SHA-256: c6b13a9b08f8f021567acf82463cf0a8970e2a24d62ad60525019b4028339bc4
+  Approved message SHA-256: 28ed7b84f82ae8b4f07961b70ab46a494d3b04349e0d0408e3d1e9bab30d090a
   Approved send copy:
 ```text
 Hi meme-launch,
 
-Hey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
+Hey, SATA runs a $249 Transparency Audit for crypto teams. We review public authority, supply and concentration, LP ownership or lock evidence, reserve claims, and disclosure gaps, then provide a concise report and machine-readable JSON. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
 
 Public profile reviewed: https://memelaunchs.com/results
 Project page reviewed: https://memelaunchs.com/results
@@ -239,23 +243,25 @@ Any invoice, paid work, token grant, or payment instruction requires Executive C
   - Send only the packet message as written, then capture durable evidence and UTC send time.
   - Run the mark-sent command only after the manual send evidence exists.
 ```sh
-node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash c6b13a9b08f8f021567acf82463cf0a8970e2a24d62ad60525019b4028339bc4
+node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 28ed7b84f82ae8b4f07961b70ab46a494d3b04349e0d0408e3d1e9bab30d090a
 ```
 
 - instar-meme-futures: https://instarbrands.com/pages/meme-futures
-  Priority: 94 / hot
-  Current approved ask: transparency-audit / $50
-  Qualified revenue path: $150
+  Priority: 104 / hot
+  Current approved ask: transparency-audit / $249
+  Qualified revenue path: $999
+  Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+  Planning basis: 70% reserve allocation at BTC/USD 100000
   Upgrade path: transparency-report-setup only after explicit fit
   Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures_audit_service
   Sample: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures_sample_audit
   Intake: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures&template=transparency-audit-intake.yml
-  Approved message SHA-256: 1feb4dff1091d637a6a3eedc88dbcc094183d7b49ce17d1add1fa6d8cb325a7a
+  Approved message SHA-256: c3da58a0c6934bc5a9c9790e5a45b0efe164b2b9f520d7eeb878c3a016742a64
   Approved send copy:
 ```text
 Hi instar-meme-futures,
 
-Hey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
+Hey, SATA runs a $249 Transparency Audit for crypto teams. We review public authority, supply and concentration, LP ownership or lock evidence, reserve claims, and disclosure gaps, then provide a concise report and machine-readable JSON. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
 
 Public profile reviewed: https://instarbrands.com/pages/meme-futures
 Project page reviewed: https://instarbrands.com/pages/meme-futures
@@ -271,23 +277,25 @@ Any invoice, paid work, token grant, or payment instruction requires Executive C
   - Send only the packet message as written, then capture durable evidence and UTC send time.
   - Run the mark-sent command only after the manual send evidence exists.
 ```sh
-node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 1feb4dff1091d637a6a3eedc88dbcc094183d7b49ce17d1add1fa6d8cb325a7a
+node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash c3da58a0c6934bc5a9c9790e5a45b0efe164b2b9f520d7eeb878c3a016742a64
 ```
 
 - soltokenlab: https://www.soltokenlab.com/
-  Priority: 94 / hot
-  Current approved ask: transparency-audit / $50
-  Qualified revenue path: $150
+  Priority: 104 / hot
+  Current approved ask: transparency-audit / $249
+  Qualified revenue path: $999
+  Planning reserve impact: 174300 sats current ask / 699299 sats qualified path
+  Planning basis: 70% reserve allocation at BTC/USD 100000
   Upgrade path: transparency-report-setup only after explicit fit
   Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_soltokenlab_transparency_audit_first_contact&utm_content=soltokenlab_audit_service
   Sample: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_soltokenlab_transparency_audit_first_contact&utm_content=soltokenlab_sample_audit
   Intake: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_soltokenlab_transparency_audit_first_contact&utm_content=soltokenlab&template=transparency-audit-intake.yml
-  Approved message SHA-256: 8b7dfb9398938bb1b89505f2a6b31b87974425e4ab003dbb082aeee7621ad070
+  Approved message SHA-256: 202d9912a588930de17a540a0e0a32721bad0ea0c3b5d72e679786583a3b3a70
   Approved send copy:
 ```text
 Hi soltokenlab,
 
-Hey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
+Hey, SATA runs a $249 Transparency Audit for crypto teams. We review public authority, supply and concentration, LP ownership or lock evidence, reserve claims, and disclosure gaps, then provide a concise report and machine-readable JSON. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
 
 Public profile reviewed: https://www.soltokenlab.com/
 Project page reviewed: https://www.soltokenlab.com/
@@ -303,39 +311,40 @@ Any invoice, paid work, token grant, or payment instruction requires Executive C
   - Send only the packet message as written, then capture durable evidence and UTC send time.
   - Run the mark-sent command only after the manual send evidence exists.
 ```sh
-node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 8b7dfb9398938bb1b89505f2a6b31b87974425e4ab003dbb082aeee7621ad070
+node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 202d9912a588930de17a540a0e0a32721bad0ea0c3b5d72e679786583a3b3a70
 ```
 
-- bitdust: https://www.geckoterminal.com/solana/pools/7KcXVi6on67TnmfudJ7X61hdjccF7y62oN96zEoHyDDs
-  Priority: 90 / hot
-  Current approved ask: transparency-audit / $50
-  Qualified revenue path: $150
-  Upgrade path: transparency-report-setup only after explicit fit
-  Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_bitdust_transparency_audit_first_contact&utm_content=bitdust_audit_service
-  Sample: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_bitdust_transparency_audit_first_contact&utm_content=bitdust_sample_audit
-  Intake: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_bitdust_transparency_audit_first_contact&utm_content=bitdust&template=transparency-audit-intake.yml
-  Approved message SHA-256: ab5485b74f010fd1af64290cfb03f801e6789843f97ff84c3c2f253c0d156d31
+- cia-token: https://docs.cia.com/technical/usdcia-token
+  Priority: 104 / hot
+  Current approved ask: transparency-audit / $249
+  Qualified revenue path: $249
+  Planning reserve impact: 174300 sats current ask / 174300 sats qualified path
+  Planning basis: 70% reserve allocation at BTC/USD 100000
+  Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_cia_token_transparency_audit_first_contact&utm_content=cia_token_audit_service
+  Sample: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_cia_token_transparency_audit_first_contact&utm_content=cia_token_sample_audit
+  Intake: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_cia_token_transparency_audit_first_contact&utm_content=cia_token&template=transparency-audit-intake.yml
+  Approved message SHA-256: 0add8ed0b05bf1e1ea2d9dcb9ea949fe6961cbcbf0dac929291381af9ed82a3e
   Approved send copy:
 ```text
-Hi bitdust,
+Hi cia-token,
 
-Hey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
+Hey, SATA runs a $249 Transparency Audit for crypto teams. We review public authority, supply and concentration, LP ownership or lock evidence, reserve claims, and disclosure gaps, then provide a concise report and machine-readable JSON. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
 
-Public profile reviewed: https://www.geckoterminal.com/solana/pools/7KcXVi6on67TnmfudJ7X61hdjccF7y62oN96zEoHyDDs
-Project page reviewed: https://www.geckoterminal.com/solana/pools/7KcXVi6on67TnmfudJ7X61hdjccF7y62oN96zEoHyDDs
+Public profile reviewed: https://docs.cia.com/technical/usdcia-token
+Project page reviewed: https://docs.cia.com/technical/usdcia-token
 
-Service page: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_bitdust_transparency_audit_first_contact&utm_content=bitdust_audit_service
-Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_bitdust_transparency_audit_first_contact&utm_content=bitdust_sample_audit
-Intake form: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_bitdust_transparency_audit_first_contact&utm_content=bitdust&template=transparency-audit-intake.yml
+Service page: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_cia_token_transparency_audit_first_contact&utm_content=cia_token_audit_service
+Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_cia_token_transparency_audit_first_contact&utm_content=cia_token_sample_audit
+Intake form: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_cia_token_transparency_audit_first_contact&utm_content=cia_token&template=transparency-audit-intake.yml
 
 Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.
 ```
   Operator checklist:
-  - Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-bitdust-transparency-audit-first-contact.
+  - Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-cia-token-transparency-audit-first-contact.
   - Send only the packet message as written, then capture durable evidence and UTC send time.
   - Run the mark-sent command only after the manual send evidence exists.
 ```sh
-node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-bitdust-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash ab5485b74f010fd1af64290cfb03f801e6789843f97ff84c3c2f253c0d156d31
+node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 0add8ed0b05bf1e1ea2d9dcb9ea949fe6961cbcbf0dac929291381af9ed82a3e
 ```
 
 ## Stop Rules

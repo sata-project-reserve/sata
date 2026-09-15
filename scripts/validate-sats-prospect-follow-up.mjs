@@ -55,7 +55,7 @@ const message = renderProspectFollowUp({
 });
 for (const required of [
   'Quick follow-up',
-  'starter audit remains $50',
+  'SATA Transparency Audit remains $249',
   'Executive Chairman approves'
 ]) {
   if (!message.includes(required)) findings.push(`follow-up message missing ${required}`);

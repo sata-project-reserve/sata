@@ -1,6 +1,6 @@
 # SATA Reserve Token Settlement Options Brief
 
-Generated: 2026-09-15T07:44:32.119Z
+Generated: 2026-09-15T12:46:19.507Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -17,7 +17,7 @@ Reserve address source: public/transparency/latest.json bitcoinReserve.address
 ## BTC Invoice Templates
 
 ### transparency-audit
-Transparency audit for crypto teams / $50
+SATA Transparency Audit / $249
 Template ready: true
 
 ```sh
@@ -25,7 +25,7 @@ node scripts/sats-invoice-quote-agent.mjs write-draft --offer transparency-audit
 ```
 
 ### transparency-report-setup
-Transparency report setup / $150
+Transparency report setup / $999
 Template ready: true
 
 ```sh
@@ -33,7 +33,7 @@ node scripts/sats-invoice-quote-agent.mjs write-draft --offer transparency-repor
 ```
 
 ### full-proof-dashboard
-Full proof dashboard and workflow setup / $300
+Continuous transparency monitoring / $4999
 Template ready: true
 
 ```sh

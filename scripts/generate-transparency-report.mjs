@@ -107,7 +107,7 @@ export function classifyLiquidityDisclosure({
       status: 'PARTIALLY_LOCKED_OWNER_LP_REMAINS',
       removable: true,
       detail:
-        'Raydium Burn & Earn lock verified, but the owner still holds unlocked LP tokens that remain removable unless separately locked or burned.'
+        'Raydium Burn & Earn lock verified, and an owner unlocked LP balance was detected. Owner-held LP remains removable until separately locked, burned, or transferred to accountable multisig control.'
     };
   }
   if (locked > 0n) {
@@ -396,9 +396,15 @@ export async function generateTransparencyReport() {
     permanentCaveats: [
       'SATA has no hidden mint authority when the mint-authority check is passing.',
       'SATA has no freeze authority when the freeze-authority check is passing.',
-      'SATA is currently founder-led, and direct founder balance plus founder-controlled unlocked LP are disclosed as material concentration risks.',
+      'SATA is currently founder-led, and the direct founder balance is disclosed as a material concentration risk.',
+      ...(BigInt(ownerLpBalance?.amount ?? '0') === 0n
+        ? [
+            'No owner unlocked LP balance was detected in the latest report; any future owner-held LP remains removable until separately locked, burned, or transferred to accountable multisig control.'
+          ]
+        : [
+            'Owner-held unlocked LP is disclosed as a material concentration risk and remains removable until separately locked, burned, or transferred to accountable multisig control.'
+          ]),
       'Liquidity is described as locked only for LP balances independently verified in Raydium Burn & Earn accounts.',
-      'Any owner unlocked LP balance remains removable and is disclosed separately.',
       'No report field contains seed phrases, private keys, signed transaction bytes, or full RPC URLs.'
     ]
   };

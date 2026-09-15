@@ -27,9 +27,9 @@
       "source": "SATA transparency audit service",
       "stage": "approved-for-outreach",
       "offerId": "transparency-audit",
-      "targetRevenueUsd": "50",
+      "targetRevenueUsd": "249",
       "targetSats": "actual sats recorded after payment or conversion",
-      "nextAction": "Find one crypto team with unclear authority, liquidity, reserve, or disclosure claims and offer the $50 audit.",
+      "nextAction": "Close one crypto team with unclear authority, liquidity, reserve, or disclosure claims on the $249 SATA Transparency Audit.",
       "evidence": ["https://sata-project-reserve.github.io/sata/services/transparency-audit"]
     },
     {
@@ -37,19 +37,19 @@
       "source": "SATA transparency report setup",
       "stage": "approved-for-outreach",
       "offerId": "transparency-report-setup",
-      "targetRevenueUsd": "150",
+      "targetRevenueUsd": "999",
       "targetSats": "actual sats recorded after payment or conversion",
       "nextAction": "Qualify prospects that need a public proof page and GitHub Actions report setup.",
       "evidence": ["https://sata-project-reserve.github.io/sata/revenue-operating-plan.json"]
     },
     {
       "id": "first-proof-dashboard-sale",
-      "source": "Full proof dashboard setup",
+      "source": "Continuous transparency monitoring",
       "stage": "qualified-only",
       "offerId": "full-proof-dashboard",
-      "targetRevenueUsd": "300",
+      "targetRevenueUsd": "4999",
       "targetSats": "actual sats recorded after payment or conversion",
-      "nextAction": "Offer only after a client asks for automated reporting beyond a simple audit.",
+      "nextAction": "Offer only after a client asks for recurring automated reporting beyond a simple audit.",
       "evidence": ["https://sata-project-reserve.github.io/sata/revenue-operating-plan.json"]
     }
   ],
@@ -90,5 +90,5 @@
     "agent custody of private keys or seed phrases",
     "promising price, profit, return, redemption, liquidity, or market support"
   ],
-  "nextOperatingAction": "Close the first $50 transparency audit, collect payment only through chairman-approved instructions, deliver the audit, then propose a recorded allocation into BTC reserve sats."
+  "nextOperatingAction": "Close the first $249 SATA Transparency Audit, collect payment only through chairman-approved instructions, deliver the audit, then propose a recorded allocation into BTC reserve sats."
 }

@@ -12,6 +12,73 @@ const ALLOWED_SOURCE_TYPES = new Set([
   'manual-referral'
 ]);
 
+export function buildInboundReplyTriagePlan({ queue, liveAttributionSources }) {
+  if (!queue || typeof queue !== 'object') throw new Error('Missing inbound lead queue.');
+  return {
+    project: queue.project,
+    mode: 'inbound-reply-triage-plan',
+    liveAttributionSources,
+    requiredEvidenceFields: [
+      'sourceType',
+      'sourceId',
+      'contactHandle',
+      'publicProfileUrl',
+      'projectUrl',
+      'replyText',
+      'evidence',
+      'recordedAtUtc'
+    ],
+    classificationRules: [
+      {
+        classification: 'invoice-request-needs-chairman-review',
+        when:
+          'Reply explicitly asks for an invoice, payment method, where to send funds, or says they are ready to pay/start.',
+        leadStatus: 'invoice-requested-needs-chairman-review',
+        customerAskedForInvoice: true,
+        suggestedReplyTemplateId: 'invoice-request-boundary',
+        nextCommandAfterRecord: 'node scripts/inbound-invoice-request-agent.mjs render --lead "<lead-id>"'
+      },
+      {
+        classification: 'needs-intake-fields',
+        when:
+          'Reply shows legitimate interest in audit, transparency, report, dashboard, authority, liquidity, reserve, disclosure, token, contract, or website review but does not request an invoice.',
+        leadStatus: 'needs-intake',
+        customerAskedForInvoice: false,
+        suggestedReplyTemplateId: 'request-intake-fields',
+        nextCommandAfterRecord: 'npm run ops:inbound-lead-plan'
+      },
+      {
+        classification: 'reject-prohibited-promotion',
+        when:
+          'Reply asks for pump marketing, guaranteed buyers, fake engagement, bots, raids, price prediction, redemption promise, market support, or investment return.',
+        leadStatus: 'closed-invalid',
+        customerAskedForInvoice: false,
+        suggestedReplyTemplateId: 'reject-prohibited-promotion',
+        nextCommandAfterRecord: null
+      },
+      {
+        classification: 'monitor-no-service-intent',
+        when: 'Reply does not show service interest or an invoice request.',
+        leadStatus: 'closed-invalid',
+        customerAskedForInvoice: false,
+        suggestedReplyTemplateId: 'monitor-no-service-intent',
+        nextCommandAfterRecord: null
+      }
+    ],
+    replyTemplates: queue.replyTemplates,
+    stopRules: [
+      'Do not send payment instructions from triage.',
+      'Do not record an invoice request unless the customer explicitly asks for an invoice or payment method.',
+      'Do not continue prohibited pump, fake-engagement, buyer, price, redemption, return, or market-support requests.',
+      'Exact-sats invoices require separate Executive Chairman approval before sending.'
+    ],
+    nextAction:
+      'When a reply or DM arrives, run the triage command before recording a lead or preparing invoice-review inputs.',
+    boundary:
+      'This planner does not contact leads, approve invoices, send payment instructions, grant tokens, control custody, or move assets.'
+  };
+}
+
 export function buildInboundReplyTriage({
   queue,
   sourceType,

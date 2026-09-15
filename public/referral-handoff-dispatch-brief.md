@@ -1,6 +1,6 @@
 # SATA Reserve Token Referral Handoff Dispatch Brief
 
-Generated: 2026-09-15T07:44:31.832Z
+Generated: 2026-09-15T12:46:26.400Z
 
 ## Boundary
 This brief coordinates manual referral handoff dispatch only. It does not send messages, approve partners, approve compensation, issue invoices, provide payment instructions, publish posts, grant tokens, move assets, or record state.
@@ -16,6 +16,10 @@ Campaign: diana-crypto-20260903-transparency-tweet
 Source evidence: https://x.com/142C_/status/2086570576530010172
 Packet artifact: public/referral-partner-handoff-packet.md
 Approved terms SHA-256: 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18
+Planning reserve impact: 174300 sats primary / 699300 sats qualified upgrade
+Planning basis: 70% reserve allocation at BTC/USD 100000
+Planning BTC/USD source: operator planning assumption, not a live quote.
+Counting rule: Count zero sats until a referred customer pays, the receipt is confirmed, and allocation is chairman-approved.
 Send the exact approved terms manually, then record durable sent evidence with the approved terms SHA-256.
 Do not offer upfront compensation, payment instructions, token grants, public posts, invoices, guaranteed results, market support, or asset movement.
 

@@ -11,7 +11,7 @@ const invoiceQueue = {
     {
       status: 'template',
       offerId: 'transparency-audit',
-      usdPrice: '50',
+      usdPrice: '249',
       settlementCurrency: 'BTC'
     }
   ]
@@ -43,7 +43,7 @@ const rendered = renderInvoiceRequestPacket({
 if (packet.mode !== 'chairman-gated-invoice-request-packet') {
   findings.push('packet mode must be chairman-gated-invoice-request-packet');
 }
-if (packet.requests[0]?.usdPrice !== '50') findings.push('packet must use invoice template price');
+if (packet.requests[0]?.usdPrice !== '249') findings.push('packet must use invoice template price');
 if (
   !/Hidden until a chairman-approved exact-sats invoice/i.test(
     packet.requests[0]?.paymentAddressPolicy ?? ''
@@ -57,11 +57,20 @@ if (JSON.stringify(packet).includes(invoiceQueue.paymentPolicy.reserveAddress)) 
 if (!/chairman-selected-rate/.test(packet.requests[0]?.quoteCommand ?? '')) {
   findings.push('packet must require chairman-selected BTC/USD rate');
 }
+if (!/--createdAtUtc "<quote-created-at-utc>"/.test(packet.requests[0]?.quoteCommand ?? '')) {
+  findings.push('quote command must require quote-created-at-utc');
+}
+if (!/--ttlMinutes 30/.test(packet.requests[0]?.quoteCommand ?? '')) {
+  findings.push('quote command must include bounded quote ttl');
+}
 if (!/write-draft/.test(packet.requests[0]?.writeDraftCommand ?? '')) {
   findings.push('packet must include a durable write-draft command');
 }
 if (!/--evidence/.test(packet.requests[0]?.writeDraftCommand ?? '')) {
   findings.push('write-draft command must require invoice-request evidence');
+}
+if (!/--createdAtUtc "<quote-created-at-utc>"/.test(packet.requests[0]?.writeDraftCommand ?? '')) {
+  findings.push('write-draft command must require quote-created-at-utc');
 }
 if (!/Executive Chairman approval is required/i.test(packet.requests[0]?.approvalRequired ?? '')) {
   findings.push('packet must require Executive Chairman approval before sending');

@@ -7,21 +7,21 @@ const serviceRoutes = [
     path: '/services/transparency-audit',
     file: join('app', 'services', 'transparency-audit', 'page.tsx'),
     heading: 'Transparency audits for crypto teams.',
-    price: '$50'
+    price: '$249'
   },
   {
     id: 'transparency-report-setup',
     path: '/services/transparency-report-setup',
     file: join('app', 'services', 'transparency-report-setup', 'page.tsx'),
     heading: 'Transparency report setup.',
-    price: '$150'
+    price: '$999'
   },
   {
     id: 'full-proof-dashboard',
     path: '/services/full-proof-dashboard',
     file: join('app', 'services', 'full-proof-dashboard', 'page.tsx'),
     heading: 'Full proof dashboard setup.',
-    price: '$300'
+    price: '$4999'
   }
 ];
 const partnerRoutes = [

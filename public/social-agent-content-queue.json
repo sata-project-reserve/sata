@@ -71,19 +71,19 @@
       "requiresHumanApproval": true,
       "approvedBy": "owner",
       "approvedAtUtc": "2026-08-26T12:45:00Z",
-      "text": "SATA offers $50 transparency audits: authority, liquidity-lock, BTC reserve, and disclosure checks.\n\nThe BTC reserve is not a redemption promise or guaranteed price floor. Locked status must be verified.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit",
-      "contentSha256": "7e53c3087aeb869aeae52efd2e65d39e2f009c5cd3bd89ed663e248183724b08"
+      "text": "SATA offers $249 Transparency Audits: authority, supply, LP lock/ownership, reserve claims, risk disclosures, and JSON.\n\nReserve work is not a redemption promise. Locked LP must be verified.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit",
+      "contentSha256": "4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448"
     },
     {
       "id": "service-upgrade-path",
       "status": "approved",
       "type": "revenue",
       "requiresHumanApproval": true,
-      "text": "SATA service path: $50 transparency audit first. If a team wants implementation help, scope can move to a $150 report setup or $300 proof dashboard.\n\nNo market outcome, volume, or buyer-demand claims.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit",
+      "text": "SATA service path: $249 Transparency Audit first. If a team wants implementation help, scope can move to report setup or $4999/month monitoring.\n\nNo market outcome, volume, or buyer-demand claims.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit",
       "approvedBy": "owner",
       "approvalRole": "executive-chairman",
       "approvedAtUtc": "2026-09-03T21:48:49.400Z",
-      "contentSha256": "31f5c94d2885c67047e384d46d719a4c1d9c444bb1b08dbe8aace1afd149f2b6"
+      "contentSha256": "b512cd178e14f77e119b9f1ee5fbe4dcd77bee6e688b749a771f1ea9868c2a09"
     },
     {
       "id": "post-receipt-referral-partners",
@@ -98,8 +98,19 @@
       "status": "ready-for-review",
       "type": "revenue",
       "requiresHumanApproval": true,
-      "text": "SATA published a sample $50 transparency audit: authority, liquidity, reserve, and disclosure checks.\n\nNot a redemption promise or guaranteed price floor. Locked LP verified; unlocked LP disclosed separately.\n\nhttps://sata-project-reserve.github.io/sata/services/sample-audit",
-      "contentSha256": "fc02b08ed219b5d9df0c8ee7899aa76a335c560e64256e91379591dd4550a3be"
+      "text": "SATA published a sample $249 Transparency Audit: authority, supply, liquidity, reserve, disclosure, and risk checks.\n\nNot a redemption promise or guaranteed price floor. Locked LP must be verified.\n\nhttps://sata-project-reserve.github.io/sata/services/sample-audit",
+      "contentSha256": "20ca53f22239d0c709269e9b007a050079a0b906f3d62103e4285deae7b78202"
+    },
+    {
+      "id": "quick-project-status-20260915",
+      "status": "approved",
+      "type": "transparency",
+      "requiresHumanApproval": true,
+      "text": "Quick SATA status:\n- 500,000 sats reserve disclosed\n- Mint/freeze authorities revoked\n- Locked LP verified\n- Revenue First: $249 Transparency Audits\n\nReserve is not a redemption promise.\n\nhttps://sata-project-reserve.github.io/sata/transparency",
+      "contentSha256": "a3ad3c4d30be88d9f57feb1e33abbc08a9ee34be937034a80931bed2cf968b15",
+      "approvedBy": "owner",
+      "approvalRole": "executive-chairman",
+      "approvedAtUtc": "2026-09-15T11:25:37.689Z"
     },
     {
       "id": "gmgn-route-pending",

@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
@@ -6,6 +7,9 @@ import {
 } from './lib/revenue-cycle-status.mjs';
 
 const reserveAddress = 'bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk';
+const readyOutreachMessage =
+  'Hi prospect, SATA runs a $249 Transparency Audit for crypto teams. No price promotion, no investor targeting, and no market-support promises.';
+const readyOutreachMessageSha256 = sha256(readyOutreachMessage);
 
 const baseInputs = {
   report: {
@@ -69,7 +73,8 @@ const baseInputs = {
       {
         id: 'transparency-service-offer',
         status: 'approved',
-        text: 'SATA offers transparency audits.'
+        text:
+          'SATA offers transparency audits for public authority, liquidity, reserve, and disclosure claims. Not a price target.'
       }
     ]
   }
@@ -142,6 +147,14 @@ const manualSocialPublishAction = manualSocialPublishStatus.actionQueue.find(
 assertEqual(manualSocialPublishAction?.type, 'manual-social-publish');
 assertIncludes(manualSocialPublishAction?.command, '--contentHash ');
 assertIncludes(manualSocialPublishAction?.command, '--publishedAtUtc "<published-at-utc>"');
+assertIncludes(
+  manualSocialPublishAction?.approvedMessage,
+  'SATA publishes factual reserve and transparency updates'
+);
+assertIncludes(
+  manualSocialPublishAction?.command,
+  manualSocialPublishAction?.approvedMessageSha256
+);
 
 const receiptStatus = buildRevenueCycleStatus({
   ...baseInputs,
@@ -160,6 +173,31 @@ const receiptStatus = buildRevenueCycleStatus({
 validateRevenueCycleStatus(receiptStatus);
 assertIncludes(receiptStatus.nextAction, 'Render receipt allocation proposal for receipt-1');
 assertEqual(receiptStatus.funnel.receiptsAwaitingAllocation, 1);
+assertEqual(receiptStatus.actionQueue[0]?.command, 'node scripts/sats-receipt-allocation-agent.mjs render receipt-1');
+const allocatedReceiptStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  ledger: {
+    ...baseInputs.ledger,
+    receipts: [
+      {
+        id: 'receipt-allocated-1',
+        status: 'confirmed'
+      }
+    ],
+    allocations: [
+      {
+        id: 'allocation-1',
+        receiptId: 'receipt-allocated-1'
+      }
+    ]
+  },
+  env: {}
+});
+validateRevenueCycleStatus(allocatedReceiptStatus);
+assertEqual(allocatedReceiptStatus.funnel.receiptsAwaitingAllocation, 0);
+if (allocatedReceiptStatus.actionQueue.some((item) => item.id === 'allocate-receipt-allocated-1')) {
+  throw new Error('Allocated receipts must not produce allocation proposal actions.');
+}
 
 const inboundInvoiceStatus = buildRevenueCycleStatus({
   ...baseInputs,
@@ -240,10 +278,13 @@ const readyOutreachPacketStatus = buildRevenueCycleStatus({
   outreachPacketQueue: {
     packets: [
       {
-        id: 'outreach-packet-1',
-        status: 'ready-for-manual-send'
+        ...readyOutreachPacket('outreach-packet-1')
       }
     ]
+  },
+  socialQueue: {
+    ...baseInputs.socialQueue,
+    posts: []
   },
   env: {}
 });
@@ -253,8 +294,18 @@ assertEqual(readyOutreachPacketStatus.actionQueue[0]?.type, 'manual-outreach-sen
 assertIncludes(readyOutreachPacketStatus.actionQueue[0]?.command, '--sentAtUtc "<sent-at-utc>"');
 assertIncludes(
   readyOutreachPacketStatus.actionQueue[0]?.command,
-  '--messageHash "<approved-message-sha256>"'
+  `--messageHash ${readyOutreachMessageSha256}`
 );
+assertIncludes(readyOutreachPacketStatus.actionQueue[0]?.approvedMessage, 'SATA runs');
+assertEqual(
+  readyOutreachPacketStatus.actionQueue[0]?.approvedMessageSha256,
+  readyOutreachMessageSha256
+);
+assertIncludes(
+  readyOutreachPacketStatus.actionQueue[0]?.tracking?.serviceUrl,
+  'utm_source=manual_outreach'
+);
+assertEqual(readyOutreachPacketStatus.actionQueue[0]?.reserveImpactPlanning?.basis, 'planning-only');
 assertIncludes(
   readyOutreachPacketStatus.nextAction,
   'Send ready manual outreach packet outreach-packet-1'
@@ -267,7 +318,7 @@ const prioritizedOutreachStatus = buildRevenueCycleStatus({
     revenueStreams: [
       {
         id: 'transparency-audit',
-        priceUsd: '50'
+        priceUsd: '249'
       }
     ]
   },
@@ -294,25 +345,84 @@ const prioritizedOutreachStatus = buildRevenueCycleStatus({
   outreachPacketQueue: {
     packets: [
       {
-        id: 'outreach-low-fit',
-        prospectId: 'low-fit',
-        offerId: 'transparency-audit',
-        status: 'ready-for-manual-send'
+        ...readyOutreachPacket('outreach-low-fit', {
+          prospectId: 'low-fit',
+          offerId: 'transparency-audit'
+        })
       },
       {
-        id: 'outreach-high-fit',
-        prospectId: 'high-fit',
-        offerId: 'transparency-audit',
-        status: 'ready-for-manual-send'
+        ...readyOutreachPacket('outreach-high-fit', {
+          prospectId: 'high-fit',
+          offerId: 'transparency-audit'
+        })
       }
     ]
+  },
+  socialQueue: {
+    ...baseInputs.socialQueue,
+    posts: []
   },
   env: {}
 });
 validateRevenueCycleStatus(prioritizedOutreachStatus);
 assertEqual(prioritizedOutreachStatus.actionQueue[0]?.id, 'send-outreach-high-fit');
 assertEqual(prioritizedOutreachStatus.actionQueue[0]?.outreachPriority?.tier, 'hot');
+assertEqual(prioritizedOutreachStatus.actionQueue[0]?.currentAskUsd, '249');
+assertEqual(prioritizedOutreachStatus.actionQueue[0]?.reserveImpactPlanning?.btcUsd, '100000');
+assertEqual(
+  prioritizedOutreachStatus.actionQueue[0]?.reserveImpactPlanning?.currentAskReserveSats,
+  '174300'
+);
+assertEqual(
+  prioritizedOutreachStatus.actionQueue[0]?.reserveImpactPlanning?.qualifiedReserveSats,
+  '174300'
+);
+assertIncludes(
+  prioritizedOutreachStatus.actionQueue[0]?.reserveImpactPlanning?.actualSatsRule,
+  'Planning only'
+);
 assertEqual(prioritizedOutreachStatus.actionQueue[1]?.id, 'send-outreach-low-fit');
+
+const socialBeforeOutreachStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  prospectPipeline: {
+    ...baseInputs.prospectPipeline,
+    prospects: [
+      {
+        id: 'prospect-with-ready-outreach',
+        stage: 'outreach-approved'
+      }
+    ]
+  },
+  outreachPacketQueue: {
+    packets: [
+      {
+        ...readyOutreachPacket('outreach-packet-with-social-ready', {
+          prospectId: 'prospect-with-ready-outreach'
+        })
+      }
+    ]
+  },
+  socialQueue: {
+    mode: 'approved-only-automation',
+    posts: [
+      {
+        id: 'approved-social-before-outreach',
+        status: 'approved',
+        text: 'SATA publishes factual reserve and transparency updates. Not a price target.'
+      }
+    ]
+  },
+  env: {}
+});
+validateRevenueCycleStatus(socialBeforeOutreachStatus);
+assertEqual(socialBeforeOutreachStatus.actionQueue[0]?.type, 'manual-social-publish');
+assertEqual(socialBeforeOutreachStatus.actionQueue[1]?.type, 'manual-outreach-send');
+assertIncludes(socialBeforeOutreachStatus.nextAction, 'Manually publish approved post');
+assertIncludes(
+  socialBeforeOutreachStatus.actionQueue[0]?.approvedMessage,
+  'SATA publishes factual reserve and transparency updates'
+);
 
 const paidPromotionStatus = buildRevenueCycleStatus({
   ...baseInputs,
@@ -336,8 +446,7 @@ const paidPromotionStatus = buildRevenueCycleStatus({
   outreachPacketQueue: {
     packets: [
       {
-        id: 'outreach-packet-1',
-        status: 'ready-for-manual-send'
+        ...readyOutreachPacket('outreach-packet-1')
       }
     ]
   },
@@ -398,8 +507,7 @@ const completedPaidPromotionStatus = buildRevenueCycleStatus({
   outreachPacketQueue: {
     packets: [
       {
-        id: 'outreach-packet-1',
-        status: 'ready-for-manual-send'
+        ...readyOutreachPacket('outreach-packet-1')
       }
     ]
   },
@@ -416,6 +524,34 @@ assertIncludes(
   completedPaidPromotionStatus.actionQueue[1]?.sources?.[0]?.triageCommand,
   'inbound-reply-triage-agent.mjs markdown'
 );
+for (const expected of [
+  'sourceType',
+  'sourceId',
+  'contactHandle',
+  'publicProfileUrl',
+  'projectUrl',
+  'replyText',
+  'evidence',
+  'recordedAtUtc'
+]) {
+  if (!completedPaidPromotionStatus.actionQueue[1]?.requiredEvidenceFields?.includes(expected)) {
+    throw new Error(`Cycle triage action must require ${expected}.`);
+  }
+}
+const completedInvoiceRule = completedPaidPromotionStatus.actionQueue[1]?.classificationRules?.find(
+  (rule) => rule.classification === 'invoice-request-needs-chairman-review'
+);
+assertEqual(completedInvoiceRule?.customerAskedForInvoice, true);
+assertEqual(completedInvoiceRule?.suggestedReplyTemplateId, 'invoice-request-boundary');
+assertIncludes(completedInvoiceRule?.nextCommandAfterRecord, 'inbound-invoice-request-agent.mjs render');
+const completedIntakeRule = completedPaidPromotionStatus.actionQueue[1]?.classificationRules?.find(
+  (rule) => rule.classification === 'needs-intake-fields'
+);
+assertEqual(completedIntakeRule?.customerAskedForInvoice, false);
+const completedRejectRule = completedPaidPromotionStatus.actionQueue[1]?.classificationRules?.find(
+  (rule) => rule.classification === 'reject-prohibited-promotion'
+);
+assertEqual(completedRejectRule?.nextCommandAfterRecord, null);
 assertIncludes(
   completedPaidPromotionStatus.nextAction,
   'Prepare and send Diana Crypto a no-upfront post-receipt referral role'
@@ -429,14 +565,22 @@ assertEqual(
   'public/referral-partner-handoff-packet.md'
 );
 
+const preparedReferralReply =
+  'Thanks Diana Crypto. SATA can consider referral compensation only for legitimate paid transparency-service referrals after a referred customer pays and the receipt is confirmed. No upfront payment, no buyer claims, no fake engagement, and no market-support commitment.';
+const preparedReferralReplySha256 =
+  '2072ed0dcd364942fac81ef62e994e308c636e5ff172728c7f0028b9f5249441';
 const preparedReferralPacketStatus = buildRevenueCycleStatus({
   ...baseInputs,
   paidPromotionLedger: completedPaidPromotionStatusInput().paidPromotionLedger,
   referralPartnerHandoffPacket: {
     mode: 'referral-partner-handoff-packet',
     sourceCampaignId: 'campaign-1',
+    packet: {
+      replyTemplate: preparedReferralReply,
+      termsSha256: preparedReferralReplySha256
+    },
     recordSentCommand:
-      'node scripts/referral-partner-handoff-agent.mjs record-sent --campaign campaign-1 --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18'
+      `node scripts/referral-partner-handoff-agent.mjs record-sent --campaign campaign-1 --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash ${preparedReferralReplySha256}`
   },
   prospectPipeline: completedPaidPromotionStatusInput().prospectPipeline,
   outreachPacketQueue: completedPaidPromotionStatusInput().outreachPacketQueue,
@@ -456,7 +600,12 @@ assertIncludes(
 assertIncludes(preparedReferralPacketStatus.actionQueue[0]?.command, '--sentAtUtc "<sent-at-utc>"');
 assertIncludes(
   preparedReferralPacketStatus.actionQueue[0]?.command,
-  '--messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18'
+  `--messageHash ${preparedReferralReplySha256}`
+);
+assertIncludes(preparedReferralPacketStatus.actionQueue[0]?.approvedMessage, preparedReferralReply);
+assertEqual(
+  preparedReferralPacketStatus.actionQueue[0]?.approvedMessageSha256,
+  preparedReferralReplySha256
 );
 
 const sentReferralHandoffStatus = buildRevenueCycleStatus({
@@ -649,12 +798,35 @@ function completedPaidPromotionStatusInput() {
     outreachPacketQueue: {
       packets: [
         {
-          id: 'outreach-packet-1',
-          status: 'ready-for-manual-send'
+          ...readyOutreachPacket('outreach-packet-1')
         }
       ]
     }
   };
+}
+
+function readyOutreachPacket(id, overrides = {}) {
+  return {
+    id,
+    status: 'ready-for-manual-send',
+    message: readyOutreachMessage,
+    messageSha256: readyOutreachMessageSha256,
+    tracking: {
+      serviceUrl: trackingUrl(id, 'transparency-audit', 'service'),
+      sampleAuditUrl: trackingUrl(id, 'sample-audit', 'sample'),
+      intakeUrl: trackingUrl(id, 'intake', 'intake')
+    },
+    recordContactCommand: `node scripts/service-outreach-packet-agent.mjs mark-sent --packet ${id} --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash ${readyOutreachMessageSha256}`,
+    ...overrides
+  };
+}
+
+function trackingUrl(id, route, content) {
+  return `https://sata-project-reserve.github.io/sata/services/${route}?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=${id}&utm_content=${content}`;
+}
+
+function sha256(value) {
+  return createHash('sha256').update(String(value).replaceAll('\r\n', '\n'), 'utf8').digest('hex');
 }
 
 async function assertRevenueStateMutatorsRefreshPublicStatus() {
@@ -682,6 +854,7 @@ async function assertRevenueStateMutatorsRefreshPublicStatus() {
     'scripts/paid-promotion-agent.mjs',
     'scripts/reserve-growth-agent.mjs',
     'scripts/sats-invoice-quote-agent.mjs',
+    'scripts/sats-receipt-allocation-agent.mjs',
     'scripts/sats-outreach-approval-agent.mjs',
     'scripts/sats-prospect-follow-up-agent.mjs',
     'scripts/sats-prospect-response-agent.mjs',

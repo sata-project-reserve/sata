@@ -1,6 +1,6 @@
 # SATA Reserve Token Social Dispatch Brief
 
-Generated: 2026-09-15T07:44:31.972Z
+Generated: 2026-09-15T12:46:19.507Z
 Account: @SATAReserve
 
 ## Boundary
@@ -10,14 +10,14 @@ This brief coordinates manual social dispatch only. It does not publish posts, a
 https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml
 
 ## Queue Counts
-Approved: 7
+Approved: 8
 Ready for review: 2
 Published: 1
 Hold: 1
 Live posting enabled: false
 
 ## Ready Manual Posts
-Batch: 5 of 7 approved posts. Backlog after this batch: 2.
+Batch: 5 of 8 approved posts. Backlog after this batch: 3.
 
 ### btc-reserve-first-tranche
 Type: transparency
@@ -115,14 +115,14 @@ Type: revenue
 Approved by: owner
 Approval role: not recorded
 Approved at: 2026-08-26T12:45:00Z
-Approved content SHA-256: 7e53c3087aeb869aeae52efd2e65d39e2f009c5cd3bd89ed663e248183724b08
+Approved content SHA-256: 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448
 Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.
 Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, or move assets.
 
 ```text
-SATA offers $50 transparency audits: authority, liquidity-lock, BTC reserve, and disclosure checks.
+SATA offers $249 Transparency Audits: authority, supply, LP lock/ownership, reserve claims, risk disclosures, and JSON.
 
-The BTC reserve is not a redemption promise or guaranteed price floor. Locked status must be verified.
+Reserve work is not a redemption promise. Locked LP must be verified.
 
 https://sata-project-reserve.github.io/sata/services/transparency-audit
 ```
@@ -130,7 +130,7 @@ https://sata-project-reserve.github.io/sata/services/transparency-audit
 After manual publication, record the live post evidence:
 
 ```sh
-npm run social:agent -- record-published --post transparency-service-offer --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 7e53c3087aeb869aeae52efd2e65d39e2f009c5cd3bd89ed663e248183724b08
+npm run social:agent -- record-published --post transparency-service-offer --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448
 ```
 
 ## Next Action

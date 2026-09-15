@@ -183,6 +183,13 @@ function percentString(numerator: bigint, denominator: bigint) {
   return (Number(percentBasisPoints) / 10_000).toFixed(2);
 }
 
+function formatUsdAmount(value: number) {
+  return value.toLocaleString('en-US', {
+    minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+    maximumFractionDigits: Number.isInteger(value) ? 0 : 2
+  });
+}
+
 function recordContactedCommand(prospect: Prospect) {
   const packet = outreachPacketQueue.packets.find(
     (item) => item.prospectId === prospect.id && item.status === 'ready-for-manual-send'
@@ -1313,23 +1320,23 @@ export default function OperationsPage() {
         <div className="summary-grid">
           <div className="metric">
             <span>Sprint Gross Target</span>
-            <strong>${outreachDispatchGrossRevenueUsd.toLocaleString('en-US')}</strong>
+            <strong>${formatUsdAmount(outreachDispatchGrossRevenueUsd)}</strong>
           </div>
           <div className="metric">
             <span>Qualified Gross Path</span>
-            <strong>${outreachDispatchQualifiedGrossRevenueUsd.toLocaleString('en-US')}</strong>
+            <strong>${formatUsdAmount(outreachDispatchQualifiedGrossRevenueUsd)}</strong>
           </div>
           <div className="metric">
             <span>Reserve Allocation Target</span>
             <strong>
-              ${outreachDispatchReserveUsd.toLocaleString('en-US')} at{' '}
+              ${formatUsdAmount(outreachDispatchReserveUsd)} at{' '}
               {outreachDispatchReserveAllocationPercent}%
             </strong>
           </div>
           <div className="metric">
             <span>Qualified Reserve Path</span>
             <strong>
-              ${outreachDispatchQualifiedReserveUsd.toLocaleString('en-US')} at{' '}
+              ${formatUsdAmount(outreachDispatchQualifiedReserveUsd)} at{' '}
               {outreachDispatchReserveAllocationPercent}%
             </strong>
           </div>

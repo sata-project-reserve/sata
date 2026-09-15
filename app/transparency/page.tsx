@@ -18,6 +18,15 @@ type Check = {
   detail: string;
 };
 
+type SatsReceipt = {
+  id: string;
+  status?: string;
+};
+
+type SatsAllocation = {
+  receiptId: string;
+};
+
 const checks = report.checks as Check[];
 const PUBLIC_BASE_URL = 'https://sata-project-reserve.github.io/sata';
 
@@ -67,8 +76,11 @@ export default function TransparencyPage() {
     (total, item) => total + Number(item.targetRevenueUsd),
     0
   );
-  const receiptsAwaitingAllocation = satsLedger.receipts.filter(
-    (receipt) => !('allocatedAtUtc' in receipt)
+  const satsReceipts = satsLedger.receipts as SatsReceipt[];
+  const satsAllocations = satsLedger.allocations as SatsAllocation[];
+  const allocationReceiptIds = new Set(satsAllocations.map((allocation) => allocation.receiptId));
+  const receiptsAwaitingAllocation = satsReceipts.filter(
+    (receipt) => receipt.status === 'confirmed' && !allocationReceiptIds.has(receipt.id)
   );
 
   return (

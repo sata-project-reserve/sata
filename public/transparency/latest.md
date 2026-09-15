@@ -1,7 +1,7 @@
 # SATA Transparency Report
 
 Status: TRANSPARENCY_VERIFIED_WITH_DISCLOSURES
-Generated UTC: 2026-09-15T04:01:30.022Z
+Generated UTC: 2026-09-15T12:46:18.452Z
 Cadence: scheduled every 12 hours when GitHub Actions is enabled
 Slogan: Proof over promises.
 
@@ -125,7 +125,7 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 
 - SATA has no hidden mint authority when the mint-authority check is passing.
 - SATA has no freeze authority when the freeze-authority check is passing.
-- SATA is currently founder-led, and direct founder balance plus founder-controlled unlocked LP are disclosed as material concentration risks.
+- SATA is currently founder-led, and the direct founder balance is disclosed as a material concentration risk.
+- No owner unlocked LP balance was detected in the latest report; any future owner-held LP remains removable until separately locked, burned, or transferred to accountable multisig control.
 - Liquidity is described as locked only for LP balances independently verified in Raydium Burn & Earn accounts.
-- Any owner unlocked LP balance remains removable and is disclosed separately.
 - No report field contains seed phrases, private keys, signed transaction bytes, or full RPC URLs.

@@ -8,8 +8,8 @@
   "primaryOfferId": "transparency-audit",
   "prospectIntakeUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=prospect-candidate-intake.yml",
   "target": {
-    "firstClosedDealUsd": "50",
-    "cycleClosedRevenueUsd": "300",
+    "firstClosedDealUsd": "249",
+    "cycleClosedRevenueUsd": "996",
     "reserveTargetSats": "1000000000"
   },
   "idealCustomerProfile": [
@@ -21,7 +21,7 @@
         "public token address or contract",
         "public website, X account, or GitHub",
         "authority, liquidity, reserve, or disclosure claim that can be independently reviewed",
-        "founder or operator can approve a $50 audit"
+        "founder or operator can approve a $249 SATA Transparency Audit"
       ]
     },
     {
@@ -638,7 +638,7 @@
       "id": "transparency-audit-first-contact",
       "offerId": "transparency-audit",
       "channel": "public-dm-or-email",
-      "text": "Hey, SATA runs a small transparency audit service for crypto teams. We review public authority, liquidity-lock, reserve, and disclosure claims and produce a concise gap report. The starter audit is $50. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked."
+      "text": "Hey, SATA runs a $249 Transparency Audit for crypto teams. We review public authority, supply and concentration, LP ownership or lock evidence, reserve claims, and disclosure gaps, then provide a concise report and machine-readable JSON. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked."
     },
     {
       "id": "report-setup-qualified-follow-up",
@@ -661,5 +661,5 @@
     "outreachLimit": 3,
     "followUpAfterHours": 48
   },
-  "nextOperatingAction": "Identify ten crypto teams with public but weakly evidenced authority, liquidity, reserve, or disclosure claims; record only evidence-backed prospects for chairman review."
+  "nextOperatingAction": "Attempt to close the first $249 SATA Transparency Audit with an already approved evidence-backed prospect before adding major new internal systems."
 }

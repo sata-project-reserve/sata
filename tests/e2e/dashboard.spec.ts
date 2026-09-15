@@ -52,11 +52,11 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
     page.getByRole('heading', { name: 'Transparency audits for crypto teams.' })
   ).toBeVisible();
   await expect(page.locator('.service-primary-metric')).toContainText('Starter Audit');
-  await expect(page.locator('.service-primary-metric')).toContainText('$50');
+  await expect(page.locator('.service-primary-metric')).toContainText('$249');
   await expect(page.locator('.service-primary-metric')).toContainText('24-hour target');
   await expect(
-    page.getByRole('article').filter({ hasText: 'Transparency audit for crypto teams' })
-  ).toContainText('$50');
+    page.getByRole('article').filter({ hasText: 'SATA Transparency Audit' })
+  ).toContainText('$249');
   await expect(page.getByRole('heading', { name: 'Payment Path' })).toBeVisible();
   await expect(page.getByText('BTC to the published reserve address')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Sales Pipeline' })).toBeVisible();
@@ -69,7 +69,7 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
     '/services/sample-audit'
   );
   await expect(page.getByRole('heading', { name: 'Upgrade Path' })).toBeVisible();
-  await expect(page.getByText('Offer the $300 full proof dashboard only')).toBeVisible();
+  await expect(page.getByText('Offer the $4999/month continuous transparency monitoring plan only')).toBeVisible();
   await expect(page.getByRole('link', { name: 'View Setup' })).toHaveAttribute(
     'href',
     '/services/transparency-report-setup'
@@ -107,7 +107,7 @@ test('sample transparency audit page publishes fictional deliverable boundaries'
 test('higher-value service pages publish gates and boundaries', async ({ page }) => {
   await page.goto('/services/transparency-report-setup');
   await expect(page.getByRole('heading', { name: 'Transparency report setup.' })).toBeVisible();
-  await expect(page.locator('.service-primary-metric')).toContainText('$150');
+  await expect(page.locator('.service-primary-metric')).toContainText('$999');
   await expect(page.getByRole('heading', { name: 'Payment Gate' })).toBeVisible();
   await expect(page.getByText('Executive Chairman approves final scope and invoice')).toBeVisible();
   await expect(
@@ -121,7 +121,7 @@ test('higher-value service pages publish gates and boundaries', async ({ page })
 
   await page.goto('/services/full-proof-dashboard');
   await expect(page.getByRole('heading', { name: 'Full proof dashboard setup.' })).toBeVisible();
-  await expect(page.locator('.service-primary-metric')).toContainText('$300');
+  await expect(page.locator('.service-primary-metric')).toContainText('$4999');
   await expect(page.getByText('Public JSON endpoints for independent verification')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Revenue Use' })).toBeVisible();
   await expect(page.getByText('No market-support')).toBeVisible();
@@ -256,7 +256,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(
     replyTriageAction.getByText('npm run ops:inbound-reply-triage-plan')
   ).toBeVisible();
-  await expect(page.getByText('#3 manual-outreach-send')).toBeVisible();
+  await expect(page.getByText('#4 manual-outreach-send')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Social Review Queue' })).toBeVisible();
   await expect(page.getByText('post-receipt-referral-partners', { exact: true })).toBeVisible();
   await expect(
@@ -374,11 +374,11 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByRole('heading', { name: 'Manual Outreach Packets' })).toBeVisible();
   await expect(page.getByText('Showing 5 of 30 ready packets.')).toBeVisible();
   await expect(page.getByText('Sprint Gross Target')).toBeVisible();
-  await expect(page.getByText('$250')).toBeVisible();
+  await expect(page.getByText('$1,245')).toBeVisible();
   await expect(page.getByText('Reserve Allocation Target')).toBeVisible();
-  await expect(page.getByText('$175 at 70%')).toBeVisible();
+  await expect(page.getByText('$871.50 at 70%')).toBeVisible();
   await expect(page.getByText('Planning Reserve Impact')).toBeVisible();
-  await expect(page.getByText('175000 sats')).toBeVisible();
+  await expect(page.getByText('871500 sats')).toBeVisible();
   await expect(page.getByText('Get one explicit invoice request')).toBeVisible();
   await expect(
     page.getByText(
@@ -396,14 +396,14 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     page
       .locator('.preview')
       .filter({ hasText: 'Hi sanctum-elysium-loam' })
-      .filter({ hasText: 'SATA runs a small transparency audit service for crypto teams.' })
+      .filter({ hasText: 'SATA runs a $249 Transparency Audit for crypto teams.' })
       .first()
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Reply Conversion' })).toBeVisible();
   await expect(page.getByText('Invoice Conversion Sprint')).toBeVisible();
   await expect(page.getByText('awaiting-manual-contact-send')).toBeVisible();
   await expect(page.getByText('Qualified Path Impact')).toBeVisible();
-  await expect(page.getByText('150000 sats')).toBeVisible();
+  await expect(page.getByText('699300 sats')).toBeVisible();
   await expect(page.getByRole('link', { name: 'contact evidence intake' })).toHaveAttribute(
     'href',
     'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml'
@@ -412,7 +412,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(
     page
       .getByText(
-        'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 1d37077645c8d720356f548899d61049e8f835d23a5990f2994b6415ba1d1122'
+        'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100'
       )
       .first()
   ).toBeVisible();

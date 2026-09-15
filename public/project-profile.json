@@ -23,7 +23,7 @@
     "governance": "founder-led",
     "currentWeaknesses": [
       "high founder-controlled token concentration",
-      "owner-held unlocked LP remains removable",
+      "future owner-held LP remains removable unless separately locked, burned, or transferred to accountable multisig control",
       "thin liquidity",
       "mutable metadata",
       "no independent audit yet",

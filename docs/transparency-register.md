@@ -10,7 +10,8 @@ This register is the public-source template for SATA facts that should be easy t
 - Raydium CPMM program: `CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C`
 - Raydium LP-Lock / Burn & Earn program: `LockrWmn6K5twhz3y9w1dQERbmgSaRkfnTeTKbpofwE`
 - Initial verified LP lock transaction: `6r2o4X88cZZ8HZZtk1nvCUdFGqvHcr1ByUVZddHyfqcRCeEAjD7pFghLvrJtgU5sEKA78ZEBc37rr7pcBDgD7Qn`
-- Locked LP amount from latest verification: `9199123117269` LP base units
+- Locked LP amount from latest verification: `26627909375363` LP base units
+- Owner unlocked LP from latest verification: `0` LP base units
 - Fee Key NFT mint: `FQq3W44pup68ux6rEZR91AX77Nwth8rH49m9aSouGpT6`
 
 ## Bitcoin Reserve

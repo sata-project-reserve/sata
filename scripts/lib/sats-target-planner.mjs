@@ -7,10 +7,11 @@ export function buildSatsTargetPlan({
   status,
   revenuePlan,
   satsLedger,
-  btcUsd = DEFAULT_BTC_USD,
+  btcUsd,
   generatedAtUtc = new Date().toISOString()
 }) {
-  assertInputs({ status, revenuePlan, satsLedger, btcUsd });
+  const planningBtcUsd = Number(btcUsd ?? revenuePlan?.planningAssumptions?.btcUsd ?? DEFAULT_BTC_USD);
+  assertInputs({ status, revenuePlan, satsLedger, btcUsd: planningBtcUsd });
 
   const confirmedSats = BigInt(status.currentReserve.confirmedSats);
   const targetSats = BigInt(status.currentReserve.targetSats);
@@ -30,7 +31,7 @@ export function buildSatsTargetPlan({
       stream,
       remainingSats,
       nextMilestoneAdditionalSats,
-      btcUsd,
+      btcUsd: planningBtcUsd,
       reserveAllocationPercent
     })
   );
@@ -38,7 +39,7 @@ export function buildSatsTargetPlan({
     status,
     nextMilestoneAdditionalSats,
     remainingSats,
-    btcUsd,
+    btcUsd: planningBtcUsd,
     reserveAllocationPercent
   });
 
@@ -47,10 +48,13 @@ export function buildSatsTargetPlan({
     mode: 'sats-target-planner',
     generatedAtUtc,
     assumptions: {
-      btcUsd: btcUsd.toString(),
-      btcUsdSource: 'operator planning assumption, not a live quote',
+      btcUsd: planningBtcUsd.toString(),
+      btcUsdSource:
+        revenuePlan?.planningAssumptions?.btcUsdSource ??
+        'operator planning assumption, not a live quote',
       reserveAllocationPercent: reserveAllocationPercent.toString(),
       actualSatsRule:
+        revenuePlan?.planningAssumptions?.actualSatsRule ??
         'Use this for planning only; record actual sats only after confirmed receipt or approved allocation.'
     },
     target: {
@@ -65,21 +69,21 @@ export function buildSatsTargetPlan({
         id: 'next-1m-sats',
         label: 'Reach 1,000,000 sats reserve',
         additionalSats: nextMilestoneAdditionalSats,
-        btcUsd,
+        btcUsd: planningBtcUsd,
         reserveAllocationPercent
       }),
       buildMilestone({
         id: 'full-1b-sats',
         label: 'Reach 1,000,000,000 sats reserve',
         additionalSats: remainingSats,
-        btcUsd,
+        btcUsd: planningBtcUsd,
         reserveAllocationPercent
       })
     ],
     scenarios,
     currentPipeline,
     operatingRead:
-      'The $50 starter audit can prove the loop, but the full target requires higher-value setup/dashboard work, grants, donations, or chairman-approved asset allocation proposals.',
+      'The $249 SATA Transparency Audit can prove the loop, but the full target requires recurring monitoring revenue, larger scoped setup work, grants, donations, or chairman-approved asset allocation proposals.',
     nextAction:
       'Use the first five tracked outreach links to seek one paid audit request, then quote exact sats only after a customer asks for an invoice.',
     boundary:

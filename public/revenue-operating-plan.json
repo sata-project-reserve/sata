@@ -30,32 +30,32 @@
   "revenueStreams": [
     {
       "id": "transparency-audit",
-      "label": "Transparency audit for crypto teams",
-      "priceUsd": "50",
-      "deliverable": "One-page public-readiness audit covering supply, authorities, liquidity lock, reserve claims, and disclosure gaps.",
-      "paymentTiming": "after draft delivery or through escrow when available"
+      "label": "SATA Transparency Audit",
+      "priceUsd": "249",
+      "deliverable": "Authority analysis, supply and concentration review, LP ownership or lock analysis, reserve-claim verification, risk disclosures, machine-readable JSON, and a public or private final report.",
+      "paymentTiming": "chairman-approved BTC invoice before final delivery, or chairman-approved escrow terms"
     },
     {
       "id": "transparency-report-setup",
       "label": "Transparency report setup",
-      "priceUsd": "150",
-      "deliverable": "Repo-based public report template, disclosure checklist, and deployment instructions for a client project.",
+      "priceUsd": "999",
+      "deliverable": "Repo-based public report template, disclosure checklist, deployment instructions, and first reporting refresh for a client project.",
       "paymentTiming": "50% upfront only after chairman approval, 50% after delivery"
     },
     {
       "id": "full-proof-dashboard",
-      "label": "Full proof dashboard and workflow setup",
-      "priceUsd": "300",
-      "deliverable": "Automated public report workflow, proof dashboard, public JSON endpoints, and operating runbook.",
-      "paymentTiming": "milestone-based after chairman-approved scope"
+      "label": "Continuous transparency monitoring",
+      "priceUsd": "4999",
+      "deliverable": "Hosted recurring monitoring with automated public report workflow, proof dashboard, public JSON endpoints, monthly evidence refresh, and operating runbook.",
+      "paymentTiming": "monthly recurring only after chairman-approved scope, invoice, and cancellation terms"
     }
   ],
   "upgradePolicy": {
-    "objective": "Increase average deal value by moving qualified customers from a starter audit into setup or dashboard work only when the customer needs implementation help.",
+    "objective": "Increase average deal value only after a customer validates the $249 audit and asks for implementation help or recurring monitoring.",
     "defaultPath": [
-      "Start with the $50 transparency audit unless the customer already asks for a setup or dashboard.",
-      "Offer the $150 transparency report setup when the audit finds public-reporting gaps the customer wants fixed.",
-      "Offer the $300 full proof dashboard only when the customer wants recurring automated public reporting."
+      "Start with the $249 SATA Transparency Audit unless the customer already asks for a setup or monitoring scope.",
+      "Offer the $999 transparency report setup when the audit finds public-reporting gaps the customer wants fixed.",
+      "Offer the $4999/month continuous transparency monitoring plan only when the customer wants recurring automated public reporting."
     ],
     "qualificationQuestions": [
       "Do you only want the gap report, or do you want help setting up the public report?",
@@ -86,6 +86,7 @@
     ]
   },
   "goToMarketRules": [
+    "Revenue First: do not build major new SATA subsystems until the team attempts to sell the existing audit offer, except for defects, security issues, or customer blockers.",
     "Lead with proof tooling and public reporting, not SATA price action.",
     "Use Sponsored/Paid Partnership disclosure for any paid or token-compensated SATA coverage.",
     "Prefer public, factual deliverables over engagement promises.",
@@ -95,15 +96,23 @@
   "nextCycle": {
     "id": "revenue-cycle-001",
     "durationDays": 14,
-    "targetClosedRevenueUsd": "300",
-    "minimumAcceptableFirstDealUsd": "50",
+    "targetClosedRevenueUsd": "996",
+    "minimumAcceptableFirstDealUsd": "249",
     "primaryOfferId": "transparency-audit",
     "successCriteria": [
-      "at least one paid transparency audit or setup deal",
+      "at least one paid $249 SATA Transparency Audit",
+      "four attempted $249 audit closes or one closed customer, whichever comes first",
       "all compensation and deliverables recorded",
       "no undisclosed promotion",
-      "chairman-approved allocation proposal for any received funds"
+      "chairman-approved allocation proposal for any received funds",
+      "track Customers, Revenue, Reserve sats, and Recurring revenue"
     ]
+  },
+  "planningAssumptions": {
+    "btcUsd": "100000",
+    "btcUsdSource": "operator planning assumption, not a live quote",
+    "reserveImpactRule": "Use only for planning outreach priority and reserve-impact estimates. Quote exact sats from a fresh chairman-selected BTC/USD rate only after a customer explicitly asks for an invoice.",
+    "actualSatsRule": "Planning only. Record actual sats only after confirmed receipt and chairman-approved allocation."
   },
   "prohibitedRoutes": [
     "hidden selling into buyers",

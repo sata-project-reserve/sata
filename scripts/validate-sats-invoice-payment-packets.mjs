@@ -59,6 +59,12 @@ for (const invoice of [
   assertRejects(invoice);
 }
 assertRejects(approvedInvoice, '2026-08-28T00:31:00.000Z');
+assertRejects(approvedInvoice, '2026-08-27T23:59:59.000Z');
+assertRejects({
+  ...approvedInvoice,
+  id: 'invoice-approved-before-quote-created',
+  approvedAtUtc: '2026-08-27T23:59:59.000Z'
+});
 
 if (findings.length > 0) {
   console.error('Sats invoice payment packet check failed:');

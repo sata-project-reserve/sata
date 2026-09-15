@@ -10,6 +10,7 @@ const paidPromotionLedger = readJson(join('public', 'paid-promotion-ledger.json'
 const referralPartnerPolicy = readJson(join('public', 'referral-partner-policy.json'));
 const inboundQueue = readJson(join('public', 'inbound-service-lead-queue.json'));
 const packetArtifact = readOptionalJson(join('public', 'referral-partner-handoff-packet.json'));
+const revenuePlan = readJson(join('public', 'revenue-operating-plan.json'));
 const publicBrief = readOptionalJson(join('public', 'referral-handoff-dispatch-brief.json'));
 const publicMarkdown = readOptionalText(join('public', 'referral-handoff-dispatch-brief.md'));
 const agent = readFileSync(join('scripts', 'referral-handoff-dispatch-brief-agent.mjs'), 'utf8');
@@ -20,6 +21,7 @@ const brief = buildReferralHandoffDispatchBrief({
   referralPartnerPolicy,
   inboundQueue,
   packetArtifact,
+  revenuePlan,
   generatedAtUtc: publicBrief?.generatedAtUtc ?? '2026-09-10T13:00:00.000Z'
 });
 const markdown = renderReferralHandoffDispatchMarkdown(brief);
@@ -47,6 +49,42 @@ for (const item of brief.readyManualHandoffs) {
   if (!/^[a-f0-9]{64}$/.test(item.approvedTermsSha256 ?? '')) {
     findings.push(`${item.sourceCampaignId}: approved terms SHA-256 must be exposed`);
   }
+  if (item.reserveImpactPlanning?.basis !== 'planning-only') {
+    findings.push(`${item.sourceCampaignId}: reserve impact must be planning-only`);
+  }
+  if (item.reserveImpactPlanning?.primaryOfferId !== revenuePlan.nextCycle?.primaryOfferId) {
+    findings.push(`${item.sourceCampaignId}: primary offer must come from revenue operating plan`);
+  }
+  if (item.reserveImpactPlanning?.btcUsd !== revenuePlan.planningAssumptions?.btcUsd) {
+    findings.push(`${item.sourceCampaignId}: planning BTC/USD must come from revenue operating plan`);
+  }
+  if (
+    item.reserveImpactPlanning?.btcUsdSource !== revenuePlan.planningAssumptions?.btcUsdSource
+  ) {
+    findings.push(`${item.sourceCampaignId}: planning BTC/USD source must come from revenue operating plan`);
+  }
+  if (
+    item.reserveImpactPlanning?.actualSatsRule !== revenuePlan.planningAssumptions?.actualSatsRule
+  ) {
+    findings.push(`${item.sourceCampaignId}: actual sats rule must come from revenue operating plan`);
+  }
+  if (!/referred customer pays/i.test(item.reserveImpactPlanning?.trigger ?? '')) {
+    findings.push(`${item.sourceCampaignId}: reserve impact trigger must require a referred customer payment`);
+  }
+  if (!/confirmed/i.test(item.reserveImpactPlanning?.trigger ?? '')) {
+    findings.push(`${item.sourceCampaignId}: reserve impact trigger must require confirmed receipt`);
+  }
+  if (!/chairman-approved/i.test(item.reserveImpactPlanning?.trigger ?? '')) {
+    findings.push(`${item.sourceCampaignId}: reserve impact trigger must require chairman-approved allocation`);
+  }
+  if (item.reserveImpactPlanning?.primaryOfferReserveSats !== '174300') {
+    findings.push(`${item.sourceCampaignId}: primary offer planning sats should be 174300 at current assumptions`);
+  }
+  if (item.reserveImpactPlanning?.qualifiedUpgradeReserveSats !== '699300') {
+    findings.push(
+      `${item.sourceCampaignId}: qualified upgrade planning sats should be 699300 at current assumptions`
+    );
+  }
   if (!item.recordSentCommand?.includes('--sentAtUtc "<sent-at-utc>"')) {
     findings.push(`${item.sourceCampaignId}: record sent command must require sentAtUtc`);
   }
@@ -65,6 +103,15 @@ if (!markdown.includes('## Ready Manual Handoffs')) {
 }
 if (!markdown.includes('Approved terms SHA-256')) {
   findings.push('markdown must expose approved terms SHA-256');
+}
+if (!markdown.includes('Planning reserve impact: 174300 sats primary / 699300 sats qualified upgrade')) {
+  findings.push('markdown must expose planning reserve impact for referral handoff conversion');
+}
+if (!markdown.includes('Planning BTC/USD source: operator planning assumption, not a live quote.')) {
+  findings.push('markdown must expose planning BTC/USD source');
+}
+if (!markdown.includes('Counting rule: Count zero sats until a referred customer pays')) {
+  findings.push('markdown must expose zero-sats counting rule before confirmed receipt');
 }
 if (!markdown.includes('referral-handoff-evidence.yml')) {
   findings.push('markdown must link evidence intake');
@@ -96,6 +143,7 @@ if (publicBrief) {
     referralPartnerPolicy,
     inboundQueue,
     packetArtifact,
+    revenuePlan,
     generatedAtUtc: publicBrief.generatedAtUtc
   });
   if (JSON.stringify(publicBrief) !== JSON.stringify(expectedPublicBrief)) {

@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { buildPaidPromotionPlan } from './paid-promotion-ledger.mjs';
 import { prioritizeOutreachPackets } from './prospect-priority.mjs';
 import { buildLiveReplySources } from './live-reply-sources.mjs';
+import { buildInboundReplyTriagePlan } from './inbound-reply-triage.mjs';
 
 const PROHIBITED_PATTERN =
   /\b(private key|seed phrase|wash trading|guaranteed return|guaranteed buyers|fake engagement|bots|raids|price prediction|price guarantee|redemption promise)\b/i;
@@ -55,11 +56,35 @@ export function buildRevenueExecutionBrief({
   const inboundInvoiceRequests = (status.actionQueue ?? []).filter(
     (action) => action.type === 'inbound-invoice-request-packet'
   );
+  const receiptAllocationProposals = (status.actionQueue ?? []).filter(
+    (action) => action.type === 'receipt-allocation-proposal'
+  );
   const inboundIntakeReplies = (status.actionQueue ?? []).filter(
     (action) => action.type === 'inbound-intake-reply'
   );
+  const manualSocialPublishRequests = (status.actionQueue ?? []).filter(
+    (action) => action.type === 'manual-social-publish'
+  );
   const liveReplySources = buildLiveReplySources({ paidPromotionLedger, socialQueue });
   const actions = [];
+
+  for (const proposal of receiptAllocationProposals) {
+    const receiptId = receiptIdFromAllocationAction(proposal);
+    actions.push({
+      id: proposal.id,
+      type: proposal.type,
+      priority: actions.length + 1,
+      objective: proposal.title,
+      whyItCanCreateSats:
+        'A confirmed direct-reserve BTC receipt can only count toward reserve growth after the allocation record is chairman-approved and tied to the published transparency report.',
+      command: proposal.command,
+      recordAllocationCommand: `node scripts/sats-receipt-allocation-agent.mjs record-allocation --allocation "<allocation-id>" --receipt "${receiptId}" --allocatedAtUtc "<allocated-at-utc>" --transparencyReportUrl "<published-transparency-report-url>" --confirmChairmanAllocationApproval "I am Executive Chairman and approve allocation <allocation-id>"`,
+      evidenceRequired: proposal.evidenceRequired,
+      operatorChecklist: receiptAllocationChecklist(),
+      stopRule:
+        'Render the proposal only. Record the allocation only after chairman approval and a published transparency report URL exist.'
+    });
+  }
 
   for (const request of inboundInvoiceRequests) {
     actions.push({
@@ -182,6 +207,10 @@ export function buildRevenueExecutionBrief({
   }
 
   if (liveReplySources.length > 0) {
+    const triagePlan = buildInboundReplyTriagePlan({
+      queue: { project: status.project, replyTemplates: [] },
+      liveAttributionSources: liveReplySources
+    });
     actions.push({
       id: 'triage-live-replies',
       type: 'inbound-reply-triage-monitor',
@@ -192,11 +221,35 @@ export function buildRevenueExecutionBrief({
         'Fast reply triage turns warm attention into intake records or chairman invoice-review packets without exposing payment instructions.',
       command: 'npm run ops:inbound-reply-triage-plan',
       sources: liveReplySources,
+      requiredEvidenceFields: triagePlan.requiredEvidenceFields,
+      classificationRules: safeTriageRulesForExecutionBrief(triagePlan.classificationRules),
       evidenceRequired:
         'Reply or DM text, live source id, profile URL, project URL, durable evidence, and explicit recordedAtUtc timestamp.',
       operatorChecklist: liveReplyTriageChecklist(),
       stopRule:
         'Triage only. Do not contact leads, send payment instructions, create invoices, grant tokens, or move assets.'
+    });
+  }
+
+  for (const publishRequest of manualSocialPublishRequests.slice(0, 1)) {
+    const approvedPost = manualSocialPostForAction({
+      action: publishRequest,
+      socialQueue
+    });
+    actions.push({
+      id: publishRequest.id,
+      type: publishRequest.type,
+      priority: actions.length + 1,
+      objective: publishRequest.title,
+      whyItCanCreateSats:
+        'Chairman-approved factual posts can create attributable inbound attention without autonomous posting or paid promotion.',
+      command: publishRequest.command,
+      approvedMessage: approvedPost?.text ?? null,
+      approvedMessageSha256: approvedPost?.contentSha256 ?? null,
+      evidenceRequired: publishRequest.evidenceRequired,
+      operatorChecklist: manualSocialPublishChecklist(),
+      stopRule:
+        'Publish only the approved post content manually, then record the live URL and evidence; do not change copy or enable live automation.'
     });
   }
 
@@ -411,6 +464,11 @@ export function validateRevenueExecutionBrief(brief) {
           findings.push(`${action.id}: conversion plan must preserve explicit-fit gating`);
         }
       }
+      validateReserveImpactPlanning({
+        findings,
+        label: action.id,
+        value: action.reserveImpactPlanning
+      });
       if (!action.tracking || typeof action.tracking !== 'object') {
         findings.push(`${action.id}: manual outreach action must include tracking URLs`);
       } else if (!/utm_source=manual_outreach/i.test(action.tracking.serviceUrl ?? '')) {
@@ -418,6 +476,50 @@ export function validateRevenueExecutionBrief(brief) {
           `${action.id}: manual outreach action service tracking URL is missing manual_outreach UTM`
         );
       }
+    }
+    if (action.type === 'receipt-allocation-proposal') {
+      if (!/sats-receipt-allocation-agent\.mjs render \S+/.test(action.command ?? '')) {
+        findings.push(`${action.id}: receipt allocation action must preserve the render command`);
+      }
+      if (
+        !/sats-receipt-allocation-agent\.mjs record-allocation/.test(
+          action.recordAllocationCommand ?? ''
+        )
+      ) {
+        findings.push(`${action.id}: receipt allocation action must expose record-allocation`);
+      }
+      if (!/confirmChairmanAllocationApproval/.test(action.recordAllocationCommand ?? '')) {
+        findings.push(
+          `${action.id}: receipt allocation record command must require chairman approval`
+        );
+      }
+      if (!/transparencyReportUrl/.test(action.recordAllocationCommand ?? '')) {
+        findings.push(
+          `${action.id}: receipt allocation record command must require a transparency report URL`
+        );
+      }
+    }
+    if (action.type === 'manual-social-publish') {
+      if (!/social:agent -- record-published/.test(action.command ?? '')) {
+        findings.push(`${action.id}: manual social publish action must record publication evidence`);
+      }
+      if (!/--publishedAtUtc "<published-at-utc>"/.test(action.command ?? '')) {
+        findings.push(
+          `${action.id}: manual social publish command must require explicit publishedAtUtc evidence`
+        );
+      }
+      if (!/--contentHash [a-f0-9]{64}\b/.test(action.command ?? '')) {
+        findings.push(
+          `${action.id}: manual social publish command must require approved content SHA-256`
+        );
+      }
+      validateApprovedMessage({
+        findings,
+        label: action.id,
+        message: action.approvedMessage,
+        messageSha256: action.approvedMessageSha256,
+        command: action.command
+      });
     }
     if (action.type === 'manual-referral-handoff-send') {
       if (!/referral-partner-handoff-agent\.mjs record-sent/.test(action.command ?? '')) {
@@ -466,6 +568,44 @@ export function validateRevenueExecutionBrief(brief) {
           );
         }
       }
+      for (const expected of [
+        'sourceType',
+        'sourceId',
+        'contactHandle',
+        'publicProfileUrl',
+        'projectUrl',
+        'replyText',
+        'evidence',
+        'recordedAtUtc'
+      ]) {
+        if (!action.requiredEvidenceFields?.includes(expected)) {
+          findings.push(`${action.id}: inbound reply triage action must require ${expected}`);
+        }
+      }
+      const invoiceRule = action.classificationRules?.find(
+        (rule) => rule.classification === 'invoice-request-needs-chairman-review'
+      );
+      if (!invoiceRule?.customerAskedForInvoice) {
+        findings.push(`${action.id}: invoice triage rule must preserve customerAskedForInvoice`);
+      }
+      if (invoiceRule?.suggestedReplyTemplateId !== 'invoice-request-boundary') {
+        findings.push(`${action.id}: invoice triage rule must use invoice-request-boundary`);
+      }
+      if (!/inbound-invoice-request-agent\.mjs render/.test(invoiceRule?.nextCommandAfterRecord ?? '')) {
+        findings.push(`${action.id}: invoice triage rule must render inbound invoice review`);
+      }
+      const intakeRule = action.classificationRules?.find(
+        (rule) => rule.classification === 'needs-intake-fields'
+      );
+      if (intakeRule?.customerAskedForInvoice !== false) {
+        findings.push(`${action.id}: intake triage rule must not mark invoice request`);
+      }
+      const rejectRule = action.classificationRules?.find(
+        (rule) => rule.classification === 'reject-prohibited-promotion'
+      );
+      if (rejectRule?.nextCommandAfterRecord !== null) {
+        findings.push(`${action.id}: reject triage rule must not expose a next command`);
+      }
     }
   }
   for (const packet of brief.manualSendBatch ?? []) {
@@ -505,6 +645,11 @@ export function validateRevenueExecutionBrief(brief) {
         );
       }
     }
+    validateReserveImpactPlanning({
+      findings,
+      label: packet.packetId,
+      value: packet.reserveImpactPlanning
+    });
     if (!packet.tracking || typeof packet.tracking !== 'object') {
       findings.push(
         `${packet.packetId ?? '<missing-packet>'}: manual send batch item must include tracking URLs`
@@ -562,6 +707,7 @@ function commercialContextFor({ packet, prospect, revenuePlan, revenueStreamsByI
   const recommendedOfferId = prospect?.recommendedOfferId ?? currentOfferId;
   const currentAskUsd = revenueStreamsById?.get(currentOfferId)?.priceUsd ?? null;
   const recommendedAskUsd = revenueStreamsById?.get(recommendedOfferId)?.priceUsd ?? null;
+  const qualifiedRevenueUsd = packet.qualifiedRevenueUsd ?? recommendedAskUsd ?? currentAskUsd;
   const shouldShowUpgradePath =
     recommendedOfferId &&
     currentOfferId &&
@@ -573,6 +719,11 @@ function commercialContextFor({ packet, prospect, revenuePlan, revenueStreamsByI
     currentAskUsd,
     recommendedOfferId,
     recommendedAskUsd,
+    reserveImpactPlanning: reserveImpactPlanning({
+      revenuePlan,
+      currentAskUsd,
+      qualifiedRevenueUsd
+    }),
     conversionPlan: shouldShowUpgradePath
       ? {
           upgradeOfferId: recommendedOfferId,
@@ -582,6 +733,54 @@ function commercialContextFor({ packet, prospect, revenuePlan, revenueStreamsByI
           qualificationQuestions: revenuePlan?.upgradePolicy?.qualificationQuestions ?? []
         }
       : null
+  };
+}
+
+function validateReserveImpactPlanning({ findings, label, value }) {
+  if (!value || value.basis !== 'planning-only') {
+    findings.push(`${label ?? '<missing-id>'}: reserve impact must be planning-only`);
+    return;
+  }
+  if (!/^\d+$/.test(value.currentAskReserveSats ?? '')) {
+    findings.push(`${label ?? '<missing-id>'}: reserve impact must include current-ask sats`);
+  }
+  if (!/^\d+$/.test(value.qualifiedReserveSats ?? '')) {
+    findings.push(`${label ?? '<missing-id>'}: reserve impact must include qualified-path sats`);
+  }
+  if (!/planning only/i.test(value.actualSatsRule ?? '')) {
+    findings.push(`${label ?? '<missing-id>'}: reserve impact must label sats as planning only`);
+  }
+  if (BigInt(value.qualifiedReserveSats ?? '0') < BigInt(value.currentAskReserveSats ?? '0')) {
+    findings.push(
+      `${label ?? '<missing-id>'}: qualified-path sats must not be lower than current-ask sats`
+    );
+  }
+}
+
+function reserveImpactPlanning({ revenuePlan, currentAskUsd, qualifiedRevenueUsd }) {
+  const btcUsd = Number(revenuePlan?.planningAssumptions?.btcUsd ?? 100000);
+  const reserveAllocationPercent = Number(
+    revenuePlan?.allocationPolicy?.postReceiptAllocationPercent?.btcReserve ?? 70
+  );
+  return {
+    basis: 'planning-only',
+    btcUsd: String(btcUsd),
+    btcUsdSource:
+      revenuePlan?.planningAssumptions?.btcUsdSource ??
+      'operator planning assumption, not a live quote',
+    reserveAllocationPercent: String(reserveAllocationPercent),
+    currentAskReserveSats: usdToReserveSatsEstimate({
+      usd: Number(currentAskUsd ?? 0),
+      btcUsd,
+      reserveAllocationPercent
+    }).toString(),
+    qualifiedReserveSats: usdToReserveSatsEstimate({
+      usd: Number(qualifiedRevenueUsd ?? currentAskUsd ?? 0),
+      btcUsd,
+      reserveAllocationPercent
+    }).toString(),
+    actualSatsRule:
+      'Planning only. Record actual sats only after confirmed receipt and chairman-approved allocation.'
   };
 }
 
@@ -597,6 +796,14 @@ function matchingReferralHandoffPacket({ packet, campaignId }) {
   return packet;
 }
 
+function receiptAllocationChecklist() {
+  return [
+    'Render the receipt allocation proposal and independently verify the BTC transaction evidence.',
+    'Capture the chairman allocation approval, allocation UTC timestamp, and published transparency report URL.',
+    'Run record-allocation only after the published transparency report URL exists; do not move funds.'
+  ];
+}
+
 function invoiceRequestChecklist() {
   return [
     'Confirm the customer explicitly requested an invoice before rendering quote inputs.',
@@ -610,6 +817,14 @@ function inboundIntakeChecklist() {
     'Collect missing intake fields from the inbound lead before changing stage.',
     'Capture the reply evidence and UTC response time.',
     'Leave invoices, public commitments, compensation, and asset movement for separate approval.'
+  ];
+}
+
+function manualSocialPublishChecklist() {
+  return [
+    'Open the approved social content queue and confirm the post content matches the content hash.',
+    'Publish manually from the project account, then capture the live URL, screenshot or export, and UTC publish time.',
+    'Run record-published only after the live post evidence exists; do not alter the approved copy.'
   ];
 }
 
@@ -747,6 +962,37 @@ function normalizeMessage(value) {
     .trim();
 }
 
+function receiptIdFromAllocationAction(action) {
+  const match = /sats-receipt-allocation-agent\.mjs render (?<receiptId>\S+)/.exec(
+    action.command ?? ''
+  );
+  if (match?.groups?.receiptId) return match.groups.receiptId;
+  return String(action.id ?? '').replace(/^allocate-/, '') || '<confirmed-receipt-id>';
+}
+
+function manualSocialPostForAction({ action, socialQueue }) {
+  const match = /--post (?<postId>\S+)/.exec(action.command ?? '');
+  const postId = match?.groups?.postId;
+  if (!postId) return null;
+  return (
+    (socialQueue.posts ?? []).find(
+      (post) => post.id === postId && post.status === 'approved'
+    ) ?? null
+  );
+}
+
+function safeTriageRulesForExecutionBrief(rules) {
+  return (rules ?? []).map((rule) =>
+    rule.classification === 'reject-prohibited-promotion'
+      ? {
+          ...rule,
+          when:
+            'Reply asks for disallowed promotional activity covered by the inbound triage policy.'
+        }
+      : rule
+  );
+}
+
 export function renderRevenueExecutionMarkdown(brief) {
   validateRevenueExecutionBrief(brief);
   const lines = [
@@ -771,6 +1017,19 @@ export function renderRevenueExecutionMarkdown(brief) {
       ...(action.sources?.length
         ? [`Sources: ${action.sources.map((source) => `${source.id} (${source.url})`).join(', ')}`]
         : []),
+      ...(action.requiredEvidenceFields?.length
+        ? [`Required evidence fields: ${action.requiredEvidenceFields.join(', ')}`]
+        : []),
+      ...(action.classificationRules?.length
+        ? [
+            '',
+            'Triage decision rules:',
+            ...action.classificationRules.map(
+              (rule) =>
+                `- ${rule.classification}: ${rule.when} -> ${rule.leadStatus}`
+            )
+          ]
+        : []),
       ...(action.outreachPriority
         ? [`Priority: ${action.outreachPriority.score} / ${action.outreachPriority.tier}`]
         : []),
@@ -780,12 +1039,26 @@ export function renderRevenueExecutionMarkdown(brief) {
       ...(action.qualifiedRevenueUsd
         ? [`Qualified revenue path: $${action.qualifiedRevenueUsd}`]
         : []),
+      ...(action.reserveImpactPlanning
+        ? [
+            `Planning reserve impact: ${action.reserveImpactPlanning.currentAskReserveSats} sats current ask / ${action.reserveImpactPlanning.qualifiedReserveSats} sats qualified path`,
+            `Planning basis: ${action.reserveImpactPlanning.reserveAllocationPercent}% reserve allocation at BTC/USD ${action.reserveImpactPlanning.btcUsd}`
+          ]
+        : []),
       ...(action.conversionPlan?.upgradeOfferId
         ? [`Upgrade path: ${action.conversionPlan.upgradeOfferId} only after explicit fit`]
         : []),
       `Evidence: ${action.evidenceRequired}`,
       ...(action.approvedMessageSha256
         ? [`Approved message SHA-256: ${action.approvedMessageSha256}`]
+        : []),
+      ...(action.recordAllocationCommand
+        ? [
+            'Allocation record command after chairman approval:',
+            '```sh',
+            action.recordAllocationCommand,
+            '```'
+          ]
         : []),
       ...(action.approvedMessage
         ? ['', 'Approved send copy:', '', '```text', action.approvedMessage, '```']
@@ -819,6 +1092,12 @@ export function renderRevenueExecutionMarkdown(brief) {
         : []),
       ...(packet.qualifiedRevenueUsd
         ? [`  Qualified revenue path: $${packet.qualifiedRevenueUsd}`]
+        : []),
+      ...(packet.reserveImpactPlanning
+        ? [
+            `  Planning reserve impact: ${packet.reserveImpactPlanning.currentAskReserveSats} sats current ask / ${packet.reserveImpactPlanning.qualifiedReserveSats} sats qualified path`,
+            `  Planning basis: ${packet.reserveImpactPlanning.reserveAllocationPercent}% reserve allocation at BTC/USD ${packet.reserveImpactPlanning.btcUsd}`
+          ]
         : []),
       ...(packet.conversionPlan?.upgradeOfferId
         ? [`  Upgrade path: ${packet.conversionPlan.upgradeOfferId} only after explicit fit`]
@@ -886,6 +1165,11 @@ function assertBriefInputs({ status, paidPromotionLedger, outreachPacketQueue, m
 function usdToSatsEstimate({ usd, btcUsd }) {
   if (!Number.isFinite(usd) || !Number.isFinite(btcUsd) || btcUsd <= 0) return 0n;
   return BigInt(Math.floor((usd / btcUsd) * 100_000_000));
+}
+
+function usdToReserveSatsEstimate({ usd, btcUsd, reserveAllocationPercent }) {
+  if (!Number.isFinite(reserveAllocationPercent) || reserveAllocationPercent <= 0) return 0n;
+  return usdToSatsEstimate({ usd: (usd * reserveAllocationPercent) / 100, btcUsd });
 }
 
 function cleanLine(value) {

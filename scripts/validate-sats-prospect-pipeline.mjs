@@ -192,8 +192,8 @@ try {
   findings.push(error.message);
 }
 
-if (!/Identify ten crypto teams/i.test(pipeline.nextOperatingAction ?? '')) {
-  findings.push('nextOperatingAction must direct the next prospect-identification batch');
+if (!/first \$249 SATA Transparency Audit|already approved evidence-backed prospect/i.test(pipeline.nextOperatingAction ?? '')) {
+  findings.push('nextOperatingAction must direct the first $249 close from the approved pipeline');
 }
 
 if (findings.length > 0) {

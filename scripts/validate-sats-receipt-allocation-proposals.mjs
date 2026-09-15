@@ -1,5 +1,7 @@
 import {
+  assertConfirmedAllocation,
   assertConfirmedReceipt,
+  recordConfirmedAllocation,
   recordConfirmedReceipt,
   renderReceiptAllocationProposal
 } from './lib/sats-receipt-allocation-proposal.mjs';
@@ -39,11 +41,34 @@ const confirmedReceipt = {
   receivedAddress: reserveAddress,
   confirmations: 2,
   chairmanApprovedBy: 'executive-chairman',
+  receiptApprovedAtUtc: '2026-08-29T00:35:00Z',
   deliverableUrl: 'https://github.com/sata-project-reserve/sata/issues/1'
+};
+const confirmedAllocation = {
+  id: 'allocation-example-audit-1',
+  receiptId: confirmedReceipt.id,
+  allocatedAtUtc: '2026-08-29T00:40:00Z',
+  allocatedTo: 'btcReserve',
+  currency: 'BTC',
+  amount: confirmedReceipt.amount,
+  actualSatsAdded: confirmedReceipt.amountSats,
+  transactionId: confirmedReceipt.transactionId,
+  transparencyReportUrl: 'https://sata-project-reserve.github.io/sata/transparency'
 };
 
 const ledger = {
   project: 'SATA Reserve Token',
+  requiredAllocationFields: [
+    'id',
+    'receiptId',
+    'allocatedAtUtc',
+    'allocatedTo',
+    'currency',
+    'amount',
+    'actualSatsAdded',
+    'transactionId',
+    'transparencyReportUrl'
+  ],
   receipts: [confirmedReceipt],
   allocations: []
 };
@@ -65,6 +90,12 @@ assertIncludes(rendered, 'Confirmed amount: 43210 sats');
 assertIncludes(rendered, `Reserve address: ${reserveAddress}`);
 assertIncludes(rendered, 'Chairman review required');
 assertIncludes(rendered, 'does not authorize custody changes');
+assertConfirmedAllocation({
+  allocation: confirmedAllocation,
+  ledger: { ...ledger, allocations: [confirmedAllocation] },
+  queue,
+  generatedAtUtc: '2026-08-29T00:45:00Z'
+});
 
 const receiptAgent = readFileSync(join('scripts', 'sats-receipt-allocation-agent.mjs'), 'utf8');
 if (!/record-confirmed/.test(receiptAgent)) {
@@ -78,6 +109,18 @@ if (!/confirmChairmanReceiptApproval/.test(receiptAgent)) {
 }
 if (!/--recordedAtUtc "<recorded-at-utc>"/.test(receiptAgent)) {
   throw new Error('receipt plan must require an explicit recordedAtUtc timestamp');
+}
+if (!/record-allocation/.test(receiptAgent)) {
+  throw new Error('receipt agent must expose record-allocation command');
+}
+if (!/recordConfirmedAllocationCommand/.test(receiptAgent)) {
+  throw new Error('receipt plan must expose the bounded record-allocation command template');
+}
+if (!/confirmChairmanAllocationApproval/.test(receiptAgent)) {
+  throw new Error('receipt agent must require chairman allocation approval phrase');
+}
+if (!/--allocatedAtUtc "<allocated-at-utc>"/.test(receiptAgent)) {
+  throw new Error('receipt plan must require an explicit allocatedAtUtc timestamp');
 }
 
 const recordedLedger = recordConfirmedReceipt({
@@ -101,6 +144,26 @@ if (recordedLedger.receipts.length !== 1) {
   throw new Error('recordConfirmedReceipt must append one confirmed receipt');
 }
 assertIncludes(recordedLedger.receipts[0].receiptApprovedAtUtc, '2026-08-29T00:40:00.000Z');
+const recordedAllocationLedger = recordConfirmedAllocation({
+  ledger,
+  queue,
+  allocationId: 'allocation-recorded-audit-1',
+  receiptId: confirmedReceipt.id,
+  allocatedAtUtc: '2026-08-29T00:42:00Z',
+  transparencyReportUrl: 'https://sata-project-reserve.github.io/sata/transparency',
+  confirmChairmanAllocationApproval:
+    'I am Executive Chairman and approve allocation allocation-recorded-audit-1'
+});
+if (recordedAllocationLedger.allocations.length !== 1) {
+  throw new Error('recordConfirmedAllocation must append one confirmed allocation');
+}
+const recordedAllocation = recordedAllocationLedger.allocations[0];
+if (recordedAllocation.actualSatsAdded !== confirmedReceipt.amountSats) {
+  throw new Error('recordConfirmedAllocation must derive actualSatsAdded from the confirmed receipt');
+}
+if (recordedAllocation.transactionId !== confirmedReceipt.transactionId) {
+  throw new Error('recordConfirmedAllocation must derive transactionId from the confirmed receipt');
+}
 
 const rejectionCases = [
   {
@@ -125,8 +188,23 @@ const rejectionCases = [
   },
   {
     name: 'mismatched amount',
-    receipt: { ...confirmedReceipt, id: 'receipt-mismatched-amount', amountSats: '12345' },
+    receipt: { ...confirmedReceipt, id: 'receipt-mismatched-amount', amount: '0.00012345', amountSats: '12345' },
     expected: /must match the approved invoice amountSats/
+  },
+  {
+    name: 'malformed txid',
+    receipt: { ...confirmedReceipt, id: 'receipt-malformed-txid', transactionId: 'not-a-txid' },
+    expected: /64-character Bitcoin transaction id/
+  },
+  {
+    name: 'btc amount mismatch',
+    receipt: { ...confirmedReceipt, id: 'receipt-btc-amount-mismatch', amount: '0.00043211' },
+    expected: /BTC amount must match amountSats exactly/
+  },
+  {
+    name: 'btc amount overprecision',
+    receipt: { ...confirmedReceipt, id: 'receipt-btc-amount-overprecision', amount: '0.000432100' },
+    expected: /at most 8 decimal places/
   },
   {
     name: 'unapproved invoice',
@@ -154,6 +232,61 @@ for (const testCase of rejectionCases) {
       ledger: { ...ledger, receipts: [testCase.receipt] },
       queue: testCase.queue ?? queue,
       generatedAtUtc: testCase.generatedAtUtc ?? '2026-08-29T00:45:00Z'
+    })
+  );
+}
+const allocationRejectionCases = [
+  {
+    name: 'allocation wrong destination',
+    allocation: { ...confirmedAllocation, id: 'allocation-wrong-destination', allocatedTo: 'liquidity' },
+    expected: /allocatedTo must be btcReserve/
+  },
+  {
+    name: 'allocation sats mismatch',
+    allocation: { ...confirmedAllocation, id: 'allocation-sats-mismatch', actualSatsAdded: '1' },
+    expected: /actualSatsAdded must match/
+  },
+  {
+    name: 'allocation txid mismatch',
+    allocation: { ...confirmedAllocation, id: 'allocation-txid-mismatch', transactionId: '7d'.repeat(32) },
+    expected: /transactionId must match/
+  },
+  {
+    name: 'allocation early timestamp',
+    allocation: { ...confirmedAllocation, id: 'allocation-early', allocatedAtUtc: '2026-08-29T00:20:00Z' },
+    expected: /cannot be before/
+  },
+  {
+    name: 'allocation future timestamp',
+    allocation: { ...confirmedAllocation, id: 'allocation-future', allocatedAtUtc: '2026-08-30T00:00:00Z' },
+    expected: /cannot be in the future/
+  },
+  {
+    name: 'allocation placeholder transparency report',
+    allocation: {
+      ...confirmedAllocation,
+      id: 'allocation-placeholder-report',
+      transparencyReportUrl: 'regenerate after chairman approval'
+    },
+    expected: /published transparency report URL/
+  },
+  {
+    name: 'allocation duplicate receipt',
+    allocation: { ...confirmedAllocation, id: 'allocation-duplicate-receipt' },
+    ledger: {
+      ...ledger,
+      allocations: [confirmedAllocation, { ...confirmedAllocation, id: 'allocation-duplicate-receipt' }]
+    },
+    expected: /receiptId can only be allocated once/
+  }
+];
+for (const testCase of allocationRejectionCases) {
+  assertRejects(testCase.name, testCase.expected, () =>
+    assertConfirmedAllocation({
+      allocation: testCase.allocation,
+      ledger: testCase.ledger ?? { ...ledger, allocations: [testCase.allocation] },
+      queue,
+      generatedAtUtc: '2026-08-29T00:45:00Z'
     })
   );
 }
@@ -207,6 +340,40 @@ assertRejects('duplicate receipt record', /already exists/i, () =>
     confirmations: '2',
     deliverableUrl: 'https://github.com/sata-project-reserve/sata/issues/4',
     confirmChairmanReceiptApproval: `I am Executive Chairman and approve receipt ${confirmedReceipt.id}`
+  })
+);
+assertRejects('missing allocation approval phrase', /exact Executive Chairman allocation approval phrase/i, () =>
+  recordConfirmedAllocation({
+    ledger,
+    queue,
+    allocationId: 'allocation-no-approval',
+    receiptId: confirmedReceipt.id,
+    allocatedAtUtc: '2026-08-29T00:42:00Z',
+    transparencyReportUrl: 'https://sata-project-reserve.github.io/sata/transparency',
+    confirmChairmanAllocationApproval: 'approved'
+  })
+);
+assertRejects('duplicate allocation record', /allocation already exists/i, () =>
+  recordConfirmedAllocation({
+    ledger: { ...ledger, allocations: [confirmedAllocation] },
+    queue,
+    allocationId: confirmedAllocation.id,
+    receiptId: confirmedReceipt.id,
+    allocatedAtUtc: '2026-08-29T00:42:00Z',
+    transparencyReportUrl: 'https://sata-project-reserve.github.io/sata/transparency',
+    confirmChairmanAllocationApproval: `I am Executive Chairman and approve allocation ${confirmedAllocation.id}`
+  })
+);
+assertRejects('duplicate receipt allocation record', /receipt already has an allocation record/i, () =>
+  recordConfirmedAllocation({
+    ledger: { ...ledger, allocations: [confirmedAllocation] },
+    queue,
+    allocationId: 'allocation-second-for-receipt',
+    receiptId: confirmedReceipt.id,
+    allocatedAtUtc: '2026-08-29T00:42:00Z',
+    transparencyReportUrl: 'https://sata-project-reserve.github.io/sata/transparency',
+    confirmChairmanAllocationApproval:
+      'I am Executive Chairman and approve allocation allocation-second-for-receipt'
   })
 );
 

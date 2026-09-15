@@ -76,7 +76,11 @@ export function assertApprovedInvoice({ invoice, queue, generatedAtUtc = new Dat
   const created = toTime(invoice.quoteCreatedAtUtc, 'quoteCreatedAtUtc');
   const expires = toTime(invoice.quoteExpiresAtUtc, 'quoteExpiresAtUtc');
   if (expires <= created) throw new Error(`${label}: quote must expire after it is created.`);
+  if (generated < created) throw new Error(`${label}: payment packet cannot be rendered before quoteCreatedAtUtc.`);
   if (generated >= expires) throw new Error(`${label}: quote is expired and must not be sent.`);
+  if (toTime(invoice.approvedAtUtc, 'approvedAtUtc') < created) {
+    throw new Error(`${label}: approvedAtUtc cannot be before quoteCreatedAtUtc.`);
+  }
   if (!/No price guarantee/i.test(invoice.publicDisclosure)) {
     throw new Error(`${label}: publicDisclosure must include no-price-guarantee language.`);
   }

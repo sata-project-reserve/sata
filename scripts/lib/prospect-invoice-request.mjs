@@ -25,6 +25,10 @@ export function buildInvoiceRequestPacket({
       if (!template) {
         throw new Error(`${prospect.id}: no invoice template for ${prospect.recommendedOfferId}.`);
       }
+      const evidence =
+        prospect.invoiceRequest?.evidence ||
+        prospect.contact?.evidence ||
+        '<invoice-request-evidence-url-or-reference>';
       return {
         prospectId: prospect.id,
         offerId: prospect.recommendedOfferId,
@@ -32,8 +36,8 @@ export function buildInvoiceRequestPacket({
         settlementCurrency: template.settlementCurrency,
         paymentAddressPolicy:
           'Hidden until a chairman-approved exact-sats invoice is finalized; quote staging validates the published reserve address internally.',
-        quoteCommand: `node scripts/sats-invoice-quote-agent.mjs quote-template --offer ${prospect.recommendedOfferId} --customer "${prospect.id}" --btcUsd "<chairman-selected-rate>" --source "<quote-source>"`,
-        writeDraftCommand: `node scripts/sats-invoice-quote-agent.mjs write-draft --offer ${prospect.recommendedOfferId} --customer "${prospect.id}" --btcUsd "<chairman-selected-rate>" --source "<quote-source>" --evidence "<invoice-request-evidence-url-or-reference>"`,
+        quoteCommand: `node scripts/sats-invoice-quote-agent.mjs quote-template --offer ${quoteShell(prospect.recommendedOfferId)} --customer ${quoteShell(prospect.id)} --btcUsd "<chairman-selected-rate>" --source "<quote-source>" --createdAtUtc "<quote-created-at-utc>" --ttlMinutes 30`,
+        writeDraftCommand: `node scripts/sats-invoice-quote-agent.mjs write-draft --offer ${quoteShell(prospect.recommendedOfferId)} --customer ${quoteShell(prospect.id)} --btcUsd "<chairman-selected-rate>" --source "<quote-source>" --createdAtUtc "<quote-created-at-utc>" --ttlMinutes 30 --evidence ${quoteShell(evidence)}`,
         approvalRequired:
           'Executive Chairman approval is required before the exact-sats invoice or payment instruction is sent.'
       };
@@ -112,4 +116,8 @@ function normalizeIds(value) {
   if (value === undefined || value === null || value === '') return new Set();
   const ids = Array.isArray(value) ? value : String(value).split(',');
   return new Set(ids.map((id) => String(id).trim()).filter(Boolean));
+}
+
+function quoteShell(value) {
+  return `"${String(value).replaceAll('"', '\\"')}"`;
 }

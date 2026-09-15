@@ -132,6 +132,66 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
     if (!triageAction.sources?.some((source) => source.id === 'pinned-proof-overview')) {
       findings.push('triage monitor action must include the published pinned social source');
     }
+    for (const expected of [
+      'sourceType',
+      'sourceId',
+      'contactHandle',
+      'publicProfileUrl',
+      'projectUrl',
+      'replyText',
+      'evidence',
+      'recordedAtUtc'
+    ]) {
+      if (!triageAction.requiredEvidenceFields?.includes(expected)) {
+        findings.push(`triage monitor action must require ${expected}`);
+      }
+    }
+    const invoiceRule = triageAction.classificationRules?.find(
+      (rule) => rule.classification === 'invoice-request-needs-chairman-review'
+    );
+    if (!invoiceRule?.customerAskedForInvoice) {
+      findings.push('triage monitor invoice rule must set customerAskedForInvoice true');
+    }
+    if (invoiceRule?.suggestedReplyTemplateId !== 'invoice-request-boundary') {
+      findings.push('triage monitor invoice rule must use invoice-request-boundary');
+    }
+    const intakeRule = triageAction.classificationRules?.find(
+      (rule) => rule.classification === 'needs-intake-fields'
+    );
+    if (intakeRule?.customerAskedForInvoice !== false) {
+      findings.push('triage monitor intake rule must keep customerAskedForInvoice false');
+    }
+    const rejectRule = triageAction.classificationRules?.find(
+      (rule) => rule.classification === 'reject-prohibited-promotion'
+    );
+    if (rejectRule?.nextCommandAfterRecord !== null) {
+      findings.push('triage monitor reject rule must not expose a follow-up command');
+    }
+  }
+  const manualSocialPublishAction = brief.topActions.find(
+    (action) => action.type === 'manual-social-publish'
+  );
+  if (!manualSocialPublishAction) {
+    findings.push('approved social content must produce a manual social publish action');
+  } else {
+    if (!/social:agent -- record-published/.test(manualSocialPublishAction.command ?? '')) {
+      findings.push('manual social publish action must expose the record-published command');
+    }
+    if (!/--publishedAtUtc "<published-at-utc>"/.test(manualSocialPublishAction.command ?? '')) {
+      findings.push('manual social publish action must require explicit publishedAtUtc evidence');
+    }
+    if (!/--contentHash [a-f0-9]{64}\b/.test(manualSocialPublishAction.command ?? '')) {
+      findings.push('manual social publish action must require the approved content hash');
+    }
+    if (!manualSocialPublishAction.approvedMessage || !manualSocialPublishAction.approvedMessageSha256) {
+      findings.push('manual social publish action must include the exact approved post text and hash');
+    }
+    if (
+      manualSocialPublishAction.approvedMessageSha256 &&
+      !manualSocialPublishAction.command?.includes(manualSocialPublishAction.approvedMessageSha256)
+    ) {
+      findings.push('manual social publish command must include the approved post hash');
+    }
   }
   if (status.funnel.paidPromotionsAwaitingConversion > 0) {
     if (!brief.constraints.some((constraint) => /24-hour conversion evidence/i.test(constraint))) {
@@ -231,6 +291,15 @@ if (!markdown.includes('Approved message SHA-256:')) {
 if (!markdown.includes('Approved send copy:')) {
   findings.push('markdown must include copy-ready approved send text');
 }
+if (!markdown.includes('Triage decision rules:')) {
+  findings.push('markdown must include inbound reply triage decision rules');
+}
+if (!markdown.includes('Required evidence fields:')) {
+  findings.push('markdown must include inbound reply required evidence fields');
+}
+if (!markdown.includes('SATA has a dedicated Bitcoin reserve address')) {
+  findings.push('markdown must include the copy-ready approved social post text');
+}
 for (const command of markdown.match(
   /node scripts\/service-outreach-packet-agent\.mjs mark-sent[^\n]*/g
 ) ?? []) {
@@ -321,10 +390,68 @@ if (!/ops:inbound-lead-plan/.test(inboundIntakeBrief.topActions[0]?.command ?? '
   findings.push('inbound intake brief action must preserve the compliant reply command');
 }
 
+const receiptAllocationBrief = buildRevenueExecutionBrief({
+  status: {
+    ...status,
+    funnel: {
+      ...status.funnel,
+      confirmedReceipts: 1,
+      receiptsAwaitingAllocation: 1
+    },
+    actionQueue: [
+      {
+        id: 'allocate-receipt-1',
+        type: 'receipt-allocation-proposal',
+        title: 'Render receipt allocation proposal for receipt-1.',
+        command: 'node scripts/sats-receipt-allocation-agent.mjs render receipt-1',
+        evidenceRequired:
+          'Confirmed direct-reserve BTC receipt and chairman allocation approval.'
+      },
+      ...(status.actionQueue ?? [])
+    ]
+  },
+  paidPromotionLedger,
+  outreachPacketQueue,
+  socialQueue,
+  prospectPipeline,
+  revenuePlan,
+  referralPartnerPolicy,
+  referralPartnerHandoffQueue,
+  referralPartnerHandoffPacket,
+  maxManualSends: 5,
+  generatedAtUtc: '2026-09-03T20:00:00.000Z'
+});
+validateRevenueExecutionBrief(receiptAllocationBrief);
+if (receiptAllocationBrief.topActions[0]?.type !== 'receipt-allocation-proposal') {
+  findings.push('receipt allocation proposals must outrank manual outreach in the execution brief');
+}
+if (
+  !/sats-receipt-allocation-agent\.mjs record-allocation/.test(
+    receiptAllocationBrief.topActions[0]?.recordAllocationCommand ?? ''
+  )
+) {
+  findings.push('receipt allocation brief must expose the post-approval record-allocation command');
+}
+if (
+  !/confirmChairmanAllocationApproval/.test(
+    receiptAllocationBrief.topActions[0]?.recordAllocationCommand ?? ''
+  )
+) {
+  findings.push('receipt allocation command must require explicit chairman approval text');
+}
+if (!/transparencyReportUrl/.test(receiptAllocationBrief.topActions[0]?.recordAllocationCommand ?? '')) {
+  findings.push('receipt allocation command must require a published transparency report URL');
+}
+const receiptAllocationMarkdown = renderRevenueExecutionMarkdown(receiptAllocationBrief);
+if (!receiptAllocationMarkdown.includes('record-allocation')) {
+  findings.push('receipt allocation markdown must show the post-approval record-allocation command');
+}
+
 const maintenanceBrief = buildRevenueExecutionBrief({
   status: {
     ...status,
     nextAction: 'Continue qualifying evidence-backed prospects.',
+    actionQueue: [],
     funnel: {
       ...status.funnel,
       readyOutreachPackets: 0,

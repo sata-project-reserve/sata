@@ -8,7 +8,8 @@ export function buildInvoiceQuoteDraft({
   btcUsd,
   quoteSource,
   createdAtUtc,
-  ttlMinutes = 30
+  ttlMinutes = 30,
+  generatedAtUtc = new Date().toISOString()
 }) {
   if (!queue) throw new Error('Missing invoice queue.');
   if (!offerId) throw new Error('Missing offerId.');
@@ -26,6 +27,7 @@ export function buildInvoiceQuoteDraft({
     btcUsd
   }).toString();
   const quoteCreatedAtUtc = normalizeIsoDate(createdAtUtc, 'createdAtUtc');
+  assertNotFutureTimestamp(quoteCreatedAtUtc, 'createdAtUtc', generatedAtUtc);
   const quoteExpiresAtUtc = addMinutes(quoteCreatedAtUtc, ttlMinutes);
 
   return {
@@ -54,11 +56,12 @@ export function stageInvoiceQuoteForChairmanReview({
   approvalQueue,
   quote,
   evidence,
-  createdAtUtc = quote?.quoteCreatedAtUtc
+  createdAtUtc = quote?.quoteCreatedAtUtc,
+  generatedAtUtc = new Date().toISOString()
 }) {
   if (!invoiceQueue) throw new Error('Missing invoice queue.');
   if (!approvalQueue) throw new Error('Missing approval queue.');
-  assertDraftInvoiceQuote({ invoiceQueue, quote });
+  assertDraftInvoiceQuote({ invoiceQueue, quote, generatedAtUtc });
 
   if ((invoiceQueue.invoices ?? []).some((invoice) => invoice.id === quote.id)) {
     throw new Error(`${quote.id}: invoice already exists.`);
@@ -182,7 +185,7 @@ export function calculateSatsFromUsd({ usd, btcUsd }) {
   return ceilDiv(usdScaled * SATS_PER_BTC, btcUsdScaled);
 }
 
-function assertDraftInvoiceQuote({ invoiceQueue, quote }) {
+function assertDraftInvoiceQuote({ invoiceQueue, quote, generatedAtUtc = new Date().toISOString() }) {
   assertDraftShape(quote);
   if (quote.status !== 'draft') throw new Error(`${quote.id}: invoice must be draft.`);
   if (quote.chairmanApprovalRequired !== true) {
@@ -204,6 +207,7 @@ function assertDraftInvoiceQuote({ invoiceQueue, quote }) {
   if (!Number.isFinite(created) || !Number.isFinite(expires) || expires <= created) {
     throw new Error(`${quote.id}: quote timestamps are invalid.`);
   }
+  assertNotFutureTimestamp(quote.quoteCreatedAtUtc, 'quoteCreatedAtUtc', generatedAtUtc);
   if (!/No price guarantee/i.test(quote.publicDisclosure ?? '')) {
     throw new Error(`${quote.id}: publicDisclosure must include no-price-guarantee language.`);
   }
@@ -246,6 +250,13 @@ function normalizeIsoDate(value, label) {
   const date = new Date(value);
   if (!Number.isFinite(date.getTime())) throw new Error(`${label} must be a valid date.`);
   return date.toISOString();
+}
+
+function assertNotFutureTimestamp(value, label, generatedAtUtc) {
+  const timestamp = new Date(value).getTime();
+  const reference = new Date(generatedAtUtc).getTime();
+  if (!Number.isFinite(reference)) throw new Error('generatedAtUtc must be a valid date.');
+  if (timestamp > reference) throw new Error(`${label} cannot be in the future.`);
 }
 
 function addMinutes(isoDate, minutes) {

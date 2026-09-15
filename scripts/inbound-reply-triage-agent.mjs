@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
+  buildInboundReplyTriagePlan,
   buildInboundReplyTriage,
   renderInboundReplyTriage
 } from './lib/inbound-reply-triage.mjs';
@@ -36,19 +37,13 @@ switch (command) {
 
 function buildPlan() {
   const leadPlan = buildInboundLeadPlan({ queue, paidPromotionLedger, socialQueue });
-  return {
-    project: queue.project,
-    mode: 'inbound-reply-triage-plan',
+  return buildInboundReplyTriagePlan({
+    queue,
     liveAttributionSources: leadPlan.liveAttributionSources.map((source) => ({
       ...source,
       triageCommand: `node scripts/inbound-reply-triage-agent.mjs markdown --sourceType ${source.type} --sourceId ${source.id} --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>"`
-    })),
-    replyTemplates: queue.replyTemplates,
-    nextAction:
-      'When a reply or DM arrives, run the triage command before recording a lead or preparing invoice-review inputs.',
-    boundary:
-      'This planner does not contact leads, approve invoices, send payment instructions, grant tokens, control custody, or move assets.'
-  };
+    }))
+  });
 }
 
 function buildTriage() {

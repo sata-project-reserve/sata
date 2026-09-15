@@ -40,7 +40,7 @@ if (packet.requestCount !== 1) {
   findings.push('packet must include the selected inbound invoice request');
 }
 const request = packet.requests[0];
-if (request?.offerId !== 'transparency-report-setup' || request?.usdPrice !== '150') {
+if (request?.offerId !== 'transparency-report-setup' || request?.usdPrice !== '999') {
   findings.push('packet request must preserve inbound requested offer and invoice template price');
 }
 if (
@@ -57,11 +57,23 @@ if (!/sats-invoice-quote-agent\.mjs quote-template/.test(request?.quoteCommand ?
 if (!/chairman-selected-rate/.test(request?.quoteCommand ?? '')) {
   findings.push('quote command must require chairman-selected rate');
 }
+if (!/--createdAtUtc "<quote-created-at-utc>"/.test(request?.quoteCommand ?? '')) {
+  findings.push('quote command must require quote-created-at-utc');
+}
+if (!/--ttlMinutes 30/.test(request?.quoteCommand ?? '')) {
+  findings.push('quote command must include bounded quote ttl');
+}
 if (!/sats-invoice-quote-agent\.mjs write-draft/.test(request?.writeDraftCommand ?? '')) {
   findings.push('packet must include durable write-draft command');
 }
 if (!/--evidence/.test(request?.writeDraftCommand ?? '')) {
   findings.push('write-draft command must require invoice-request evidence');
+}
+if (!/--createdAtUtc "<quote-created-at-utc>"/.test(request?.writeDraftCommand ?? '')) {
+  findings.push('write-draft command must require quote-created-at-utc');
+}
+if (!/Inbound DM evidence: customer asked for a transparency setup invoice\./.test(request?.writeDraftCommand ?? '')) {
+  findings.push('write-draft command must preserve inbound invoice-request evidence');
 }
 if (!/Executive Chairman approval is required/i.test(request?.approvalRequired ?? '')) {
   findings.push('request must require Executive Chairman approval');

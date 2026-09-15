@@ -1,14 +1,14 @@
 {
   "project": "SATA Reserve Token",
   "mode": "chairman-gated-reply-conversion-brief",
-  "generatedAtUtc": "2026-09-15T01:28:22.144Z",
+  "generatedAtUtc": "2026-09-15T04:01:31.442Z",
   "reserve": {
     "confirmedSats": "500000",
     "confirmedBtc": "0.005",
     "targetSats": "1000000000",
     "remainingSats": "999500000",
     "remainingBtc": "9.995",
-    "latestReportGeneratedAtUtc": "2026-09-14T17:55:17.762Z"
+    "latestReportGeneratedAtUtc": "2026-09-15T04:01:30.022Z"
   },
   "counts": {
     "outreachApprovedProspects": "30",

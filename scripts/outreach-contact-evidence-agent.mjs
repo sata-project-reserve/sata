@@ -40,7 +40,8 @@ function printPlan() {
           'contactChannel',
           'contactEvidenceUrl',
           'approvedMessageSha256',
-          'exactMessageSent'
+          'exactMessageSent',
+          'sentAtUtc'
         ],
         nextOperatingAction:
           'After a human sends approved outreach, submit the contact evidence issue and run the rendered mark-sent command only if the pasted message and approved SHA-256 match the packet.',

@@ -89,6 +89,9 @@ if (!/Approved message SHA-256/.test(comment) || !/Hash matches approved packet:
 if (!/approvedMessageSha256/.test(evidenceAgent) || !/approved SHA-256 match the packet/i.test(evidenceAgent)) {
   findings.push('evidence agent plan must expose the approved hash match requirement');
 }
+if (!/requiredFields:[\s\S]*'sentAtUtc'/.test(evidenceAgent)) {
+  findings.push('evidence agent plan must expose sentAtUtc as a required field');
+}
 
 const mismatchedIssue = {
   ...issueFixture,

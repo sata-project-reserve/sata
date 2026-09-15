@@ -1554,7 +1554,7 @@ export default function OperationsPage() {
                 <code>npm run ops:invoice-quote-plan</code>
                 <span>Invoice Request Packet</span>
                 <code>
-                  node scripts/sats-invoice-request-agent.mjs render --prospect {prospect.id}
+                  node scripts/sats-invoice-request-agent.mjs render --prospects {prospect.id}
                 </code>
               </div>
             </div>

@@ -41,6 +41,7 @@ const intakeLabels: Record<string, string> = {
   publicProfileUrl: 'Public profile URL',
   claimsToReview: 'Claims to review',
   requestedDeliverableVisibility: 'Deliverable visibility',
+  commercialIntent: 'Commercial intent',
   paymentStatus: 'Payment status'
 };
 

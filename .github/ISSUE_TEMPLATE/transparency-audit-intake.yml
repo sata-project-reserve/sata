@@ -68,6 +68,18 @@ body:
     validations:
       required: true
   - type: dropdown
+    id: commercialIntent
+    attributes:
+      label: Commercial intent
+      description: Choose the service path you want reviewed for scope and invoice approval.
+      options:
+        - Exploring scope first
+        - Ready for chairman-approved BTC invoice for $249 audit
+        - Requesting chairman review for $999 transparency report setup
+        - Requesting chairman review for continuous monitoring dashboard
+    validations:
+      required: true
+  - type: dropdown
     id: paymentStatus
     attributes:
       label: Payment status

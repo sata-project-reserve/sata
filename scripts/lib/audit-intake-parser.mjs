@@ -6,6 +6,7 @@ const FIELD_LABELS = {
   publicProfileUrl: 'Public profile URL',
   claimsToReview: 'Claims to review',
   requestedDeliverableVisibility: 'Requested deliverable visibility',
+  commercialIntent: 'Commercial intent',
   paymentStatus: 'Payment status',
   evidence: 'Evidence links',
   referralPartner: 'Referral partner',
@@ -52,12 +53,20 @@ export function buildAuditIntakeDraft({ issue, deliveryKit, prospectPipeline, in
     ? String(issue.number)
     : slugify(intake.projectName || 'unknown');
   const customerAskedForInvoice = isInvoiceRequestPaymentStatus(intake.paymentStatus);
+  const requestedOfferId = offerIdFromCommercialIntent({
+    commercialIntent: intake.commercialIntent,
+    fallbackOfferId: deliveryKit.primaryOfferId
+  });
+  const invoiceTemplate = invoiceQueue.invoices?.find(
+    (invoice) => invoice.offerId === requestedOfferId
+  );
   const sourceId = issueUrl || `github-issue-${issueNumber}`;
   const leadId = `audit-intake-${issueNumber}`;
   const leadEvidence = compact([
     issueUrl,
     intake.tokenOrContractAddress,
     intake.evidence,
+    intake.commercialIntent ? `commercialIntent:${intake.commercialIntent}` : '',
     intake.paymentStatus ? `paymentStatus:${intake.paymentStatus}` : '',
     intake.referralPartner ? `referralPartner:${intake.referralPartner}` : '',
     intake.referralSource ? `referralSource:${intake.referralSource}` : ''
@@ -92,7 +101,7 @@ export function buildAuditIntakeDraft({ issue, deliveryKit, prospectPipeline, in
       contactHandle: intake.projectName,
       publicProfileUrl: intake.publicProfileUrl,
       projectUrl: intake.publicProjectUrl,
-      requestedOfferId: deliveryKit.primaryOfferId,
+      requestedOfferId,
       evidence: leadEvidence,
       customerAskedForInvoice,
       status: customerAskedForInvoice ? 'invoice-requested-needs-chairman-review' : 'needs-intake',
@@ -111,12 +120,10 @@ export function buildAuditIntakeDraft({ issue, deliveryKit, prospectPipeline, in
     },
     invoiceDraft: {
       status: 'draft',
-      offerId: deliveryKit.primaryOfferId,
+      offerId: requestedOfferId,
       customer: intake.projectName,
-      usdPrice: deliveryKit.priceUsd,
-      settlementCurrency: invoiceQueue.invoices?.find(
-        (invoice) => invoice.offerId === deliveryKit.primaryOfferId
-      )?.settlementCurrency,
+      usdPrice: invoiceTemplate?.usdPrice ?? deliveryKit.priceUsd,
+      settlementCurrency: invoiceTemplate?.settlementCurrency,
       paymentAddress: invoiceQueue.paymentPolicy?.reserveAddress,
       amountSats: 'quote-required-before-sending',
       chairmanApprovalRequired: true
@@ -167,6 +174,15 @@ function buildRecordInboundLeadCommand({
 
 function isInvoiceRequestPaymentStatus(value) {
   return /^(Need chairman-approved BTC invoice|Invoice requested)$/i.test(cleanValue(value));
+}
+
+function offerIdFromCommercialIntent({ commercialIntent, fallbackOfferId }) {
+  const value = cleanValue(commercialIntent);
+  if (/continuous|monitoring|dashboard/i.test(value)) return 'full-proof-dashboard';
+  if (/999|report setup|public reporting setup/i.test(value)) {
+    return 'transparency-report-setup';
+  }
+  return fallbackOfferId;
 }
 
 function quoteArg(value) {

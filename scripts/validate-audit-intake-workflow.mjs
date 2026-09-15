@@ -25,8 +25,14 @@ if (!/service-intake/.test(form)) findings.push('issue form must apply the servi
 if (!/id:\s*referralPartner/.test(form)) {
   findings.push('issue form must include optional referralPartner field');
 }
+if (!/id:\s*commercialIntent/.test(form)) {
+  findings.push('issue form must include commercialIntent field');
+}
 if (!/id:\s*referralSource/.test(form)) {
   findings.push('issue form must include optional referralSource field');
+}
+if (!(deliveryKit.requiredClientIntake ?? []).includes('commercialIntent')) {
+  findings.push('delivery kit must list commercialIntent as required intake');
 }
 if (!(deliveryKit.optionalReferralIntake ?? []).includes('referralPartner')) {
   findings.push('delivery kit must list optional referralPartner intake');
@@ -39,6 +45,16 @@ if (draft.missingRequiredFields.length > 0) {
 }
 if (draft.intake.referralPartner !== 'Diana Crypto') {
   findings.push('parser must capture referral partner field');
+}
+if (draft.intake.commercialIntent !== 'Ready for chairman-approved BTC invoice for $249 audit') {
+  findings.push('parser must capture commercial intent field');
+}
+if (
+  !draft.inboundLeadDraft.evidence.includes(
+    'commercialIntent:Ready for chairman-approved BTC invoice for $249 audit'
+  )
+) {
+  findings.push('inbound lead evidence must preserve commercial intent');
 }
 if (!draft.prospectDraft.evidence.includes('referralPartner:Diana Crypto')) {
   findings.push('prospect draft evidence must preserve referral partner');
@@ -60,6 +76,9 @@ if (draft.inboundLeadDraft.status !== 'invoice-requested-needs-chairman-review')
 }
 if (draft.inboundLeadDraft.customerAskedForInvoice !== true) {
   findings.push('invoice-requesting intake must preserve customerAskedForInvoice true');
+}
+if (draft.inboundLeadDraft.requestedOfferId !== 'transparency-audit') {
+  findings.push('starter commercial intent must route to the transparency-audit invoice template');
 }
 if (!draft.inboundLeadDraft.recordCommand.includes('inbound-service-lead-agent.mjs record-lead')) {
   findings.push('intake draft must expose inbound lead record command');
@@ -91,6 +110,12 @@ if (!draft.inboundLeadDraft.recordCommand.includes('--recordedAtUtc "<recorded-a
 if (draft.invoiceDraft.chairmanApprovalRequired !== true) {
   findings.push('invoice drafts must require chairman approval');
 }
+if (draft.invoiceDraft.offerId !== draft.inboundLeadDraft.requestedOfferId) {
+  findings.push('invoice draft offer must match inbound lead requested offer');
+}
+if (draft.invoiceDraft.usdPrice !== '249') {
+  findings.push('starter invoice draft must use the $249 invoice template');
+}
 if (draft.invoiceDraft.paymentAddress !== invoiceQueue.paymentPolicy.reserveAddress) {
   findings.push('invoice draft payment address must match invoice queue reserve address');
 }
@@ -102,6 +127,46 @@ if (!/Executive Chairman approval/i.test(draft.nextRequiredAction)) {
 }
 if (!draft.deliveryDraft.sections.includes('Evidence links')) {
   findings.push('delivery draft must include evidence links section');
+}
+
+const setupDraft = buildAuditIntakeDraft({
+  issue: {
+    ...issueFixture,
+    number: 102,
+    body: issueFixture.body.replace(
+      'Ready for chairman-approved BTC invoice for $249 audit',
+      'Requesting chairman review for $999 transparency report setup'
+    )
+  },
+  deliveryKit,
+  prospectPipeline,
+  invoiceQueue
+});
+if (setupDraft.inboundLeadDraft.requestedOfferId !== 'transparency-report-setup') {
+  findings.push('setup commercial intent must route to transparency-report-setup');
+}
+if (setupDraft.invoiceDraft.usdPrice !== '999') {
+  findings.push('setup commercial intent must use the $999 invoice template');
+}
+
+const dashboardDraft = buildAuditIntakeDraft({
+  issue: {
+    ...issueFixture,
+    number: 103,
+    body: issueFixture.body.replace(
+      'Ready for chairman-approved BTC invoice for $249 audit',
+      'Requesting chairman review for continuous monitoring dashboard'
+    )
+  },
+  deliveryKit,
+  prospectPipeline,
+  invoiceQueue
+});
+if (dashboardDraft.inboundLeadDraft.requestedOfferId !== 'full-proof-dashboard') {
+  findings.push('dashboard commercial intent must route to full-proof-dashboard');
+}
+if (dashboardDraft.invoiceDraft.usdPrice !== '4999') {
+  findings.push('dashboard commercial intent must use the $4999 invoice template');
 }
 
 if (findings.length > 0) {

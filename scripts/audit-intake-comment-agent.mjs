@@ -70,6 +70,7 @@ export function renderAuditIntakeComment(draft) {
     `- Public profile: ${safeValue(draft.intake.publicProfileUrl)}`,
     `- Claims requested: ${safeValue(draft.intake.claimsToReview)}`,
     `- Requested visibility: ${safeValue(draft.intake.requestedDeliverableVisibility)}`,
+    `- Commercial intent: ${safeValue(draft.intake.commercialIntent)}`,
     `- Payment status: ${safeValue(draft.intake.paymentStatus)}`,
     `- Referral partner: ${safeValue(draft.intake.referralPartner)}`,
     `- Referral source: ${safeValue(draft.intake.referralSource)}`,

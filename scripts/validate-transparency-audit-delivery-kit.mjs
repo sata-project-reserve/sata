@@ -50,6 +50,7 @@ for (const field of [
   'publicProfileUrl',
   'claimsToReview',
   'requestedDeliverableVisibility',
+  'commercialIntent',
   'paymentStatus'
 ]) {
   if (!(kit.requiredClientIntake ?? []).includes(field)) {

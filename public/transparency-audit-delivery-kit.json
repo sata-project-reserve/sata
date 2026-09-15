@@ -18,6 +18,7 @@
     "publicProfileUrl",
     "claimsToReview",
     "requestedDeliverableVisibility",
+    "commercialIntent",
     "paymentStatus"
   ],
   "optionalReferralIntake": [

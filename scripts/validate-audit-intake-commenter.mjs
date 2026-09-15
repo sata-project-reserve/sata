@@ -30,6 +30,9 @@ if (!/No payment instruction has been issued/i.test(comment)) {
 if (!/Referral partner: Diana Crypto/i.test(comment)) {
   findings.push('comment must preserve referral partner attribution');
 }
+if (!/Commercial intent: Ready for chairman-approved BTC invoice for \$249 audit/i.test(comment)) {
+  findings.push('comment must preserve commercial intent');
+}
 if (!/Inbound lead status: invoice-requested-needs-chairman-review/i.test(comment)) {
   findings.push('comment must route invoice-requesting intake to chairman-review lead status');
 }

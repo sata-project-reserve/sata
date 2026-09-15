@@ -59,6 +59,7 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
   ).toContainText('$249');
   await expect(page.getByRole('heading', { name: 'Payment Path' })).toBeVisible();
   await expect(page.getByText('BTC to the published reserve address')).toBeVisible();
+  await expect(page.getByText('Commercial intent')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Sales Pipeline' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'View Prospect Pipeline' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Delivery Kit' })).toBeVisible();

@@ -149,8 +149,11 @@
       "evidenceIssueTemplateUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml",
       "evidenceReviewCommand": "npm run ops:social-publish-evidence-plan",
       "evidenceIssueTemplateCommand": "node scripts/social-publish-evidence-agent.mjs render-template --post transparency-service-offer --postUrl \"https://x.com/SATAReserve/status/<numeric-id>\" --evidence \"<live-post-screenshot-or-exported-text>\" --publishedAtUtc \"<published-at-utc>\" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448",
+      "postPublishReplyTriageCommand": "node scripts/inbound-reply-triage-agent.mjs markdown --sourceType published-social-reply --sourceId transparency-service-offer --contactHandle \"<x-handle-or-contact>\" --publicProfileUrl \"<https-profile-url>\" --projectUrl \"<https-project-url>\" --offer transparency-audit --replyText \"<reply-or-dm-text>\" --evidence \"<reply-or-dm-evidence>\" --recordedAtUtc \"<recorded-at-utc>\"",
+      "postPublishInvoiceEvidenceIssueTemplateCommand": "node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId transparency-service-offer --contactHandle \"<x-handle-or-contact>\" --publicProfileUrl \"<https-profile-url>\" --projectUrl \"<https-project-url>\" --offer transparency-audit --replyText \"<reply-or-dm-text>\" --evidence \"<reply-or-dm-evidence>\" --recordedAtUtc \"<recorded-at-utc>\" --classification \"invoice-request-needs-chairman-review\" --customerAskedForInvoice true",
+      "postPublishIntakeEvidenceIssueTemplateCommand": "node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId transparency-service-offer --contactHandle \"<x-handle-or-contact>\" --publicProfileUrl \"<https-profile-url>\" --projectUrl \"<https-project-url>\" --offer transparency-audit --replyText \"<reply-or-dm-text>\" --evidence \"<reply-or-dm-evidence>\" --recordedAtUtc \"<recorded-at-utc>\" --classification \"needs-intake-fields\" --customerAskedForInvoice false",
       "evidenceRequired": "Published @SATAReserve post URL plus screenshot or exported text.",
-      "boundary": "Only chairman-approved factual posts may be published."
+      "boundary": "Only chairman-approved factual posts may be published; post-publication reply commands only record evidence for review."
     },
     {
       "id": "send-outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact",

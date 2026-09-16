@@ -65,10 +65,23 @@ export function buildSocialDispatchBrief({
     evidenceIssueUrl: EVIDENCE_INTAKE_URL,
     evidenceIssueTemplateCommand: evidenceIssueTemplateCommand({ queue, post }),
     recordPublishedCommand: recordPublishedCommand({ queue, post }),
+    postPublishReplyTriageCommand: publishedSocialReplyTriageCommand(post),
+    postPublishInvoiceEvidenceIssueTemplateCommand:
+      publishedSocialReplyEvidenceTemplateCommand({
+        post,
+        classification: 'invoice-request-needs-chairman-review',
+        customerAskedForInvoice: true
+      }),
+    postPublishIntakeEvidenceIssueTemplateCommand:
+      publishedSocialReplyEvidenceTemplateCommand({
+        post,
+        classification: 'needs-intake-fields',
+        customerAskedForInvoice: false
+      }),
     publicationInstructions:
       'Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.',
     stopRule:
-      'Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, or move assets.'
+      'Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, move assets, or treat replies as invoice-ready without evidence review.'
   }));
 
   return {
@@ -157,6 +170,24 @@ export function renderSocialDispatchMarkdown(brief) {
       '',
       '```sh',
       post.recordPublishedCommand,
+      '```',
+      '',
+      'After publication is recorded, triage replies from this exact source:',
+      '',
+      '```sh',
+      post.postPublishReplyTriageCommand,
+      '```',
+      '',
+      'Invoice-request reply evidence issue-body command:',
+      '',
+      '```sh',
+      post.postPublishInvoiceEvidenceIssueTemplateCommand,
+      '```',
+      '',
+      'Intake reply evidence issue-body command:',
+      '',
+      '```sh',
+      post.postPublishIntakeEvidenceIssueTemplateCommand,
       '```'
     );
   }
@@ -200,6 +231,42 @@ function evidenceIssueTemplateCommand({ queue, post }) {
     '--evidence "<live-post-screenshot-or-exported-text>"',
     '--publishedAtUtc "<published-at-utc>"',
     `--contentHash ${post.contentSha256}`
+  ].join(' ');
+}
+
+function publishedSocialReplyTriageCommand(post) {
+  return [
+    'node scripts/inbound-reply-triage-agent.mjs markdown',
+    '--sourceType published-social-reply',
+    `--sourceId ${post.id}`,
+    '--contactHandle "<x-handle-or-contact>"',
+    '--publicProfileUrl "<https-profile-url>"',
+    '--projectUrl "<https-project-url>"',
+    '--offer transparency-audit',
+    '--replyText "<reply-or-dm-text>"',
+    '--evidence "<reply-or-dm-evidence>"',
+    '--recordedAtUtc "<recorded-at-utc>"'
+  ].join(' ');
+}
+
+function publishedSocialReplyEvidenceTemplateCommand({
+  post,
+  classification,
+  customerAskedForInvoice
+}) {
+  return [
+    'node scripts/inbound-reply-evidence-agent.mjs render-template',
+    '--sourceType published-social-reply',
+    `--sourceId ${post.id}`,
+    '--contactHandle "<x-handle-or-contact>"',
+    '--publicProfileUrl "<https-profile-url>"',
+    '--projectUrl "<https-project-url>"',
+    '--offer transparency-audit',
+    '--replyText "<reply-or-dm-text>"',
+    '--evidence "<reply-or-dm-evidence>"',
+    '--recordedAtUtc "<recorded-at-utc>"',
+    `--classification "${classification}"`,
+    `--customerAskedForInvoice ${customerAskedForInvoice ? 'true' : 'false'}`
   ].join(' ');
 }
 

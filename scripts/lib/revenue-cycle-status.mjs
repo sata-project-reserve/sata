@@ -1159,13 +1159,39 @@ function manualSocialPublishAction({ post }) {
     evidenceIssueTemplateUrl: SOCIAL_PUBLISH_EVIDENCE_ISSUE_TEMPLATE_URL,
     evidenceReviewCommand: SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND,
     evidenceIssueTemplateCommand: socialPublishEvidenceTemplateCommand(post),
+    postPublishReplyTriageCommand: publishedSocialReplyTriageCommand(post),
+    postPublishInvoiceEvidenceIssueTemplateCommand:
+      publishedSocialReplyEvidenceTemplateCommand({
+        post,
+        classification: 'invoice-request-needs-chairman-review',
+        customerAskedForInvoice: true
+      }),
+    postPublishIntakeEvidenceIssueTemplateCommand:
+      publishedSocialReplyEvidenceTemplateCommand({
+        post,
+        classification: 'needs-intake-fields',
+        customerAskedForInvoice: false
+      }),
     evidenceRequired: 'Published @SATAReserve post URL plus screenshot or exported text.',
-    boundary: 'Only chairman-approved factual posts may be published.'
+    boundary:
+      'Only chairman-approved factual posts may be published; post-publication reply commands only record evidence for review.'
   };
 }
 
 function socialPublishEvidenceTemplateCommand(post) {
   return `node scripts/social-publish-evidence-agent.mjs render-template --post ${post.id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash ${socialPostContentHash(post)}`;
+}
+
+function publishedSocialReplyTriageCommand(post) {
+  return `node scripts/inbound-reply-triage-agent.mjs markdown --sourceType published-social-reply --sourceId ${post.id} --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>"`;
+}
+
+function publishedSocialReplyEvidenceTemplateCommand({
+  post,
+  classification,
+  customerAskedForInvoice
+}) {
+  return `node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId ${post.id} --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification ${quoteShell(classification)} --customerAskedForInvoice ${customerAskedForInvoice ? 'true' : 'false'}`;
 }
 
 function safeTriageRulesForCycleStatus(rules) {

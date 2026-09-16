@@ -326,6 +326,11 @@ export function buildRevenueExecutionBrief({
       evidenceIssueTemplateCommand:
         publishRequest.evidenceIssueTemplateCommand ??
         (approvedPost ? socialPublishEvidenceTemplateCommand(approvedPost) : null),
+      postPublishReplyTriageCommand: publishRequest.postPublishReplyTriageCommand ?? null,
+      postPublishInvoiceEvidenceIssueTemplateCommand:
+        publishRequest.postPublishInvoiceEvidenceIssueTemplateCommand ?? null,
+      postPublishIntakeEvidenceIssueTemplateCommand:
+        publishRequest.postPublishIntakeEvidenceIssueTemplateCommand ?? null,
       evidenceRequired: publishRequest.evidenceRequired,
       operatorChecklist: manualSocialPublishChecklist(),
       stopRule:
@@ -1369,6 +1374,30 @@ export function renderRevenueExecutionMarkdown(brief) {
         : []),
       ...(action.evidenceIssueTemplateCommand
         ? [`Evidence issue-body command: ${action.evidenceIssueTemplateCommand}`]
+        : []),
+      ...(action.postPublishReplyTriageCommand
+        ? [
+            'Post-publication reply triage command:',
+            '```sh',
+            action.postPublishReplyTriageCommand,
+            '```'
+          ]
+        : []),
+      ...(action.postPublishInvoiceEvidenceIssueTemplateCommand
+        ? [
+            'Post-publication invoice-request evidence issue-body command:',
+            '```sh',
+            action.postPublishInvoiceEvidenceIssueTemplateCommand,
+            '```'
+          ]
+        : []),
+      ...(action.postPublishIntakeEvidenceIssueTemplateCommand
+        ? [
+            'Post-publication intake evidence issue-body command:',
+            '```sh',
+            action.postPublishIntakeEvidenceIssueTemplateCommand,
+            '```'
+          ]
         : []),
       ...(action.invoiceEvidenceIssueTemplateCommand
         ? [

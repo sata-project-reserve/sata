@@ -1,6 +1,6 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-09-16T17:30:32.736Z
+Generated: 2026-09-16T17:34:38.759Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -93,6 +93,18 @@ Why: Chairman-approved factual posts can create attributable inbound attention w
 Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml
 Evidence review command: npm run ops:social-publish-evidence-plan
 Evidence issue-body command: node scripts/social-publish-evidence-agent.mjs render-template --post transparency-service-offer --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448
+Post-publication reply triage command:
+```sh
+node scripts/inbound-reply-triage-agent.mjs markdown --sourceType published-social-reply --sourceId transparency-service-offer --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>"
+```
+Post-publication invoice-request evidence issue-body command:
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId transparency-service-offer --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true
+```
+Post-publication intake evidence issue-body command:
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId transparency-service-offer --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "needs-intake-fields" --customerAskedForInvoice false
+```
 Social priority: tier 1 - approved revenue-service offer
 Evidence: Published @SATAReserve post URL plus screenshot or exported text.
 Approved message SHA-256: 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448

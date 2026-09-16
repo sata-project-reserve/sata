@@ -71,6 +71,37 @@ for (const post of brief.readyManualPosts) {
   if (!post.recordPublishedCommand?.includes(`https://x.com/${queue.account.handle}/status/<numeric-id>`)) {
     findings.push(`${post.id}: record command must require the canonical account status URL`);
   }
+  if (
+    !post.postPublishReplyTriageCommand?.includes(
+      `--sourceType published-social-reply --sourceId ${post.id}`
+    )
+  ) {
+    findings.push(`${post.id}: dispatch brief must expose post-publication reply triage`);
+  }
+  if (
+    !post.postPublishInvoiceEvidenceIssueTemplateCommand?.includes(
+      `--sourceId ${post.id}`
+    ) ||
+    !post.postPublishInvoiceEvidenceIssueTemplateCommand?.includes(
+      '--classification "invoice-request-needs-chairman-review"'
+    ) ||
+    !post.postPublishInvoiceEvidenceIssueTemplateCommand?.includes(
+      '--customerAskedForInvoice true'
+    )
+  ) {
+    findings.push(`${post.id}: dispatch brief must expose invoice-request reply evidence command`);
+  }
+  if (
+    !post.postPublishIntakeEvidenceIssueTemplateCommand?.includes(`--sourceId ${post.id}`) ||
+    !post.postPublishIntakeEvidenceIssueTemplateCommand?.includes(
+      '--classification "needs-intake-fields"'
+    ) ||
+    !post.postPublishIntakeEvidenceIssueTemplateCommand?.includes(
+      '--customerAskedForInvoice false'
+    )
+  ) {
+    findings.push(`${post.id}: dispatch brief must expose intake reply evidence command`);
+  }
   if (!/(do not edit|exact approved text)/i.test(post.stopRule ?? post.publicationInstructions ?? '')) {
     findings.push(`${post.id}: stop rule must require exact approved text`);
   }
@@ -98,6 +129,15 @@ if (!markdown.includes('Social publish evidence issue-body command:')) {
 }
 if (!markdown.includes('social-publish-evidence-agent.mjs render-template')) {
   findings.push('markdown must include social publish evidence render-template commands');
+}
+if (!markdown.includes('After publication is recorded, triage replies from this exact source:')) {
+  findings.push('markdown must include post-publication reply triage instructions');
+}
+if (!markdown.includes('Invoice-request reply evidence issue-body command:')) {
+  findings.push('markdown must include post-publication invoice reply evidence command');
+}
+if (!markdown.includes('Intake reply evidence issue-body command:')) {
+  findings.push('markdown must include post-publication intake reply evidence command');
 }
 if (!markdown.includes('social-publish-evidence.yml')) {
   findings.push('markdown must link social publish evidence intake');

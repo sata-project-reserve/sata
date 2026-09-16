@@ -1,6 +1,6 @@
 # SATA Reserve Token Social Dispatch Brief
 
-Generated: 2026-09-16T17:30:32.736Z
+Generated: 2026-09-16T17:34:38.909Z
 Account: @SATAReserve
 
 ## Boundary
@@ -27,7 +27,7 @@ Approval role: not recorded
 Approved at: 2026-08-26T12:45:00Z
 Approved content SHA-256: 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448
 Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.
-Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, or move assets.
+Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, move assets, or treat replies as invoice-ready without evidence review.
 
 Social publish evidence issue-body command:
 
@@ -49,6 +49,24 @@ After manual publication, record the live post evidence:
 npm run social:agent -- record-published --post transparency-service-offer --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448
 ```
 
+After publication is recorded, triage replies from this exact source:
+
+```sh
+node scripts/inbound-reply-triage-agent.mjs markdown --sourceType published-social-reply --sourceId transparency-service-offer --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>"
+```
+
+Invoice-request reply evidence issue-body command:
+
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId transparency-service-offer --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true
+```
+
+Intake reply evidence issue-body command:
+
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId transparency-service-offer --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "needs-intake-fields" --customerAskedForInvoice false
+```
+
 ### service-upgrade-path
 Type: revenue
 Priority: tier 1 - approved revenue-service offer
@@ -57,7 +75,7 @@ Approval role: executive-chairman
 Approved at: 2026-09-03T21:48:49.400Z
 Approved content SHA-256: b512cd178e14f77e119b9f1ee5fbe4dcd77bee6e688b749a771f1ea9868c2a09
 Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.
-Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, or move assets.
+Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, move assets, or treat replies as invoice-ready without evidence review.
 
 Social publish evidence issue-body command:
 
@@ -79,6 +97,24 @@ After manual publication, record the live post evidence:
 npm run social:agent -- record-published --post service-upgrade-path --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash b512cd178e14f77e119b9f1ee5fbe4dcd77bee6e688b749a771f1ea9868c2a09
 ```
 
+After publication is recorded, triage replies from this exact source:
+
+```sh
+node scripts/inbound-reply-triage-agent.mjs markdown --sourceType published-social-reply --sourceId service-upgrade-path --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>"
+```
+
+Invoice-request reply evidence issue-body command:
+
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId service-upgrade-path --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true
+```
+
+Intake reply evidence issue-body command:
+
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId service-upgrade-path --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "needs-intake-fields" --customerAskedForInvoice false
+```
+
 ### quick-project-status-20260915
 Type: transparency
 Priority: tier 3 - approved status post with revenue-first context
@@ -87,7 +123,7 @@ Approval role: executive-chairman
 Approved at: 2026-09-15T11:25:37.689Z
 Approved content SHA-256: a3ad3c4d30be88d9f57feb1e33abbc08a9ee34be937034a80931bed2cf968b15
 Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.
-Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, or move assets.
+Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, move assets, or treat replies as invoice-ready without evidence review.
 
 Social publish evidence issue-body command:
 
@@ -113,6 +149,24 @@ After manual publication, record the live post evidence:
 npm run social:agent -- record-published --post quick-project-status-20260915 --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash a3ad3c4d30be88d9f57feb1e33abbc08a9ee34be937034a80931bed2cf968b15
 ```
 
+After publication is recorded, triage replies from this exact source:
+
+```sh
+node scripts/inbound-reply-triage-agent.mjs markdown --sourceType published-social-reply --sourceId quick-project-status-20260915 --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>"
+```
+
+Invoice-request reply evidence issue-body command:
+
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId quick-project-status-20260915 --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true
+```
+
+Intake reply evidence issue-body command:
+
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId quick-project-status-20260915 --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "needs-intake-fields" --customerAskedForInvoice false
+```
+
 ### btc-reserve-first-tranche
 Type: transparency
 Priority: tier 4 - approved transparency proof
@@ -121,7 +175,7 @@ Approval role: executive-chairman
 Approved at: 2026-09-03T21:48:29.101Z
 Approved content SHA-256: 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e
 Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.
-Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, or move assets.
+Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, move assets, or treat replies as invoice-ready without evidence review.
 
 Social publish evidence issue-body command:
 
@@ -143,6 +197,24 @@ After manual publication, record the live post evidence:
 npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e
 ```
 
+After publication is recorded, triage replies from this exact source:
+
+```sh
+node scripts/inbound-reply-triage-agent.mjs markdown --sourceType published-social-reply --sourceId btc-reserve-first-tranche --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>"
+```
+
+Invoice-request reply evidence issue-body command:
+
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId btc-reserve-first-tranche --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true
+```
+
+Intake reply evidence issue-body command:
+
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId btc-reserve-first-tranche --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "needs-intake-fields" --customerAskedForInvoice false
+```
+
 ### authority-revoked
 Type: education
 Priority: tier 4 - approved transparency proof
@@ -151,7 +223,7 @@ Approval role: executive-chairman
 Approved at: 2026-09-03T21:48:34.639Z
 Approved content SHA-256: 5210756b4a42acb586bdde80a314fc11d245e1014b5fbed4ad766d06eb134d29
 Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.
-Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, or move assets.
+Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, move assets, or treat replies as invoice-ready without evidence review.
 
 Social publish evidence issue-body command:
 
@@ -170,6 +242,24 @@ After manual publication, record the live post evidence:
 
 ```sh
 npm run social:agent -- record-published --post authority-revoked --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 5210756b4a42acb586bdde80a314fc11d245e1014b5fbed4ad766d06eb134d29
+```
+
+After publication is recorded, triage replies from this exact source:
+
+```sh
+node scripts/inbound-reply-triage-agent.mjs markdown --sourceType published-social-reply --sourceId authority-revoked --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>"
+```
+
+Invoice-request reply evidence issue-body command:
+
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId authority-revoked --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true
+```
+
+Intake reply evidence issue-body command:
+
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId authority-revoked --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "needs-intake-fields" --customerAskedForInvoice false
 ```
 
 ## Next Action

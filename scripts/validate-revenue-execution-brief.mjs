@@ -318,6 +318,33 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
       findings.push('manual social publish action must prioritize approved revenue-service offers');
     }
     if (
+      !manualSocialPublishAction.postPublishReplyTriageCommand?.includes(
+        '--sourceType published-social-reply --sourceId transparency-service-offer'
+      )
+    ) {
+      findings.push('manual social publish action must expose post-publication reply triage');
+    }
+    if (
+      !manualSocialPublishAction.postPublishInvoiceEvidenceIssueTemplateCommand?.includes(
+        '--classification "invoice-request-needs-chairman-review"'
+      ) ||
+      !manualSocialPublishAction.postPublishInvoiceEvidenceIssueTemplateCommand?.includes(
+        '--customerAskedForInvoice true'
+      )
+    ) {
+      findings.push('manual social publish action must expose invoice-request reply evidence intake');
+    }
+    if (
+      !manualSocialPublishAction.postPublishIntakeEvidenceIssueTemplateCommand?.includes(
+        '--classification "needs-intake-fields"'
+      ) ||
+      !manualSocialPublishAction.postPublishIntakeEvidenceIssueTemplateCommand?.includes(
+        '--customerAskedForInvoice false'
+      )
+    ) {
+      findings.push('manual social publish action must expose intake reply evidence intake');
+    }
+    if (
       manualSocialPublishAction.approvedMessageSha256 &&
       !manualSocialPublishAction.command?.includes(manualSocialPublishAction.approvedMessageSha256)
     ) {
@@ -476,6 +503,15 @@ if (!markdown.includes('outreach-contact-evidence-agent.mjs render-template --pa
 }
 if (!markdown.includes('SATA offers $249 Transparency Audits')) {
   findings.push('markdown must include the copy-ready approved social post text');
+}
+if (!markdown.includes('Post-publication reply triage command:')) {
+  findings.push('markdown must include post-publication reply triage command');
+}
+if (!markdown.includes('Post-publication invoice-request evidence issue-body command:')) {
+  findings.push('markdown must include post-publication invoice evidence command');
+}
+if (!markdown.includes('Post-publication intake evidence issue-body command:')) {
+  findings.push('markdown must include post-publication intake evidence command');
 }
 if (!markdown.includes('social-publish-evidence-agent.mjs render-template --post')) {
   findings.push('markdown must include social publish evidence issue-body command');

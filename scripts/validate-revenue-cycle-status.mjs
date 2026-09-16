@@ -172,6 +172,18 @@ assertIncludes(
   manualSocialPublishAction?.evidenceIssueTemplateCommand,
   `--contentHash ${manualSocialPublishAction?.approvedMessageSha256}`
 );
+assertIncludes(
+  manualSocialPublishAction?.postPublishReplyTriageCommand,
+  '--sourceType published-social-reply --sourceId approved-social-post'
+);
+assertIncludes(
+  manualSocialPublishAction?.postPublishInvoiceEvidenceIssueTemplateCommand,
+  '--classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true'
+);
+assertIncludes(
+  manualSocialPublishAction?.postPublishIntakeEvidenceIssueTemplateCommand,
+  '--classification "needs-intake-fields" --customerAskedForInvoice false'
+);
 assertEqual(manualSocialPublishAction?.socialPriority?.tier, 9);
 assertEqual(manualSocialPublishAction?.socialPriority?.reason, 'approved backlog order');
 

@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildOutreachContactEvidenceDraft } from './lib/outreach-contact-evidence-parser.mjs';
+import { renderOutreachContactEvidenceIssueBody } from './outreach-contact-evidence-agent.mjs';
 import { renderOutreachContactEvidenceComment } from './outreach-contact-evidence-comment-agent.mjs';
 
 const pipeline = readJson(join('public', 'sats-prospect-pipeline.json'));
@@ -91,6 +92,40 @@ if (!/approvedMessageSha256/.test(evidenceAgent) || !/approved SHA-256 match the
 }
 if (!/requiredFields:[\s\S]*'sentAtUtc'/.test(evidenceAgent)) {
   findings.push('evidence agent plan must expose sentAtUtc as a required field');
+}
+if (!/render-template --packet/.test(evidenceAgent)) {
+  findings.push('evidence agent plan must expose the render-template helper command');
+}
+
+const renderedEvidenceBody = renderOutreachContactEvidenceIssueBody({
+  packetQueue,
+  packetId: 'outreach-packet-20260831-arnold-solana-transparency-audit-first-contact',
+  contactChannel: 'public-dm-or-email',
+  contactEvidenceUrl: 'https://x.com/example/status/108',
+  sentAtUtc: '2026-09-10T10:00:00.000Z'
+});
+for (const expected of [
+  '### Outreach packet ID',
+  'outreach-packet-20260831-arnold-solana-transparency-audit-first-contact',
+  '### Approved message SHA-256',
+  '5b2a05f62888e3bdab910a5efb623f04a637e0627c0565cd26d56d34af2868a7',
+  '### Exact message sent',
+  '### Sent at UTC'
+]) {
+  if (!renderedEvidenceBody.includes(expected)) {
+    findings.push(`rendered evidence issue body missing ${expected}`);
+  }
+}
+const renderedEvidenceDraft = buildOutreachContactEvidenceDraft({
+  issue: { ...issueFixture, body: renderedEvidenceBody },
+  packetQueue,
+  pipeline
+});
+if (!renderedEvidenceDraft.readyToRecord) {
+  findings.push(`rendered evidence issue body must be ready to record: ${renderedEvidenceDraft.findings.join('; ')}`);
+}
+if (!renderedEvidenceDraft.messageMatchesApprovedPacket || !renderedEvidenceDraft.hashMatchesApprovedPacket) {
+  findings.push('rendered evidence issue body must preserve exact approved message and hash');
 }
 
 const mismatchedIssue = {

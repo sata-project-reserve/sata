@@ -1,6 +1,6 @@
 # SATA Reserve Token Outreach Dispatch Brief
 
-Generated: 2026-09-16T11:32:54.755Z
+Generated: 2026-09-16T13:58:56.638Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -52,6 +52,12 @@ Intake form: https://github.com/sata-project-reserve/sata/issues/new?utm_source=
 Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.
 ```
 
+Prepare the contact evidence issue body after manual send:
+
+```sh
+node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
+```
+
 After manual send, record durable evidence:
 
 ```sh
@@ -86,6 +92,12 @@ Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?
 Intake form: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_meme_launch_transparency_audit_first_contact&utm_content=meme_launch&template=transparency-audit-intake.yml
 
 Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.
+```
+
+Prepare the contact evidence issue body after manual send:
+
+```sh
+node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```
 
 After manual send, record durable evidence:
@@ -124,6 +136,12 @@ Intake form: https://github.com/sata-project-reserve/sata/issues/new?utm_source=
 Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.
 ```
 
+Prepare the contact evidence issue body after manual send:
+
+```sh
+node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
+```
+
 After manual send, record durable evidence:
 
 ```sh
@@ -160,6 +178,12 @@ Intake form: https://github.com/sata-project-reserve/sata/issues/new?utm_source=
 Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.
 ```
 
+Prepare the contact evidence issue body after manual send:
+
+```sh
+node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
+```
+
 After manual send, record durable evidence:
 
 ```sh
@@ -192,6 +216,12 @@ Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?
 Intake form: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_cia_token_transparency_audit_first_contact&utm_content=cia_token&template=transparency-audit-intake.yml
 
 Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.
+```
+
+Prepare the contact evidence issue body after manual send:
+
+```sh
+node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```
 
 After manual send, record durable evidence:

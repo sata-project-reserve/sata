@@ -190,6 +190,16 @@ for (const packet of brief.readyManualSends) {
   if (!/mark-sent --packet/.test(packet.recordContactCommand ?? '')) {
     findings.push(`${packet.packetId}: ready packet must include a post-send evidence command`);
   }
+  if (
+    !/outreach-contact-evidence-agent\.mjs render-template --packet/.test(
+      packet.evidenceIssueTemplateCommand ?? ''
+    )
+  ) {
+    findings.push(`${packet.packetId}: ready packet must include a contact evidence issue template command`);
+  }
+  if (!packet.evidenceIssueTemplateCommand?.includes(`--packet ${packet.packetId}`)) {
+    findings.push(`${packet.packetId}: evidence issue template command must target the packet`);
+  }
   if (!/--sentAtUtc "<sent-at-utc>"/.test(packet.recordContactCommand ?? '')) {
     findings.push(`${packet.packetId}: post-send evidence command must require explicit sentAtUtc evidence`);
   }
@@ -241,6 +251,9 @@ if (!markdown.includes('manual_outreach:')) {
 if (!markdown.includes('Tracked service: https://') || !markdown.includes('utm_source=manual_outreach')) {
   findings.push('markdown brief must include structured tracked service URLs');
 }
+if (!markdown.includes('Prepare the contact evidence issue body after manual send')) {
+  findings.push('markdown brief must include the contact evidence issue-body helper');
+}
 if (!markdown.includes('Current approved ask:')) {
   findings.push('markdown must separate the current approved ask from the qualified revenue path');
 }
@@ -287,6 +300,13 @@ if (publicBrief) {
   for (const packet of publicBrief.readyManualSends ?? []) {
     if (!/--messageHash [0-9a-f]{64}\b/.test(packet.recordContactCommand ?? '')) {
       findings.push(`${packet.packetId}: public post-send evidence command must require approved message SHA-256`);
+    }
+    if (
+      !/outreach-contact-evidence-agent\.mjs render-template --packet/.test(
+        packet.evidenceIssueTemplateCommand ?? ''
+      )
+    ) {
+      findings.push(`${packet.packetId}: public ready packet must include contact evidence issue template command`);
     }
   }
 }

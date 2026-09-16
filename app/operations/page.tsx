@@ -1400,6 +1400,12 @@ export default function OperationsPage() {
               </div>
               <pre className="preview">{packet.message}</pre>
               <div className="command-list">
+                {'evidenceIssueTemplateCommand' in packet ? (
+                  <>
+                    <span>Prepare Evidence Issue</span>
+                    <code>{packet.evidenceIssueTemplateCommand}</code>
+                  </>
+                ) : null}
                 <span>Record Contact</span>
                 <code>{withSentAtUtcPlaceholder(packet.recordContactCommand)}</code>
               </div>

@@ -70,6 +70,7 @@ export function buildOutreachDispatchBrief({
         destination: packet.destination,
         tracking: packet.tracking ?? null,
         message: packet.message,
+        evidenceIssueTemplateCommand: evidenceIssueTemplateCommand(packet.id),
         recordContactCommand: withSentAtUtcPlaceholder(packet.recordContactCommand, packet.id),
         targetRevenueUsd: offerPriceUsd({ revenuePlan, offerId: packet.offerId }),
         trackingLabel: `manual_outreach:${packet.id}`,
@@ -231,6 +232,12 @@ export function renderOutreachDispatchMarkdown(brief) {
       packet.message,
       '```',
       '',
+      'Prepare the contact evidence issue body after manual send:',
+      '',
+      '```sh',
+      packet.evidenceIssueTemplateCommand,
+      '```',
+      '',
       'After manual send, record durable evidence:',
       '',
       '```sh',
@@ -341,6 +348,10 @@ function withSentAtUtcPlaceholder(command, packetId) {
     next = `${next} --messageHash "<approved-message-sha256>"`;
   }
   return next;
+}
+
+function evidenceIssueTemplateCommand(packetId) {
+  return `node scripts/outreach-contact-evidence-agent.mjs render-template --packet ${packetId} --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"`;
 }
 
 function prospectIdsFromOutreachApprovalTitle(title) {

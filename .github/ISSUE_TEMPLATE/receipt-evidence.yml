@@ -1,0 +1,108 @@
+name: BTC Reserve Receipt Evidence
+description: Submit confirmed direct-reserve BTC receipt evidence for SATA revenue accounting.
+title: '[BTC Reserve Receipt Evidence]: '
+labels: ['receipt-evidence', 'manual-evidence']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form only after a customer has paid a chairman-approved exact-sats invoice directly to the published SATA BTC reserve address.
+
+        This form records evidence for review. It does not approve invoices, send payment instructions, move funds, update the reserve ledger, publish a transparency report, or allocate receipts.
+  - type: input
+    id: receiptId
+    attributes:
+      label: Receipt ID
+      description: 'Example: receipt-transparency-audit-example-001'
+    validations:
+      required: true
+  - type: input
+    id: invoiceId
+    attributes:
+      label: Approved invoice ID
+      description: The chairman-approved exact-sats invoice this payment satisfies.
+    validations:
+      required: true
+  - type: input
+    id: receivedAtUtc
+    attributes:
+      label: Received at UTC
+      description: ISO timestamp for the BTC transaction receipt time.
+    validations:
+      required: true
+  - type: input
+    id: serviceSource
+    attributes:
+      label: Service source
+      description: 'Example: SATA transparency audit service'
+    validations:
+      required: true
+  - type: input
+    id: btcAmount
+    attributes:
+      label: BTC amount
+      description: BTC decimal with no more than 8 decimal places.
+    validations:
+      required: true
+  - type: input
+    id: amountSats
+    attributes:
+      label: Exact sats
+      description: Exact integer sats received. Must match the approved invoice.
+    validations:
+      required: true
+  - type: input
+    id: bitcoinTransactionId
+    attributes:
+      label: Bitcoin transaction ID
+      description: 64-character Bitcoin transaction id hex string.
+    validations:
+      required: true
+  - type: input
+    id: receivedAddress
+    attributes:
+      label: Received BTC address
+      description: Must match the published SATA reserve address.
+    validations:
+      required: true
+  - type: input
+    id: confirmations
+    attributes:
+      label: Confirmations
+      description: Integer confirmation count at recording time.
+    validations:
+      required: true
+  - type: input
+    id: deliverableUrl
+    attributes:
+      label: Deliverable evidence URL
+      description: Customer deliverable, issue, report, or work evidence URL.
+    validations:
+      required: true
+  - type: input
+    id: recordedAtUtc
+    attributes:
+      label: Recorded at UTC
+      description: ISO timestamp when this receipt evidence was recorded.
+    validations:
+      required: true
+  - type: input
+    id: chairmanReceiptApproval
+    attributes:
+      label: Chairman receipt approval phrase
+      description: 'Must be exactly: I am Executive Chairman and approve receipt <receipt-id>'
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      options:
+        - label: The linked invoice is already approved by the Executive Chairman.
+          required: true
+        - label: The BTC was paid directly to the published SATA reserve address.
+          required: true
+        - label: I independently checked the transaction id, amount, address, and confirmations.
+          required: true
+        - label: I understand allocation and transparency report publication require separate steps.
+          required: true

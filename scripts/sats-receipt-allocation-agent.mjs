@@ -17,6 +17,9 @@ switch (command) {
   case 'plan':
     printPlan();
     break;
+  case 'render-template':
+    printReceiptEvidenceTemplate(args);
+    break;
   case 'render':
     renderReceipt(args[0]);
     break;
@@ -28,7 +31,7 @@ switch (command) {
     break;
   default:
     throw new Error(
-      `Unknown receipt allocation command: ${command}. Use plan, render <receipt-id>, record-confirmed, or record-allocation.`
+      `Unknown receipt allocation command: ${command}. Use plan, render-template, render <receipt-id>, record-confirmed, or record-allocation.`
     );
 }
 
@@ -58,6 +61,11 @@ function printPlan() {
           pendingAllocation[0]?.id ?
             `Run node scripts/sats-receipt-allocation-agent.mjs render ${pendingAllocation[0].id} for chairman review.`
           : 'Wait for a confirmed direct-reserve BTC receipt that matches a chairman-approved invoice.',
+        evidenceIssueTemplate: '.github/ISSUE_TEMPLATE/receipt-evidence.yml',
+        evidenceIssueTemplateUrl:
+          'https://github.com/sata-project-reserve/sata/issues/new?template=receipt-evidence.yml',
+        renderEvidenceIssueTemplateCommand:
+          'node scripts/sats-receipt-allocation-agent.mjs render-template --receipt "<receipt-id>" --invoice "<approved-invoice-id>" --receivedAtUtc "<received-at-utc>" --source "<service-source>" --amount "<btc-amount>" --amountSats "<exact-sats>" --transactionId "<bitcoin-txid>" --receivedAddress "<published-reserve-address>" --confirmations "<confirmations>" --deliverableUrl "<delivery-evidence-url>" --recordedAtUtc "<recorded-at-utc>"',
         recordConfirmedReceiptCommand:
           'node scripts/sats-receipt-allocation-agent.mjs record-confirmed --receipt "<receipt-id>" --invoice "<approved-invoice-id>" --receivedAtUtc "<received-at-utc>" --source "<service-source>" --amount "<btc-amount>" --amountSats "<exact-sats>" --transactionId "<bitcoin-txid>" --receivedAddress "<published-reserve-address>" --confirmations "<confirmations>" --deliverableUrl "<delivery-evidence-url>" --recordedAtUtc "<recorded-at-utc>" --confirmChairmanReceiptApproval "I am Executive Chairman and approve receipt <receipt-id>"',
         recordConfirmedAllocationCommand:
@@ -69,6 +77,62 @@ function printPlan() {
       2
     )
   );
+}
+
+function printReceiptEvidenceTemplate(args) {
+  console.log(renderReceiptEvidenceIssueBody(parseOptions(args)));
+}
+
+export function renderReceiptEvidenceIssueBody({
+  receipt = '<receipt-id>',
+  invoice = '<approved-invoice-id>',
+  receivedAtUtc = '<received-at-utc>',
+  source = '<service-source>',
+  amount = '<btc-amount>',
+  amountSats = '<exact-sats>',
+  transactionId = '<bitcoin-txid>',
+  receivedAddress = '<published-reserve-address>',
+  confirmations = '<confirmations>',
+  deliverableUrl = '<delivery-evidence-url>',
+  recordedAtUtc = '<recorded-at-utc>'
+} = {}) {
+  return [
+    '### Receipt ID',
+    cleanLine(receipt),
+    '',
+    '### Approved invoice ID',
+    cleanLine(invoice),
+    '',
+    '### Received at UTC',
+    cleanLine(receivedAtUtc),
+    '',
+    '### Service source',
+    cleanLine(source),
+    '',
+    '### BTC amount',
+    cleanLine(amount),
+    '',
+    '### Exact sats',
+    cleanLine(amountSats),
+    '',
+    '### Bitcoin transaction ID',
+    cleanLine(transactionId),
+    '',
+    '### Received BTC address',
+    cleanLine(receivedAddress),
+    '',
+    '### Confirmations',
+    cleanLine(confirmations),
+    '',
+    '### Deliverable evidence URL',
+    cleanLine(deliverableUrl),
+    '',
+    '### Recorded at UTC',
+    cleanLine(recordedAtUtc),
+    '',
+    '### Chairman receipt approval phrase',
+    `I am Executive Chairman and approve receipt ${cleanLine(receipt)}`
+  ].join('\n');
 }
 
 function renderReceipt(id) {
@@ -133,4 +197,8 @@ function parseOptions(values) {
     parsed[key.slice(2)] = collected.join(' ');
   }
   return parsed;
+}
+
+function cleanLine(value) {
+  return String(value ?? '').replace(/\s+/g, ' ').trim();
 }

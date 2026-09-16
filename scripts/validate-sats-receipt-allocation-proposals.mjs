@@ -5,6 +5,7 @@ import {
   recordConfirmedReceipt,
   renderReceiptAllocationProposal
 } from './lib/sats-receipt-allocation-proposal.mjs';
+import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -98,8 +99,21 @@ assertConfirmedAllocation({
 });
 
 const receiptAgent = readFileSync(join('scripts', 'sats-receipt-allocation-agent.mjs'), 'utf8');
+const receiptIssueTemplate = readFileSync(
+  join('.github', 'ISSUE_TEMPLATE', 'receipt-evidence.yml'),
+  'utf8'
+);
 if (!/record-confirmed/.test(receiptAgent)) {
   throw new Error('receipt agent must expose record-confirmed command');
+}
+if (!/render-template/.test(receiptAgent)) {
+  throw new Error('receipt agent must expose the render-template helper command');
+}
+if (!/receipt-evidence\.yml/.test(receiptAgent)) {
+  throw new Error('receipt plan must expose the receipt evidence issue template');
+}
+if (!/renderEvidenceIssueTemplateCommand/.test(receiptAgent)) {
+  throw new Error('receipt plan must expose the receipt evidence issue-body command');
 }
 if (!/recordConfirmedReceiptCommand/.test(receiptAgent)) {
   throw new Error('receipt plan must expose the bounded record-confirmed command template');
@@ -121,6 +135,59 @@ if (!/confirmChairmanAllocationApproval/.test(receiptAgent)) {
 }
 if (!/--allocatedAtUtc "<allocated-at-utc>"/.test(receiptAgent)) {
   throw new Error('receipt plan must require an explicit allocatedAtUtc timestamp');
+}
+for (const expected of [
+  'BTC Reserve Receipt Evidence',
+  'receiptId',
+  'invoiceId',
+  'receivedAtUtc',
+  'bitcoinTransactionId',
+  'chairmanReceiptApproval',
+  'does not approve invoices'
+]) {
+  assertIncludes(receiptIssueTemplate, expected);
+}
+const renderedReceiptTemplate = execFileSync(
+  process.execPath,
+  [
+    'scripts/sats-receipt-allocation-agent.mjs',
+    'render-template',
+    '--receipt',
+    'receipt-recorded-audit-1',
+    '--invoice',
+    approvedInvoice.id,
+    '--receivedAtUtc',
+    '2026-08-29T00:30:00Z',
+    '--source',
+    'SATA transparency audit service',
+    '--amount',
+    '0.00043210',
+    '--amountSats',
+    approvedInvoice.amountSats,
+    '--transactionId',
+    '7a'.repeat(32),
+    '--receivedAddress',
+    reserveAddress,
+    '--confirmations',
+    '3',
+    '--deliverableUrl',
+    'https://github.com/sata-project-reserve/sata/issues/2',
+    '--recordedAtUtc',
+    '2026-08-29T00:40:00Z'
+  ],
+  { encoding: 'utf8' }
+);
+for (const expected of [
+  '### Receipt ID',
+  'receipt-recorded-audit-1',
+  '### Approved invoice ID',
+  approvedInvoice.id,
+  '### Bitcoin transaction ID',
+  '7a'.repeat(32),
+  '### Chairman receipt approval phrase',
+  'I am Executive Chairman and approve receipt receipt-recorded-audit-1'
+]) {
+  assertIncludes(renderedReceiptTemplate, expected);
 }
 
 const recordedLedger = recordConfirmedReceipt({

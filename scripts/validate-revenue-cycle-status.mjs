@@ -306,6 +306,18 @@ assertIncludes(
   readyOutreachPacketStatus.actionQueue[0]?.tracking?.serviceUrl,
   'utm_source=manual_outreach'
 );
+assertEqual(
+  readyOutreachPacketStatus.actionQueue[0]?.evidenceIssueTemplateUrl,
+  'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml'
+);
+assertEqual(
+  readyOutreachPacketStatus.actionQueue[0]?.evidenceReviewCommand,
+  'npm run ops:outreach-contact-evidence-plan'
+);
+assertIncludes(
+  readyOutreachPacketStatus.actionQueue[0]?.evidenceIssueTemplateCommand,
+  'outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-1'
+);
 assertEqual(readyOutreachPacketStatus.actionQueue[0]?.reserveImpactPlanning?.basis, 'planning-only');
 assertIncludes(
   readyOutreachPacketStatus.nextAction,

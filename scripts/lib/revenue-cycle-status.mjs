@@ -17,6 +17,9 @@ const REFERRAL_HANDOFF_RESPONSE_EVIDENCE_REVIEW_COMMAND =
 const REFERRAL_LEAD_EVIDENCE_ISSUE_TEMPLATE_URL =
   'https://github.com/sata-project-reserve/sata/issues/new?template=referral-lead-evidence.yml';
 const REFERRAL_LEAD_EVIDENCE_REVIEW_COMMAND = 'npm run ops:referral-lead-evidence-plan';
+const OUTREACH_CONTACT_EVIDENCE_ISSUE_TEMPLATE_URL =
+  'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml';
+const OUTREACH_CONTACT_EVIDENCE_REVIEW_COMMAND = 'npm run ops:outreach-contact-evidence-plan';
 
 export function buildRevenueCycleStatus({
   report,
@@ -270,6 +273,28 @@ export function validateRevenueCycleStatus(status) {
       if (!String(item.command ?? '').includes(item.approvedMessageSha256 ?? '<missing>')) {
         findings.push(
           `${item.id ?? '<missing-id>'}: manual outreach command must include approved message SHA-256`
+        );
+      }
+      if (item.evidenceIssueTemplateUrl !== OUTREACH_CONTACT_EVIDENCE_ISSUE_TEMPLATE_URL) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: manual outreach action must expose the contact evidence issue template`
+        );
+      }
+      if (item.evidenceReviewCommand !== OUTREACH_CONTACT_EVIDENCE_REVIEW_COMMAND) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: manual outreach action must expose the contact evidence review command`
+        );
+      }
+      if (
+        !/outreach-contact-evidence-agent\.mjs render-template --packet/.test(
+          item.evidenceIssueTemplateCommand ?? ''
+        ) ||
+        !String(item.evidenceIssueTemplateCommand ?? '').includes(
+          `--packet ${String(item.id ?? '').replace(/^send-/, '')}`
+        )
+      ) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: manual outreach action must expose its contact evidence issue-body command`
         );
       }
       if (!item.tracking || typeof item.tracking !== 'object') {
@@ -799,6 +824,9 @@ function buildActionQueue({
       tracking: packet.tracking ?? null,
       approvedMessage: packet.message ?? null,
       approvedMessageSha256: packet.messageSha256 ?? null,
+      evidenceIssueTemplateUrl: OUTREACH_CONTACT_EVIDENCE_ISSUE_TEMPLATE_URL,
+      evidenceReviewCommand: OUTREACH_CONTACT_EVIDENCE_REVIEW_COMMAND,
+      evidenceIssueTemplateCommand: outreachContactEvidenceTemplateCommand(packet.id),
       reserveImpactPlanning: reserveImpactPlanning({
         revenuePlan,
         currentAskUsd,
@@ -1114,6 +1142,10 @@ function withSentAtUtcPlaceholder(command, packetId) {
     next = `${next} --messageHash "<approved-message-sha256>"`;
   }
   return next;
+}
+
+function outreachContactEvidenceTemplateCommand(packetId) {
+  return `node scripts/outreach-contact-evidence-agent.mjs render-template --packet ${packetId} --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"`;
 }
 
 function matchingReferralHandoffPacket({ packet, campaignId }) {

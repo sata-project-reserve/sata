@@ -659,6 +659,12 @@ export default function OperationsPage() {
                     <code>{action.evidenceReviewCommand}</code>
                   </>
                 ) : null}
+                {'evidenceIssueTemplateCommand' in action && action.evidenceIssueTemplateCommand ? (
+                  <>
+                    <span>Evidence Issue Body</span>
+                    <code>{action.evidenceIssueTemplateCommand}</code>
+                  </>
+                ) : null}
                 <span>Stop Rule</span>
                 <code>{action.stopRule}</code>
                 <span>Command</span>

@@ -147,6 +147,22 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
       findings.push(`${action.id}: manual outreach action must expose the current approved offer`);
     }
     if (
+      action.evidenceIssueTemplateUrl !==
+      'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml'
+    ) {
+      findings.push(`${action.id}: manual outreach action must expose the contact evidence issue template`);
+    }
+    if (action.evidenceReviewCommand !== 'npm run ops:outreach-contact-evidence-plan') {
+      findings.push(`${action.id}: manual outreach action must expose the contact evidence review command`);
+    }
+    if (
+      !/outreach-contact-evidence-agent\.mjs render-template --packet/.test(
+        action.evidenceIssueTemplateCommand ?? ''
+      )
+    ) {
+      findings.push(`${action.id}: manual outreach action must expose the contact evidence issue-body command`);
+    }
+    if (
       !Number.isSafeInteger(Number(action.currentAskUsd)) ||
       Number(action.currentAskUsd) <= 0
     ) {
@@ -370,6 +386,15 @@ if (!markdown.includes('Evidence intake: https://github.com/sata-project-reserve
 }
 if (!markdown.includes('Evidence review command: npm run ops:referral-handoff-evidence-plan')) {
   findings.push('markdown must include referral handoff evidence review command');
+}
+if (!markdown.includes('Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml')) {
+  findings.push('markdown must include outreach contact evidence intake URL');
+}
+if (!markdown.includes('Evidence review command: npm run ops:outreach-contact-evidence-plan')) {
+  findings.push('markdown must include outreach contact evidence review command');
+}
+if (!markdown.includes('outreach-contact-evidence-agent.mjs render-template --packet')) {
+  findings.push('markdown must include outreach contact evidence issue-body command');
 }
 if (!markdown.includes('SATA has a dedicated Bitcoin reserve address')) {
   findings.push('markdown must include the copy-ready approved social post text');

@@ -23,6 +23,9 @@ const REFERRAL_HANDOFF_RESPONSE_EVIDENCE_REVIEW_COMMAND =
 const REFERRAL_LEAD_EVIDENCE_ISSUE_TEMPLATE_URL =
   'https://github.com/sata-project-reserve/sata/issues/new?template=referral-lead-evidence.yml';
 const REFERRAL_LEAD_EVIDENCE_REVIEW_COMMAND = 'npm run ops:referral-lead-evidence-plan';
+const OUTREACH_CONTACT_EVIDENCE_ISSUE_TEMPLATE_URL =
+  'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml';
+const OUTREACH_CONTACT_EVIDENCE_REVIEW_COMMAND = 'npm run ops:outreach-contact-evidence-plan';
 
 export function buildRevenueExecutionBrief({
   status,
@@ -302,6 +305,9 @@ export function buildRevenueExecutionBrief({
       tracking: packet.tracking ?? null,
       approvedMessage: packet.message,
       approvedMessageSha256: packet.messageSha256,
+      evidenceIssueTemplateUrl: OUTREACH_CONTACT_EVIDENCE_ISSUE_TEMPLATE_URL,
+      evidenceReviewCommand: OUTREACH_CONTACT_EVIDENCE_REVIEW_COMMAND,
+      evidenceIssueTemplateCommand: outreachContactEvidenceTemplateCommand(packet.id),
       outreachPriority: packet.priority,
       qualifiedRevenueUsd: packet.qualifiedRevenueUsd,
       ...commercialContext,
@@ -419,6 +425,9 @@ export function buildRevenueExecutionBrief({
       qualifiedRevenueUsd: packet.qualifiedRevenueUsd,
       approvedMessage: packet.message,
       approvedMessageSha256: packet.messageSha256,
+      evidenceIssueTemplateUrl: OUTREACH_CONTACT_EVIDENCE_ISSUE_TEMPLATE_URL,
+      evidenceReviewCommand: OUTREACH_CONTACT_EVIDENCE_REVIEW_COMMAND,
+      evidenceIssueTemplateCommand: outreachContactEvidenceTemplateCommand(packet.id),
       ...commercialContextFor({
         packet,
         prospect: prospectsById.get(packet.prospectId),
@@ -490,6 +499,19 @@ export function validateRevenueExecutionBrief(brief) {
         findings.push(
           `${action.id}: manual outreach command must require explicit sentAtUtc evidence`
         );
+      }
+      if (action.evidenceIssueTemplateUrl !== OUTREACH_CONTACT_EVIDENCE_ISSUE_TEMPLATE_URL) {
+        findings.push(`${action.id}: manual outreach action must expose the contact evidence issue template`);
+      }
+      if (action.evidenceReviewCommand !== OUTREACH_CONTACT_EVIDENCE_REVIEW_COMMAND) {
+        findings.push(`${action.id}: manual outreach action must expose the contact evidence review command`);
+      }
+      if (
+        !/outreach-contact-evidence-agent\.mjs render-template --packet/.test(
+          action.evidenceIssueTemplateCommand ?? ''
+        )
+      ) {
+        findings.push(`${action.id}: manual outreach action must expose the contact evidence issue-body command`);
       }
       if (!action.currentOfferId) {
         findings.push(`${action.id}: manual outreach action must expose the current approved offer`);
@@ -743,6 +765,20 @@ export function validateRevenueExecutionBrief(brief) {
         `${packet.packetId}: manual send batch command must require explicit sentAtUtc evidence`
       );
     }
+    if (packet.evidenceIssueTemplateUrl !== OUTREACH_CONTACT_EVIDENCE_ISSUE_TEMPLATE_URL) {
+      findings.push(`${packet.packetId}: manual send batch item must expose the contact evidence issue template`);
+    }
+    if (packet.evidenceReviewCommand !== OUTREACH_CONTACT_EVIDENCE_REVIEW_COMMAND) {
+      findings.push(`${packet.packetId}: manual send batch item must expose the contact evidence review command`);
+    }
+    if (
+      !/outreach-contact-evidence-agent\.mjs render-template --packet/.test(
+        packet.evidenceIssueTemplateCommand ?? ''
+      ) ||
+      !String(packet.evidenceIssueTemplateCommand ?? '').includes(`--packet ${packet.packetId}`)
+    ) {
+      findings.push(`${packet.packetId}: manual send batch item must expose its contact evidence issue-body command`);
+    }
     validateOperatorChecklist({
       findings,
       label: packet.packetId,
@@ -779,6 +815,10 @@ function withSentAtUtcPlaceholder(command) {
     next = `${next} --messageHash "<approved-message-sha256>"`;
   }
   return next;
+}
+
+function outreachContactEvidenceTemplateCommand(packetId) {
+  return `node scripts/outreach-contact-evidence-agent.mjs render-template --packet ${packetId} --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"`;
 }
 
 function commercialContextFor({ packet, prospect, revenuePlan, revenueStreamsById }) {
@@ -1106,6 +1146,9 @@ export function renderRevenueExecutionMarkdown(brief) {
       ...(action.evidenceReviewCommand
         ? [`Evidence review command: ${action.evidenceReviewCommand}`]
         : []),
+      ...(action.evidenceIssueTemplateCommand
+        ? [`Evidence issue-body command: ${action.evidenceIssueTemplateCommand}`]
+        : []),
       ...(action.classificationRules?.length
         ? [
             '',
@@ -1199,6 +1242,15 @@ export function renderRevenueExecutionMarkdown(brief) {
         : []),
       ...(packet.operatorChecklist?.length
         ? ['  Operator checklist:', ...packet.operatorChecklist.map((step) => `  - ${step}`)]
+        : []),
+      ...(packet.evidenceIssueTemplateUrl
+        ? [`  Evidence intake: ${packet.evidenceIssueTemplateUrl}`]
+        : []),
+      ...(packet.evidenceReviewCommand
+        ? [`  Evidence review command: ${packet.evidenceReviewCommand}`]
+        : []),
+      ...(packet.evidenceIssueTemplateCommand
+        ? [`  Evidence issue-body command: ${packet.evidenceIssueTemplateCommand}`]
         : []),
       '```sh',
       packet.command,

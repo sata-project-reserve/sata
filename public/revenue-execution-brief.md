@@ -1,6 +1,6 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-09-16T16:05:45.906Z
+Generated: 2026-09-16T16:10:43.068Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -106,6 +106,9 @@ npm run social:agent -- record-published --post btc-reserve-first-tranche --post
 ### 4. Send approved transparency-audit outreach to sanctum-elysium-loam.
 Type: manual-outreach-send
 Why: The shortest route to new reserve sats is a paid transparency-audit customer requesting an invoice.
+Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml
+Evidence review command: npm run ops:outreach-contact-evidence-plan
+Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 Priority: 122 / hot
 Current approved ask: transparency-audit / $249
 Qualified revenue path: $999
@@ -145,6 +148,9 @@ node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packe
 ### 5. Send approved transparency-audit outreach to meme-launch.
 Type: manual-outreach-send
 Why: The shortest route to new reserve sats is a paid transparency-audit customer requesting an invoice.
+Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml
+Evidence review command: npm run ops:outreach-contact-evidence-plan
+Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 Priority: 110 / hot
 Current approved ask: transparency-audit / $249
 Qualified revenue path: $999
@@ -213,6 +219,9 @@ Any invoice, paid work, token grant, or payment instruction requires Executive C
   - Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact.
   - Send only the packet message as written, then capture durable evidence and UTC send time.
   - Run the mark-sent command only after the manual send evidence exists.
+  Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml
+  Evidence review command: npm run ops:outreach-contact-evidence-plan
+  Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
 ```
@@ -247,6 +256,9 @@ Any invoice, paid work, token grant, or payment instruction requires Executive C
   - Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-meme-launch-transparency-audit-first-contact.
   - Send only the packet message as written, then capture durable evidence and UTC send time.
   - Run the mark-sent command only after the manual send evidence exists.
+  Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml
+  Evidence review command: npm run ops:outreach-contact-evidence-plan
+  Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 28ed7b84f82ae8b4f07961b70ab46a494d3b04349e0d0408e3d1e9bab30d090a
 ```
@@ -281,6 +293,9 @@ Any invoice, paid work, token grant, or payment instruction requires Executive C
   - Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact.
   - Send only the packet message as written, then capture durable evidence and UTC send time.
   - Run the mark-sent command only after the manual send evidence exists.
+  Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml
+  Evidence review command: npm run ops:outreach-contact-evidence-plan
+  Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash c3da58a0c6934bc5a9c9790e5a45b0efe164b2b9f520d7eeb878c3a016742a64
 ```
@@ -315,6 +330,9 @@ Any invoice, paid work, token grant, or payment instruction requires Executive C
   - Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-soltokenlab-transparency-audit-first-contact.
   - Send only the packet message as written, then capture durable evidence and UTC send time.
   - Run the mark-sent command only after the manual send evidence exists.
+  Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml
+  Evidence review command: npm run ops:outreach-contact-evidence-plan
+  Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 202d9912a588930de17a540a0e0a32721bad0ea0c3b5d72e679786583a3b3a70
 ```
@@ -348,6 +366,9 @@ Any invoice, paid work, token grant, or payment instruction requires Executive C
   - Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-cia-token-transparency-audit-first-contact.
   - Send only the packet message as written, then capture durable evidence and UTC send time.
   - Run the mark-sent command only after the manual send evidence exists.
+  Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml
+  Evidence review command: npm run ops:outreach-contact-evidence-plan
+  Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 0add8ed0b05bf1e1ea2d9dcb9ea949fe6961cbcbf0dac929291381af9ed82a3e
 ```

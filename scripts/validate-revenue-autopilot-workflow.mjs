@@ -41,6 +41,7 @@ for (const requiredCommand of [
   'npm run ops:outreach-approval-check',
   'npm run ops:outreach-check',
   'npm run ops:outreach-contact-evidence-check',
+  'npm run ops:inbound-reply-evidence-check',
   'npm run ops:social-publish-evidence-check',
   'npm run ops:social-dispatch-check',
   'npm run ops:referral-handoff-evidence-check',
@@ -127,6 +128,7 @@ for (const requiredCommand of [
   'npm run ops:cycle-check',
   'npm run ops:social-publish-evidence-check',
   'npm run ops:social-dispatch-check',
+  'npm run ops:inbound-reply-evidence-check',
   'npm run ops:outreach-dispatch-check',
   'npm run ops:execution-brief-check',
   'npm run ops:reply-conversion-check',
@@ -145,6 +147,7 @@ for (const requiredCommand of [
   'npm run ops:social-dispatch-check',
   'npm run ops:settlement-options-check',
   'npm run ops:collaborator-meeting-check',
+  'npm run ops:inbound-reply-evidence-check',
   'npm run ops:referral-lead-evidence-check',
   'npm run social:check'
 ]) {
@@ -155,13 +158,16 @@ for (const requiredCommand of [
 for (const requiredPath of [
   '.github/workflows/social-publish-evidence.yml',
   '.github/workflows/collaborator-meeting-intake.yml',
+  '.github/workflows/inbound-reply-evidence.yml',
   '.github/workflows/referral-lead-evidence.yml',
   '.github/ISSUE_TEMPLATE/social-publish-evidence.yml',
   '.github/ISSUE_TEMPLATE/collaborator-meeting-intake.yml',
+  '.github/ISSUE_TEMPLATE/inbound-reply-evidence.yml',
   '.github/ISSUE_TEMPLATE/referral-lead-evidence.yml',
   'public/collaborator-meeting-intake.json',
   'tests/fixtures/social-publish-evidence-issue.json',
   'tests/fixtures/collaborator-meeting-intake-issue.json',
+  'tests/fixtures/inbound-reply-evidence-issue.json',
   'tests/fixtures/referral-lead-evidence-issue.json'
 ]) {
   if (!transparencyWorkflow.includes(requiredPath)) {

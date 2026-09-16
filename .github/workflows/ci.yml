@@ -113,6 +113,9 @@ jobs:
       - name: Validate inbound reply triage
         run: npm run ops:inbound-reply-triage-check
 
+      - name: Validate inbound reply evidence workflow
+        run: npm run ops:inbound-reply-evidence-check
+
       - name: Validate inbound invoice request packets
         run: npm run ops:inbound-invoice-request-check
 

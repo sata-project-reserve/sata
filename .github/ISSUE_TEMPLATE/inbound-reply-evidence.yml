@@ -1,0 +1,110 @@
+name: Inbound Reply Evidence
+description: Submit reply or DM evidence for SATA revenue triage.
+title: '[Inbound Reply Evidence]: '
+labels: ['inbound-reply-evidence', 'manual-evidence']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form when a live reply or DM may become a SATA transparency-service lead.
+
+        This form records evidence for review. It does not approve invoices, payment instructions, paid work, token grants, public posts, compensation, or asset movement.
+  - type: dropdown
+    id: sourceType
+    attributes:
+      label: Source type
+      options:
+        - paid-promotion-reply
+        - published-social-reply
+        - x-dm
+        - github-issue
+        - manual-referral
+    validations:
+      required: true
+  - type: input
+    id: sourceId
+    attributes:
+      label: Source ID
+      description: Campaign, post, DM, issue, or referral source id.
+    validations:
+      required: true
+  - type: input
+    id: contactHandle
+    attributes:
+      label: Contact handle
+      description: X handle, GitHub handle, email contact, or other durable contact label.
+    validations:
+      required: true
+  - type: input
+    id: publicProfileUrl
+    attributes:
+      label: Public profile URL
+      description: Public profile URL for the person or project contact.
+    validations:
+      required: true
+  - type: input
+    id: projectUrl
+    attributes:
+      label: Project URL
+      description: Public project, token, website, docs, or repo URL.
+    validations:
+      required: true
+  - type: input
+    id: requestedOfferId
+    attributes:
+      label: Requested offer ID
+      description: Example: transparency-audit, transparency-report-setup, or full-proof-dashboard.
+    validations:
+      required: true
+  - type: textarea
+    id: exactReplyText
+    attributes:
+      label: Exact reply text
+      description: Paste the exact reply or DM text. Do not include wallet secrets or payment instructions.
+    validations:
+      required: true
+  - type: input
+    id: replyEvidenceUrl
+    attributes:
+      label: Reply evidence URL or reference
+      description: Message permalink, screenshot reference, exported DM reference, issue URL, or other durable evidence.
+    validations:
+      required: true
+  - type: input
+    id: recordedAtUtc
+    attributes:
+      label: Recorded at UTC
+      description: ISO timestamp when this reply evidence was recorded.
+    validations:
+      required: true
+  - type: dropdown
+    id: classification
+    attributes:
+      label: Classification
+      options:
+        - invoice-request-needs-chairman-review
+        - needs-intake-fields
+        - reject-prohibited-promotion
+        - monitor-no-service-intent
+    validations:
+      required: true
+  - type: dropdown
+    id: customerAskedForInvoice
+    attributes:
+      label: Customer asked for invoice
+      options:
+        - 'true'
+        - 'false'
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      options:
+        - label: I did not send payment instructions or a reserve payment address.
+          required: true
+        - label: I did not promise price, returns, buyers, liquidity, redemption, or market support.
+          required: true
+        - label: I understand exact-sats invoices require separate Executive Chairman approval before sending.
+          required: true

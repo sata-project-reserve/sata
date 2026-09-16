@@ -90,6 +90,8 @@
     "ops:inbound-lead-plan": "node scripts/inbound-service-lead-agent.mjs plan",
     "ops:inbound-reply-triage-check": "node scripts/validate-inbound-reply-triage.mjs",
     "ops:inbound-reply-triage-plan": "node scripts/inbound-reply-triage-agent.mjs plan",
+    "ops:inbound-reply-evidence-check": "node scripts/validate-inbound-reply-evidence.mjs",
+    "ops:inbound-reply-evidence-plan": "node scripts/inbound-reply-evidence-agent.mjs plan",
     "ops:inbound-invoice-request-check": "node scripts/validate-inbound-invoice-request-packets.mjs",
     "ops:inbound-invoice-request-plan": "node scripts/inbound-invoice-request-agent.mjs plan",
     "ops:receipt-check": "node scripts/validate-sats-receipt-allocation-proposals.mjs",

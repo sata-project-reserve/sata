@@ -8,11 +8,13 @@ on:
       - '.github/workflows/transparency-report.yml'
       - '.github/workflows/audit-intake.yml'
       - '.github/workflows/outreach-contact-evidence.yml'
+      - '.github/workflows/inbound-reply-evidence.yml'
       - '.github/workflows/social-publish-evidence.yml'
       - '.github/workflows/collaborator-meeting-intake.yml'
       - '.github/workflows/referral-lead-evidence.yml'
       - '.github/ISSUE_TEMPLATE/transparency-audit-intake.yml'
       - '.github/ISSUE_TEMPLATE/outreach-contact-evidence.yml'
+      - '.github/ISSUE_TEMPLATE/inbound-reply-evidence.yml'
       - '.github/ISSUE_TEMPLATE/social-publish-evidence.yml'
       - '.github/ISSUE_TEMPLATE/collaborator-meeting-intake.yml'
       - '.github/ISSUE_TEMPLATE/referral-lead-evidence.yml'
@@ -50,6 +52,7 @@ on:
       - 'tests/fixtures/transparency-audit-intake-issue.json'
       - 'tests/fixtures/transparency-audit-intake-event.json'
       - 'tests/fixtures/outreach-contact-evidence-issue.json'
+      - 'tests/fixtures/inbound-reply-evidence-issue.json'
       - 'tests/fixtures/social-publish-evidence-issue.json'
       - 'tests/fixtures/collaborator-meeting-intake-issue.json'
       - 'tests/fixtures/referral-lead-evidence-issue.json'
@@ -207,6 +210,9 @@ jobs:
 
       - name: Validate inbound reply triage
         run: npm run ops:inbound-reply-triage-check
+
+      - name: Validate inbound reply evidence workflow
+        run: npm run ops:inbound-reply-evidence-check
 
       - name: Validate inbound invoice request packets
         run: npm run ops:inbound-invoice-request-check

@@ -217,11 +217,6 @@ function withSentAtUtcPlaceholder(command: string) {
   return `${command} --sentAtUtc "<sent-at-utc>"`;
 }
 
-function messageHashFromRecordCommand(command: string) {
-  const match = /--messageHash (?<hash>[a-f0-9]{64}|"<approved-message-sha256>")\b/.exec(command);
-  return match?.groups?.hash ?? 'missing-message-hash';
-}
-
 function recordInvoiceRequestCommand(prospect: Prospect) {
   return `node scripts/sats-prospect-response-agent.mjs record-invoice-request --prospect ${prospect.id} --offer ${prospect.recommendedOfferId} --evidence "<invoice-request-evidence-url-or-reference>" --confirmedCustomerRequestedInvoice true --requestedAtUtc "<requested-at-utc>"`;
 }
@@ -318,7 +313,7 @@ export default function OperationsPage() {
   );
   const approvedSocialPosts = socialQueue.posts.filter((post) => post.status === 'approved');
   const outreachDispatchSprint = outreachDispatchBrief.readyManualSends;
-  const nextManualSendPacket = outreachDispatchSprint[0];
+  const nextManualSendSheet = outreachDispatchBrief.nextManualSendSheet;
   const outreachDispatchRemainder = Math.max(
     outreachDispatchBrief.readyManualSendCount - outreachDispatchSprint.length,
     0
@@ -1329,7 +1324,7 @@ export default function OperationsPage() {
         </div>
       </section>
 
-      {nextManualSendPacket ? (
+      {nextManualSendSheet ? (
         <section className="public-band">
           <div className="section-heading">
             <h2>Next Manual Send Sheet</h2>
@@ -1338,51 +1333,43 @@ export default function OperationsPage() {
           <div className="summary-grid">
             <div className="metric">
               <span>Prospect</span>
-              <strong>{nextManualSendPacket.prospectId}</strong>
+              <strong>{nextManualSendSheet.prospectId}</strong>
             </div>
             <div className="metric">
               <span>Current Ask</span>
-              <strong>${nextManualSendPacket.currentAskUsd}</strong>
+              <strong>${nextManualSendSheet.currentAskUsd}</strong>
             </div>
             <div className="metric">
               <span>Qualified Path</span>
-              <strong>${nextManualSendPacket.qualifiedRevenueUsd}</strong>
+              <strong>${nextManualSendSheet.qualifiedRevenueUsd}</strong>
             </div>
             <div className="metric">
               <span>Reserve Impact</span>
-              <strong>
-                {nextManualSendPacket.reserveImpactPlanning.currentAskReserveSats} sats
-              </strong>
+              <strong>{nextManualSendSheet.currentAskReserveSats} sats</strong>
             </div>
           </div>
           <div className="notice">
             <strong>Stop Rule</strong>
-            <span>
-              Send the exact approved message only, record durable evidence, then stop for reply
-              review. Do not send invoices, payment instructions, price claims, grants, or asset
-              movement from this sheet.
-            </span>
+            <span>{nextManualSendSheet.stopRule}</span>
           </div>
           <div className="proof-block">
             <span>send next</span>
-            <strong>{nextManualSendPacket.prospectId}</strong>
-            <code>{nextManualSendPacket.packetId}</code>
+            <strong>{nextManualSendSheet.prospectId}</strong>
+            <code>{nextManualSendSheet.packetId}</code>
             <div className="command-list">
               <span>Destination</span>
-              <code>{nextManualSendPacket.destination.publicProfileUrl}</code>
+              <code>{nextManualSendSheet.destinationUrl}</code>
               <span>Tracked Service</span>
-              <code>{nextManualSendPacket.tracking.serviceUrl}</code>
+              <code>{nextManualSendSheet.trackedServiceUrl}</code>
               <span>Approved Message SHA-256</span>
-              <code>
-                {messageHashFromRecordCommand(nextManualSendPacket.recordContactCommand)}
-              </code>
+              <code>{nextManualSendSheet.approvedMessageSha256}</code>
             </div>
-            <pre className="preview">{nextManualSendPacket.message}</pre>
+            <pre className="preview">{nextManualSendSheet.exactMessage}</pre>
             <div className="command-list">
               <span>Prepare Evidence Issue</span>
-              <code>{nextManualSendPacket.evidenceIssueTemplateCommand}</code>
+              <code>{nextManualSendSheet.evidenceIssueTemplateCommand}</code>
               <span>Record Contact Evidence</span>
-              <code>{withSentAtUtcPlaceholder(nextManualSendPacket.recordContactCommand)}</code>
+              <code>{withSentAtUtcPlaceholder(nextManualSendSheet.recordContactCommand)}</code>
             </div>
           </div>
         </section>

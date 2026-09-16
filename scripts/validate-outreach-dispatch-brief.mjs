@@ -83,6 +83,46 @@ if (!/confirmed receipts/i.test(brief.sprintEconomics?.measurementRule ?? '')) {
 if (!/Prioritize higher-value/i.test(brief.prioritizationRule ?? '')) {
   findings.push('dispatch brief must describe deterministic prospect prioritization');
 }
+if (brief.readyManualSends.length > 0) {
+  const topPacket = brief.readyManualSends[0];
+  const sheet = brief.nextManualSendSheet;
+  if (!sheet || typeof sheet !== 'object') {
+    findings.push('dispatch brief must expose nextManualSendSheet when a packet is ready');
+  } else {
+    if (sheet.packetId !== topPacket.packetId || sheet.prospectId !== topPacket.prospectId) {
+      findings.push('next manual send sheet must match the top prioritized ready packet');
+    }
+    if (sheet.exactMessage !== topPacket.message) {
+      findings.push('next manual send sheet must preserve the exact approved message');
+    }
+    if (sheet.evidenceIssueTemplateCommand !== topPacket.evidenceIssueTemplateCommand) {
+      findings.push('next manual send sheet must preserve the evidence issue helper command');
+    }
+    if (sheet.recordContactCommand !== topPacket.recordContactCommand) {
+      findings.push('next manual send sheet must preserve the record-contact command');
+    }
+    if (
+      sheet.approvedMessageSha256 !==
+      topPacket.recordContactCommand.match(/--messageHash (?<hash>[a-f0-9]{64})\b/)?.groups?.hash
+    ) {
+      findings.push('next manual send sheet must expose the approved message SHA-256');
+    }
+    if (!/stop for reply review/i.test(sheet.stopRule ?? '')) {
+      findings.push('next manual send sheet must require stopping for reply review');
+    }
+    if (/\b(can|may|should)\s+(send invoices|send payment instructions|move assets)/i.test(sheet.stopRule ?? '')) {
+      findings.push('next manual send sheet stop rule must not permit invoices, payments, or asset movement');
+    }
+    if (sheet.currentAskReserveSats !== topPacket.reserveImpactPlanning?.currentAskReserveSats) {
+      findings.push('next manual send sheet must expose current-ask reserve impact');
+    }
+    if (sheet.trackedServiceUrl !== topPacket.tracking?.serviceUrl) {
+      findings.push('next manual send sheet must expose the tracked service URL');
+    }
+  }
+} else if (brief.nextManualSendSheet !== null) {
+  findings.push('nextManualSendSheet must be null when no packet is ready');
+}
 const readyPacketProspectIds = new Set(
   (packetQueue.packets ?? [])
     .filter((packet) => packet.status === 'ready-for-manual-send')
@@ -238,6 +278,12 @@ for (const item of brief.pendingOutreachApprovals) {
 }
 if (!markdown.includes('## Ready Manual Sends')) {
   findings.push('markdown brief must include ready manual sends section');
+}
+if (!markdown.includes('## Next Manual Send Sheet')) {
+  findings.push('markdown brief must include next manual send sheet section');
+}
+if (!markdown.includes('Exact approved message:')) {
+  findings.push('markdown next manual send sheet must expose exact approved message');
 }
 if (!markdown.includes('## Pending Chairman Outreach Approvals')) {
   findings.push('markdown brief must include pending chairman outreach approvals section');

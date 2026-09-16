@@ -118,6 +118,7 @@ export function buildOutreachDispatchBrief({
     btcUsd: planningBtcUsd,
     reserveAllocationPercent
   });
+  const nextManualSendSheet = buildNextManualSendSheet(sprintPackets[0]);
   const pendingOutreachApprovals = (approvalQueue.items ?? [])
     .filter(
       (item) =>
@@ -141,6 +142,7 @@ export function buildOutreachDispatchBrief({
     maxManualSends,
     readyManualSendCount: readyPackets.length,
     queuedRemainderCount: Math.max(readyPackets.length - sprintPackets.length, 0),
+    nextManualSendSheet,
     readyManualSends: sprintPackets,
     sprintEconomics: {
       planningBtcUsd: String(planningBtcUsd),
@@ -185,6 +187,40 @@ export function renderOutreachDispatchMarkdown(brief) {
     '',
     '## Boundary',
     brief.boundary,
+    '',
+    '## Next Manual Send Sheet',
+    brief.nextManualSendSheet
+      ? [
+          `Prospect: ${brief.nextManualSendSheet.prospectId}`,
+          `Packet: ${brief.nextManualSendSheet.packetId}`,
+          `Current approved ask: $${brief.nextManualSendSheet.currentAskUsd}`,
+          `Qualified revenue path: $${brief.nextManualSendSheet.qualifiedRevenueUsd}`,
+          `Planning reserve impact: ${brief.nextManualSendSheet.currentAskReserveSats} sats current ask / ${brief.nextManualSendSheet.qualifiedReserveSats} sats qualified path`,
+          `Destination: ${brief.nextManualSendSheet.destinationUrl}`,
+          `Tracked service: ${brief.nextManualSendSheet.trackedServiceUrl}`,
+          `Approved message SHA-256: ${brief.nextManualSendSheet.approvedMessageSha256}`,
+          '',
+          brief.nextManualSendSheet.stopRule,
+          '',
+          'Exact approved message:',
+          '',
+          '```text',
+          brief.nextManualSendSheet.exactMessage,
+          '```',
+          '',
+          'Prepare the contact evidence issue body after manual send:',
+          '',
+          '```sh',
+          brief.nextManualSendSheet.evidenceIssueTemplateCommand,
+          '```',
+          '',
+          'After manual send, record durable evidence:',
+          '',
+          '```sh',
+          brief.nextManualSendSheet.recordContactCommand,
+          '```'
+        ].join('\n')
+      : 'No manual send is currently ready.',
     '',
     '## Ready Manual Sends',
     `Sprint: ${brief.readyManualSends.length} of ${brief.readyManualSendCount} ready packets. Backlog after this sprint: ${brief.queuedRemainderCount}.`,
@@ -271,6 +307,33 @@ export function renderOutreachDispatchMarkdown(brief) {
 function offerPriceUsd({ revenuePlan, offerId }) {
   const stream = (revenuePlan?.revenueStreams ?? []).find((item) => item.id === offerId);
   return stream?.priceUsd ?? '0';
+}
+
+function buildNextManualSendSheet(packet) {
+  if (!packet) return null;
+  return {
+    packetId: packet.packetId,
+    prospectId: packet.prospectId,
+    destinationUrl: packet.destination?.publicProfileUrl ?? packet.destination?.projectUrl ?? null,
+    trackedServiceUrl: packet.tracking?.serviceUrl ?? null,
+    currentAskUsd: packet.currentAskUsd ?? packet.targetRevenueUsd,
+    qualifiedRevenueUsd: packet.qualifiedRevenueUsd ?? packet.currentAskUsd ?? packet.targetRevenueUsd,
+    currentAskReserveSats: packet.reserveImpactPlanning?.currentAskReserveSats ?? '0',
+    qualifiedReserveSats: packet.reserveImpactPlanning?.qualifiedReserveSats ?? '0',
+    approvedMessageSha256: messageHashFromRecordCommand(packet.recordContactCommand),
+    exactMessage: packet.message,
+    evidenceIssueTemplateCommand: packet.evidenceIssueTemplateCommand,
+    recordContactCommand: packet.recordContactCommand,
+    stopRule:
+      'Send the exact approved message only, record durable evidence, then stop for reply review. Do not send invoices, payment instructions, price claims, grants, or asset movement from this sheet.'
+  };
+}
+
+function messageHashFromRecordCommand(command) {
+  const match = /--messageHash (?<hash>[a-f0-9]{64}|"<approved-message-sha256>")\b/.exec(
+    String(command ?? '')
+  );
+  return match?.groups?.hash ?? 'missing-message-hash';
 }
 
 function commercialContextFor({ packet, prospect, revenuePlan, revenueStreamsById }) {

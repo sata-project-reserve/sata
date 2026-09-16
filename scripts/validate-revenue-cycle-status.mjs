@@ -625,6 +625,10 @@ assertEqual(
   completedPaidPromotionStatus.actionQueue[1]?.evidenceReviewCommand,
   'npm run ops:inbound-reply-evidence-plan'
 );
+assertIncludes(
+  completedPaidPromotionStatus.actionQueue[1]?.evidenceIssueTemplateCommand,
+  'inbound-reply-evidence-agent.mjs render-template --sourceType'
+);
 for (const expected of [
   'sourceType',
   'sourceId',

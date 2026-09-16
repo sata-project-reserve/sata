@@ -261,6 +261,7 @@ export function buildRevenueExecutionBrief({
       classificationRules: safeTriageRulesForExecutionBrief(triagePlan.classificationRules),
       evidenceIssueTemplateUrl: INBOUND_REPLY_EVIDENCE_ISSUE_TEMPLATE_URL,
       evidenceReviewCommand: INBOUND_REPLY_EVIDENCE_REVIEW_COMMAND,
+      evidenceIssueTemplateCommand: inboundReplyEvidenceTemplateCommand(),
       evidenceRequired:
         'Reply or DM text, live source id, profile URL, project URL, durable evidence, and explicit recordedAtUtc timestamp.',
       operatorChecklist: liveReplyTriageChecklist(),
@@ -675,6 +676,13 @@ export function validateRevenueExecutionBrief(brief) {
       if (action.evidenceReviewCommand !== INBOUND_REPLY_EVIDENCE_REVIEW_COMMAND) {
         findings.push(`${action.id}: inbound reply triage action must expose the evidence review command`);
       }
+      if (
+        !/inbound-reply-evidence-agent\.mjs render-template --sourceType/.test(
+          action.evidenceIssueTemplateCommand ?? ''
+        )
+      ) {
+        findings.push(`${action.id}: inbound reply triage action must expose the evidence issue-body command`);
+      }
       for (const source of action.sources ?? []) {
         if (!/inbound-reply-triage-agent\.mjs markdown/.test(source.triageCommand ?? '')) {
           findings.push(`${action.id}: live source ${source.id ?? '<missing>'} must expose a triage command`);
@@ -842,6 +850,10 @@ function outreachContactEvidenceTemplateCommand(packetId) {
 
 function referralHandoffEvidenceTemplateCommand(campaignId) {
   return `node scripts/referral-handoff-evidence-agent.mjs render-template --campaign ${campaignId} --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>"`;
+}
+
+function inboundReplyEvidenceTemplateCommand() {
+  return 'node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType "<source-type>" --sourceId "<source-id>" --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "<classification>" --customerAskedForInvoice false';
 }
 
 function commercialContextFor({ packet, prospect, revenuePlan, revenueStreamsById }) {

@@ -529,6 +529,15 @@ export function validateRevenueCycleStatus(status) {
           `${item.id ?? '<missing-id>'}: reply triage action must expose the evidence review command`
         );
       }
+      if (
+        !/inbound-reply-evidence-agent\.mjs render-template --sourceType/.test(
+          item.evidenceIssueTemplateCommand ?? ''
+        )
+      ) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: reply triage action must expose the evidence issue-body command`
+        );
+      }
       for (const source of item.sources ?? []) {
         if (
           !source.id ||
@@ -816,6 +825,7 @@ function buildActionQueue({
       classificationRules: safeTriageRulesForCycleStatus(triagePlan.classificationRules),
       evidenceIssueTemplateUrl: INBOUND_REPLY_EVIDENCE_ISSUE_TEMPLATE_URL,
       evidenceReviewCommand: INBOUND_REPLY_EVIDENCE_REVIEW_COMMAND,
+      evidenceIssueTemplateCommand: inboundReplyEvidenceTemplateCommand(),
       evidenceRequired:
         'Reply or DM text, live source id, profile URL, project URL, durable evidence, and explicit recordedAtUtc timestamp.',
       boundary:
@@ -1175,6 +1185,10 @@ function outreachContactEvidenceTemplateCommand(packetId) {
 
 function referralHandoffEvidenceTemplateCommand(campaignId) {
   return `node scripts/referral-handoff-evidence-agent.mjs render-template --campaign ${campaignId} --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>"`;
+}
+
+function inboundReplyEvidenceTemplateCommand() {
+  return 'node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType "<source-type>" --sourceId "<source-id>" --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "<classification>" --customerAskedForInvoice false';
 }
 
 function matchingReferralHandoffPacket({ packet, campaignId }) {

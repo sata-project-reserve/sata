@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildInboundReplyEvidenceDraft } from './lib/inbound-reply-evidence-parser.mjs';
+import { renderInboundReplyEvidenceIssueBody } from './inbound-reply-evidence-agent.mjs';
 import { renderInboundReplyEvidenceComment } from './inbound-reply-evidence-comment-agent.mjs';
 
 const queue = readJson(join('public', 'inbound-service-lead-queue.json'));
@@ -15,6 +16,19 @@ const findings = [];
 
 const draft = buildInboundReplyEvidenceDraft({ issue: issueFixture, queue });
 const comment = renderInboundReplyEvidenceComment(draft);
+const renderedTemplate = renderInboundReplyEvidenceIssueBody({
+  sourceType: 'paid-promotion-reply',
+  sourceId: 'diana-crypto-20260903-transparency-tweet',
+  contactHandle: 'example-buyer',
+  publicProfileUrl: 'https://x.com/example_buyer',
+  projectUrl: 'https://example.invalid',
+  requestedOfferId: 'transparency-audit',
+  exactReplyText: 'Looks good. What is the payment method and can you send the invoice?',
+  replyEvidenceUrl: 'https://x.com/example_buyer/status/123456789',
+  recordedAtUtc: '2026-09-10T15:00:00.000Z',
+  classification: 'invoice-request-needs-chairman-review',
+  customerAskedForInvoice: true
+});
 
 if (!/inbound-reply-evidence/.test(form)) {
   findings.push('issue form must apply the inbound-reply-evidence label');
@@ -98,6 +112,24 @@ if (comment.includes(invoiceQueue.paymentPolicy.reserveAddress)) {
 }
 if (!/draft-from-issue-json/.test(agent)) {
   findings.push('agent must expose draft-from-issue-json');
+}
+if (!/render-template/.test(agent)) {
+  findings.push('agent must expose render-template');
+}
+if (!renderedTemplate.includes('### Source type\npaid-promotion-reply')) {
+  findings.push('rendered template must include source type');
+}
+if (!renderedTemplate.includes('### Source ID\ndiana-crypto-20260903-transparency-tweet')) {
+  findings.push('rendered template must include source id');
+}
+if (!renderedTemplate.includes('### Exact reply text\nLooks good. What is the payment method and can you send the invoice?')) {
+  findings.push('rendered template must include exact reply text');
+}
+if (!renderedTemplate.includes('### Classification\ninvoice-request-needs-chairman-review')) {
+  findings.push('rendered template must include classification');
+}
+if (!renderedTemplate.includes('### Customer asked for invoice\ntrue')) {
+  findings.push('rendered template must include invoice-request flag');
 }
 if (!/comment-from-event-json/.test(commentAgent)) {
   findings.push('comment agent must expose comment-from-event-json');

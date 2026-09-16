@@ -206,6 +206,13 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
     if (triageAction.evidenceReviewCommand !== 'npm run ops:inbound-reply-evidence-plan') {
       findings.push('triage monitor action must expose the inbound reply evidence review command');
     }
+    if (
+      !/inbound-reply-evidence-agent\.mjs render-template --sourceType/.test(
+        triageAction.evidenceIssueTemplateCommand ?? ''
+      )
+    ) {
+      findings.push('triage monitor action must expose the inbound reply evidence issue-body command');
+    }
     if (!triageAction.sources?.some((source) => source.id === 'diana-crypto-20260903-transparency-tweet')) {
       findings.push('triage monitor action must include the Diana paid-promotion source');
     }
@@ -399,6 +406,9 @@ if (!markdown.includes('Evidence intake: https://github.com/sata-project-reserve
 }
 if (!markdown.includes('Evidence review command: npm run ops:inbound-reply-evidence-plan')) {
   findings.push('markdown must include inbound reply evidence review command');
+}
+if (!markdown.includes('Evidence issue-body command: node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType')) {
+  findings.push('markdown must include inbound reply evidence issue-body command');
 }
 if (!markdown.includes('Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml')) {
   findings.push('markdown must include referral handoff evidence intake URL');

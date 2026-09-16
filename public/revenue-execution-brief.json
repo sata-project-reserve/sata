@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "mode": "sats-revenue-execution-brief",
-  "generatedAtUtc": "2026-09-16T16:32:10.836Z",
+  "generatedAtUtc": "2026-09-16T16:37:58.843Z",
   "northStar": {
     "confirmedSats": "500000",
     "targetSats": "1000000000",
@@ -133,6 +133,7 @@
       ],
       "evidenceIssueTemplateUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml",
       "evidenceReviewCommand": "npm run ops:inbound-reply-evidence-plan",
+      "evidenceIssueTemplateCommand": "node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType \"<source-type>\" --sourceId \"<source-id>\" --contactHandle \"<x-handle-or-contact>\" --publicProfileUrl \"<https-profile-url>\" --projectUrl \"<https-project-url>\" --offer transparency-audit --replyText \"<reply-or-dm-text>\" --evidence \"<reply-or-dm-evidence>\" --recordedAtUtc \"<recorded-at-utc>\" --classification \"<classification>\" --customerAskedForInvoice false",
       "evidenceRequired": "Reply or DM text, live source id, profile URL, project URL, durable evidence, and explicit recordedAtUtc timestamp.",
       "operatorChecklist": [
         "Open the inbound reply evidence issue template and capture the exact reply or DM evidence before recording a lead.",

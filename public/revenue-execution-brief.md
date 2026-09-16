@@ -1,6 +1,6 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-09-16T16:32:10.836Z
+Generated: 2026-09-16T16:37:58.843Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -59,6 +59,7 @@ Sources: diana-crypto-20260903-transparency-tweet (https://x.com/142C_/status/20
 Required evidence fields: sourceType, sourceId, contactHandle, publicProfileUrl, projectUrl, replyText, evidence, recordedAtUtc
 Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml
 Evidence review command: npm run ops:inbound-reply-evidence-plan
+Evidence issue-body command: node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType "<source-type>" --sourceId "<source-id>" --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "<classification>" --customerAskedForInvoice false
 
 Triage decision rules:
 - invoice-request-needs-chairman-review: Reply explicitly asks for an invoice, payment method, where to send funds, or says they are ready to pay/start. -> invoice-requested-needs-chairman-review

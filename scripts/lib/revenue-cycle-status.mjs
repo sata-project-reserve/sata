@@ -580,6 +580,26 @@ export function validateRevenueCycleStatus(status) {
           `${item.id ?? '<missing-id>'}: reply triage action must expose the evidence issue-body command`
         );
       }
+      if (
+        !/--classification "invoice-request-needs-chairman-review"/.test(
+          item.invoiceEvidenceIssueTemplateCommand ?? ''
+        ) ||
+        !/--customerAskedForInvoice true/.test(item.invoiceEvidenceIssueTemplateCommand ?? '')
+      ) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: reply triage action must expose an invoice-request evidence command with customerAskedForInvoice true`
+        );
+      }
+      if (
+        !/--classification "needs-intake-fields"/.test(
+          item.intakeEvidenceIssueTemplateCommand ?? ''
+        ) ||
+        !/--customerAskedForInvoice false/.test(item.intakeEvidenceIssueTemplateCommand ?? '')
+      ) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: reply triage action must expose an intake evidence command with customerAskedForInvoice false`
+        );
+      }
       for (const source of item.sources ?? []) {
         if (
           !source.id ||
@@ -874,6 +894,14 @@ function buildActionQueue({
       evidenceIssueTemplateUrl: INBOUND_REPLY_EVIDENCE_ISSUE_TEMPLATE_URL,
       evidenceReviewCommand: INBOUND_REPLY_EVIDENCE_REVIEW_COMMAND,
       evidenceIssueTemplateCommand: inboundReplyEvidenceTemplateCommand(),
+      invoiceEvidenceIssueTemplateCommand: inboundReplyEvidenceTemplateCommand({
+        classification: 'invoice-request-needs-chairman-review',
+        customerAskedForInvoice: true
+      }),
+      intakeEvidenceIssueTemplateCommand: inboundReplyEvidenceTemplateCommand({
+        classification: 'needs-intake-fields',
+        customerAskedForInvoice: false
+      }),
       evidenceRequired:
         'Reply or DM text, live source id, profile URL, project URL, durable evidence, and explicit recordedAtUtc timestamp.',
       boundary:
@@ -1239,8 +1267,11 @@ function referralHandoffEvidenceTemplateCommand(campaignId) {
   return `node scripts/referral-handoff-evidence-agent.mjs render-template --campaign ${campaignId} --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>"`;
 }
 
-function inboundReplyEvidenceTemplateCommand() {
-  return 'node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType "<source-type>" --sourceId "<source-id>" --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "<classification>" --customerAskedForInvoice false';
+function inboundReplyEvidenceTemplateCommand({
+  classification = '<classification>',
+  customerAskedForInvoice = false
+} = {}) {
+  return `node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType "<source-type>" --sourceId "<source-id>" --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification ${quoteShell(classification)} --customerAskedForInvoice ${customerAskedForInvoice ? 'true' : 'false'}`;
 }
 
 function matchingReferralHandoffPacket({ packet, campaignId }) {

@@ -1,6 +1,6 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-09-16T17:05:07.663Z
+Generated: 2026-09-16T17:10:20.712Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -60,6 +60,14 @@ Required evidence fields: sourceType, sourceId, contactHandle, publicProfileUrl,
 Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml
 Evidence review command: npm run ops:inbound-reply-evidence-plan
 Evidence issue-body command: node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType "<source-type>" --sourceId "<source-id>" --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "<classification>" --customerAskedForInvoice false
+Invoice-request evidence issue-body command:
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType "<source-type>" --sourceId "<source-id>" --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true
+```
+Intake evidence issue-body command:
+```sh
+node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType "<source-type>" --sourceId "<source-id>" --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "needs-intake-fields" --customerAskedForInvoice false
+```
 
 Triage decision rules:
 - invoice-request-needs-chairman-review: Reply explicitly asks for an invoice, payment method, where to send funds, or says they are ready to pay/start. -> invoice-requested-needs-chairman-review

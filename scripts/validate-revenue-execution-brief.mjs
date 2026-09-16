@@ -213,6 +213,26 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
     ) {
       findings.push('triage monitor action must expose the inbound reply evidence issue-body command');
     }
+    if (
+      !/--classification "invoice-request-needs-chairman-review"/.test(
+        triageAction.invoiceEvidenceIssueTemplateCommand ?? ''
+      ) ||
+      !/--customerAskedForInvoice true/.test(
+        triageAction.invoiceEvidenceIssueTemplateCommand ?? ''
+      )
+    ) {
+      findings.push('triage monitor action must expose invoice-request evidence command with invoice flag true');
+    }
+    if (
+      !/--classification "needs-intake-fields"/.test(
+        triageAction.intakeEvidenceIssueTemplateCommand ?? ''
+      ) ||
+      !/--customerAskedForInvoice false/.test(
+        triageAction.intakeEvidenceIssueTemplateCommand ?? ''
+      )
+    ) {
+      findings.push('triage monitor action must expose intake evidence command with invoice flag false');
+    }
     if (!triageAction.sources?.some((source) => source.id === 'diana-crypto-20260903-transparency-tweet')) {
       findings.push('triage monitor action must include the Diana paid-promotion source');
     }
@@ -409,6 +429,15 @@ if (!markdown.includes('Evidence review command: npm run ops:inbound-reply-evide
 }
 if (!markdown.includes('Evidence issue-body command: node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType')) {
   findings.push('markdown must include inbound reply evidence issue-body command');
+}
+if (!markdown.includes('Invoice-request evidence issue-body command:')) {
+  findings.push('markdown must include invoice-request evidence issue-body command');
+}
+if (!markdown.includes('--classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true')) {
+  findings.push('markdown invoice evidence command must preserve customerAskedForInvoice true');
+}
+if (!markdown.includes('Intake evidence issue-body command:')) {
+  findings.push('markdown must include intake evidence issue-body command');
 }
 if (!markdown.includes('Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml')) {
   findings.push('markdown must include referral handoff evidence intake URL');

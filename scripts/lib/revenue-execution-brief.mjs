@@ -289,6 +289,14 @@ export function buildRevenueExecutionBrief({
       evidenceIssueTemplateUrl: INBOUND_REPLY_EVIDENCE_ISSUE_TEMPLATE_URL,
       evidenceReviewCommand: INBOUND_REPLY_EVIDENCE_REVIEW_COMMAND,
       evidenceIssueTemplateCommand: inboundReplyEvidenceTemplateCommand(),
+      invoiceEvidenceIssueTemplateCommand: inboundReplyEvidenceTemplateCommand({
+        classification: 'invoice-request-needs-chairman-review',
+        customerAskedForInvoice: true
+      }),
+      intakeEvidenceIssueTemplateCommand: inboundReplyEvidenceTemplateCommand({
+        classification: 'needs-intake-fields',
+        customerAskedForInvoice: false
+      }),
       evidenceRequired:
         'Reply or DM text, live source id, profile URL, project URL, durable evidence, and explicit recordedAtUtc timestamp.',
       operatorChecklist: liveReplyTriageChecklist(),
@@ -785,6 +793,26 @@ export function validateRevenueExecutionBrief(brief) {
       ) {
         findings.push(`${action.id}: inbound reply triage action must expose the evidence issue-body command`);
       }
+      if (
+        !/--classification "invoice-request-needs-chairman-review"/.test(
+          action.invoiceEvidenceIssueTemplateCommand ?? ''
+        ) ||
+        !/--customerAskedForInvoice true/.test(action.invoiceEvidenceIssueTemplateCommand ?? '')
+      ) {
+        findings.push(
+          `${action.id}: inbound reply triage action must expose an invoice-request evidence command with customerAskedForInvoice true`
+        );
+      }
+      if (
+        !/--classification "needs-intake-fields"/.test(
+          action.intakeEvidenceIssueTemplateCommand ?? ''
+        ) ||
+        !/--customerAskedForInvoice false/.test(action.intakeEvidenceIssueTemplateCommand ?? '')
+      ) {
+        findings.push(
+          `${action.id}: inbound reply triage action must expose an intake evidence command with customerAskedForInvoice false`
+        );
+      }
       for (const source of action.sources ?? []) {
         if (!/inbound-reply-triage-agent\.mjs markdown/.test(source.triageCommand ?? '')) {
           findings.push(`${action.id}: live source ${source.id ?? '<missing>'} must expose a triage command`);
@@ -954,8 +982,11 @@ function referralHandoffEvidenceTemplateCommand(campaignId) {
   return `node scripts/referral-handoff-evidence-agent.mjs render-template --campaign ${campaignId} --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>"`;
 }
 
-function inboundReplyEvidenceTemplateCommand() {
-  return 'node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType "<source-type>" --sourceId "<source-id>" --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "<classification>" --customerAskedForInvoice false';
+function inboundReplyEvidenceTemplateCommand({
+  classification = '<classification>',
+  customerAskedForInvoice = false
+} = {}) {
+  return `node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType "<source-type>" --sourceId "<source-id>" --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification ${quoteShell(classification)} --customerAskedForInvoice ${customerAskedForInvoice ? 'true' : 'false'}`;
 }
 
 function commercialContextFor({ packet, prospect, revenuePlan, revenueStreamsById }) {
@@ -1316,6 +1347,22 @@ export function renderRevenueExecutionMarkdown(brief) {
         : []),
       ...(action.evidenceIssueTemplateCommand
         ? [`Evidence issue-body command: ${action.evidenceIssueTemplateCommand}`]
+        : []),
+      ...(action.invoiceEvidenceIssueTemplateCommand
+        ? [
+            'Invoice-request evidence issue-body command:',
+            '```sh',
+            action.invoiceEvidenceIssueTemplateCommand,
+            '```'
+          ]
+        : []),
+      ...(action.intakeEvidenceIssueTemplateCommand
+        ? [
+            'Intake evidence issue-body command:',
+            '```sh',
+            action.intakeEvidenceIssueTemplateCommand,
+            '```'
+          ]
         : []),
       ...(action.classificationRules?.length
         ? [

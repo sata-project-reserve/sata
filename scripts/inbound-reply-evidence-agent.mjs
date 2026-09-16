@@ -19,6 +19,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
             issueTemplate: '.github/ISSUE_TEMPLATE/inbound-reply-evidence.yml',
             templateCommand:
               'node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType "<source-type>" --sourceId "<source-id>" --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "<classification>" --customerAskedForInvoice false',
+            invoiceRequestTemplateCommand:
+              'node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType "<source-type>" --sourceId "<source-id>" --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true',
+            intakeTemplateCommand:
+              'node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType "<source-type>" --sourceId "<source-id>" --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "needs-intake-fields" --customerAskedForInvoice false',
             nextAction:
               'When a reply or DM arrives, submit the inbound reply evidence issue and run the rendered operator command only if the review marks the reply ready to record.',
             boundary:

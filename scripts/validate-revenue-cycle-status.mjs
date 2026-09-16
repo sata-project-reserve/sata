@@ -652,6 +652,22 @@ assertIncludes(
   completedPaidPromotionStatus.actionQueue[1]?.evidenceIssueTemplateCommand,
   'inbound-reply-evidence-agent.mjs render-template --sourceType'
 );
+assertIncludes(
+  completedPaidPromotionStatus.actionQueue[1]?.invoiceEvidenceIssueTemplateCommand,
+  '--classification "invoice-request-needs-chairman-review"'
+);
+assertIncludes(
+  completedPaidPromotionStatus.actionQueue[1]?.invoiceEvidenceIssueTemplateCommand,
+  '--customerAskedForInvoice true'
+);
+assertIncludes(
+  completedPaidPromotionStatus.actionQueue[1]?.intakeEvidenceIssueTemplateCommand,
+  '--classification "needs-intake-fields"'
+);
+assertIncludes(
+  completedPaidPromotionStatus.actionQueue[1]?.intakeEvidenceIssueTemplateCommand,
+  '--customerAskedForInvoice false'
+);
 for (const expected of [
   'sourceType',
   'sourceId',

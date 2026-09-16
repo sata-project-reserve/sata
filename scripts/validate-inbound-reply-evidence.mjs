@@ -116,6 +116,22 @@ if (!/draft-from-issue-json/.test(agent)) {
 if (!/render-template/.test(agent)) {
   findings.push('agent must expose render-template');
 }
+if (!/invoiceRequestTemplateCommand/.test(agent)) {
+  findings.push('agent plan must expose an invoice-request evidence template command');
+}
+if (
+  !/--classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true/.test(
+    agent
+  )
+) {
+  findings.push('invoice-request evidence template command must preserve customerAskedForInvoice true');
+}
+if (!/intakeTemplateCommand/.test(agent)) {
+  findings.push('agent plan must expose an intake evidence template command');
+}
+if (!/--classification "needs-intake-fields" --customerAskedForInvoice false/.test(agent)) {
+  findings.push('intake evidence template command must preserve customerAskedForInvoice false');
+}
 if (!renderedTemplate.includes('### Source type\npaid-promotion-reply')) {
   findings.push('rendered template must include source type');
 }

@@ -215,7 +215,9 @@ const inboundInvoiceStatus = buildRevenueCycleStatus({
       {
         id: 'hot-inbound-lead',
         status: 'invoice-requested-needs-chairman-review',
-        customerAskedForInvoice: true
+        customerAskedForInvoice: true,
+        requestedOfferId: 'transparency-report-setup',
+        evidence: 'Inbound DM evidence: customer asked for the setup invoice.'
       }
     ]
   },
@@ -227,6 +229,27 @@ assertEqual(inboundInvoiceStatus.actionQueue[0]?.type, 'inbound-invoice-request-
 assertIncludes(
   inboundInvoiceStatus.nextAction,
   'Render chairman review packet for inbound invoice request hot-inbound-lead'
+);
+assertIncludes(
+  inboundInvoiceStatus.actionQueue[0]?.quoteTemplateCommand,
+  'sats-invoice-quote-agent.mjs quote-template --offer "transparency-report-setup" --customer "hot-inbound-lead"'
+);
+assertIncludes(
+  inboundInvoiceStatus.actionQueue[0]?.quoteTemplateCommand,
+  '--btcUsd "<chairman-selected-rate>"'
+);
+assertIncludes(
+  inboundInvoiceStatus.actionQueue[0]?.quoteTemplateCommand,
+  '--createdAtUtc "<quote-created-at-utc>"'
+);
+assertIncludes(inboundInvoiceStatus.actionQueue[0]?.quoteTemplateCommand, '--ttlMinutes 30');
+assertIncludes(
+  inboundInvoiceStatus.actionQueue[0]?.writeDraftCommand,
+  'sats-invoice-quote-agent.mjs write-draft --offer "transparency-report-setup" --customer "hot-inbound-lead"'
+);
+assertIncludes(
+  inboundInvoiceStatus.actionQueue[0]?.writeDraftCommand,
+  '--evidence "Inbound DM evidence: customer asked for the setup invoice."'
 );
 
 const outboundInvoiceStatus = buildRevenueCycleStatus({

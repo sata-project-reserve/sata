@@ -364,6 +364,48 @@ export function validateRevenueCycleStatus(status) {
         );
       }
     }
+    if (item.type === 'inbound-invoice-request-packet') {
+      if (!/inbound-invoice-request-agent\.mjs render --lead \S+/.test(item.command ?? '')) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: inbound invoice request action must preserve the render command`
+        );
+      }
+      if (!/sats-invoice-quote-agent\.mjs quote-template/.test(item.quoteTemplateCommand ?? '')) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: inbound invoice request action must expose quote-template`
+        );
+      }
+      if (!/--btcUsd "<chairman-selected-rate>"/.test(item.quoteTemplateCommand ?? '')) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: inbound invoice quote command must require chairman-selected rate`
+        );
+      }
+      if (!/--createdAtUtc "<quote-created-at-utc>"/.test(item.quoteTemplateCommand ?? '')) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: inbound invoice quote command must require createdAtUtc`
+        );
+      }
+      if (!/--ttlMinutes 30/.test(item.quoteTemplateCommand ?? '')) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: inbound invoice quote command must keep a bounded ttl`
+        );
+      }
+      if (!/sats-invoice-quote-agent\.mjs write-draft/.test(item.writeDraftCommand ?? '')) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: inbound invoice request action must expose write-draft`
+        );
+      }
+      if (!/--evidence /.test(item.writeDraftCommand ?? '')) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: inbound invoice draft command must require evidence`
+        );
+      }
+      if (!/--createdAtUtc "<quote-created-at-utc>"/.test(item.writeDraftCommand ?? '')) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: inbound invoice draft command must require createdAtUtc`
+        );
+      }
+    }
     if (
       item.type === 'manual-social-publish' &&
       !/--contentHash [a-f0-9]{64}\b/.test(item.command ?? '')
@@ -692,6 +734,10 @@ function buildActionQueue({
   }
 
   for (const lead of inboundInvoiceRequests) {
+    const quotedLeadId = quoteShell(lead.id);
+    const requestedOfferId = lead.requestedOfferId ?? 'transparency-audit';
+    const quotedOfferId = quoteShell(requestedOfferId);
+    const quotedEvidence = quoteShell(lead.evidence ?? '<invoice-request-evidence-url-or-reference>');
     actions.push({
       id: `inbound-invoice-request-${lead.id}`,
       priority: actions.length + 1,
@@ -699,6 +745,8 @@ function buildActionQueue({
       title: `Render chairman review packet for inbound invoice request ${lead.id}.`,
       requiredActor: 'agent prepares quote inputs; Executive Chairman approves invoice',
       command: `node scripts/inbound-invoice-request-agent.mjs render --lead ${lead.id}`,
+      quoteTemplateCommand: `node scripts/sats-invoice-quote-agent.mjs quote-template --offer ${quotedOfferId} --customer ${quotedLeadId} --btcUsd "<chairman-selected-rate>" --source "<quote-source>" --createdAtUtc "<quote-created-at-utc>" --ttlMinutes 30`,
+      writeDraftCommand: `node scripts/sats-invoice-quote-agent.mjs write-draft --offer ${quotedOfferId} --customer ${quotedLeadId} --btcUsd "<chairman-selected-rate>" --source "<quote-source>" --createdAtUtc "<quote-created-at-utc>" --ttlMinutes 30 --evidence ${quotedEvidence}`,
       evidenceRequired: 'Inbound lead evidence and explicit customer invoice request.',
       boundary: 'No exact-sats invoice or payment instruction may be sent before chairman approval.'
     });
@@ -1181,6 +1229,10 @@ function withSentAtUtcPlaceholder(command, packetId) {
 
 function outreachContactEvidenceTemplateCommand(packetId) {
   return `node scripts/outreach-contact-evidence-agent.mjs render-template --packet ${packetId} --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"`;
+}
+
+function quoteShell(value) {
+  return `"${String(value).replaceAll('"', '\\"')}"`;
 }
 
 function referralHandoffEvidenceTemplateCommand(campaignId) {

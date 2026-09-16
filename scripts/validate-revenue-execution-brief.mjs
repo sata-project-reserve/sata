@@ -452,6 +452,10 @@ const inboundInvoiceBrief = buildRevenueExecutionBrief({
         type: 'inbound-invoice-request-packet',
         title: 'Render chairman review packet for inbound invoice request hot-lead.',
         command: 'node scripts/inbound-invoice-request-agent.mjs render --lead hot-lead',
+        quoteTemplateCommand:
+          'node scripts/sats-invoice-quote-agent.mjs quote-template --offer "transparency-report-setup" --customer "hot-lead" --btcUsd "<chairman-selected-rate>" --source "<quote-source>" --createdAtUtc "<quote-created-at-utc>" --ttlMinutes 30',
+        writeDraftCommand:
+          'node scripts/sats-invoice-quote-agent.mjs write-draft --offer "transparency-report-setup" --customer "hot-lead" --btcUsd "<chairman-selected-rate>" --source "<quote-source>" --createdAtUtc "<quote-created-at-utc>" --ttlMinutes 30 --evidence "Inbound invoice request evidence."',
         evidenceRequired: 'Inbound evidence and explicit invoice request.'
       },
       ...(status.actionQueue ?? [])
@@ -478,6 +482,41 @@ if (
   )
 ) {
   findings.push('inbound invoice request brief action must preserve the render command');
+}
+if (
+  !/sats-invoice-quote-agent\.mjs quote-template --offer "transparency-report-setup"/.test(
+    inboundInvoiceBrief.topActions[0]?.quoteTemplateCommand ?? ''
+  )
+) {
+  findings.push('inbound invoice request brief action must expose the quote-template command');
+}
+if (
+  !/--btcUsd "<chairman-selected-rate>"/.test(
+    inboundInvoiceBrief.topActions[0]?.quoteTemplateCommand ?? ''
+  )
+) {
+  findings.push('inbound invoice quote-template command must require chairman-selected rate');
+}
+if (
+  !/sats-invoice-quote-agent\.mjs write-draft --offer "transparency-report-setup"/.test(
+    inboundInvoiceBrief.topActions[0]?.writeDraftCommand ?? ''
+  )
+) {
+  findings.push('inbound invoice request brief action must expose the write-draft command');
+}
+if (
+  !/--evidence "Inbound invoice request evidence\."/.test(
+    inboundInvoiceBrief.topActions[0]?.writeDraftCommand ?? ''
+  )
+) {
+  findings.push('inbound invoice draft command must preserve invoice-request evidence');
+}
+const inboundInvoiceMarkdown = renderRevenueExecutionMarkdown(inboundInvoiceBrief);
+if (!inboundInvoiceMarkdown.includes('Quote template command for chairman review:')) {
+  findings.push('inbound invoice markdown must show the quote-template command');
+}
+if (!inboundInvoiceMarkdown.includes('Draft invoice command after chairman review:')) {
+  findings.push('inbound invoice markdown must show the write-draft command');
 }
 
 const inboundIntakeBrief = buildRevenueExecutionBrief({

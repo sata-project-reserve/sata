@@ -118,6 +118,8 @@ export function buildRevenueExecutionBrief({
       whyItCanCreateSats:
         'Explicit invoice demand is the closest non-custodial path from attention to a chairman-reviewed quote.',
       command: request.command,
+      quoteTemplateCommand: request.quoteTemplateCommand,
+      writeDraftCommand: request.writeDraftCommand,
       evidenceRequired: request.evidenceRequired,
       operatorChecklist: invoiceRequestChecklist(),
       stopRule:
@@ -576,6 +578,38 @@ export function validateRevenueExecutionBrief(brief) {
         findings.push(
           `${action.id}: receipt allocation record command must require a transparency report URL`
         );
+      }
+    }
+    if (action.type === 'inbound-invoice-request-packet') {
+      if (!/inbound-invoice-request-agent\.mjs render --lead \S+/.test(action.command ?? '')) {
+        findings.push(`${action.id}: inbound invoice request action must preserve the render command`);
+      }
+      if (
+        !/sats-invoice-quote-agent\.mjs quote-template/.test(
+          action.quoteTemplateCommand ?? ''
+        )
+      ) {
+        findings.push(`${action.id}: inbound invoice request action must expose quote-template`);
+      }
+      if (!/--btcUsd "<chairman-selected-rate>"/.test(action.quoteTemplateCommand ?? '')) {
+        findings.push(`${action.id}: inbound invoice quote template must require chairman-selected rate`);
+      }
+      if (!/--createdAtUtc "<quote-created-at-utc>"/.test(action.quoteTemplateCommand ?? '')) {
+        findings.push(`${action.id}: inbound invoice quote template must require createdAtUtc`);
+      }
+      if (!/--ttlMinutes 30/.test(action.quoteTemplateCommand ?? '')) {
+        findings.push(`${action.id}: inbound invoice quote template must keep a bounded ttl`);
+      }
+      if (
+        !/sats-invoice-quote-agent\.mjs write-draft/.test(action.writeDraftCommand ?? '')
+      ) {
+        findings.push(`${action.id}: inbound invoice request action must expose write-draft`);
+      }
+      if (!/--evidence /.test(action.writeDraftCommand ?? '')) {
+        findings.push(`${action.id}: inbound invoice draft command must require invoice-request evidence`);
+      }
+      if (!/--createdAtUtc "<quote-created-at-utc>"/.test(action.writeDraftCommand ?? '')) {
+        findings.push(`${action.id}: inbound invoice draft command must require createdAtUtc`);
       }
     }
     if (action.type === 'manual-social-publish') {
@@ -1221,6 +1255,22 @@ export function renderRevenueExecutionMarkdown(brief) {
             'Allocation record command after chairman approval:',
             '```sh',
             action.recordAllocationCommand,
+            '```'
+          ]
+        : []),
+      ...(action.quoteTemplateCommand
+        ? [
+            'Quote template command for chairman review:',
+            '```sh',
+            action.quoteTemplateCommand,
+            '```'
+          ]
+        : []),
+      ...(action.writeDraftCommand
+        ? [
+            'Draft invoice command after chairman review:',
+            '```sh',
+            action.writeDraftCommand,
             '```'
           ]
         : []),

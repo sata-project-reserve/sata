@@ -407,6 +407,17 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
       'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100'
     )
   ).toBeVisible();
+  await expect(nextSendSheet.getByText('Contact Evidence Issue Body')).toBeVisible();
+  await expect(
+    nextSendSheet
+      .locator('.preview')
+      .filter({ hasText: '### Outreach packet ID' })
+      .filter({
+        hasText: 'outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact'
+      })
+      .filter({ hasText: '### Exact message sent' })
+      .filter({ hasText: '### Sent at UTC' })
+  ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Manual Outreach Packets' })).toBeVisible();
   await expect(page.getByText('Showing 5 of 30 ready packets.')).toBeVisible();
   await expect(page.getByText('Sprint Gross Target')).toBeVisible();

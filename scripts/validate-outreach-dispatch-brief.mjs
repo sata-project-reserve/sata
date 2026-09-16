@@ -4,6 +4,7 @@ import {
   buildOutreachDispatchBrief,
   renderOutreachDispatchMarkdown
 } from './outreach-dispatch-brief-agent.mjs';
+import { buildOutreachContactEvidenceDraft } from './lib/outreach-contact-evidence-parser.mjs';
 import { planningUsdToReserveSatsFloor } from './lib/planning-sats.mjs';
 
 const status = readJson(join('public', 'revenue-cycle-status.json'));
@@ -100,6 +101,26 @@ if (brief.readyManualSends.length > 0) {
     }
     if (sheet.recordContactCommand !== topPacket.recordContactCommand) {
       findings.push('next manual send sheet must preserve the record-contact command');
+    }
+    if (!sheet.contactEvidenceIssueBodyTemplate?.includes('### Exact message sent')) {
+      findings.push('next manual send sheet must include a contact evidence issue body template');
+    }
+    if (!sheet.contactEvidenceIssueBodyTemplate?.includes('<contact-evidence-url-or-reference>')) {
+      findings.push('next manual send sheet issue body must preserve the contact evidence placeholder');
+    }
+    if (!sheet.contactEvidenceIssueBodyTemplate?.includes('<sent-at-utc>')) {
+      findings.push('next manual send sheet issue body must preserve the sentAtUtc placeholder');
+    }
+    const sheetIssueDraft = buildOutreachContactEvidenceDraft({
+      issue: { body: sheet.contactEvidenceIssueBodyTemplate },
+      packetQueue,
+      pipeline: prospectPipeline
+    });
+    if (sheetIssueDraft.messageMatchesApprovedPacket !== true) {
+      findings.push('next manual send sheet issue body must preserve the exact approved message');
+    }
+    if (sheetIssueDraft.hashMatchesApprovedPacket !== true) {
+      findings.push('next manual send sheet issue body must preserve the approved SHA-256');
     }
     if (
       sheet.approvedMessageSha256 !==
@@ -284,6 +305,9 @@ if (!markdown.includes('## Next Manual Send Sheet')) {
 }
 if (!markdown.includes('Exact approved message:')) {
   findings.push('markdown next manual send sheet must expose exact approved message');
+}
+if (!markdown.includes('Contact evidence issue body template:')) {
+  findings.push('markdown next manual send sheet must expose contact evidence issue body template');
 }
 if (!markdown.includes('## Pending Chairman Outreach Approvals')) {
   findings.push('markdown brief must include pending chairman outreach approvals section');

@@ -1371,6 +1371,8 @@ export default function OperationsPage() {
               <span>Record Contact Evidence</span>
               <code>{withSentAtUtcPlaceholder(nextManualSendSheet.recordContactCommand)}</code>
             </div>
+            <span>Contact Evidence Issue Body</span>
+            <pre className="preview">{nextManualSendSheet.contactEvidenceIssueBodyTemplate}</pre>
           </div>
         </section>
       ) : null}

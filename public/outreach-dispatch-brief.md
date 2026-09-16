@@ -1,6 +1,6 @@
 # SATA Reserve Token Outreach Dispatch Brief
 
-Generated: 2026-09-16T15:23:41.519Z
+Generated: 2026-09-16T15:27:16.036Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -45,6 +45,42 @@ After manual send, record durable evidence:
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
+```
+
+Contact evidence issue body template:
+
+```md
+### Outreach packet ID
+outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact
+
+### Prospect ID
+sanctum-elysium-loam
+
+### Contact channel
+public-dm-or-email
+
+### Contact evidence URL or reference
+<contact-evidence-url-or-reference>
+
+### Approved message SHA-256
+3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
+
+### Exact message sent
+Hi sanctum-elysium-loam,
+
+Hey, SATA runs a $249 Transparency Audit for crypto teams. We review public authority, supply and concentration, LP ownership or lock evidence, reserve claims, and disclosure gaps, then provide a concise report and machine-readable JSON. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
+
+Public profile reviewed: https://sanctumelysium.com/whitepaper.html
+Project page reviewed: https://sanctumelysium.com/whitepaper.html
+
+Service page: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_audit_service
+Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_sample_audit
+Intake form: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam&template=transparency-audit-intake.yml
+
+Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.
+
+### Sent at UTC
+<sent-at-utc>
 ```
 
 ## Ready Manual Sends

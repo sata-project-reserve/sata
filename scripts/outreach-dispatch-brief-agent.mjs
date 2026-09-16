@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { renderOutreachContactEvidenceIssueBody } from './outreach-contact-evidence-agent.mjs';
 import { prioritizeOutreachPackets } from './lib/prospect-priority.mjs';
 import { planningUsdToReserveSatsFloor } from './lib/planning-sats.mjs';
 
@@ -118,7 +119,10 @@ export function buildOutreachDispatchBrief({
     btcUsd: planningBtcUsd,
     reserveAllocationPercent
   });
-  const nextManualSendSheet = buildNextManualSendSheet(sprintPackets[0]);
+  const nextManualSendSheet = buildNextManualSendSheet({
+    packet: sprintPackets[0],
+    packetQueue
+  });
   const pendingOutreachApprovals = (approvalQueue.items ?? [])
     .filter(
       (item) =>
@@ -218,6 +222,12 @@ export function renderOutreachDispatchMarkdown(brief) {
           '',
           '```sh',
           brief.nextManualSendSheet.recordContactCommand,
+          '```',
+          '',
+          'Contact evidence issue body template:',
+          '',
+          '```md',
+          brief.nextManualSendSheet.contactEvidenceIssueBodyTemplate,
           '```'
         ].join('\n')
       : 'No manual send is currently ready.',
@@ -309,7 +319,7 @@ function offerPriceUsd({ revenuePlan, offerId }) {
   return stream?.priceUsd ?? '0';
 }
 
-function buildNextManualSendSheet(packet) {
+function buildNextManualSendSheet({ packet, packetQueue }) {
   if (!packet) return null;
   return {
     packetId: packet.packetId,
@@ -323,6 +333,12 @@ function buildNextManualSendSheet(packet) {
     approvedMessageSha256: messageHashFromRecordCommand(packet.recordContactCommand),
     exactMessage: packet.message,
     evidenceIssueTemplateCommand: packet.evidenceIssueTemplateCommand,
+    contactEvidenceIssueBodyTemplate: renderOutreachContactEvidenceIssueBody({
+      packetQueue,
+      packetId: packet.packetId,
+      contactEvidenceUrl: '<contact-evidence-url-or-reference>',
+      sentAtUtc: '<sent-at-utc>'
+    }),
     recordContactCommand: packet.recordContactCommand,
     stopRule:
       'Send the exact approved message only, record durable evidence, then stop for reply review. Do not send invoices, payment instructions, price claims, grants, or asset movement from this sheet.'

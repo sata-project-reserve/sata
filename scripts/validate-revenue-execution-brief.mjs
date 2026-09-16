@@ -111,6 +111,18 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
         'prepared referral handoff action must expose the record-sent evidence command'
       );
     }
+    if (
+      brief.topActions[0]?.evidenceIssueTemplateUrl !==
+      'https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml'
+    ) {
+      findings.push('prepared referral handoff action must expose the referral handoff evidence issue template');
+    }
+    if (
+      brief.topActions[0]?.evidenceReviewCommand !==
+      'npm run ops:referral-handoff-evidence-plan'
+    ) {
+      findings.push('prepared referral handoff action must expose the referral handoff evidence review command');
+    }
   } else if (
     !brief.topActions[0]?.command?.includes('referral-partner-handoff-agent.mjs write-packet')
   ) {
@@ -352,6 +364,12 @@ if (!markdown.includes('Evidence intake: https://github.com/sata-project-reserve
 }
 if (!markdown.includes('Evidence review command: npm run ops:inbound-reply-evidence-plan')) {
   findings.push('markdown must include inbound reply evidence review command');
+}
+if (!markdown.includes('Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml')) {
+  findings.push('markdown must include referral handoff evidence intake URL');
+}
+if (!markdown.includes('Evidence review command: npm run ops:referral-handoff-evidence-plan')) {
+  findings.push('markdown must include referral handoff evidence review command');
 }
 if (!markdown.includes('SATA has a dedicated Bitcoin reserve address')) {
   findings.push('markdown must include the copy-ready approved social post text');

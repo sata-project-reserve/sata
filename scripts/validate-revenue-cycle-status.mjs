@@ -675,6 +675,14 @@ assertIncludes(
   preparedReferralPacketStatus.actionQueue[0]?.command,
   `--messageHash ${preparedReferralReplySha256}`
 );
+assertEqual(
+  preparedReferralPacketStatus.actionQueue[0]?.evidenceIssueTemplateUrl,
+  'https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml'
+);
+assertEqual(
+  preparedReferralPacketStatus.actionQueue[0]?.evidenceReviewCommand,
+  'npm run ops:referral-handoff-evidence-plan'
+);
 assertIncludes(preparedReferralPacketStatus.actionQueue[0]?.approvedMessage, preparedReferralReply);
 assertEqual(
   preparedReferralPacketStatus.actionQueue[0]?.approvedMessageSha256,
@@ -706,9 +714,55 @@ assertIncludes(
   sentReferralHandoffStatus.actionQueue[0]?.command,
   '--respondedAtUtc "<responded-at-utc>"'
 );
+assertEqual(
+  sentReferralHandoffStatus.actionQueue[0]?.evidenceIssueTemplateUrl,
+  'https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-response-evidence.yml'
+);
+assertEqual(
+  sentReferralHandoffStatus.actionQueue[0]?.evidenceReviewCommand,
+  'npm run ops:referral-handoff-response-evidence-plan'
+);
 assertIncludes(
   sentReferralHandoffStatus.nextAction,
   'Record partner response for referral handoff handoff-campaign-1'
+);
+
+const acceptedReferralHandoffStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  paidPromotionLedger: completedPaidPromotionStatusInput().paidPromotionLedger,
+  referralPartnerHandoffQueue: {
+    handoffs: [
+      {
+        id: 'handoff-campaign-1',
+        sourceCampaignId: 'campaign-1',
+        status: 'accepted-awaiting-referred-lead',
+        partner: {
+          id: 'diana-crypto'
+        }
+      }
+    ]
+  },
+  prospectPipeline: completedPaidPromotionStatusInput().prospectPipeline,
+  outreachPacketQueue: completedPaidPromotionStatusInput().outreachPacketQueue,
+  env: {}
+});
+validateRevenueCycleStatus(acceptedReferralHandoffStatus);
+assertEqual(acceptedReferralHandoffStatus.actionQueue[0]?.type, 'track-referral-handoff-response');
+assertIncludes(
+  acceptedReferralHandoffStatus.actionQueue[0]?.command,
+  'inbound-service-lead-agent.mjs record-lead'
+);
+assertEqual(
+  acceptedReferralHandoffStatus.actionQueue[0]?.evidenceIssueTemplateUrl,
+  'https://github.com/sata-project-reserve/sata/issues/new?template=referral-lead-evidence.yml'
+);
+assertEqual(
+  acceptedReferralHandoffStatus.actionQueue[0]?.evidenceReviewCommand,
+  'npm run ops:referral-lead-evidence-plan'
+);
+assertIncludes(
+  acceptedReferralHandoffStatus.nextAction,
+  'Record referred customer evidence for accepted partner handoff handoff-campaign-1'
 );
 
 const pendingApprovalStatus = buildRevenueCycleStatus({

@@ -7,6 +7,16 @@ import { planningUsdToReserveSatsFloor } from './planning-sats.mjs';
 const INBOUND_REPLY_EVIDENCE_ISSUE_TEMPLATE_URL =
   'https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml';
 const INBOUND_REPLY_EVIDENCE_REVIEW_COMMAND = 'npm run ops:inbound-reply-evidence-plan';
+const REFERRAL_HANDOFF_EVIDENCE_ISSUE_TEMPLATE_URL =
+  'https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml';
+const REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND = 'npm run ops:referral-handoff-evidence-plan';
+const REFERRAL_HANDOFF_RESPONSE_EVIDENCE_ISSUE_TEMPLATE_URL =
+  'https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-response-evidence.yml';
+const REFERRAL_HANDOFF_RESPONSE_EVIDENCE_REVIEW_COMMAND =
+  'npm run ops:referral-handoff-response-evidence-plan';
+const REFERRAL_LEAD_EVIDENCE_ISSUE_TEMPLATE_URL =
+  'https://github.com/sata-project-reserve/sata/issues/new?template=referral-lead-evidence.yml';
+const REFERRAL_LEAD_EVIDENCE_REVIEW_COMMAND = 'npm run ops:referral-lead-evidence-plan';
 
 export function buildRevenueCycleStatus({
   report,
@@ -392,6 +402,16 @@ export function validateRevenueCycleStatus(status) {
       );
     }
     if (item.type === 'manual-referral-handoff-send') {
+      if (item.evidenceIssueTemplateUrl !== REFERRAL_HANDOFF_EVIDENCE_ISSUE_TEMPLATE_URL) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: referral handoff send action must expose the evidence issue template`
+        );
+      }
+      if (item.evidenceReviewCommand !== REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: referral handoff send action must expose the evidence review command`
+        );
+      }
       const approvedMessage = normalizeContent(item.approvedMessage);
       if (approvedMessage.trim().length < 40) {
         findings.push(
@@ -414,6 +434,31 @@ export function validateRevenueCycleStatus(status) {
         findings.push(
           `${item.id ?? '<missing-id>'}: referral handoff command must include approved terms SHA-256`
         );
+      }
+    }
+    if (item.type === 'track-referral-handoff-response') {
+      if (/inbound-service-lead-agent\.mjs record-lead/.test(item.command ?? '')) {
+        if (item.evidenceIssueTemplateUrl !== REFERRAL_LEAD_EVIDENCE_ISSUE_TEMPLATE_URL) {
+          findings.push(
+            `${item.id ?? '<missing-id>'}: referred lead action must expose the referral lead evidence issue template`
+          );
+        }
+        if (item.evidenceReviewCommand !== REFERRAL_LEAD_EVIDENCE_REVIEW_COMMAND) {
+          findings.push(
+            `${item.id ?? '<missing-id>'}: referred lead action must expose the referral lead evidence review command`
+          );
+        }
+      } else {
+        if (item.evidenceIssueTemplateUrl !== REFERRAL_HANDOFF_RESPONSE_EVIDENCE_ISSUE_TEMPLATE_URL) {
+          findings.push(
+            `${item.id ?? '<missing-id>'}: referral response action must expose the response evidence issue template`
+          );
+        }
+        if (item.evidenceReviewCommand !== REFERRAL_HANDOFF_RESPONSE_EVIDENCE_REVIEW_COMMAND) {
+          findings.push(
+            `${item.id ?? '<missing-id>'}: referral response action must expose the response evidence review command`
+          );
+        }
       }
     }
     if (item.type === 'inbound-reply-triage-monitor') {
@@ -649,6 +694,8 @@ function buildActionQueue({
         artifact: 'public/referral-partner-handoff-packet.md',
         approvedMessage: normalizeContent(preparedPacket.packet.replyTemplate),
         approvedMessageSha256: preparedPacket.packet.termsSha256,
+        evidenceIssueTemplateUrl: REFERRAL_HANDOFF_EVIDENCE_ISSUE_TEMPLATE_URL,
+        evidenceReviewCommand: REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND,
         evidenceRequired:
           'Partner terms sent evidence, explicit sentAtUtc timestamp, and approved terms SHA-256.',
         boundary:
@@ -664,6 +711,8 @@ function buildActionQueue({
       requiredActor: 'Executive Chairman or authorized human',
       command: `node scripts/referral-partner-handoff-agent.mjs write-packet --campaign ${campaign.id}`,
       artifact: 'public/referral-partner-handoff-packet.md',
+      evidenceIssueTemplateUrl: REFERRAL_HANDOFF_EVIDENCE_ISSUE_TEMPLATE_URL,
+      evidenceReviewCommand: REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND,
       evidenceRequired:
         'Partner terms sent evidence after the approved handoff packet is manually sent.',
       boundary:
@@ -685,6 +734,14 @@ function buildActionQueue({
         handoff.status === 'accepted-awaiting-referred-lead'
           ? `node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sourceType manual-referral --sourceId referral-partner-${handoff.partner.id} --contactHandle "<customer-handle-or-contact>" --publicProfileUrl "<https-customer-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --evidence "<referral-and-customer-interest-evidence>" --customerAskedForInvoice false --recordedAtUtc "<recorded-at-utc>" --convertedAtUtc "<converted-at-utc>"`
           : `node scripts/referral-partner-handoff-agent.mjs record-response --handoff ${handoff.id} --accepted true --evidence "<partner-response-evidence>" --respondedAtUtc "<responded-at-utc>"`,
+      evidenceIssueTemplateUrl:
+        handoff.status === 'accepted-awaiting-referred-lead'
+          ? REFERRAL_LEAD_EVIDENCE_ISSUE_TEMPLATE_URL
+          : REFERRAL_HANDOFF_RESPONSE_EVIDENCE_ISSUE_TEMPLATE_URL,
+      evidenceReviewCommand:
+        handoff.status === 'accepted-awaiting-referred-lead'
+          ? REFERRAL_LEAD_EVIDENCE_REVIEW_COMMAND
+          : REFERRAL_HANDOFF_RESPONSE_EVIDENCE_REVIEW_COMMAND,
       evidenceRequired:
         handoff.status === 'accepted-awaiting-referred-lead'
           ? 'Referred customer identity, project URL, contact path, and customer interest evidence.'

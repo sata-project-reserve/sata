@@ -256,6 +256,18 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
     if (!/--contentHash [a-f0-9]{64}\b/.test(manualSocialPublishAction.command ?? '')) {
       findings.push('manual social publish action must require the approved content hash');
     }
+    if (
+      manualSocialPublishAction.evidenceIssueTemplateUrl !==
+      'https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml'
+    ) {
+      findings.push('manual social publish action must expose the social publish evidence issue template');
+    }
+    if (
+      manualSocialPublishAction.evidenceReviewCommand !==
+      'npm run ops:social-publish-evidence-plan'
+    ) {
+      findings.push('manual social publish action must expose the social publish evidence review command');
+    }
     if (!manualSocialPublishAction.approvedMessage || !manualSocialPublishAction.approvedMessageSha256) {
       findings.push('manual social publish action must include the exact approved post text and hash');
     }

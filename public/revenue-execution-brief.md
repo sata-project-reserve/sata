@@ -1,6 +1,6 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-09-16T16:13:46.742Z
+Generated: 2026-09-16T16:17:44.390Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -80,6 +80,8 @@ npm run ops:inbound-reply-triage-plan
 ### 3. Manually publish approved post btc-reserve-first-tranche and record the live URL for attribution.
 Type: manual-social-publish
 Why: Chairman-approved factual posts can create attributable inbound attention without autonomous posting or paid promotion.
+Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml
+Evidence review command: npm run ops:social-publish-evidence-plan
 Evidence: Published @SATAReserve post URL plus screenshot or exported text.
 Approved message SHA-256: 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e
 

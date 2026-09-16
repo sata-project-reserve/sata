@@ -20,6 +20,9 @@ const REFERRAL_LEAD_EVIDENCE_REVIEW_COMMAND = 'npm run ops:referral-lead-evidenc
 const OUTREACH_CONTACT_EVIDENCE_ISSUE_TEMPLATE_URL =
   'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml';
 const OUTREACH_CONTACT_EVIDENCE_REVIEW_COMMAND = 'npm run ops:outreach-contact-evidence-plan';
+const SOCIAL_PUBLISH_EVIDENCE_ISSUE_TEMPLATE_URL =
+  'https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml';
+const SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND = 'npm run ops:social-publish-evidence-plan';
 
 export function buildRevenueCycleStatus({
   report,
@@ -399,6 +402,16 @@ export function validateRevenueCycleStatus(status) {
       if (!String(item.command ?? '').includes(item.approvedMessageSha256 ?? '<missing>')) {
         findings.push(
           `${item.id ?? '<missing-id>'}: manual social publish command must include approved post SHA-256`
+        );
+      }
+      if (item.evidenceIssueTemplateUrl !== SOCIAL_PUBLISH_EVIDENCE_ISSUE_TEMPLATE_URL) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: manual social publish action must expose the social publish evidence issue template`
+        );
+      }
+      if (item.evidenceReviewCommand !== SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: manual social publish action must expose the social publish evidence review command`
         );
       }
     }
@@ -1029,6 +1042,8 @@ function manualSocialPublishAction({ post }) {
     command: `npm run social:agent -- record-published --post ${post.id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash ${contentHash}`,
     approvedMessage: normalizeContent(post.text),
     approvedMessageSha256: contentHash,
+    evidenceIssueTemplateUrl: SOCIAL_PUBLISH_EVIDENCE_ISSUE_TEMPLATE_URL,
+    evidenceReviewCommand: SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND,
     evidenceRequired: 'Published @SATAReserve post URL plus screenshot or exported text.',
     boundary: 'Only chairman-approved factual posts may be published.'
   };

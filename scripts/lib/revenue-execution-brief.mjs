@@ -26,6 +26,9 @@ const REFERRAL_LEAD_EVIDENCE_REVIEW_COMMAND = 'npm run ops:referral-lead-evidenc
 const OUTREACH_CONTACT_EVIDENCE_ISSUE_TEMPLATE_URL =
   'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml';
 const OUTREACH_CONTACT_EVIDENCE_REVIEW_COMMAND = 'npm run ops:outreach-contact-evidence-plan';
+const SOCIAL_PUBLISH_EVIDENCE_ISSUE_TEMPLATE_URL =
+  'https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml';
+const SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND = 'npm run ops:social-publish-evidence-plan';
 
 export function buildRevenueExecutionBrief({
   status,
@@ -280,6 +283,8 @@ export function buildRevenueExecutionBrief({
       command: publishRequest.command,
       approvedMessage: approvedPost?.text ?? null,
       approvedMessageSha256: approvedPost?.contentSha256 ?? null,
+      evidenceIssueTemplateUrl: SOCIAL_PUBLISH_EVIDENCE_ISSUE_TEMPLATE_URL,
+      evidenceReviewCommand: SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND,
       evidenceRequired: publishRequest.evidenceRequired,
       operatorChecklist: manualSocialPublishChecklist(),
       stopRule:
@@ -584,6 +589,12 @@ export function validateRevenueExecutionBrief(brief) {
         findings.push(
           `${action.id}: manual social publish command must require approved content SHA-256`
         );
+      }
+      if (action.evidenceIssueTemplateUrl !== SOCIAL_PUBLISH_EVIDENCE_ISSUE_TEMPLATE_URL) {
+        findings.push(`${action.id}: manual social publish action must expose the social publish evidence issue template`);
+      }
+      if (action.evidenceReviewCommand !== SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND) {
+        findings.push(`${action.id}: manual social publish action must expose the social publish evidence review command`);
       }
       validateApprovedMessage({
         findings,

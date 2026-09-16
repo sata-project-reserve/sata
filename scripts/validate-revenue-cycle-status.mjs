@@ -156,6 +156,14 @@ assertIncludes(
   manualSocialPublishAction?.command,
   manualSocialPublishAction?.approvedMessageSha256
 );
+assertEqual(
+  manualSocialPublishAction?.evidenceIssueTemplateUrl,
+  'https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml'
+);
+assertEqual(
+  manualSocialPublishAction?.evidenceReviewCommand,
+  'npm run ops:social-publish-evidence-plan'
+);
 
 const receiptStatus = buildRevenueCycleStatus({
   ...baseInputs,
@@ -499,6 +507,14 @@ assertIncludes(socialBeforeOutreachStatus.nextAction, 'Manually publish approved
 assertIncludes(
   socialBeforeOutreachStatus.actionQueue[0]?.approvedMessage,
   'SATA publishes factual reserve and transparency updates'
+);
+assertEqual(
+  socialBeforeOutreachStatus.actionQueue[0]?.evidenceIssueTemplateUrl,
+  'https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml'
+);
+assertEqual(
+  socialBeforeOutreachStatus.actionQueue[0]?.evidenceReviewCommand,
+  'npm run ops:social-publish-evidence-plan'
 );
 
 const paidPromotionStatus = buildRevenueCycleStatus({

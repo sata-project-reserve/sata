@@ -4,6 +4,10 @@ import { prioritizeOutreachPackets } from './prospect-priority.mjs';
 import { buildInboundReplyTriagePlan } from './inbound-reply-triage.mjs';
 import { planningUsdToReserveSatsFloor } from './planning-sats.mjs';
 
+const INBOUND_REPLY_EVIDENCE_ISSUE_TEMPLATE_URL =
+  'https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml';
+const INBOUND_REPLY_EVIDENCE_REVIEW_COMMAND = 'npm run ops:inbound-reply-evidence-plan';
+
 export function buildRevenueCycleStatus({
   report,
   revenuePlan,
@@ -423,6 +427,16 @@ export function validateRevenueCycleStatus(status) {
           `${item.id ?? '<missing-id>'}: reply triage action must include live attribution sources`
         );
       }
+      if (item.evidenceIssueTemplateUrl !== INBOUND_REPLY_EVIDENCE_ISSUE_TEMPLATE_URL) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: reply triage action must expose the evidence issue template`
+        );
+      }
+      if (item.evidenceReviewCommand !== INBOUND_REPLY_EVIDENCE_REVIEW_COMMAND) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: reply triage action must expose the evidence review command`
+        );
+      }
       for (const source of item.sources ?? []) {
         if (
           !source.id ||
@@ -695,6 +709,8 @@ function buildActionQueue({
       sources: liveReplySources,
       requiredEvidenceFields: triagePlan.requiredEvidenceFields,
       classificationRules: safeTriageRulesForCycleStatus(triagePlan.classificationRules),
+      evidenceIssueTemplateUrl: INBOUND_REPLY_EVIDENCE_ISSUE_TEMPLATE_URL,
+      evidenceReviewCommand: INBOUND_REPLY_EVIDENCE_REVIEW_COMMAND,
       evidenceRequired:
         'Reply or DM text, live source id, profile URL, project URL, durable evidence, and explicit recordedAtUtc timestamp.',
       boundary:

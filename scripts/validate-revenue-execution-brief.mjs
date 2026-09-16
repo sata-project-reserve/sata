@@ -162,6 +162,15 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
     if (triageAction.command !== 'npm run ops:inbound-reply-triage-plan') {
       findings.push('triage monitor action must expose the inbound reply triage plan');
     }
+    if (
+      triageAction.evidenceIssueTemplateUrl !==
+      'https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml'
+    ) {
+      findings.push('triage monitor action must expose the inbound reply evidence issue template');
+    }
+    if (triageAction.evidenceReviewCommand !== 'npm run ops:inbound-reply-evidence-plan') {
+      findings.push('triage monitor action must expose the inbound reply evidence review command');
+    }
     if (!triageAction.sources?.some((source) => source.id === 'diana-crypto-20260903-transparency-tweet')) {
       findings.push('triage monitor action must include the Diana paid-promotion source');
     }
@@ -337,6 +346,12 @@ if (!markdown.includes('Triage decision rules:')) {
 }
 if (!markdown.includes('Required evidence fields:')) {
   findings.push('markdown must include inbound reply required evidence fields');
+}
+if (!markdown.includes('Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml')) {
+  findings.push('markdown must include inbound reply evidence intake URL');
+}
+if (!markdown.includes('Evidence review command: npm run ops:inbound-reply-evidence-plan')) {
+  findings.push('markdown must include inbound reply evidence review command');
 }
 if (!markdown.includes('SATA has a dedicated Bitcoin reserve address')) {
   findings.push('markdown must include the copy-ready approved social post text');

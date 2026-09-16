@@ -645,6 +645,20 @@ export default function OperationsPage() {
               <div className="command-list">
                 <span>Evidence Required</span>
                 <code>{action.evidenceRequired}</code>
+                {'evidenceIssueTemplateUrl' in action && action.evidenceIssueTemplateUrl ? (
+                  <>
+                    <span>Evidence Intake</span>
+                    <code>
+                      <a href={action.evidenceIssueTemplateUrl}>{action.evidenceIssueTemplateUrl}</a>
+                    </code>
+                  </>
+                ) : null}
+                {'evidenceReviewCommand' in action && action.evidenceReviewCommand ? (
+                  <>
+                    <span>Evidence Review</span>
+                    <code>{action.evidenceReviewCommand}</code>
+                  </>
+                ) : null}
                 <span>Stop Rule</span>
                 <code>{action.stopRule}</code>
                 <span>Command</span>

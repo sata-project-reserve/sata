@@ -10,6 +10,9 @@ import {
 
 const PROHIBITED_PATTERN =
   /\b(private key|seed phrase|wash trading|guaranteed return|guaranteed buyers|fake engagement|bots|raids|price prediction|price guarantee|redemption promise)\b/i;
+const INBOUND_REPLY_EVIDENCE_ISSUE_TEMPLATE_URL =
+  'https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml';
+const INBOUND_REPLY_EVIDENCE_REVIEW_COMMAND = 'npm run ops:inbound-reply-evidence-plan';
 
 export function buildRevenueExecutionBrief({
   status,
@@ -227,6 +230,8 @@ export function buildRevenueExecutionBrief({
       sources: liveReplySources,
       requiredEvidenceFields: triagePlan.requiredEvidenceFields,
       classificationRules: safeTriageRulesForExecutionBrief(triagePlan.classificationRules),
+      evidenceIssueTemplateUrl: INBOUND_REPLY_EVIDENCE_ISSUE_TEMPLATE_URL,
+      evidenceReviewCommand: INBOUND_REPLY_EVIDENCE_REVIEW_COMMAND,
       evidenceRequired:
         'Reply or DM text, live source id, profile URL, project URL, durable evidence, and explicit recordedAtUtc timestamp.',
       operatorChecklist: liveReplyTriageChecklist(),
@@ -578,6 +583,12 @@ export function validateRevenueExecutionBrief(brief) {
       if (!Array.isArray(action.sources) || action.sources.length === 0) {
         findings.push(`${action.id}: inbound reply triage action must include live sources`);
       }
+      if (action.evidenceIssueTemplateUrl !== INBOUND_REPLY_EVIDENCE_ISSUE_TEMPLATE_URL) {
+        findings.push(`${action.id}: inbound reply triage action must expose the evidence issue template`);
+      }
+      if (action.evidenceReviewCommand !== INBOUND_REPLY_EVIDENCE_REVIEW_COMMAND) {
+        findings.push(`${action.id}: inbound reply triage action must expose the evidence review command`);
+      }
       for (const source of action.sources ?? []) {
         if (!/inbound-reply-triage-agent\.mjs markdown/.test(source.triageCommand ?? '')) {
           findings.push(`${action.id}: live source ${source.id ?? '<missing>'} must expose a triage command`);
@@ -893,6 +904,7 @@ function referredLeadChecklist() {
 
 function liveReplyTriageChecklist() {
   return [
+    'Open the inbound reply evidence issue template and capture the exact reply or DM evidence before recording a lead.',
     'Collect the reply or DM text, source URL, profile URL, project URL, evidence, and UTC record time.',
     'Render the triage packet before deciding whether the lead needs intake or invoice review.',
     'Leave invoices, payment instructions, compensation, public posts, and asset movement for separate approval.'
@@ -1042,6 +1054,12 @@ export function renderRevenueExecutionMarkdown(brief) {
         : []),
       ...(action.requiredEvidenceFields?.length
         ? [`Required evidence fields: ${action.requiredEvidenceFields.join(', ')}`]
+        : []),
+      ...(action.evidenceIssueTemplateUrl
+        ? [`Evidence intake: ${action.evidenceIssueTemplateUrl}`]
+        : []),
+      ...(action.evidenceReviewCommand
+        ? [`Evidence review command: ${action.evidenceReviewCommand}`]
         : []),
       ...(action.classificationRules?.length
         ? [

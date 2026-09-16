@@ -122,6 +122,8 @@
           "nextCommandAfterRecord": null
         }
       ],
+      "evidenceIssueTemplateUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml",
+      "evidenceReviewCommand": "npm run ops:inbound-reply-evidence-plan",
       "evidenceRequired": "Reply or DM text, live source id, profile URL, project URL, durable evidence, and explicit recordedAtUtc timestamp.",
       "boundary": "Triage only. Do not contact leads, send payment instructions, create invoices, grant tokens, or move assets."
     },

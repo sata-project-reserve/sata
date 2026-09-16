@@ -1,6 +1,6 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-09-16T15:48:21.740Z
+Generated: 2026-09-16T15:53:29.945Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -54,6 +54,8 @@ Type: inbound-reply-triage-monitor
 Why: Fast reply triage turns warm attention into intake records or chairman invoice-review packets without exposing payment instructions.
 Sources: diana-crypto-20260903-transparency-tweet (https://x.com/142C_/status/2086570576530010172), pinned-proof-overview (https://x.com/SATAReserve/status/2084248941801906474)
 Required evidence fields: sourceType, sourceId, contactHandle, publicProfileUrl, projectUrl, replyText, evidence, recordedAtUtc
+Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml
+Evidence review command: npm run ops:inbound-reply-evidence-plan
 
 Triage decision rules:
 - invoice-request-needs-chairman-review: Reply explicitly asks for an invoice, payment method, where to send funds, or says they are ready to pay/start. -> invoice-requested-needs-chairman-review
@@ -63,6 +65,7 @@ Triage decision rules:
 Evidence: Reply or DM text, live source id, profile URL, project URL, durable evidence, and explicit recordedAtUtc timestamp.
 
 Operator checklist:
+- Open the inbound reply evidence issue template and capture the exact reply or DM evidence before recording a lead.
 - Collect the reply or DM text, source URL, profile URL, project URL, evidence, and UTC record time.
 - Render the triage packet before deciding whether the lead needs intake or invoice review.
 - Leave invoices, payment instructions, compensation, public posts, and asset movement for separate approval.

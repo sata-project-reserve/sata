@@ -589,6 +589,14 @@ assertIncludes(
   completedPaidPromotionStatus.actionQueue[1]?.sources?.[0]?.triageCommand,
   'inbound-reply-triage-agent.mjs markdown'
 );
+assertEqual(
+  completedPaidPromotionStatus.actionQueue[1]?.evidenceIssueTemplateUrl,
+  'https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml'
+);
+assertEqual(
+  completedPaidPromotionStatus.actionQueue[1]?.evidenceReviewCommand,
+  'npm run ops:inbound-reply-evidence-plan'
+);
 for (const expected of [
   'sourceType',
   'sourceId',

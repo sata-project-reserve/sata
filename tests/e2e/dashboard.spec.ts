@@ -410,6 +410,14 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml'
   );
   await expect(page.getByText('Approved Message SHA-256')).toBeVisible();
+  await expect(page.getByText('Prepare Evidence Issue').first()).toBeVisible();
+  await expect(
+    page
+      .getByText(
+        'node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"'
+      )
+      .first()
+  ).toBeVisible();
   await expect(
     page
       .getByText(

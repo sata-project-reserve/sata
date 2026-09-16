@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildSocialPublishEvidenceDraft } from './lib/social-publish-evidence-parser.mjs';
+import { renderSocialPublishEvidenceIssueBody } from './social-publish-evidence-agent.mjs';
 import { renderSocialPublishEvidenceComment } from './social-publish-evidence-comment-agent.mjs';
 
 const socialQueue = readJson(join('public', 'social-agent-content-queue.json'));
@@ -13,6 +14,14 @@ const socialAgent = readFileSync(join('scripts', 'x-social-agent.mjs'), 'utf8');
 const packageJson = readJson('package.json');
 const draft = buildSocialPublishEvidenceDraft({ issue: issueFixture, socialQueue });
 const comment = renderSocialPublishEvidenceComment(draft);
+const renderedTemplate = renderSocialPublishEvidenceIssueBody({
+  postId: 'btc-reserve-first-tranche',
+  postUrl: 'https://x.com/SATAReserve/status/2085000000000000000',
+  publicationEvidence: 'https://x.com/SATAReserve/status/2085000000000000000',
+  approvedContentSha256: '4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e',
+  exactPostText: socialQueue.posts.find((post) => post.id === 'btc-reserve-first-tranche')?.text,
+  publishedAtUtc: '2026-09-10T13:00:00.000Z'
+});
 const findings = [];
 
 for (const required of [
@@ -81,6 +90,27 @@ if (!/Approved content SHA-256/.test(comment) || !/Hash matches approved post: t
 }
 if (!/approved SHA-256 match the queue/i.test(evidenceAgent)) {
   findings.push('evidence agent plan must mention the approved hash match requirement');
+}
+if (!/render-template/.test(evidenceAgent)) {
+  findings.push('evidence agent must expose render-template');
+}
+if (!/renderEvidenceIssueTemplateCommand/.test(evidenceAgent)) {
+  findings.push('evidence agent plan must expose the render evidence issue template command');
+}
+if (!/--contentHash "<approved-content-sha256>"/.test(evidenceAgent)) {
+  findings.push('render template command must require an approved content hash');
+}
+if (!/contentHash does not match the approved social queue post/.test(evidenceAgent)) {
+  findings.push('render-template must reject mismatched content hashes');
+}
+if (!renderedTemplate.includes('### Social post ID\nbtc-reserve-first-tranche')) {
+  findings.push('rendered social template must include social post id');
+}
+if (!renderedTemplate.includes('### Approved content SHA-256\n4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e')) {
+  findings.push('rendered social template must include approved content hash');
+}
+if (!renderedTemplate.includes('### Exact post text published\nSATA has a dedicated Bitcoin reserve address')) {
+  findings.push('rendered social template must include exact approved post text');
 }
 if (!/renderSocialPublishEvidenceComment/.test(commentAgent)) {
   findings.push('comment agent must export the renderer for validation');

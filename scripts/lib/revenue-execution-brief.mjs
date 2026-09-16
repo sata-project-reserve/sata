@@ -322,6 +322,9 @@ export function buildRevenueExecutionBrief({
       approvedMessageSha256: approvedPost?.contentSha256 ?? null,
       evidenceIssueTemplateUrl: SOCIAL_PUBLISH_EVIDENCE_ISSUE_TEMPLATE_URL,
       evidenceReviewCommand: SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND,
+      evidenceIssueTemplateCommand:
+        publishRequest.evidenceIssueTemplateCommand ??
+        (approvedPost ? socialPublishEvidenceTemplateCommand(approvedPost) : null),
       evidenceRequired: publishRequest.evidenceRequired,
       operatorChecklist: manualSocialPublishChecklist(),
       stopRule:
@@ -708,6 +711,20 @@ export function validateRevenueExecutionBrief(brief) {
       if (action.evidenceReviewCommand !== SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND) {
         findings.push(`${action.id}: manual social publish action must expose the social publish evidence review command`);
       }
+      if (
+        !/social-publish-evidence-agent\.mjs render-template --post/.test(
+          action.evidenceIssueTemplateCommand ?? ''
+        )
+      ) {
+        findings.push(
+          `${action.id}: manual social publish action must expose the social publish evidence issue-body command`
+        );
+      }
+      if (!String(action.evidenceIssueTemplateCommand ?? '').includes(action.approvedMessageSha256 ?? '<missing>')) {
+        findings.push(
+          `${action.id}: social publish evidence command must include the approved post hash`
+        );
+      }
       validateApprovedMessage({
         findings,
         label: action.id,
@@ -980,6 +997,10 @@ function outreachContactEvidenceTemplateCommand(packetId) {
 
 function referralHandoffEvidenceTemplateCommand(campaignId) {
   return `node scripts/referral-handoff-evidence-agent.mjs render-template --campaign ${campaignId} --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>"`;
+}
+
+function socialPublishEvidenceTemplateCommand(post) {
+  return `node scripts/social-publish-evidence-agent.mjs render-template --post ${post.id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash ${post.contentSha256}`;
 }
 
 function inboundReplyEvidenceTemplateCommand({

@@ -164,6 +164,14 @@ assertEqual(
   manualSocialPublishAction?.evidenceReviewCommand,
   'npm run ops:social-publish-evidence-plan'
 );
+assertIncludes(
+  manualSocialPublishAction?.evidenceIssueTemplateCommand,
+  'social-publish-evidence-agent.mjs render-template --post approved-social-post'
+);
+assertIncludes(
+  manualSocialPublishAction?.evidenceIssueTemplateCommand,
+  `--contentHash ${manualSocialPublishAction?.approvedMessageSha256}`
+);
 
 const receiptStatus = buildRevenueCycleStatus({
   ...baseInputs,
@@ -538,6 +546,14 @@ assertEqual(
 assertEqual(
   socialBeforeOutreachStatus.actionQueue[0]?.evidenceReviewCommand,
   'npm run ops:social-publish-evidence-plan'
+);
+assertIncludes(
+  socialBeforeOutreachStatus.actionQueue[0]?.evidenceIssueTemplateCommand,
+  'social-publish-evidence-agent.mjs render-template --post approved-social-before-outreach'
+);
+assertIncludes(
+  socialBeforeOutreachStatus.actionQueue[0]?.evidenceIssueTemplateCommand,
+  `--contentHash ${socialBeforeOutreachStatus.actionQueue[0]?.approvedMessageSha256}`
 );
 
 const paidPromotionStatus = buildRevenueCycleStatus({

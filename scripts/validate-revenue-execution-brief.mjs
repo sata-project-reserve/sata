@@ -302,6 +302,13 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
     ) {
       findings.push('manual social publish action must expose the social publish evidence review command');
     }
+    if (
+      !/social-publish-evidence-agent\.mjs render-template --post/.test(
+        manualSocialPublishAction.evidenceIssueTemplateCommand ?? ''
+      )
+    ) {
+      findings.push('manual social publish action must expose the social publish evidence issue-body command');
+    }
     if (!manualSocialPublishAction.approvedMessage || !manualSocialPublishAction.approvedMessageSha256) {
       findings.push('manual social publish action must include the exact approved post text and hash');
     }
@@ -310,6 +317,14 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
       !manualSocialPublishAction.command?.includes(manualSocialPublishAction.approvedMessageSha256)
     ) {
       findings.push('manual social publish command must include the approved post hash');
+    }
+    if (
+      manualSocialPublishAction.approvedMessageSha256 &&
+      !manualSocialPublishAction.evidenceIssueTemplateCommand?.includes(
+        manualSocialPublishAction.approvedMessageSha256
+      )
+    ) {
+      findings.push('manual social publish evidence command must include the approved post hash');
     }
   }
   if (status.funnel.paidPromotionsAwaitingConversion > 0) {
@@ -456,6 +471,9 @@ if (!markdown.includes('outreach-contact-evidence-agent.mjs render-template --pa
 }
 if (!markdown.includes('SATA has a dedicated Bitcoin reserve address')) {
   findings.push('markdown must include the copy-ready approved social post text');
+}
+if (!markdown.includes('social-publish-evidence-agent.mjs render-template --post')) {
+  findings.push('markdown must include social publish evidence issue-body command');
 }
 for (const command of markdown.match(
   /node scripts\/service-outreach-packet-agent\.mjs mark-sent[^\n]*/g

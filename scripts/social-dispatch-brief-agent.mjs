@@ -59,6 +59,7 @@ export function buildSocialDispatchBrief({
     approvalRole: post.approvalRole ?? null,
     approvedAtUtc: post.approvedAtUtc ?? null,
     evidenceIssueUrl: EVIDENCE_INTAKE_URL,
+    evidenceIssueTemplateCommand: evidenceIssueTemplateCommand({ queue, post }),
     recordPublishedCommand: recordPublishedCommand({ queue, post }),
     publicationInstructions:
       'Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.',
@@ -135,6 +136,12 @@ export function renderSocialDispatchMarkdown(brief) {
       post.publicationInstructions,
       post.stopRule,
       '',
+      'Social publish evidence issue-body command:',
+      '',
+      '```sh',
+      post.evidenceIssueTemplateCommand,
+      '```',
+      '',
       '```text',
       post.text,
       '```',
@@ -170,6 +177,17 @@ async function writeSocialDispatchBrief(brief) {
 function recordPublishedCommand({ queue, post }) {
   return [
     'npm run social:agent -- record-published',
+    `--post ${post.id}`,
+    `--postUrl "https://x.com/${queue.account.handle}/status/<numeric-id>"`,
+    '--evidence "<live-post-screenshot-or-exported-text>"',
+    '--publishedAtUtc "<published-at-utc>"',
+    `--contentHash ${post.contentSha256}`
+  ].join(' ');
+}
+
+function evidenceIssueTemplateCommand({ queue, post }) {
+  return [
+    'node scripts/social-publish-evidence-agent.mjs render-template',
     `--post ${post.id}`,
     `--postUrl "https://x.com/${queue.account.handle}/status/<numeric-id>"`,
     '--evidence "<live-post-screenshot-or-exported-text>"',

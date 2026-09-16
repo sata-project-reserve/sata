@@ -53,6 +53,15 @@ for (const post of brief.readyManualPosts) {
   if (!post.recordPublishedCommand?.includes(`--contentHash ${post.contentSha256}`)) {
     findings.push(`${post.id}: record command must include the approved content hash`);
   }
+  if (!/social-publish-evidence-agent\.mjs render-template --post/.test(post.evidenceIssueTemplateCommand ?? '')) {
+    findings.push(`${post.id}: evidence issue-body command must render the social publish evidence template`);
+  }
+  if (!post.evidenceIssueTemplateCommand?.includes(`--contentHash ${post.contentSha256}`)) {
+    findings.push(`${post.id}: evidence issue-body command must include the approved content hash`);
+  }
+  if (!post.evidenceIssueTemplateCommand?.includes(`https://x.com/${queue.account.handle}/status/<numeric-id>`)) {
+    findings.push(`${post.id}: evidence issue-body command must require the canonical account status URL`);
+  }
   if (!post.recordPublishedCommand?.includes('--publishedAtUtc "<published-at-utc>"')) {
     findings.push(`${post.id}: record command must require explicit publishedAtUtc evidence`);
   }
@@ -71,6 +80,12 @@ if (!markdown.includes('Approved content SHA-256')) {
 }
 if (!markdown.includes('record-published')) {
   findings.push('markdown must expose manual record-published commands');
+}
+if (!markdown.includes('Social publish evidence issue-body command:')) {
+  findings.push('markdown must expose social publish evidence issue-body commands');
+}
+if (!markdown.includes('social-publish-evidence-agent.mjs render-template')) {
+  findings.push('markdown must include social publish evidence render-template commands');
 }
 if (!markdown.includes('social-publish-evidence.yml')) {
   findings.push('markdown must link social publish evidence intake');

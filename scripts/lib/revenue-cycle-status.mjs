@@ -456,6 +456,20 @@ export function validateRevenueCycleStatus(status) {
           `${item.id ?? '<missing-id>'}: manual social publish action must expose the social publish evidence review command`
         );
       }
+      if (
+        !/social-publish-evidence-agent\.mjs render-template --post/.test(
+          item.evidenceIssueTemplateCommand ?? ''
+        )
+      ) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: manual social publish action must expose the social publish evidence issue-body command`
+        );
+      }
+      if (!String(item.evidenceIssueTemplateCommand ?? '').includes(item.approvedMessageSha256 ?? '<missing>')) {
+        findings.push(
+          `${item.id ?? '<missing-id>'}: social publish evidence command must be tied to the approved post hash`
+        );
+      }
     }
     if (
       item.type === 'manual-referral-handoff-send' &&
@@ -1140,9 +1154,14 @@ function manualSocialPublishAction({ post }) {
     approvedMessageSha256: contentHash,
     evidenceIssueTemplateUrl: SOCIAL_PUBLISH_EVIDENCE_ISSUE_TEMPLATE_URL,
     evidenceReviewCommand: SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND,
+    evidenceIssueTemplateCommand: socialPublishEvidenceTemplateCommand(post),
     evidenceRequired: 'Published @SATAReserve post URL plus screenshot or exported text.',
     boundary: 'Only chairman-approved factual posts may be published.'
   };
+}
+
+function socialPublishEvidenceTemplateCommand(post) {
+  return `node scripts/social-publish-evidence-agent.mjs render-template --post ${post.id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash ${socialPostContentHash(post)}`;
 }
 
 function safeTriageRulesForCycleStatus(rules) {

@@ -29,6 +29,8 @@ const OUTREACH_CONTACT_EVIDENCE_REVIEW_COMMAND = 'npm run ops:outreach-contact-e
 const SOCIAL_PUBLISH_EVIDENCE_ISSUE_TEMPLATE_URL =
   'https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml';
 const SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND = 'npm run ops:social-publish-evidence-plan';
+const RECEIPT_EVIDENCE_ISSUE_TEMPLATE_URL =
+  'https://github.com/sata-project-reserve/sata/issues/new?template=receipt-evidence.yml';
 
 export function buildRevenueExecutionBrief({
   status,
@@ -82,6 +84,9 @@ export function buildRevenueExecutionBrief({
   const receiptAllocationProposals = (status.actionQueue ?? []).filter(
     (action) => action.type === 'receipt-allocation-proposal'
   );
+  const approvedInvoicePaymentPackets = (status.actionQueue ?? []).filter(
+    (action) => action.type === 'approved-invoice-payment-packet'
+  );
   const inboundIntakeReplies = (status.actionQueue ?? []).filter(
     (action) => action.type === 'inbound-intake-reply'
   );
@@ -106,6 +111,26 @@ export function buildRevenueExecutionBrief({
       operatorChecklist: receiptAllocationChecklist(),
       stopRule:
         'Render the proposal only. Record the allocation only after chairman approval and a published transparency report URL exist.'
+    });
+  }
+
+  for (const packet of approvedInvoicePaymentPackets) {
+    const invoiceId = invoiceIdFromPaymentAction(packet);
+    actions.push({
+      id: packet.id,
+      type: packet.type,
+      priority: actions.length + 1,
+      objective: packet.title,
+      whyItCanCreateSats:
+        'A chairman-approved exact-sats invoice only becomes reserve growth after the customer receives the bounded reserve-address packet and the BTC receipt is recorded from evidence.',
+      command: packet.command,
+      receiptEvidenceIssueTemplateUrl: RECEIPT_EVIDENCE_ISSUE_TEMPLATE_URL,
+      receiptEvidenceTemplateCommand: receiptEvidenceTemplateCommand(invoiceId),
+      recordConfirmedReceiptCommand: recordConfirmedReceiptCommand(invoiceId),
+      evidenceRequired: packet.evidenceRequired,
+      operatorChecklist: approvedInvoicePaymentChecklist(),
+      stopRule:
+        'Render and send only the approved packet manually. Record a receipt only after observable BTC payment evidence and chairman receipt approval exist.'
     });
   }
 
@@ -577,6 +602,49 @@ export function validateRevenueExecutionBrief(brief) {
       if (!/transparencyReportUrl/.test(action.recordAllocationCommand ?? '')) {
         findings.push(
           `${action.id}: receipt allocation record command must require a transparency report URL`
+        );
+      }
+    }
+    if (action.type === 'approved-invoice-payment-packet') {
+      if (!/sats-invoice-payment-packet-agent\.mjs render --invoice \S+/.test(action.command ?? '')) {
+        findings.push(
+          `${action.id}: approved invoice payment action must preserve the render command`
+        );
+      }
+      if (action.receiptEvidenceIssueTemplateUrl !== RECEIPT_EVIDENCE_ISSUE_TEMPLATE_URL) {
+        findings.push(
+          `${action.id}: approved invoice payment action must expose the receipt evidence issue template`
+        );
+      }
+      if (
+        !/sats-receipt-allocation-agent\.mjs render-template/.test(
+          action.receiptEvidenceTemplateCommand ?? ''
+        )
+      ) {
+        findings.push(
+          `${action.id}: approved invoice payment action must expose the receipt evidence template command`
+        );
+      }
+      if (!/--invoice "\S+"/.test(action.receiptEvidenceTemplateCommand ?? '')) {
+        findings.push(
+          `${action.id}: receipt evidence template command must preserve the approved invoice id`
+        );
+      }
+      if (
+        !/sats-receipt-allocation-agent\.mjs record-confirmed/.test(
+          action.recordConfirmedReceiptCommand ?? ''
+        )
+      ) {
+        findings.push(`${action.id}: approved invoice payment action must expose record-confirmed`);
+      }
+      if (!/confirmChairmanReceiptApproval/.test(action.recordConfirmedReceiptCommand ?? '')) {
+        findings.push(
+          `${action.id}: record-confirmed command must require chairman receipt approval`
+        );
+      }
+      if (!/--recordedAtUtc "<recorded-at-utc>"/.test(action.recordConfirmedReceiptCommand ?? '')) {
+        findings.push(
+          `${action.id}: record-confirmed command must require an explicit recordedAtUtc`
         );
       }
     }
@@ -1081,6 +1149,15 @@ function paidPromotionMeasurementChecklist() {
   ];
 }
 
+function approvedInvoicePaymentChecklist() {
+  return [
+    'Render the approved invoice payment packet and confirm it uses only the published reserve BTC address.',
+    'Send the packet manually, then capture durable customer-send evidence and UTC send time.',
+    'After payment appears on-chain, open the receipt evidence template and capture txid, exact sats, confirmations, received address, deliverable evidence, and UTC record time.',
+    'Run the record-confirmed command only after explicit chairman receipt approval exists.'
+  ];
+}
+
 function maintenanceChecklist() {
   return [
     'Refresh the revenue-cycle plan before choosing the next action.',
@@ -1157,6 +1234,28 @@ function receiptIdFromAllocationAction(action) {
   );
   if (match?.groups?.receiptId) return match.groups.receiptId;
   return String(action.id ?? '').replace(/^allocate-/, '') || '<confirmed-receipt-id>';
+}
+
+function invoiceIdFromPaymentAction(action) {
+  const optionMatch = /sats-invoice-payment-packet-agent\.mjs render --invoice (?<invoiceId>\S+)/.exec(
+    action.command ?? ''
+  );
+  if (optionMatch?.groups?.invoiceId) return optionMatch.groups.invoiceId;
+  const positionalMatch = /sats-invoice-payment-packet-agent\.mjs render (?<invoiceId>\S+)/.exec(
+    action.command ?? ''
+  );
+  if (positionalMatch?.groups?.invoiceId) return positionalMatch.groups.invoiceId;
+  return String(action.id ?? '').replace(/^payment-packet-/, '') || '<approved-invoice-id>';
+}
+
+function receiptEvidenceTemplateCommand(invoiceId = '<approved-invoice-id>') {
+  const quotedInvoiceId = quoteShell(invoiceId);
+  return `node scripts/sats-receipt-allocation-agent.mjs render-template --receipt "<receipt-id>" --invoice ${quotedInvoiceId} --receivedAtUtc "<received-at-utc>" --source "<service-source>" --amount "<btc-amount>" --amountSats "<exact-sats>" --transactionId "<bitcoin-txid>" --receivedAddress "<published-reserve-address>" --confirmations "<confirmations>" --deliverableUrl "<delivery-evidence-url>" --recordedAtUtc "<recorded-at-utc>"`;
+}
+
+function recordConfirmedReceiptCommand(invoiceId = '<approved-invoice-id>') {
+  const quotedInvoiceId = quoteShell(invoiceId);
+  return `node scripts/sats-receipt-allocation-agent.mjs record-confirmed --receipt "<receipt-id>" --invoice ${quotedInvoiceId} --receivedAtUtc "<received-at-utc>" --source "<service-source>" --amount "<btc-amount>" --amountSats "<exact-sats>" --transactionId "<bitcoin-txid>" --receivedAddress "<published-reserve-address>" --confirmations "<confirmations>" --deliverableUrl "<delivery-evidence-url>" --recordedAtUtc "<recorded-at-utc>" --confirmChairmanReceiptApproval "I am Executive Chairman and approve receipt <receipt-id>"`;
 }
 
 function manualSocialPostForAction({ action, socialQueue }) {
@@ -1255,6 +1354,25 @@ export function renderRevenueExecutionMarkdown(brief) {
             'Allocation record command after chairman approval:',
             '```sh',
             action.recordAllocationCommand,
+            '```'
+          ]
+        : []),
+      ...(action.receiptEvidenceIssueTemplateUrl
+        ? [`Receipt evidence intake: ${action.receiptEvidenceIssueTemplateUrl}`]
+        : []),
+      ...(action.receiptEvidenceTemplateCommand
+        ? [
+            'Receipt evidence issue-body command:',
+            '```sh',
+            action.receiptEvidenceTemplateCommand,
+            '```'
+          ]
+        : []),
+      ...(action.recordConfirmedReceiptCommand
+        ? [
+            'Receipt record command after chairman approval:',
+            '```sh',
+            action.recordConfirmedReceiptCommand,
             '```'
           ]
         : []),
@@ -1404,4 +1522,8 @@ function kebab(value) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+}
+
+function quoteShell(value) {
+  return `"${String(value ?? '').replace(/["\\]/g, '')}"`;
 }

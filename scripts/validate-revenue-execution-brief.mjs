@@ -614,6 +614,89 @@ if (!receiptAllocationMarkdown.includes('record-allocation')) {
   findings.push('receipt allocation markdown must show the post-approval record-allocation command');
 }
 
+const approvedInvoicePaymentBrief = buildRevenueExecutionBrief({
+  status: {
+    ...status,
+    funnel: {
+      ...status.funnel,
+      approvedInvoices: 1
+    },
+    actionQueue: [
+      {
+        id: 'payment-packet-invoice-ready-1',
+        type: 'approved-invoice-payment-packet',
+        title: 'Render approved customer payment packet for invoice-ready-1 before the quote expires.',
+        command:
+          'node scripts/sats-invoice-payment-packet-agent.mjs render --invoice invoice-ready-1',
+        evidenceRequired: 'Chairman-approved exact-sats invoice record.'
+      },
+      ...(status.actionQueue ?? [])
+    ]
+  },
+  paidPromotionLedger,
+  outreachPacketQueue,
+  socialQueue,
+  prospectPipeline,
+  revenuePlan,
+  referralPartnerPolicy,
+  referralPartnerHandoffQueue,
+  referralPartnerHandoffPacket,
+  maxManualSends: 5,
+  generatedAtUtc: '2026-09-03T20:00:00.000Z'
+});
+validateRevenueExecutionBrief(approvedInvoicePaymentBrief);
+if (approvedInvoicePaymentBrief.topActions[0]?.type !== 'approved-invoice-payment-packet') {
+  findings.push('approved invoice payment packets must outrank manual outreach in the execution brief');
+}
+if (
+  !/sats-invoice-payment-packet-agent\.mjs render --invoice invoice-ready-1/.test(
+    approvedInvoicePaymentBrief.topActions[0]?.command ?? ''
+  )
+) {
+  findings.push('approved invoice payment brief action must preserve the render command');
+}
+if (
+  approvedInvoicePaymentBrief.topActions[0]?.receiptEvidenceIssueTemplateUrl !==
+  'https://github.com/sata-project-reserve/sata/issues/new?template=receipt-evidence.yml'
+) {
+  findings.push('approved invoice payment action must expose receipt evidence intake');
+}
+if (
+  !/sats-receipt-allocation-agent\.mjs render-template/.test(
+    approvedInvoicePaymentBrief.topActions[0]?.receiptEvidenceTemplateCommand ?? ''
+  )
+) {
+  findings.push('approved invoice payment action must expose the receipt evidence template command');
+}
+if (
+  !/--invoice "invoice-ready-1"/.test(
+    approvedInvoicePaymentBrief.topActions[0]?.receiptEvidenceTemplateCommand ?? ''
+  )
+) {
+  findings.push('receipt evidence template command must preserve the approved invoice id');
+}
+if (
+  !/sats-receipt-allocation-agent\.mjs record-confirmed/.test(
+    approvedInvoicePaymentBrief.topActions[0]?.recordConfirmedReceiptCommand ?? ''
+  )
+) {
+  findings.push('approved invoice payment action must expose record-confirmed');
+}
+if (
+  !/confirmChairmanReceiptApproval/.test(
+    approvedInvoicePaymentBrief.topActions[0]?.recordConfirmedReceiptCommand ?? ''
+  )
+) {
+  findings.push('record-confirmed command must require explicit chairman receipt approval');
+}
+const approvedInvoicePaymentMarkdown = renderRevenueExecutionMarkdown(approvedInvoicePaymentBrief);
+if (!approvedInvoicePaymentMarkdown.includes('Receipt evidence intake:')) {
+  findings.push('approved invoice payment markdown must show the receipt evidence intake URL');
+}
+if (!approvedInvoicePaymentMarkdown.includes('Receipt record command after chairman approval:')) {
+  findings.push('approved invoice payment markdown must show the record-confirmed command');
+}
+
 const maintenanceBrief = buildRevenueExecutionBrief({
   status: {
     ...status,

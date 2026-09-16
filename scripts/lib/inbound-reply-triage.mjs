@@ -128,6 +128,14 @@ export function buildInboundReplyTriage({
           customerAskedForInvoice: classification.customerAskedForInvoice
         })
       : null;
+  const replyEvidenceIssueBodyTemplate = buildReplyEvidenceIssueBody({
+    inputSummary,
+    replyText: reply,
+    classification,
+    replyTemplateText: template.text,
+    recordLeadCommand,
+    nextCommandAfterRecord
+  });
 
   return {
     project: queue.project,
@@ -142,6 +150,7 @@ export function buildInboundReplyTriage({
     replyTemplateText: template.text,
     recordLeadCommand,
     nextCommandAfterRecord,
+    replyEvidenceIssueBodyTemplate,
     nextAction: classification.nextAction,
     stopRules: [
       'Do not send payment instructions from triage.',
@@ -187,6 +196,15 @@ export function renderInboundReplyTriage(triage) {
       '```'
     );
   }
+
+  lines.push(
+    '',
+    '## Reply Evidence Body',
+    '',
+    '```md',
+    triage.replyEvidenceIssueBodyTemplate,
+    '```'
+  );
 
   lines.push('', '## Next Action', '', triage.nextAction, '', '## Stop Rules');
   for (const rule of triage.stopRules) lines.push(`- ${rule}`);
@@ -311,8 +329,71 @@ function nextCommandForRecordedLead({ leadId, customerAskedForInvoice }) {
   return 'npm run ops:inbound-lead-plan';
 }
 
+function buildReplyEvidenceIssueBody({
+  inputSummary,
+  replyText,
+  classification,
+  replyTemplateText,
+  recordLeadCommand,
+  nextCommandAfterRecord
+}) {
+  return [
+    '### Source type',
+    fallback(inputSummary.sourceType, '<source-type>'),
+    '',
+    '### Source ID',
+    fallback(inputSummary.sourceId, '<source-id>'),
+    '',
+    '### Contact handle',
+    fallback(inputSummary.contactHandle, '<contact-handle>'),
+    '',
+    '### Public profile URL',
+    fallback(inputSummary.publicProfileUrl, '<https-profile-url>'),
+    '',
+    '### Project URL',
+    fallback(inputSummary.projectUrl, '<https-project-url>'),
+    '',
+    '### Requested offer ID',
+    fallback(inputSummary.requestedOfferId, 'transparency-audit'),
+    '',
+    '### Exact reply text',
+    replyText,
+    '',
+    '### Reply evidence URL or reference',
+    fallback(inputSummary.evidence, '<reply-or-dm-evidence>'),
+    '',
+    '### Recorded at UTC',
+    fallback(inputSummary.recordedAtUtc, '<recorded-at-utc>'),
+    '',
+    '### Classification',
+    classification.id,
+    '',
+    '### Lead status',
+    classification.leadStatus,
+    '',
+    '### Customer asked for invoice',
+    classification.customerAskedForInvoice ? 'true' : 'false',
+    '',
+    '### Suggested reply template',
+    classification.replyTemplateId,
+    '',
+    '### Suggested reply text',
+    replyTemplateText,
+    '',
+    '### Record lead command',
+    recordLeadCommand ?? 'Do not record this as a service lead.',
+    '',
+    '### Next command after record',
+    nextCommandAfterRecord ?? 'None.'
+  ].join('\n');
+}
+
 function quote(value) {
   return `"${String(value).replaceAll('"', '\\"')}"`;
+}
+
+function fallback(value, placeholder) {
+  return cleanLine(value) || placeholder;
 }
 
 function kebab(value) {

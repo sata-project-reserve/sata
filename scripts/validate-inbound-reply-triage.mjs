@@ -104,6 +104,21 @@ if (
 ) {
   findings.push('invoice reply must expose the inbound invoice request render command after record');
 }
+if (!/### Exact reply text/.test(invoice.replyEvidenceIssueBodyTemplate ?? '')) {
+  findings.push('invoice triage must include a reply evidence body template');
+}
+if (!/What is the payment method and can you send the invoice\?/.test(invoice.replyEvidenceIssueBodyTemplate ?? '')) {
+  findings.push('reply evidence body must preserve the exact inbound reply text');
+}
+if (!/### Classification\s+invoice-request-needs-chairman-review/i.test(invoice.replyEvidenceIssueBodyTemplate ?? '')) {
+  findings.push('reply evidence body must preserve the classification');
+}
+if (!/### Customer asked for invoice\s+true/i.test(invoice.replyEvidenceIssueBodyTemplate ?? '')) {
+  findings.push('reply evidence body must preserve the explicit invoice request flag');
+}
+if (!/inbound-service-lead-agent\.mjs record-lead/.test(invoice.replyEvidenceIssueBodyTemplate ?? '')) {
+  findings.push('reply evidence body must include the lead record command');
+}
 assertNoPaymentAddress(invoice, 'invoice triage');
 if (!/Payment instructions are not sent until approved/i.test(invoice.replyTemplateText ?? '')) {
   findings.push('invoice reply template must not send payment instructions before approval');
@@ -139,6 +154,9 @@ if (rejected.classification !== 'reject-prohibited-promotion') {
 if (rejected.recordLeadCommand !== null) {
   findings.push('prohibited promotional request must not expose a record-lead command');
 }
+if (!/Do not record this as a service lead\./.test(rejected.replyEvidenceIssueBodyTemplate ?? '')) {
+  findings.push('rejected reply evidence body must preserve the no-record instruction');
+}
 assertNoPaymentAddress(rejected, 'rejected triage');
 
 const rendered = renderInboundReplyTriage(invoice);
@@ -147,6 +165,8 @@ for (const required of [
   /invoice-request-needs-chairman-review/i,
   /Record Command/i,
   /After Record Command/i,
+  /Reply Evidence Body/i,
+  /### Exact reply text/i,
   /inbound-service-lead-agent\.mjs record-lead/i,
   /inbound-invoice-request-agent\.mjs render --lead "example-buyer"/i,
   /Exact-sats invoices require separate Executive Chairman approval/i,

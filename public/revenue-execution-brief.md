@@ -1,6 +1,6 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-09-16T17:21:25.243Z
+Generated: 2026-09-16T17:27:19.836Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -87,23 +87,24 @@ Stop rule: Triage only. Do not contact leads, send payment instructions, create 
 npm run ops:inbound-reply-triage-plan
 ```
 
-### 3. Manually publish approved post btc-reserve-first-tranche and record the live URL for attribution.
+### 3. Manually publish approved post transparency-service-offer and record the live URL for attribution.
 Type: manual-social-publish
 Why: Chairman-approved factual posts can create attributable inbound attention without autonomous posting or paid promotion.
 Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml
 Evidence review command: npm run ops:social-publish-evidence-plan
-Evidence issue-body command: node scripts/social-publish-evidence-agent.mjs render-template --post btc-reserve-first-tranche --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e
+Evidence issue-body command: node scripts/social-publish-evidence-agent.mjs render-template --post transparency-service-offer --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448
+Social priority: tier 1 - approved revenue-service offer
 Evidence: Published @SATAReserve post URL plus screenshot or exported text.
-Approved message SHA-256: 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e
+Approved message SHA-256: 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448
 
 Approved send copy:
 
 ```text
-SATA has a dedicated Bitcoin reserve address with signed address-control proof. Current first tranche: 500,000 sats.
+SATA offers $249 Transparency Audits: authority, supply, LP lock/ownership, reserve claims, risk disclosures, and JSON.
 
-The BTC reserve is not a redemption promise or guaranteed price floor.
+Reserve work is not a redemption promise. Locked LP must be verified.
 
-https://sata-project-reserve.github.io/sata/transparency
+https://sata-project-reserve.github.io/sata/services/transparency-audit
 ```
 
 Operator checklist:
@@ -113,7 +114,7 @@ Operator checklist:
 Stop rule: Publish only the approved post content manually, then record the live URL and evidence; do not change copy or enable live automation.
 
 ```sh
-npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e
+npm run social:agent -- record-published --post transparency-service-offer --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448
 ```
 
 ### 4. Send approved transparency-audit outreach to sanctum-elysium-loam.

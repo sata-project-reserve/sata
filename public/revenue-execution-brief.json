@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "mode": "sats-revenue-execution-brief",
-  "generatedAtUtc": "2026-09-16T17:21:25.243Z",
+  "generatedAtUtc": "2026-09-16T17:27:19.836Z",
   "northStar": {
     "confirmedSats": "500000",
     "targetSats": "1000000000",
@@ -146,17 +146,21 @@
       "stopRule": "Triage only. Do not contact leads, send payment instructions, create invoices, grant tokens, or move assets."
     },
     {
-      "id": "publish-social-btc-reserve-first-tranche",
+      "id": "publish-social-transparency-service-offer",
       "type": "manual-social-publish",
       "priority": 3,
-      "objective": "Manually publish approved post btc-reserve-first-tranche and record the live URL for attribution.",
+      "objective": "Manually publish approved post transparency-service-offer and record the live URL for attribution.",
       "whyItCanCreateSats": "Chairman-approved factual posts can create attributable inbound attention without autonomous posting or paid promotion.",
-      "command": "npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl \"https://x.com/SATAReserve/status/<numeric-id>\" --evidence \"<live-post-screenshot-or-exported-text>\" --publishedAtUtc \"<published-at-utc>\" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e",
-      "approvedMessage": "SATA has a dedicated Bitcoin reserve address with signed address-control proof. Current first tranche: 500,000 sats.\n\nThe BTC reserve is not a redemption promise or guaranteed price floor.\n\nhttps://sata-project-reserve.github.io/sata/transparency",
-      "approvedMessageSha256": "4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e",
+      "command": "npm run social:agent -- record-published --post transparency-service-offer --postUrl \"https://x.com/SATAReserve/status/<numeric-id>\" --evidence \"<live-post-screenshot-or-exported-text>\" --publishedAtUtc \"<published-at-utc>\" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448",
+      "approvedMessage": "SATA offers $249 Transparency Audits: authority, supply, LP lock/ownership, reserve claims, risk disclosures, and JSON.\n\nReserve work is not a redemption promise. Locked LP must be verified.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit",
+      "approvedMessageSha256": "4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448",
+      "socialPriority": {
+        "tier": 1,
+        "reason": "approved revenue-service offer"
+      },
       "evidenceIssueTemplateUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml",
       "evidenceReviewCommand": "npm run ops:social-publish-evidence-plan",
-      "evidenceIssueTemplateCommand": "node scripts/social-publish-evidence-agent.mjs render-template --post btc-reserve-first-tranche --postUrl \"https://x.com/SATAReserve/status/<numeric-id>\" --evidence \"<live-post-screenshot-or-exported-text>\" --publishedAtUtc \"<published-at-utc>\" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e",
+      "evidenceIssueTemplateCommand": "node scripts/social-publish-evidence-agent.mjs render-template --post transparency-service-offer --postUrl \"https://x.com/SATAReserve/status/<numeric-id>\" --evidence \"<live-post-screenshot-or-exported-text>\" --publishedAtUtc \"<published-at-utc>\" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448",
       "evidenceRequired": "Published @SATAReserve post URL plus screenshot or exported text.",
       "operatorChecklist": [
         "Open the approved social content queue and confirm the post content matches the content hash.",

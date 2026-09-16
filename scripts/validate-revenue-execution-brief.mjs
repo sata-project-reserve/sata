@@ -313,6 +313,11 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
       findings.push('manual social publish action must include the exact approved post text and hash');
     }
     if (
+      manualSocialPublishAction.socialPriority?.reason !== 'approved revenue-service offer'
+    ) {
+      findings.push('manual social publish action must prioritize approved revenue-service offers');
+    }
+    if (
       manualSocialPublishAction.approvedMessageSha256 &&
       !manualSocialPublishAction.command?.includes(manualSocialPublishAction.approvedMessageSha256)
     ) {
@@ -469,7 +474,7 @@ if (!markdown.includes('Evidence review command: npm run ops:outreach-contact-ev
 if (!markdown.includes('outreach-contact-evidence-agent.mjs render-template --packet')) {
   findings.push('markdown must include outreach contact evidence issue-body command');
 }
-if (!markdown.includes('SATA has a dedicated Bitcoin reserve address')) {
+if (!markdown.includes('SATA offers $249 Transparency Audits')) {
   findings.push('markdown must include the copy-ready approved social post text');
 }
 if (!markdown.includes('social-publish-evidence-agent.mjs render-template --post')) {

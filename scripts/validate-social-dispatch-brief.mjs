@@ -47,6 +47,9 @@ if (!/social-publish-evidence\.yml/.test(brief.evidenceIssueUrl ?? '')) {
   findings.push('brief must expose the social publish evidence issue form');
 }
 for (const post of brief.readyManualPosts) {
+  if (!Number.isSafeInteger(post.socialPriority?.tier) || !post.socialPriority?.reason) {
+    findings.push(`${post.id}: manual social post must expose deterministic social priority`);
+  }
   if (!/^[a-f0-9]{64}$/.test(post.contentSha256 ?? '')) {
     findings.push(`${post.id}: approved content SHA-256 must be exposed`);
   }
@@ -72,8 +75,17 @@ for (const post of brief.readyManualPosts) {
     findings.push(`${post.id}: stop rule must require exact approved text`);
   }
 }
+const approvedRevenueOffer = (queue.posts ?? []).find(
+  (post) => post.status === 'approved' && post.id === 'transparency-service-offer'
+);
+if (approvedRevenueOffer && brief.readyManualPosts[0]?.id !== approvedRevenueOffer.id) {
+  findings.push('approved transparency-service-offer must lead manual social dispatch');
+}
 if (!markdown.includes('## Ready Manual Posts')) {
   findings.push('markdown must include ready manual posts section');
+}
+if (!markdown.includes('Priority: tier')) {
+  findings.push('markdown must expose manual social priority');
 }
 if (!markdown.includes('Approved content SHA-256')) {
   findings.push('markdown must expose approved content SHA-256');

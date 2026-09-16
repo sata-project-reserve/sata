@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { prioritizeApprovedSocialPosts } from './lib/social-post-priority.mjs';
 
 const EVIDENCE_INTAKE_URL =
   'https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml';
@@ -49,10 +50,13 @@ export function buildSocialDispatchBrief({
   }
 
   const posts = queue.posts ?? [];
-  const approvedPosts = posts.filter((post) => post.status === 'approved');
+  const approvedPosts = prioritizeApprovedSocialPosts({
+    posts: posts.filter((post) => post.status === 'approved')
+  });
   const readyManualPosts = approvedPosts.slice(0, maxManualPosts).map((post) => ({
     id: post.id,
     type: post.type,
+    socialPriority: post.socialPriority,
     text: post.text,
     contentSha256: post.contentSha256,
     approvedBy: post.approvedBy ?? null,
@@ -129,6 +133,9 @@ export function renderSocialDispatchMarkdown(brief) {
       '',
       `### ${post.id}`,
       `Type: ${post.type}`,
+      `Priority: tier ${post.socialPriority?.tier ?? 'not recorded'} - ${
+        post.socialPriority?.reason ?? 'not recorded'
+      }`,
       `Approved by: ${post.approvedBy ?? 'not recorded'}`,
       `Approval role: ${post.approvalRole ?? 'not recorded'}`,
       `Approved at: ${post.approvedAtUtc ?? 'not recorded'}`,

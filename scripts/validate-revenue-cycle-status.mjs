@@ -172,6 +172,60 @@ assertIncludes(
   manualSocialPublishAction?.evidenceIssueTemplateCommand,
   `--contentHash ${manualSocialPublishAction?.approvedMessageSha256}`
 );
+assertEqual(manualSocialPublishAction?.socialPriority?.tier, 9);
+assertEqual(manualSocialPublishAction?.socialPriority?.reason, 'approved backlog order');
+
+const revenueFirstSocialStatus = buildRevenueCycleStatus({
+  ...baseInputs,
+  prospectPipeline: {
+    ...baseInputs.prospectPipeline,
+    prospects: [
+      {
+        id: 'prospect-with-ready-outreach',
+        stage: 'outreach-approved'
+      }
+    ]
+  },
+  outreachPacketQueue: {
+    packets: [
+      {
+        ...readyOutreachPacket('outreach-packet-with-social-priority', {
+          prospectId: 'prospect-with-ready-outreach'
+        })
+      }
+    ]
+  },
+  socialQueue: {
+    mode: 'approved-only-automation',
+    posts: [
+      {
+        id: 'reserve-status-first-in-file',
+        status: 'approved',
+        type: 'transparency',
+        text: 'SATA publishes factual reserve and transparency updates. Not a price target.'
+      },
+      {
+        id: 'transparency-audit-offer',
+        status: 'approved',
+        type: 'revenue',
+        text:
+          'SATA offers $249 Transparency Audits for authority, liquidity, reserve, and disclosure claims. Not a price target.'
+      }
+    ]
+  },
+  env: {}
+});
+validateRevenueCycleStatus(revenueFirstSocialStatus);
+assertEqual(revenueFirstSocialStatus.actionQueue[0]?.type, 'manual-social-publish');
+assertIncludes(
+  revenueFirstSocialStatus.actionQueue[0]?.title,
+  'transparency-audit-offer'
+);
+assertEqual(revenueFirstSocialStatus.actionQueue[0]?.socialPriority?.tier, 1);
+assertEqual(
+  revenueFirstSocialStatus.actionQueue[0]?.socialPriority?.reason,
+  'approved revenue-service offer'
+);
 
 const receiptStatus = buildRevenueCycleStatus({
   ...baseInputs,

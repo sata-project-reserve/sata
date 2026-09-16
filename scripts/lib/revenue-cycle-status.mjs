@@ -3,6 +3,7 @@ import { buildLiveReplySources } from './live-reply-sources.mjs';
 import { prioritizeOutreachPackets } from './prospect-priority.mjs';
 import { buildInboundReplyTriagePlan } from './inbound-reply-triage.mjs';
 import { planningUsdToReserveSatsFloor } from './planning-sats.mjs';
+import { prioritizeApprovedSocialPosts } from './social-post-priority.mjs';
 
 const INBOUND_REPLY_EVIDENCE_ISSUE_TEMPLATE_URL =
   'https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml';
@@ -115,7 +116,9 @@ export function buildRevenueCycleStatus({
   const followUpDueProspects = prospects.filter((prospect) =>
     isFollowUpDue({ prospect, generatedAt, dueAfterHours: followUpAfterHours })
   );
-  const approvedPosts = (socialQueue.posts ?? []).filter((post) => post.status === 'approved');
+  const approvedPosts = prioritizeApprovedSocialPosts({
+    posts: (socialQueue.posts ?? []).filter((post) => post.status === 'approved')
+  });
   const readyPosts = (socialQueue.posts ?? []).filter((post) => post.status === 'ready-for-review');
   const livePostingEnabled =
     env.SATA_X_AGENT_ENABLE_POSTING === 'true' && Boolean(env.X_ACCESS_TOKEN);
@@ -1152,6 +1155,7 @@ function manualSocialPublishAction({ post }) {
     command: `npm run social:agent -- record-published --post ${post.id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash ${contentHash}`,
     approvedMessage: normalizeContent(post.text),
     approvedMessageSha256: contentHash,
+    socialPriority: post.socialPriority ?? null,
     evidenceIssueTemplateUrl: SOCIAL_PUBLISH_EVIDENCE_ISSUE_TEMPLATE_URL,
     evidenceReviewCommand: SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND,
     evidenceIssueTemplateCommand: socialPublishEvidenceTemplateCommand(post),

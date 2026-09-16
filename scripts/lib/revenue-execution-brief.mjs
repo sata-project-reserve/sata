@@ -320,6 +320,7 @@ export function buildRevenueExecutionBrief({
       command: publishRequest.command,
       approvedMessage: approvedPost?.text ?? null,
       approvedMessageSha256: approvedPost?.contentSha256 ?? null,
+      socialPriority: publishRequest.socialPriority ?? null,
       evidenceIssueTemplateUrl: SOCIAL_PUBLISH_EVIDENCE_ISSUE_TEMPLATE_URL,
       evidenceReviewCommand: SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND,
       evidenceIssueTemplateCommand:
@@ -1397,6 +1398,9 @@ export function renderRevenueExecutionMarkdown(brief) {
         : []),
       ...(action.outreachPriority
         ? [`Priority: ${action.outreachPriority.score} / ${action.outreachPriority.tier}`]
+        : []),
+      ...(action.socialPriority
+        ? [`Social priority: tier ${action.socialPriority.tier} - ${action.socialPriority.reason}`]
         : []),
       ...(action.currentOfferId && action.currentAskUsd
         ? [`Current approved ask: ${action.currentOfferId} / $${action.currentAskUsd}`]

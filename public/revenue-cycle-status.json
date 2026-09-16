@@ -54,6 +54,7 @@
       "approvedMessageSha256": "71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18",
       "evidenceIssueTemplateUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml",
       "evidenceReviewCommand": "npm run ops:referral-handoff-evidence-plan",
+      "evidenceIssueTemplateCommand": "node scripts/referral-handoff-evidence-agent.mjs render-template --campaign diana-crypto-20260903-transparency-tweet --evidence \"<partner-terms-send-evidence>\" --sentAtUtc \"<sent-at-utc>\"",
       "evidenceRequired": "Partner terms sent evidence, explicit sentAtUtc timestamp, and approved terms SHA-256.",
       "boundary": "Recording sent evidence does not approve upfront spend, posts, compensation, invoices, grants, or asset movement."
     },

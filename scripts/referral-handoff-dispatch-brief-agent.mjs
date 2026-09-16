@@ -78,6 +78,9 @@ export function buildReferralHandoffDispatchBrief({
       sourceEvidence: candidate.sourceEvidence,
       artifact: 'public/referral-partner-handoff-packet.md',
       evidenceIssueUrl: EVIDENCE_INTAKE_URL,
+      evidenceIssueTemplateCommand: referralHandoffEvidenceTemplateCommand(
+        candidate.sourceCampaignId
+      ),
       approvedTermsSha256: candidate.packet.termsSha256,
       exactTerms: candidate.packet.replyTemplate,
       reserveImpactPlanning: buildReserveImpactPlanning({ revenuePlan }),
@@ -156,6 +159,10 @@ function estimateReserveSats({ usd, reserveAllocationPercent, btcUsd }) {
   return ((usdCents * percentBps * 100_000_000n) / (10_000n * btcUsdCents)).toString();
 }
 
+function referralHandoffEvidenceTemplateCommand(campaignId) {
+  return `node scripts/referral-handoff-evidence-agent.mjs render-template --campaign ${campaignId} --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>"`;
+}
+
 function parseDecimalToScale(value, decimals) {
   const text = String(value ?? '').trim();
   const match = /^(\d+)(?:\.(\d+))?$/.exec(text);
@@ -204,6 +211,14 @@ export function renderReferralHandoffDispatchMarkdown(brief) {
       '```',
       '',
       'After manual send, submit the evidence issue and record only with the hash-bound command:',
+      '',
+      'Evidence issue-body command:',
+      '',
+      '```sh',
+      item.evidenceIssueTemplateCommand,
+      '```',
+      '',
+      'Record-sent command:',
       '',
       '```sh',
       item.recordSentCommand,

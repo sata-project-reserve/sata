@@ -1,6 +1,6 @@
 # SATA Reserve Token Referral Handoff Dispatch Brief
 
-Generated: 2026-09-16T16:26:48.375Z
+Generated: 2026-09-16T16:29:25.632Z
 
 ## Boundary
 This brief coordinates manual referral handoff dispatch only. It does not send messages, approve partners, approve compensation, issue invoices, provide payment instructions, publish posts, grant tokens, move assets, or record state.
@@ -46,6 +46,14 @@ Send the referred project, contact path, expected role, requested compensation m
 ```
 
 After manual send, submit the evidence issue and record only with the hash-bound command:
+
+Evidence issue-body command:
+
+```sh
+node scripts/referral-handoff-evidence-agent.mjs render-template --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>"
+```
+
+Record-sent command:
 
 ```sh
 node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18

@@ -711,6 +711,10 @@ assertEqual(
   preparedReferralPacketStatus.actionQueue[0]?.evidenceReviewCommand,
   'npm run ops:referral-handoff-evidence-plan'
 );
+assertIncludes(
+  preparedReferralPacketStatus.actionQueue[0]?.evidenceIssueTemplateCommand,
+  'referral-handoff-evidence-agent.mjs render-template --campaign campaign-1'
+);
 assertIncludes(preparedReferralPacketStatus.actionQueue[0]?.approvedMessage, preparedReferralReply);
 assertEqual(
   preparedReferralPacketStatus.actionQueue[0]?.approvedMessageSha256,

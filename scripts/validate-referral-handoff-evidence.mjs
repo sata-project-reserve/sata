@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildReferralHandoffEvidenceDraft } from './lib/referral-handoff-evidence-parser.mjs';
+import { renderReferralHandoffEvidenceIssueBody } from './referral-handoff-evidence-agent.mjs';
 import { renderReferralHandoffEvidenceComment } from './referral-handoff-evidence-comment-agent.mjs';
 
 const queue = readJson(join('public', 'referral-partner-handoff-queue.json'));
@@ -21,6 +22,15 @@ const draft = buildReferralHandoffEvidenceDraft({
   inboundQueue
 });
 const comment = renderReferralHandoffEvidenceComment(draft);
+const renderedTemplate = renderReferralHandoffEvidenceIssueBody({
+  queue,
+  paidPromotionLedger,
+  referralPartnerPolicy,
+  inboundQueue,
+  campaignId: 'diana-crypto-20260903-transparency-tweet',
+  sentEvidenceUrl: 'https://x.com/example/status/109',
+  sentAtUtc: '2026-09-10T12:00:00.000Z'
+});
 const findings = [];
 
 if (!/referral-handoff-evidence/.test(form)) {
@@ -110,6 +120,21 @@ if (!/Approved terms SHA-256/.test(comment) || !/Hash matches approved packet: t
 }
 if (!/approved SHA-256 match the packet/i.test(evidenceAgent)) {
   findings.push('evidence agent plan must mention the approved hash match requirement');
+}
+if (!/render-template --campaign/.test(evidenceAgent)) {
+  findings.push('evidence agent must expose the render-template helper command');
+}
+if (!renderedTemplate.includes('### Source campaign ID\ndiana-crypto-20260903-transparency-tweet')) {
+  findings.push('rendered evidence template must include the source campaign ID');
+}
+if (!renderedTemplate.includes('### Partner handle\n142C_')) {
+  findings.push('rendered evidence template must include the partner handle');
+}
+if (!renderedTemplate.includes('### Approved terms SHA-256\n71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18')) {
+  findings.push('rendered evidence template must include the approved terms hash');
+}
+if (!renderedTemplate.includes('### Exact referral terms sent\nThanks Diana Crypto.')) {
+  findings.push('rendered evidence template must include the exact approved terms');
 }
 for (const expected of [
   'referral-handoff-evidence',

@@ -178,6 +178,7 @@ export function buildRevenueExecutionBrief({
         approvedMessageSha256: preparedPacket.packet.termsSha256,
         evidenceIssueTemplateUrl: REFERRAL_HANDOFF_EVIDENCE_ISSUE_TEMPLATE_URL,
         evidenceReviewCommand: REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND,
+        evidenceIssueTemplateCommand: referralHandoffEvidenceTemplateCommand(campaign.id),
         evidenceRequired:
           'Partner terms sent evidence, explicit sentAtUtc timestamp, and approved terms SHA-256.',
         operatorChecklist: referralHandoffSendChecklist(),
@@ -629,6 +630,13 @@ export function validateRevenueExecutionBrief(brief) {
       if (action.evidenceReviewCommand !== REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND) {
         findings.push(`${action.id}: referral handoff send action must expose the evidence review command`);
       }
+      if (
+        !/referral-handoff-evidence-agent\.mjs render-template --campaign/.test(
+          action.evidenceIssueTemplateCommand ?? ''
+        )
+      ) {
+        findings.push(`${action.id}: referral handoff send action must expose the evidence issue-body command`);
+      }
       validateApprovedMessage({
         findings,
         label: action.id,
@@ -830,6 +838,10 @@ function withSentAtUtcPlaceholder(command) {
 
 function outreachContactEvidenceTemplateCommand(packetId) {
   return `node scripts/outreach-contact-evidence-agent.mjs render-template --packet ${packetId} --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"`;
+}
+
+function referralHandoffEvidenceTemplateCommand(campaignId) {
+  return `node scripts/referral-handoff-evidence-agent.mjs render-template --campaign ${campaignId} --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>"`;
 }
 
 function commercialContextFor({ packet, prospect, revenuePlan, revenueStreamsById }) {

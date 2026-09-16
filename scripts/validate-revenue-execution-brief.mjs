@@ -123,6 +123,13 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
     ) {
       findings.push('prepared referral handoff action must expose the referral handoff evidence review command');
     }
+    if (
+      !/referral-handoff-evidence-agent\.mjs render-template --campaign/.test(
+        brief.topActions[0]?.evidenceIssueTemplateCommand ?? ''
+      )
+    ) {
+      findings.push('prepared referral handoff action must expose the referral handoff evidence issue-body command');
+    }
   } else if (
     !brief.topActions[0]?.command?.includes('referral-partner-handoff-agent.mjs write-packet')
   ) {

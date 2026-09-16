@@ -91,6 +91,13 @@ for (const item of brief.readyManualHandoffs) {
   if (!item.recordSentCommand?.includes(`--messageHash ${item.approvedTermsSha256}`)) {
     findings.push(`${item.sourceCampaignId}: record sent command must require approved terms hash`);
   }
+  if (
+    !/referral-handoff-evidence-agent\.mjs render-template --campaign/.test(
+      item.evidenceIssueTemplateCommand ?? ''
+    )
+  ) {
+    findings.push(`${item.sourceCampaignId}: ready handoff must expose the evidence issue-body command`);
+  }
   if (!item.recordReferredLeadCommand?.includes('--sourceType manual-referral')) {
     findings.push(`${item.sourceCampaignId}: referred lead command must preserve manual-referral attribution`);
   }
@@ -115,6 +122,9 @@ if (!markdown.includes('Counting rule: Count zero sats until a referred customer
 }
 if (!markdown.includes('referral-handoff-evidence.yml')) {
   findings.push('markdown must link evidence intake');
+}
+if (!markdown.includes('referral-handoff-evidence-agent.mjs render-template --campaign')) {
+  findings.push('markdown must include the evidence issue-body command');
 }
 for (const command of markdown.match(/node scripts\/referral-partner-handoff-agent\.mjs record-sent[^\n]*/g) ?? []) {
   if (!/--messageHash [a-f0-9]{64}\b/.test(command)) {

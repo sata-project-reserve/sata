@@ -1,6 +1,6 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-09-16T16:26:48.375Z
+Generated: 2026-09-16T16:29:25.632Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -14,6 +14,7 @@ Why: A prepared partner handoff can convert a zero-receipt promotion into custom
 Artifact: public/referral-partner-handoff-packet.md
 Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml
 Evidence review command: npm run ops:referral-handoff-evidence-plan
+Evidence issue-body command: node scripts/referral-handoff-evidence-agent.mjs render-template --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>"
 Evidence: Partner terms sent evidence, explicit sentAtUtc timestamp, and approved terms SHA-256.
 Approved message SHA-256: 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18
 

@@ -372,6 +372,41 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(referralPolicyBlock.getByText('npm run ops:referral-policy-check')).toBeVisible();
   await expect(referralPolicyBlock.getByText('Partner Packet', { exact: true })).toBeVisible();
   await expect(referralPolicyBlock.getByText('npm run ops:referral-packet-plan')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Next Manual Send Sheet' })).toBeVisible();
+  const nextSendSheet = page
+    .locator('section')
+    .filter({ has: page.getByRole('heading', { name: 'Next Manual Send Sheet' }) });
+  await expect(
+    nextSendSheet.getByText('Single-packet path from approved outreach copy to auditable contact evidence.')
+  ).toBeVisible();
+  await expect(nextSendSheet.getByText('sanctum-elysium-loam').first()).toBeVisible();
+  await expect(nextSendSheet.getByText('send next', { exact: true })).toBeVisible();
+  await expect(
+    nextSendSheet.getByText(
+      'outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact',
+      { exact: true }
+    )
+  ).toBeVisible();
+  await expect(
+    nextSendSheet.getByText(
+      'Send the exact approved message only, record durable evidence, then stop for reply review.'
+    )
+  ).toBeVisible();
+  await expect(
+    nextSendSheet
+      .getByText('3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100')
+      .first()
+  ).toBeVisible();
+  await expect(
+    nextSendSheet.getByText(
+      'node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"'
+    )
+  ).toBeVisible();
+  await expect(
+    nextSendSheet.getByText(
+      'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100'
+    )
+  ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Manual Outreach Packets' })).toBeVisible();
   await expect(page.getByText('Showing 5 of 30 ready packets.')).toBeVisible();
   await expect(page.getByText('Sprint Gross Target')).toBeVisible();
@@ -409,7 +444,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     'href',
     'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml'
   );
-  await expect(page.getByText('Approved Message SHA-256')).toBeVisible();
+  await expect(page.getByText('Approved Message SHA-256').first()).toBeVisible();
   await expect(page.getByText('Prepare Evidence Issue').first()).toBeVisible();
   await expect(
     page

@@ -1,14 +1,14 @@
 {
   "project": "SATA Reserve Token",
   "mode": "manual-outreach-dispatch-brief",
-  "generatedAtUtc": "2026-09-17T01:25:08.230Z",
+  "generatedAtUtc": "2026-09-17T04:05:22.585Z",
   "reserve": {
     "confirmedSats": "500000",
     "confirmedBtc": "0.005",
     "targetSats": "1000000000",
     "remainingSats": "999500000",
     "remainingBtc": "9.995",
-    "latestReportGeneratedAtUtc": "2026-09-16T17:37:17.782Z"
+    "latestReportGeneratedAtUtc": "2026-09-17T04:05:21.830Z"
   },
   "maxManualSends": 5,
   "readyManualSendCount": 30,

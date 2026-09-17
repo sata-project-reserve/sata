@@ -237,6 +237,14 @@ export function renderReplyConversionMarkdown(brief) {
           ...(brief.invoiceConversionSprint.candidate.contactEvidenceFormUrl
             ? [`Evidence form: ${brief.invoiceConversionSprint.candidate.contactEvidenceFormUrl}`]
             : []),
+          ...(brief.invoiceConversionSprint.candidate.contactEvidenceIssueTemplateCommand
+            ? [
+                'Contact evidence issue-body command:',
+                '```sh',
+                brief.invoiceConversionSprint.candidate.contactEvidenceIssueTemplateCommand,
+                '```'
+              ]
+            : []),
           ...(brief.invoiceConversionSprint.candidate.approvedMessageSha256
             ? [
                 `Approved message SHA-256: ${brief.invoiceConversionSprint.candidate.approvedMessageSha256}`
@@ -401,6 +409,7 @@ function contactRecordFor({ prospect, packet, revenuePlan, revenueStreamsById })
           qualificationQuestions: revenuePlan?.upgradePolicy?.qualificationQuestions ?? []
         }
       : null,
+    contactEvidenceIssueTemplateCommand: outreachContactEvidenceTemplateCommand(packet.id),
     recordSentContactCommand: withRequiredContactEvidencePlaceholders(packet.recordContactCommand, packet.id),
     boundary:
       'Record only after chairman-approved outreach has been sent and durable contact evidence exists. Prefer the mark-sent command so packet and prospect state move together.'
@@ -423,6 +432,10 @@ function withRequiredContactEvidencePlaceholders(command, packetId) {
     next = `${next} --messageHash "<approved-message-sha256>"`;
   }
   return next;
+}
+
+function outreachContactEvidenceTemplateCommand(packetId) {
+  return `node scripts/outreach-contact-evidence-agent.mjs render-template --packet ${packetId} --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"`;
 }
 
 function invoiceRequestRecordFor(prospect) {
@@ -555,6 +568,7 @@ function sprintCandidateFor({ item, revenuePlan }) {
     evidenceRequired: 'Manual send evidence before the prospect can be treated as contacted.',
     invoiceEvidencePlaceholder: '<invoice-request-evidence-url-or-reference>',
     contactEvidenceFormUrl: CONTACT_EVIDENCE_INTAKE_URL,
+    contactEvidenceIssueTemplateCommand: item.contactEvidenceIssueTemplateCommand,
     approvedMessage: item.approvedMessage,
     approvedMessageSha256: item.approvedMessageSha256
   };
@@ -628,6 +642,11 @@ function sprintCommandsFor({ status, current, offerId, customerId, evidencePlace
     ];
   }
   return [
+    {
+      label: 'Render contact evidence issue body',
+      reason: 'Prepare the durable evidence issue body before marking the approved outreach sent.',
+      command: current.contactEvidenceIssueTemplateCommand
+    },
     {
       label: 'Record manual contact evidence',
       reason: 'The top prospect still needs a durable record that approved outreach was sent.',

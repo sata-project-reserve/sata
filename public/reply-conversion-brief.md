@@ -1,6 +1,6 @@
 # SATA Reserve Token Reply Conversion Brief
 
-Generated: 2026-09-17T08:38:52.984Z
+Generated: 2026-09-17T08:41:56.973Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -37,6 +37,10 @@ Current ask: $249
 Qualified ask: $999
 Evidence: Manual send evidence before the prospect can be treated as contacted.
 Evidence form: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml
+Contact evidence issue-body command:
+```sh
+node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
+```
 Approved message SHA-256: 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
 
 ### Approved Sprint Copy
@@ -57,6 +61,13 @@ Any invoice, paid work, token grant, or payment instruction requires Executive C
 ```
 
 ### Sprint Commands
+
+#### Render contact evidence issue body
+Prepare the durable evidence issue body before marking the approved outreach sent.
+
+```sh
+node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
+```
 
 #### Record manual contact evidence
 The top prospect still needs a durable record that approved outreach was sent.

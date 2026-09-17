@@ -155,13 +155,33 @@ if (!brief.invoiceConversionSprint || typeof brief.invoiceConversionSprint !== '
       if (!sprint.candidate.contactEvidenceFormUrl?.includes('outreach-contact-evidence.yml')) {
         findings.push('invoice conversion sprint must expose the contact evidence form');
       }
+      if (
+        !/outreach-contact-evidence-agent\.mjs render-template --packet/.test(
+          sprint.candidate.contactEvidenceIssueTemplateCommand ?? ''
+        )
+      ) {
+        findings.push('invoice conversion sprint must expose the contact evidence issue-body command');
+      }
       if (!sprint.candidate.approvedMessage || !sprint.candidate.approvedMessageSha256) {
         findings.push('invoice conversion sprint must include approved outreach copy and hash');
       } else if (sha256(sprint.candidate.approvedMessage) !== sprint.candidate.approvedMessageSha256) {
         findings.push('invoice conversion sprint approved message hash must match the copy');
       }
-      if (!String(sprint.commands?.[0]?.command ?? '').includes(sprint.candidate.approvedMessageSha256)) {
-        findings.push('invoice conversion sprint contact command must include the approved message hash');
+      if (
+        !sprint.commands.some((command) =>
+          /outreach-contact-evidence-agent\.mjs render-template --packet/.test(
+            command.command ?? ''
+          )
+        )
+      ) {
+        findings.push('invoice conversion sprint commands must include contact evidence issue-body rendering');
+      }
+      if (
+        !sprint.commands.some((command) =>
+          String(command.command ?? '').includes(sprint.candidate.approvedMessageSha256)
+        )
+      ) {
+        findings.push('invoice conversion sprint commands must include the approved message hash');
       }
     }
   }
@@ -179,6 +199,13 @@ if (
 for (const item of brief.eligibleContactRecording) {
   if (!/mark-sent --packet/.test(item.recordSentContactCommand ?? '')) {
     findings.push(`${item.prospectId}: contact command must mark the outreach packet sent`);
+  }
+  if (
+    !/outreach-contact-evidence-agent\.mjs render-template --packet/.test(
+      item.contactEvidenceIssueTemplateCommand ?? ''
+    )
+  ) {
+    findings.push(`${item.prospectId}: contact record must expose contact evidence issue-body command`);
   }
   if (!/--sentAtUtc "<sent-at-utc>"/.test(item.recordSentContactCommand ?? '')) {
     findings.push(`${item.prospectId}: contact command must require explicit sentAtUtc evidence`);
@@ -278,6 +305,12 @@ if (brief.invoiceConversionSprint?.candidate?.approvedMessage) {
   if (!markdown.includes(brief.invoiceConversionSprint.candidate.approvedMessageSha256)) {
     findings.push('markdown must include approved sprint copy SHA-256');
   }
+}
+if (!markdown.includes('Contact evidence issue-body command:')) {
+  findings.push('markdown must include contact evidence issue-body command');
+}
+if (!markdown.includes('outreach-contact-evidence-agent.mjs render-template --packet')) {
+  findings.push('markdown must include the contact evidence template command');
 }
 if (!markdown.includes('utm_source=manual_outreach')) {
   findings.push('markdown must include tracked manual outreach URLs');

@@ -5,6 +5,7 @@ import { prioritizeOutreachPackets } from './lib/prospect-priority.mjs';
 
 const CONTACT_EVIDENCE_INTAKE_URL =
   'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml';
+const CONTACT_EVIDENCE_REVIEW_COMMAND = 'npm run ops:outreach-contact-evidence-plan';
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [, , command = 'plan'] = process.argv;
@@ -245,6 +246,14 @@ export function renderReplyConversionMarkdown(brief) {
                 '```'
               ]
             : []),
+          ...(brief.invoiceConversionSprint.candidate.contactEvidenceReviewCommand
+            ? [
+                'Contact evidence review command:',
+                '```sh',
+                brief.invoiceConversionSprint.candidate.contactEvidenceReviewCommand,
+                '```'
+              ]
+            : []),
           ...(brief.invoiceConversionSprint.candidate.approvedMessageSha256
             ? [
                 `Approved message SHA-256: ${brief.invoiceConversionSprint.candidate.approvedMessageSha256}`
@@ -311,6 +320,7 @@ export function renderReplyConversionMarkdown(brief) {
       ...(item.tracking?.serviceUrl ? [`Service: ${item.tracking.serviceUrl}`] : []),
       ...(item.tracking?.sampleAuditUrl ? [`Sample: ${item.tracking.sampleAuditUrl}`] : []),
       ...(item.tracking?.intakeUrl ? [`Intake: ${item.tracking.intakeUrl}`] : []),
+      `Evidence review command: ${item.contactEvidenceReviewCommand}`,
       '',
       '```sh',
       item.recordSentContactCommand,
@@ -410,9 +420,10 @@ function contactRecordFor({ prospect, packet, revenuePlan, revenueStreamsById })
         }
       : null,
     contactEvidenceIssueTemplateCommand: outreachContactEvidenceTemplateCommand(packet.id),
+    contactEvidenceReviewCommand: CONTACT_EVIDENCE_REVIEW_COMMAND,
     recordSentContactCommand: withRequiredContactEvidencePlaceholders(packet.recordContactCommand, packet.id),
     boundary:
-      'Record only after chairman-approved outreach has been sent and durable contact evidence exists. Prefer the mark-sent command so packet and prospect state move together.'
+      'Record only after chairman-approved outreach has been sent and the contact evidence review returns a verified operator command. Prefer the verified mark-sent command so packet and prospect state move together.'
   };
 }
 
@@ -569,6 +580,7 @@ function sprintCandidateFor({ item, revenuePlan }) {
     invoiceEvidencePlaceholder: '<invoice-request-evidence-url-or-reference>',
     contactEvidenceFormUrl: CONTACT_EVIDENCE_INTAKE_URL,
     contactEvidenceIssueTemplateCommand: item.contactEvidenceIssueTemplateCommand,
+    contactEvidenceReviewCommand: item.contactEvidenceReviewCommand,
     approvedMessage: item.approvedMessage,
     approvedMessageSha256: item.approvedMessageSha256
   };
@@ -648,8 +660,15 @@ function sprintCommandsFor({ status, current, offerId, customerId, evidencePlace
       command: current.contactEvidenceIssueTemplateCommand
     },
     {
-      label: 'Record manual contact evidence',
-      reason: 'The top prospect still needs a durable record that approved outreach was sent.',
+      label: 'Review submitted contact evidence',
+      reason:
+        'After submitting the evidence issue, use the review agent to verify the exact message and SHA-256 before any state update.',
+      command: current.contactEvidenceReviewCommand
+    },
+    {
+      label: 'Record verified contact evidence',
+      reason:
+        'Run only after the evidence review returns a ready operator command for the submitted issue.',
       command: current.recordSentContactCommand
     },
     {

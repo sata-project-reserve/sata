@@ -1,6 +1,6 @@
 # SATA Reserve Token Reply Conversion Brief
 
-Generated: 2026-09-17T08:45:23.102Z
+Generated: 2026-09-17T08:49:37.603Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -41,6 +41,10 @@ Contact evidence issue-body command:
 ```sh
 node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```
+Contact evidence review command:
+```sh
+npm run ops:outreach-contact-evidence-plan
+```
 Approved message SHA-256: 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
 
 ### Approved Sprint Copy
@@ -69,8 +73,15 @@ Prepare the durable evidence issue body before marking the approved outreach sen
 node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```
 
-#### Record manual contact evidence
-The top prospect still needs a durable record that approved outreach was sent.
+#### Review submitted contact evidence
+After submitting the evidence issue, use the review agent to verify the exact message and SHA-256 before any state update.
+
+```sh
+npm run ops:outreach-contact-evidence-plan
+```
+
+#### Record verified contact evidence
+Run only after the evidence review returns a ready operator command for the submitted issue.
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
@@ -143,6 +154,7 @@ Project: https://sanctumelysium.com/whitepaper.html
 Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_audit_service
 Sample: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_sample_audit
 Intake: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam&template=transparency-audit-intake.yml
+Evidence review command: npm run ops:outreach-contact-evidence-plan
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
@@ -159,6 +171,7 @@ Project: https://memelaunchs.com/results
 Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_meme_launch_transparency_audit_first_contact&utm_content=meme_launch_audit_service
 Sample: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_meme_launch_transparency_audit_first_contact&utm_content=meme_launch_sample_audit
 Intake: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_meme_launch_transparency_audit_first_contact&utm_content=meme_launch&template=transparency-audit-intake.yml
+Evidence review command: npm run ops:outreach-contact-evidence-plan
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 28ed7b84f82ae8b4f07961b70ab46a494d3b04349e0d0408e3d1e9bab30d090a
@@ -175,6 +188,7 @@ Project: https://instarbrands.com/pages/meme-futures
 Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures_audit_service
 Sample: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures_sample_audit
 Intake: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures&template=transparency-audit-intake.yml
+Evidence review command: npm run ops:outreach-contact-evidence-plan
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash c3da58a0c6934bc5a9c9790e5a45b0efe164b2b9f520d7eeb878c3a016742a64
@@ -191,6 +205,7 @@ Project: https://www.soltokenlab.com/
 Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_soltokenlab_transparency_audit_first_contact&utm_content=soltokenlab_audit_service
 Sample: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_soltokenlab_transparency_audit_first_contact&utm_content=soltokenlab_sample_audit
 Intake: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_soltokenlab_transparency_audit_first_contact&utm_content=soltokenlab&template=transparency-audit-intake.yml
+Evidence review command: npm run ops:outreach-contact-evidence-plan
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 202d9912a588930de17a540a0e0a32721bad0ea0c3b5d72e679786583a3b3a70
@@ -206,6 +221,7 @@ Project: https://docs.cia.com/technical/usdcia-token
 Service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_cia_token_transparency_audit_first_contact&utm_content=cia_token_audit_service
 Sample: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_cia_token_transparency_audit_first_contact&utm_content=cia_token_sample_audit
 Intake: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_cia_token_transparency_audit_first_contact&utm_content=cia_token&template=transparency-audit-intake.yml
+Evidence review command: npm run ops:outreach-contact-evidence-plan
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 0add8ed0b05bf1e1ea2d9dcb9ea949fe6961cbcbf0dac929291381af9ed82a3e

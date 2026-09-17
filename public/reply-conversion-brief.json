@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "mode": "chairman-gated-reply-conversion-brief",
-  "generatedAtUtc": "2026-09-17T08:45:23.102Z",
+  "generatedAtUtc": "2026-09-17T08:49:37.603Z",
   "reserve": {
     "confirmedSats": "500000",
     "confirmedBtc": "0.005",
@@ -99,8 +99,9 @@
         ]
       },
       "contactEvidenceIssueTemplateCommand": "node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\"",
+      "contactEvidenceReviewCommand": "npm run ops:outreach-contact-evidence-plan",
       "recordSentContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100",
-      "boundary": "Record only after chairman-approved outreach has been sent and durable contact evidence exists. Prefer the mark-sent command so packet and prospect state move together."
+      "boundary": "Record only after chairman-approved outreach has been sent and the contact evidence review returns a verified operator command. Prefer the verified mark-sent command so packet and prospect state move together."
     },
     {
       "prospectId": "meme-launch",
@@ -144,8 +145,9 @@
         ]
       },
       "contactEvidenceIssueTemplateCommand": "node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\"",
+      "contactEvidenceReviewCommand": "npm run ops:outreach-contact-evidence-plan",
       "recordSentContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 28ed7b84f82ae8b4f07961b70ab46a494d3b04349e0d0408e3d1e9bab30d090a",
-      "boundary": "Record only after chairman-approved outreach has been sent and durable contact evidence exists. Prefer the mark-sent command so packet and prospect state move together."
+      "boundary": "Record only after chairman-approved outreach has been sent and the contact evidence review returns a verified operator command. Prefer the verified mark-sent command so packet and prospect state move together."
     },
     {
       "prospectId": "instar-meme-futures",
@@ -189,8 +191,9 @@
         ]
       },
       "contactEvidenceIssueTemplateCommand": "node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\"",
+      "contactEvidenceReviewCommand": "npm run ops:outreach-contact-evidence-plan",
       "recordSentContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash c3da58a0c6934bc5a9c9790e5a45b0efe164b2b9f520d7eeb878c3a016742a64",
-      "boundary": "Record only after chairman-approved outreach has been sent and durable contact evidence exists. Prefer the mark-sent command so packet and prospect state move together."
+      "boundary": "Record only after chairman-approved outreach has been sent and the contact evidence review returns a verified operator command. Prefer the verified mark-sent command so packet and prospect state move together."
     },
     {
       "prospectId": "soltokenlab",
@@ -234,8 +237,9 @@
         ]
       },
       "contactEvidenceIssueTemplateCommand": "node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\"",
+      "contactEvidenceReviewCommand": "npm run ops:outreach-contact-evidence-plan",
       "recordSentContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 202d9912a588930de17a540a0e0a32721bad0ea0c3b5d72e679786583a3b3a70",
-      "boundary": "Record only after chairman-approved outreach has been sent and durable contact evidence exists. Prefer the mark-sent command so packet and prospect state move together."
+      "boundary": "Record only after chairman-approved outreach has been sent and the contact evidence review returns a verified operator command. Prefer the verified mark-sent command so packet and prospect state move together."
     },
     {
       "prospectId": "cia-token",
@@ -268,8 +272,9 @@
       "qualifiedRevenueUsd": "249",
       "conversionPlan": null,
       "contactEvidenceIssueTemplateCommand": "node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\"",
+      "contactEvidenceReviewCommand": "npm run ops:outreach-contact-evidence-plan",
       "recordSentContactCommand": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 0add8ed0b05bf1e1ea2d9dcb9ea949fe6961cbcbf0dac929291381af9ed82a3e",
-      "boundary": "Record only after chairman-approved outreach has been sent and durable contact evidence exists. Prefer the mark-sent command so packet and prospect state move together."
+      "boundary": "Record only after chairman-approved outreach has been sent and the contact evidence review returns a verified operator command. Prefer the verified mark-sent command so packet and prospect state move together."
     }
   ],
   "eligibleInvoiceRequestRecording": [],
@@ -292,6 +297,7 @@
       "invoiceEvidencePlaceholder": "<invoice-request-evidence-url-or-reference>",
       "contactEvidenceFormUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml",
       "contactEvidenceIssueTemplateCommand": "node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\"",
+      "contactEvidenceReviewCommand": "npm run ops:outreach-contact-evidence-plan",
       "approvedMessage": "Hi sanctum-elysium-loam,\n\nHey, SATA runs a $249 Transparency Audit for crypto teams. We review public authority, supply and concentration, LP ownership or lock evidence, reserve claims, and disclosure gaps, then provide a concise report and machine-readable JSON. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.\n\nPublic profile reviewed: https://sanctumelysium.com/whitepaper.html\nProject page reviewed: https://sanctumelysium.com/whitepaper.html\n\nService page: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_audit_service\nSample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_sample_audit\nIntake form: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam&template=transparency-audit-intake.yml\n\nAny invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.",
       "approvedMessageSha256": "3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100"
     },
@@ -306,8 +312,13 @@
         "command": "node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\""
       },
       {
-        "label": "Record manual contact evidence",
-        "reason": "The top prospect still needs a durable record that approved outreach was sent.",
+        "label": "Review submitted contact evidence",
+        "reason": "After submitting the evidence issue, use the review agent to verify the exact message and SHA-256 before any state update.",
+        "command": "npm run ops:outreach-contact-evidence-plan"
+      },
+      {
+        "label": "Record verified contact evidence",
+        "reason": "Run only after the evidence review returns a ready operator command for the submitted issue.",
         "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100"
       },
       {

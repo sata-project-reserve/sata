@@ -11,6 +11,7 @@ const prospectPipeline = readJson(join('public', 'sats-prospect-pipeline.json'))
 const outreachPacketQueue = readJson(join('public', 'service-outreach-packet-queue.json'));
 const inboundLeadQueue = readJson(join('public', 'inbound-service-lead-queue.json'));
 const revenuePlan = readJson(join('public', 'revenue-operating-plan.json'));
+const CONTACT_EVIDENCE_REVIEW_COMMAND = 'npm run ops:outreach-contact-evidence-plan';
 const brief = buildReplyConversionBrief({
   status,
   prospectPipeline,
@@ -162,11 +163,20 @@ if (!brief.invoiceConversionSprint || typeof brief.invoiceConversionSprint !== '
       ) {
         findings.push('invoice conversion sprint must expose the contact evidence issue-body command');
       }
+      if (sprint.candidate.contactEvidenceReviewCommand !== CONTACT_EVIDENCE_REVIEW_COMMAND) {
+        findings.push('invoice conversion sprint must expose the contact evidence review command');
+      }
       if (!sprint.candidate.approvedMessage || !sprint.candidate.approvedMessageSha256) {
         findings.push('invoice conversion sprint must include approved outreach copy and hash');
       } else if (sha256(sprint.candidate.approvedMessage) !== sprint.candidate.approvedMessageSha256) {
         findings.push('invoice conversion sprint approved message hash must match the copy');
       }
+      const reviewCommandIndex = sprint.commands.findIndex(
+        (command) => command.command === CONTACT_EVIDENCE_REVIEW_COMMAND
+      );
+      const markSentCommandIndex = sprint.commands.findIndex((command) =>
+        /service-outreach-packet-agent\.mjs mark-sent/.test(command.command ?? '')
+      );
       if (
         !sprint.commands.some((command) =>
           /outreach-contact-evidence-agent\.mjs render-template --packet/.test(
@@ -175,6 +185,16 @@ if (!brief.invoiceConversionSprint || typeof brief.invoiceConversionSprint !== '
         )
       ) {
         findings.push('invoice conversion sprint commands must include contact evidence issue-body rendering');
+      }
+      if (reviewCommandIndex === -1) {
+        findings.push('invoice conversion sprint commands must include contact evidence review before recording');
+      }
+      if (
+        reviewCommandIndex !== -1 &&
+        markSentCommandIndex !== -1 &&
+        reviewCommandIndex > markSentCommandIndex
+      ) {
+        findings.push('invoice conversion sprint must review contact evidence before mark-sent');
       }
       if (
         !sprint.commands.some((command) =>
@@ -206,6 +226,9 @@ for (const item of brief.eligibleContactRecording) {
     )
   ) {
     findings.push(`${item.prospectId}: contact record must expose contact evidence issue-body command`);
+  }
+  if (item.contactEvidenceReviewCommand !== CONTACT_EVIDENCE_REVIEW_COMMAND) {
+    findings.push(`${item.prospectId}: contact record must expose contact evidence review command`);
   }
   if (!/--sentAtUtc "<sent-at-utc>"/.test(item.recordSentContactCommand ?? '')) {
     findings.push(`${item.prospectId}: contact command must require explicit sentAtUtc evidence`);
@@ -309,8 +332,14 @@ if (brief.invoiceConversionSprint?.candidate?.approvedMessage) {
 if (!markdown.includes('Contact evidence issue-body command:')) {
   findings.push('markdown must include contact evidence issue-body command');
 }
+if (!markdown.includes('Contact evidence review command:')) {
+  findings.push('markdown must include contact evidence review command');
+}
 if (!markdown.includes('outreach-contact-evidence-agent.mjs render-template --packet')) {
   findings.push('markdown must include the contact evidence template command');
+}
+if (!markdown.includes(CONTACT_EVIDENCE_REVIEW_COMMAND)) {
+  findings.push('markdown must include the contact evidence review command');
 }
 if (!markdown.includes('utm_source=manual_outreach')) {
   findings.push('markdown must include tracked manual outreach URLs');
@@ -352,6 +381,9 @@ if (publicBrief) {
   for (const item of publicBrief.eligibleContactRecording ?? []) {
     if (!/--messageHash [0-9a-f]{64}\b/.test(item.recordSentContactCommand ?? '')) {
       findings.push(`${item.prospectId}: public contact command must require the approved message SHA-256`);
+    }
+    if (item.contactEvidenceReviewCommand !== CONTACT_EVIDENCE_REVIEW_COMMAND) {
+      findings.push(`${item.prospectId}: public contact record must expose contact evidence review command`);
     }
   }
 }

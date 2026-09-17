@@ -166,6 +166,24 @@ for (const required of [
     findings.push(`/operations: referral handoff queue must expose ${required}`);
   }
 }
+for (const required of [
+  'postPublishedReplyTriageCommand',
+  'postPublishedInvoiceEvidenceCommand',
+  'postPublishedIntakeEvidenceCommand',
+  'Post-Publication Reply Triage',
+  'Post-Publication Invoice Evidence',
+  'Post-Publication Intake Evidence',
+  'post.postPublishReplyTriageCommand',
+  'post.postPublishInvoiceEvidenceIssueTemplateCommand',
+  'post.postPublishIntakeEvidenceIssueTemplateCommand',
+  'action.postPublishReplyTriageCommand',
+  'action.postPublishInvoiceEvidenceIssueTemplateCommand',
+  'action.postPublishIntakeEvidenceIssueTemplateCommand'
+]) {
+  if (!operationsPage.includes(required)) {
+    findings.push(`/operations: social conversion handoff must expose ${required}`);
+  }
+}
 if (!/recordSentCommand/.test(operationsPage)) {
   findings.push(
     '/operations: referral handoff sent command must reuse the approved packet command'

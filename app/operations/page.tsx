@@ -38,6 +38,9 @@ type Prospect = (typeof prospectPipeline.prospects)[number];
 type RevenueExecutionAction = (typeof revenueExecutionBrief.topActions)[number];
 type ActionQueueItem = (typeof cycleStatus.actionQueue)[number] & {
   artifact?: string;
+  postPublishReplyTriageCommand?: string;
+  postPublishInvoiceEvidenceIssueTemplateCommand?: string;
+  postPublishIntakeEvidenceIssueTemplateCommand?: string;
 };
 type SocialPost = (typeof socialQueue.posts)[number];
 type ReferralPartnerHandoff = {
@@ -232,6 +235,18 @@ function rejectSocialPostCommand(post: SocialPost) {
 function recordPublishedSocialPostCommand(post: SocialPost) {
   const contentHash = 'contentSha256' in post ? post.contentSha256 : '<approved-post-sha256>';
   return `npm run social:agent -- record-published --post ${post.id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash ${contentHash}`;
+}
+
+function postPublishedReplyTriageCommand(post: SocialPost) {
+  return `node scripts/inbound-reply-triage-agent.mjs markdown --sourceType published-social-reply --sourceId ${post.id} --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>"`;
+}
+
+function postPublishedInvoiceEvidenceCommand(post: SocialPost) {
+  return `node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId ${post.id} --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true`;
+}
+
+function postPublishedIntakeEvidenceCommand(post: SocialPost) {
+  return `node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType published-social-reply --sourceId ${post.id} --contactHandle "<x-handle-or-contact>" --publicProfileUrl "<https-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --replyText "<reply-or-dm-text>" --evidence "<reply-or-dm-evidence>" --recordedAtUtc "<recorded-at-utc>" --classification "needs-intake-fields" --customerAskedForInvoice false`;
 }
 
 function recordInboundLeadCommand(source: InboundSource) {
@@ -665,10 +680,49 @@ export default function OperationsPage() {
                     <code>{action.evidenceIssueTemplateCommand}</code>
                   </>
                 ) : null}
+                {'postPublishReplyTriageCommand' in action &&
+                action.postPublishReplyTriageCommand ? (
+                  <>
+                    <span>Post-Publication Reply Triage</span>
+                    <code>{action.postPublishReplyTriageCommand}</code>
+                  </>
+                ) : null}
+                {'postPublishInvoiceEvidenceIssueTemplateCommand' in action &&
+                action.postPublishInvoiceEvidenceIssueTemplateCommand ? (
+                  <>
+                    <span>Post-Publication Invoice Evidence</span>
+                    <code>{action.postPublishInvoiceEvidenceIssueTemplateCommand}</code>
+                  </>
+                ) : null}
+                {'postPublishIntakeEvidenceIssueTemplateCommand' in action &&
+                action.postPublishIntakeEvidenceIssueTemplateCommand ? (
+                  <>
+                    <span>Post-Publication Intake Evidence</span>
+                    <code>{action.postPublishIntakeEvidenceIssueTemplateCommand}</code>
+                  </>
+                ) : null}
                 <span>Stop Rule</span>
                 <code>{action.stopRule}</code>
                 <span>Command</span>
                 <code>{action.command}</code>
+                {action.postPublishReplyTriageCommand ? (
+                  <>
+                    <span>Post-Publication Reply Triage</span>
+                    <code>{action.postPublishReplyTriageCommand}</code>
+                  </>
+                ) : null}
+                {action.postPublishInvoiceEvidenceIssueTemplateCommand ? (
+                  <>
+                    <span>Post-Publication Invoice Evidence</span>
+                    <code>{action.postPublishInvoiceEvidenceIssueTemplateCommand}</code>
+                  </>
+                ) : null}
+                {action.postPublishIntakeEvidenceIssueTemplateCommand ? (
+                  <>
+                    <span>Post-Publication Intake Evidence</span>
+                    <code>{action.postPublishIntakeEvidenceIssueTemplateCommand}</code>
+                  </>
+                ) : null}
               </div>
             </div>
           ))}
@@ -960,6 +1014,12 @@ export default function OperationsPage() {
                 <div className="command-list">
                   <span>Record Published URL</span>
                   <code>{recordPublishedSocialPostCommand(post)}</code>
+                  <span>Post-Publication Reply Triage</span>
+                  <code>{postPublishedReplyTriageCommand(post)}</code>
+                  <span>Post-Publication Invoice Evidence</span>
+                  <code>{postPublishedInvoiceEvidenceCommand(post)}</code>
+                  <span>Post-Publication Intake Evidence</span>
+                  <code>{postPublishedIntakeEvidenceCommand(post)}</code>
                 </div>
               </div>
             ))
@@ -1088,6 +1148,12 @@ export default function OperationsPage() {
                 </code>
                 <span>Record Published URL</span>
                 <code>{post.recordPublishedCommand}</code>
+                <span>Post-Publication Reply Triage</span>
+                <code>{post.postPublishReplyTriageCommand}</code>
+                <span>Post-Publication Invoice Evidence</span>
+                <code>{post.postPublishInvoiceEvidenceIssueTemplateCommand}</code>
+                <span>Post-Publication Intake Evidence</span>
+                <code>{post.postPublishIntakeEvidenceIssueTemplateCommand}</code>
               </div>
             </div>
           ))}

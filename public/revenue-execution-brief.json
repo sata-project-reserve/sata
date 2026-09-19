@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "mode": "sats-revenue-execution-brief",
-  "generatedAtUtc": "2026-09-19T07:48:00.172Z",
+  "generatedAtUtc": "2026-09-19T07:52:42.261Z",
   "northStar": {
     "confirmedSats": "500000",
     "targetSats": "1000000000",
@@ -60,7 +60,7 @@
       "operatorChecklist": [
         "Open public/referral-partner-handoff-packet.md and send the Partner Reply exactly.",
         "Capture the send evidence and UTC send time before recording anything.",
-        "Run the record-sent command with the approved terms hash only after the manual send exists."
+        "Submit the handoff evidence issue and run the evidence review before record-sent."
       ],
       "stopRule": "Record sent evidence only after manual send. Do not approve compensation, invoices, payment instructions, grants, or asset movement."
     },
@@ -168,7 +168,7 @@
       "operatorChecklist": [
         "Open the approved social content queue and confirm the post content matches the content hash.",
         "Publish manually from the project account, then capture the live URL, screenshot or export, and UTC publish time.",
-        "Run record-published only after the live post evidence exists; do not alter the approved copy."
+        "Submit the publish evidence issue and run the evidence review before record-published; do not alter the approved copy."
       ],
       "stopRule": "Publish only the approved post content manually, then record the live URL and evidence; do not change copy or enable live automation."
     },
@@ -232,7 +232,7 @@
       "operatorChecklist": [
         "Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact.",
         "Send only the packet message as written, then capture durable evidence and UTC send time.",
-        "Run the mark-sent command only after the manual send evidence exists."
+        "Submit the contact evidence issue and run the evidence review before mark-sent."
       ],
       "stopRule": "Send the approved copy only. Do not add investment, return, liquidity, or trading claims."
     },
@@ -295,7 +295,7 @@
       "operatorChecklist": [
         "Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-meme-launch-transparency-audit-first-contact.",
         "Send only the packet message as written, then capture durable evidence and UTC send time.",
-        "Run the mark-sent command only after the manual send evidence exists."
+        "Submit the contact evidence issue and run the evidence review before mark-sent."
       ],
       "stopRule": "Send the approved copy only. Do not add investment, return, liquidity, or trading claims."
     }
@@ -357,7 +357,7 @@
       "operatorChecklist": [
         "Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact.",
         "Send only the packet message as written, then capture durable evidence and UTC send time.",
-        "Run the mark-sent command only after the manual send evidence exists."
+        "Submit the contact evidence issue and run the evidence review before mark-sent."
       ],
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100"
     },
@@ -416,7 +416,7 @@
       "operatorChecklist": [
         "Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-meme-launch-transparency-audit-first-contact.",
         "Send only the packet message as written, then capture durable evidence and UTC send time.",
-        "Run the mark-sent command only after the manual send evidence exists."
+        "Submit the contact evidence issue and run the evidence review before mark-sent."
       ],
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 28ed7b84f82ae8b4f07961b70ab46a494d3b04349e0d0408e3d1e9bab30d090a"
     },
@@ -475,7 +475,7 @@
       "operatorChecklist": [
         "Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact.",
         "Send only the packet message as written, then capture durable evidence and UTC send time.",
-        "Run the mark-sent command only after the manual send evidence exists."
+        "Submit the contact evidence issue and run the evidence review before mark-sent."
       ],
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash c3da58a0c6934bc5a9c9790e5a45b0efe164b2b9f520d7eeb878c3a016742a64"
     },
@@ -534,7 +534,7 @@
       "operatorChecklist": [
         "Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-soltokenlab-transparency-audit-first-contact.",
         "Send only the packet message as written, then capture durable evidence and UTC send time.",
-        "Run the mark-sent command only after the manual send evidence exists."
+        "Submit the contact evidence issue and run the evidence review before mark-sent."
       ],
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 202d9912a588930de17a540a0e0a32721bad0ea0c3b5d72e679786583a3b3a70"
     },
@@ -582,7 +582,7 @@
       "operatorChecklist": [
         "Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-cia-token-transparency-audit-first-contact.",
         "Send only the packet message as written, then capture durable evidence and UTC send time.",
-        "Run the mark-sent command only after the manual send evidence exists."
+        "Submit the contact evidence issue and run the evidence review before mark-sent."
       ],
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 0add8ed0b05bf1e1ea2d9dcb9ea949fe6961cbcbf0dac929291381af9ed82a3e"
     }

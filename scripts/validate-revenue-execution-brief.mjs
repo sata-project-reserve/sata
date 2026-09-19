@@ -130,6 +130,13 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
     ) {
       findings.push('prepared referral handoff action must expose the referral handoff evidence issue-body command');
     }
+    if (
+      !brief.topActions[0]?.operatorChecklist?.some((step) =>
+        /evidence review before record-sent/i.test(step)
+      )
+    ) {
+      findings.push('prepared referral handoff checklist must require evidence review before record-sent');
+    }
   } else if (
     !brief.topActions[0]?.command?.includes('referral-partner-handoff-agent.mjs write-packet')
   ) {
@@ -168,6 +175,13 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
       )
     ) {
       findings.push(`${action.id}: manual outreach action must expose the contact evidence issue-body command`);
+    }
+    if (
+      !action.operatorChecklist?.some((step) =>
+        /evidence review before mark-sent/i.test(step)
+      )
+    ) {
+      findings.push(`${action.id}: manual outreach checklist must require evidence review before mark-sent`);
     }
     if (
       !Number.isSafeInteger(Number(action.currentAskUsd)) ||
@@ -309,6 +323,13 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
     ) {
       findings.push('manual social publish action must expose the social publish evidence issue-body command');
     }
+    if (
+      !manualSocialPublishAction.operatorChecklist?.some((step) =>
+        /evidence review before record-published/i.test(step)
+      )
+    ) {
+      findings.push('manual social publish checklist must require evidence review before record-published');
+    }
     if (!manualSocialPublishAction.approvedMessage || !manualSocialPublishAction.approvedMessageSha256) {
       findings.push('manual social publish action must include the exact approved post text and hash');
     }
@@ -424,6 +445,13 @@ for (const item of brief.manualSendBatch) {
       `${item.packetId}: manual send batch command must require approved message SHA-256`
     );
   }
+  if (
+    !item.operatorChecklist?.some((step) =>
+      /evidence review before mark-sent/i.test(step)
+    )
+  ) {
+    findings.push(`${item.packetId}: manual send batch checklist must require evidence review before mark-sent`);
+  }
   if (!item.approvedMessage || !item.approvedMessageSha256) {
     findings.push(`${item.packetId}: manual send batch item must include copy-ready text and hash`);
   }
@@ -477,6 +505,12 @@ if (!markdown.includes('Evidence review command: npm run ops:inbound-reply-evide
 if (!markdown.includes('Evidence issue-body command: node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType')) {
   findings.push('markdown must include inbound reply evidence issue-body command');
 }
+if (
+  markdown.indexOf('Evidence issue-body command: node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType') >
+  markdown.indexOf('Evidence review command: npm run ops:inbound-reply-evidence-plan')
+) {
+  findings.push('markdown must present inbound reply issue-body command before evidence review');
+}
 if (!markdown.includes('Invoice-request evidence issue-body command:')) {
   findings.push('markdown must include invoice-request evidence issue-body command');
 }
@@ -492,6 +526,12 @@ if (!markdown.includes('Evidence intake: https://github.com/sata-project-reserve
 if (!markdown.includes('Evidence review command: npm run ops:referral-handoff-evidence-plan')) {
   findings.push('markdown must include referral handoff evidence review command');
 }
+if (
+  markdown.indexOf('Evidence issue-body command: node scripts/referral-handoff-evidence-agent.mjs render-template --campaign') >
+  markdown.indexOf('Evidence review command: npm run ops:referral-handoff-evidence-plan')
+) {
+  findings.push('markdown must present referral handoff issue-body command before evidence review');
+}
 if (!markdown.includes('Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml')) {
   findings.push('markdown must include outreach contact evidence intake URL');
 }
@@ -500,6 +540,20 @@ if (!markdown.includes('Evidence review command: npm run ops:outreach-contact-ev
 }
 if (!markdown.includes('outreach-contact-evidence-agent.mjs render-template --packet')) {
   findings.push('markdown must include outreach contact evidence issue-body command');
+}
+if (
+  markdown.indexOf('Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet') >
+  markdown.indexOf('Evidence review command: npm run ops:outreach-contact-evidence-plan')
+) {
+  findings.push('markdown must present outreach contact issue-body command before evidence review');
+}
+const manualSendMarkdown = markdown.slice(markdown.indexOf('## Manual Send Batch'));
+if (
+  manualSendMarkdown.includes('Evidence review command: npm run ops:outreach-contact-evidence-plan') &&
+  manualSendMarkdown.indexOf('Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet') >
+    manualSendMarkdown.indexOf('Evidence review command: npm run ops:outreach-contact-evidence-plan')
+) {
+  findings.push('manual send batch markdown must present issue-body command before evidence review');
 }
 if (!markdown.includes('SATA offers $249 Transparency Audits')) {
   findings.push('markdown must include the copy-ready approved social post text');

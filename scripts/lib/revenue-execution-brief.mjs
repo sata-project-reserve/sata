@@ -1138,7 +1138,7 @@ function manualSocialPublishChecklist() {
   return [
     'Open the approved social content queue and confirm the post content matches the content hash.',
     'Publish manually from the project account, then capture the live URL, screenshot or export, and UTC publish time.',
-    'Run record-published only after the live post evidence exists; do not alter the approved copy.'
+    'Submit the publish evidence issue and run the evidence review before record-published; do not alter the approved copy.'
   ];
 }
 
@@ -1154,7 +1154,7 @@ function referralHandoffSendChecklist() {
   return [
     'Open public/referral-partner-handoff-packet.md and send the Partner Reply exactly.',
     'Capture the send evidence and UTC send time before recording anything.',
-    'Run the record-sent command with the approved terms hash only after the manual send exists.'
+    'Submit the handoff evidence issue and run the evidence review before record-sent.'
   ];
 }
 
@@ -1195,7 +1195,7 @@ function manualOutreachSendChecklist(packetId) {
   return [
     `Open public/service-outreach-packet-queue.json and locate ${packetId}.`,
     'Send only the packet message as written, then capture durable evidence and UTC send time.',
-    'Run the mark-sent command only after the manual send evidence exists.'
+    'Submit the contact evidence issue and run the evidence review before mark-sent.'
   ];
 }
 
@@ -1369,11 +1369,11 @@ export function renderRevenueExecutionMarkdown(brief) {
       ...(action.evidenceIssueTemplateUrl
         ? [`Evidence intake: ${action.evidenceIssueTemplateUrl}`]
         : []),
-      ...(action.evidenceReviewCommand
-        ? [`Evidence review command: ${action.evidenceReviewCommand}`]
-        : []),
       ...(action.evidenceIssueTemplateCommand
         ? [`Evidence issue-body command: ${action.evidenceIssueTemplateCommand}`]
+        : []),
+      ...(action.evidenceReviewCommand
+        ? [`Evidence review command: ${action.evidenceReviewCommand}`]
         : []),
       ...(action.postPublishReplyTriageCommand
         ? [
@@ -1550,11 +1550,11 @@ export function renderRevenueExecutionMarkdown(brief) {
       ...(packet.evidenceIssueTemplateUrl
         ? [`  Evidence intake: ${packet.evidenceIssueTemplateUrl}`]
         : []),
-      ...(packet.evidenceReviewCommand
-        ? [`  Evidence review command: ${packet.evidenceReviewCommand}`]
-        : []),
       ...(packet.evidenceIssueTemplateCommand
         ? [`  Evidence issue-body command: ${packet.evidenceIssueTemplateCommand}`]
+        : []),
+      ...(packet.evidenceReviewCommand
+        ? [`  Evidence review command: ${packet.evidenceReviewCommand}`]
         : []),
       '```sh',
       packet.command,

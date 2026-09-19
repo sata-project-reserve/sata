@@ -668,16 +668,16 @@ export default function OperationsPage() {
                     </code>
                   </>
                 ) : null}
-                {'evidenceReviewCommand' in action && action.evidenceReviewCommand ? (
-                  <>
-                    <span>Evidence Review</span>
-                    <code>{action.evidenceReviewCommand}</code>
-                  </>
-                ) : null}
                 {'evidenceIssueTemplateCommand' in action && action.evidenceIssueTemplateCommand ? (
                   <>
                     <span>Evidence Issue Body</span>
                     <code>{action.evidenceIssueTemplateCommand}</code>
+                  </>
+                ) : null}
+                {'evidenceReviewCommand' in action && action.evidenceReviewCommand ? (
+                  <>
+                    <span>Evidence Review</span>
+                    <code>{action.evidenceReviewCommand}</code>
                   </>
                 ) : null}
                 {'postPublishReplyTriageCommand' in action &&
@@ -705,24 +705,6 @@ export default function OperationsPage() {
                 <code>{action.stopRule}</code>
                 <span>Command</span>
                 <code>{action.command}</code>
-                {action.postPublishReplyTriageCommand ? (
-                  <>
-                    <span>Post-Publication Reply Triage</span>
-                    <code>{action.postPublishReplyTriageCommand}</code>
-                  </>
-                ) : null}
-                {action.postPublishInvoiceEvidenceIssueTemplateCommand ? (
-                  <>
-                    <span>Post-Publication Invoice Evidence</span>
-                    <code>{action.postPublishInvoiceEvidenceIssueTemplateCommand}</code>
-                  </>
-                ) : null}
-                {action.postPublishIntakeEvidenceIssueTemplateCommand ? (
-                  <>
-                    <span>Post-Publication Intake Evidence</span>
-                    <code>{action.postPublishIntakeEvidenceIssueTemplateCommand}</code>
-                  </>
-                ) : null}
               </div>
             </div>
           ))}

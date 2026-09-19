@@ -15,6 +15,7 @@ const publicBrief = readOptionalJson(join('public', 'referral-handoff-dispatch-b
 const publicMarkdown = readOptionalText(join('public', 'referral-handoff-dispatch-brief.md'));
 const agent = readFileSync(join('scripts', 'referral-handoff-dispatch-brief-agent.mjs'), 'utf8');
 const packageJson = readJson('package.json');
+const REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND = 'npm run ops:referral-handoff-evidence-plan';
 const brief = buildReferralHandoffDispatchBrief({
   queue,
   paidPromotionLedger,
@@ -98,6 +99,9 @@ for (const item of brief.readyManualHandoffs) {
   ) {
     findings.push(`${item.sourceCampaignId}: ready handoff must expose the evidence issue-body command`);
   }
+  if (item.evidenceReviewCommand !== REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND) {
+    findings.push(`${item.sourceCampaignId}: ready handoff must expose the evidence review command`);
+  }
   if (!item.recordReferredLeadCommand?.includes('--sourceType manual-referral')) {
     findings.push(`${item.sourceCampaignId}: referred lead command must preserve manual-referral attribution`);
   }
@@ -125,6 +129,23 @@ if (!markdown.includes('referral-handoff-evidence.yml')) {
 }
 if (!markdown.includes('referral-handoff-evidence-agent.mjs render-template --campaign')) {
   findings.push('markdown must include the evidence issue-body command');
+}
+if (!markdown.includes(`Evidence review command:\n\n\`\`\`sh\n${REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND}`)) {
+  findings.push('markdown must include the evidence review command before record-sent');
+}
+const reviewCommandIndex = markdown.indexOf(REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND);
+const recordSentCommandIndex = markdown.indexOf(
+  'node scripts/referral-partner-handoff-agent.mjs record-sent'
+);
+if (reviewCommandIndex === -1) {
+  findings.push('markdown must include referral handoff evidence review command');
+}
+if (
+  reviewCommandIndex !== -1 &&
+  recordSentCommandIndex !== -1 &&
+  reviewCommandIndex > recordSentCommandIndex
+) {
+  findings.push('markdown must present evidence review before record-sent');
 }
 for (const command of markdown.match(/node scripts\/referral-partner-handoff-agent\.mjs record-sent[^\n]*/g) ?? []) {
   if (!/--messageHash [a-f0-9]{64}\b/.test(command)) {

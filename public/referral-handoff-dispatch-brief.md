@@ -1,6 +1,6 @@
 # SATA Reserve Token Referral Handoff Dispatch Brief
 
-Generated: 2026-09-19T05:53:31.485Z
+Generated: 2026-09-19T07:38:31.134Z
 
 ## Boundary
 This brief coordinates manual referral handoff dispatch only. It does not send messages, approve partners, approve compensation, issue invoices, provide payment instructions, publish posts, grant tokens, move assets, or record state.
@@ -20,7 +20,7 @@ Planning reserve impact: 174300 sats primary / 699300 sats qualified upgrade
 Planning basis: 70% reserve allocation at BTC/USD 100000
 Planning BTC/USD source: operator planning assumption, not a live quote.
 Counting rule: Count zero sats until a referred customer pays, the receipt is confirmed, and allocation is chairman-approved.
-Send the exact approved terms manually, then record durable sent evidence with the approved terms SHA-256.
+Send the exact approved terms manually, submit durable sent evidence, then record only after the evidence review returns a verified operator command.
 Do not offer upfront compensation, payment instructions, token grants, public posts, invoices, guaranteed results, market support, or asset movement.
 
 ```text
@@ -45,12 +45,18 @@ Required disclosure: Sponsored/Paid Partnership or token-compensated referral re
 Send the referred project, contact path, expected role, requested compensation model, and evidence trail for chairman review.
 ```
 
-After manual send, submit the evidence issue and record only with the hash-bound command:
+After manual send, submit the evidence issue, review it, and record only with the verified hash-bound command:
 
 Evidence issue-body command:
 
 ```sh
 node scripts/referral-handoff-evidence-agent.mjs render-template --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>"
+```
+
+Evidence review command:
+
+```sh
+npm run ops:referral-handoff-evidence-plan
 ```
 
 Record-sent command:

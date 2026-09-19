@@ -5,6 +5,7 @@ import { buildReferralPartnerHandoffPlan } from './lib/referral-partner-handoffs
 
 const EVIDENCE_INTAKE_URL =
   'https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml';
+const EVIDENCE_REVIEW_COMMAND = 'npm run ops:referral-handoff-evidence-plan';
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [, , command = 'plan'] = process.argv;
@@ -81,13 +82,14 @@ export function buildReferralHandoffDispatchBrief({
       evidenceIssueTemplateCommand: referralHandoffEvidenceTemplateCommand(
         candidate.sourceCampaignId
       ),
+      evidenceReviewCommand: EVIDENCE_REVIEW_COMMAND,
       approvedTermsSha256: candidate.packet.termsSha256,
       exactTerms: candidate.packet.replyTemplate,
       reserveImpactPlanning: buildReserveImpactPlanning({ revenuePlan }),
       recordSentCommand: artifactCommand || candidate.recordSentCommand,
       recordReferredLeadCommand: candidate.packet.recordReferredLeadCommand,
       sendInstructions:
-        'Send the exact approved terms manually, then record durable sent evidence with the approved terms SHA-256.',
+        'Send the exact approved terms manually, submit durable sent evidence, then record only after the evidence review returns a verified operator command.',
       stopRule:
         'Do not offer upfront compensation, payment instructions, token grants, public posts, invoices, guaranteed results, market support, or asset movement.'
     };
@@ -210,12 +212,18 @@ export function renderReferralHandoffDispatchMarkdown(brief) {
       item.exactTerms,
       '```',
       '',
-      'After manual send, submit the evidence issue and record only with the hash-bound command:',
+      'After manual send, submit the evidence issue, review it, and record only with the verified hash-bound command:',
       '',
       'Evidence issue-body command:',
       '',
       '```sh',
       item.evidenceIssueTemplateCommand,
+      '```',
+      '',
+      'Evidence review command:',
+      '',
+      '```sh',
+      item.evidenceReviewCommand,
       '```',
       '',
       'Record-sent command:',

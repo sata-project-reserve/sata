@@ -1,9 +1,9 @@
 {
   "status": "ok",
   "project": "SATA Reserve Token",
-  "generatedAtUtc": "2026-09-19T07:57:33.637Z",
-  "latestReportGeneratedAtUtc": "2026-09-19T07:57:32.993Z",
-  "sourceCommit": "101c4fae6dfa1b9e96c668dc2e36443a53f471f9",
+  "generatedAtUtc": "2026-09-19T15:36:45.044Z",
+  "latestReportGeneratedAtUtc": "2026-09-19T15:36:44.318Z",
+  "sourceCommit": "7e21ef9318fb331dfd585af8e2d5cd5df5ba9248",
   "canonicalTransparencyUrl": "https://sata-project-reserve.github.io/sata/transparency",
   "latestJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
   "historyJson": "https://sata-project-reserve.github.io/sata/transparency/history.json",

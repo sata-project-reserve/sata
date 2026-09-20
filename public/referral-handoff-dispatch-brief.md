@@ -1,6 +1,6 @@
 # SATA Reserve Token Referral Handoff Dispatch Brief
 
-Generated: 2026-09-19T23:04:23.775Z
+Generated: 2026-09-20T01:08:48.800Z
 
 ## Boundary
 This brief coordinates manual referral handoff dispatch only. It does not send messages, approve partners, approve compensation, issue invoices, provide payment instructions, publish posts, grant tokens, move assets, or record state.

@@ -389,7 +389,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   ).toBeVisible();
   await expect(
     nextSendSheet.getByText(
-      'Send the exact approved message only, record durable evidence, then stop for reply review.'
+      'Send the exact approved message only, submit durable evidence, run evidence review, then record only with the verified command before reply review.'
     )
   ).toBeVisible();
   await expect(
@@ -402,6 +402,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
       'node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"'
     )
   ).toBeVisible();
+  await expect(nextSendSheet.getByText('npm run ops:outreach-contact-evidence-plan')).toBeVisible();
   await expect(
     nextSendSheet.getByText(
       'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100'

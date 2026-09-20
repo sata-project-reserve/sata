@@ -745,7 +745,7 @@ function nextReplyAction({
     return `Review replies for sent outreach packet ${sentPackets[0].id}; record contact/invoice evidence only when durable evidence exists.`;
   }
   if (readyPackets[0]) {
-    return `Send ${readyPackets[0].id} exactly as approved, then record contact evidence.`;
+    return `Send ${readyPackets[0].id} exactly as approved, then submit contact evidence and run evidence review before recording.`;
   }
   return status.nextAction;
 }

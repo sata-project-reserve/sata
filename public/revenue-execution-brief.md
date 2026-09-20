@@ -1,6 +1,6 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-09-20T11:30:01.747Z
+Generated: 2026-09-20T12:31:09.857Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -87,7 +87,7 @@ Stop rule: Triage only. Do not contact leads, send payment instructions, create 
 npm run ops:inbound-reply-triage-plan
 ```
 
-### 3. Manually publish approved post transparency-service-offer and record the live URL for attribution.
+### 3. Manually publish approved post transparency-service-offer, submit live URL evidence, and run evidence review before recording.
 Type: manual-social-publish
 Why: Chairman-approved factual posts can create attributable inbound attention without autonomous posting or paid promotion.
 Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml
@@ -123,7 +123,7 @@ Operator checklist:
 - Open the approved social content queue and confirm the post content matches the content hash.
 - Publish manually from the project account, then capture the live URL, screenshot or export, and UTC publish time.
 - Submit the publish evidence issue and run the evidence review before record-published; do not alter the approved copy.
-Stop rule: Publish only the approved post content manually, then record the live URL and evidence; do not change copy or enable live automation.
+Stop rule: Publish only the approved post content manually, submit the live URL evidence issue, run evidence review, then record only with the verified command; do not change copy or enable live automation.
 
 ```sh
 npm run social:agent -- record-published --post transparency-service-offer --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448

@@ -5,6 +5,7 @@ import { prioritizeApprovedSocialPosts } from './lib/social-post-priority.mjs';
 
 const EVIDENCE_INTAKE_URL =
   'https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml';
+const EVIDENCE_REVIEW_COMMAND = 'npm run ops:social-publish-evidence-plan';
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [, , command = 'plan', ...args] = process.argv;
@@ -64,6 +65,7 @@ export function buildSocialDispatchBrief({
     approvedAtUtc: post.approvedAtUtc ?? null,
     evidenceIssueUrl: EVIDENCE_INTAKE_URL,
     evidenceIssueTemplateCommand: evidenceIssueTemplateCommand({ queue, post }),
+    evidenceReviewCommand: EVIDENCE_REVIEW_COMMAND,
     recordPublishedCommand: recordPublishedCommand({ queue, post }),
     postPublishReplyTriageCommand: publishedSocialReplyTriageCommand(post),
     postPublishInvoiceEvidenceIssueTemplateCommand:
@@ -79,7 +81,7 @@ export function buildSocialDispatchBrief({
         customerAskedForInvoice: false
       }),
     publicationInstructions:
-      'Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.',
+      'Publish the exact approved text manually, submit the live post evidence issue, run the evidence review, then record only with the verified hash-bound command.',
     stopRule:
       'Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, move assets, or treat replies as invoice-ready without evidence review.'
   }));
@@ -104,7 +106,7 @@ export function buildSocialDispatchBrief({
     readyManualPosts,
     evidenceIssueUrl: EVIDENCE_INTAKE_URL,
     nextAction: readyManualPosts[0]?.id
-      ? `Publish approved post ${readyManualPosts[0].id} exactly as written, then record the live URL with evidence.`
+      ? `Publish approved post ${readyManualPosts[0].id} exactly as written, then submit live URL evidence for review.`
       : posts.some((post) => post.status === 'ready-for-review')
         ? 'Chairman review is needed before the next social post can be published.'
         : status.nextAction,
@@ -166,7 +168,15 @@ export function renderSocialDispatchMarkdown(brief) {
       post.text,
       '```',
       '',
-      'After manual publication, record the live post evidence:',
+      'After manual publication, submit the evidence issue, review it, and record only with the verified hash-bound command:',
+      '',
+      'Evidence review command:',
+      '',
+      '```sh',
+      post.evidenceReviewCommand,
+      '```',
+      '',
+      'Record-published command:',
       '',
       '```sh',
       post.recordPublishedCommand,

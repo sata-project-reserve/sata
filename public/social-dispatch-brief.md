@@ -1,6 +1,6 @@
 # SATA Reserve Token Social Dispatch Brief
 
-Generated: 2026-09-20T11:30:02.267Z
+Generated: 2026-09-20T12:31:09.552Z
 Account: @SATAReserve
 
 ## Boundary
@@ -26,7 +26,7 @@ Approved by: owner
 Approval role: not recorded
 Approved at: 2026-08-26T12:45:00Z
 Approved content SHA-256: 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448
-Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.
+Publish the exact approved text manually, submit the live post evidence issue, run the evidence review, then record only with the verified hash-bound command.
 Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, move assets, or treat replies as invoice-ready without evidence review.
 
 Social publish evidence issue-body command:
@@ -43,7 +43,15 @@ Reserve work is not a redemption promise. Locked LP must be verified.
 https://sata-project-reserve.github.io/sata/services/transparency-audit
 ```
 
-After manual publication, record the live post evidence:
+After manual publication, submit the evidence issue, review it, and record only with the verified hash-bound command:
+
+Evidence review command:
+
+```sh
+npm run ops:social-publish-evidence-plan
+```
+
+Record-published command:
 
 ```sh
 npm run social:agent -- record-published --post transparency-service-offer --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448
@@ -74,7 +82,7 @@ Approved by: owner
 Approval role: executive-chairman
 Approved at: 2026-09-03T21:48:49.400Z
 Approved content SHA-256: b512cd178e14f77e119b9f1ee5fbe4dcd77bee6e688b749a771f1ea9868c2a09
-Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.
+Publish the exact approved text manually, submit the live post evidence issue, run the evidence review, then record only with the verified hash-bound command.
 Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, move assets, or treat replies as invoice-ready without evidence review.
 
 Social publish evidence issue-body command:
@@ -91,7 +99,15 @@ No market outcome, volume, or buyer-demand claims.
 https://sata-project-reserve.github.io/sata/services/transparency-audit
 ```
 
-After manual publication, record the live post evidence:
+After manual publication, submit the evidence issue, review it, and record only with the verified hash-bound command:
+
+Evidence review command:
+
+```sh
+npm run ops:social-publish-evidence-plan
+```
+
+Record-published command:
 
 ```sh
 npm run social:agent -- record-published --post service-upgrade-path --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash b512cd178e14f77e119b9f1ee5fbe4dcd77bee6e688b749a771f1ea9868c2a09
@@ -122,7 +138,7 @@ Approved by: owner
 Approval role: executive-chairman
 Approved at: 2026-09-15T11:25:37.689Z
 Approved content SHA-256: a3ad3c4d30be88d9f57feb1e33abbc08a9ee34be937034a80931bed2cf968b15
-Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.
+Publish the exact approved text manually, submit the live post evidence issue, run the evidence review, then record only with the verified hash-bound command.
 Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, move assets, or treat replies as invoice-ready without evidence review.
 
 Social publish evidence issue-body command:
@@ -143,7 +159,15 @@ Reserve is not a redemption promise.
 https://sata-project-reserve.github.io/sata/transparency
 ```
 
-After manual publication, record the live post evidence:
+After manual publication, submit the evidence issue, review it, and record only with the verified hash-bound command:
+
+Evidence review command:
+
+```sh
+npm run ops:social-publish-evidence-plan
+```
+
+Record-published command:
 
 ```sh
 npm run social:agent -- record-published --post quick-project-status-20260915 --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash a3ad3c4d30be88d9f57feb1e33abbc08a9ee34be937034a80931bed2cf968b15
@@ -174,7 +198,7 @@ Approved by: owner
 Approval role: executive-chairman
 Approved at: 2026-09-03T21:48:29.101Z
 Approved content SHA-256: 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e
-Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.
+Publish the exact approved text manually, submit the live post evidence issue, run the evidence review, then record only with the verified hash-bound command.
 Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, move assets, or treat replies as invoice-ready without evidence review.
 
 Social publish evidence issue-body command:
@@ -191,7 +215,15 @@ The BTC reserve is not a redemption promise or guaranteed price floor.
 https://sata-project-reserve.github.io/sata/transparency
 ```
 
-After manual publication, record the live post evidence:
+After manual publication, submit the evidence issue, review it, and record only with the verified hash-bound command:
+
+Evidence review command:
+
+```sh
+npm run ops:social-publish-evidence-plan
+```
+
+Record-published command:
 
 ```sh
 npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e
@@ -222,7 +254,7 @@ Approved by: owner
 Approval role: executive-chairman
 Approved at: 2026-09-03T21:48:34.639Z
 Approved content SHA-256: 5210756b4a42acb586bdde80a314fc11d245e1014b5fbed4ad766d06eb134d29
-Publish the exact approved text manually, capture the live post URL and evidence, then record the publication with the approved SHA-256.
+Publish the exact approved text manually, submit the live post evidence issue, run the evidence review, then record only with the verified hash-bound command.
 Do not edit the approved text, add claims, publish unapproved posts, approve compensation, request payment, grant tokens, move assets, or treat replies as invoice-ready without evidence review.
 
 Social publish evidence issue-body command:
@@ -238,7 +270,15 @@ Verify from the public report:
 https://sata-project-reserve.github.io/sata/transparency
 ```
 
-After manual publication, record the live post evidence:
+After manual publication, submit the evidence issue, review it, and record only with the verified hash-bound command:
+
+Evidence review command:
+
+```sh
+npm run ops:social-publish-evidence-plan
+```
+
+Record-published command:
 
 ```sh
 npm run social:agent -- record-published --post authority-revoked --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 5210756b4a42acb586bdde80a314fc11d245e1014b5fbed4ad766d06eb134d29
@@ -263,4 +303,4 @@ node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType publi
 ```
 
 ## Next Action
-Publish approved post transparency-service-offer exactly as written, then record the live URL with evidence.
+Publish approved post transparency-service-offer exactly as written, then submit live URL evidence for review.

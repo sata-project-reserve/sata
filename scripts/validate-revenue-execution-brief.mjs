@@ -580,6 +580,13 @@ for (const command of markdown.match(
 if (hasUnsafeOperatingLanguage(markdown)) {
   findings.push('brief markdown contains prohibited operating language');
 }
+if (
+  /then record the live URL and evidence|record the live URL for attribution|record contact evidence/i.test(
+    markdown
+  )
+) {
+  findings.push('brief markdown must require evidence review before record mutation');
+}
 
 const inboundInvoiceBrief = buildRevenueExecutionBrief({
   status: {

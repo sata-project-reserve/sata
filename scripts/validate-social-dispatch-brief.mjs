@@ -18,6 +18,7 @@ const brief = buildSocialDispatchBrief({
 });
 const markdown = renderSocialDispatchMarkdown(brief);
 const findings = [];
+const EVIDENCE_REVIEW_COMMAND = 'npm run ops:social-publish-evidence-plan';
 
 if (brief.mode !== 'manual-social-dispatch-brief') {
   findings.push('brief mode must be manual-social-dispatch-brief');
@@ -58,6 +59,9 @@ for (const post of brief.readyManualPosts) {
   }
   if (!/social-publish-evidence-agent\.mjs render-template --post/.test(post.evidenceIssueTemplateCommand ?? '')) {
     findings.push(`${post.id}: evidence issue-body command must render the social publish evidence template`);
+  }
+  if (post.evidenceReviewCommand !== EVIDENCE_REVIEW_COMMAND) {
+    findings.push(`${post.id}: manual social post must expose the social publish evidence review command`);
   }
   if (!post.evidenceIssueTemplateCommand?.includes(`--contentHash ${post.contentSha256}`)) {
     findings.push(`${post.id}: evidence issue-body command must include the approved content hash`);
@@ -130,6 +134,30 @@ if (!markdown.includes('Social publish evidence issue-body command:')) {
 if (!markdown.includes('social-publish-evidence-agent.mjs render-template')) {
   findings.push('markdown must include social publish evidence render-template commands');
 }
+if (!markdown.includes('Evidence review command:')) {
+  findings.push('markdown must include social publish evidence review commands');
+}
+if (!markdown.includes(EVIDENCE_REVIEW_COMMAND)) {
+  findings.push('markdown must include the social publish evidence review plan command');
+}
+if (!/submit the evidence issue, review it, and record only/i.test(markdown)) {
+  findings.push('markdown must require evidence review before record-published');
+}
+const issueCommandIndex = markdown.indexOf(
+  'Social publish evidence issue-body command:'
+);
+const reviewCommandIndex = markdown.indexOf(EVIDENCE_REVIEW_COMMAND);
+const recordPublishedCommandIndex = markdown.indexOf('social:agent -- record-published');
+if (issueCommandIndex === -1 || reviewCommandIndex === -1 || recordPublishedCommandIndex === -1) {
+  findings.push('markdown must present social issue-body, evidence review, and record-published commands');
+} else {
+  if (issueCommandIndex > reviewCommandIndex) {
+    findings.push('markdown must present social issue-body command before evidence review');
+  }
+  if (reviewCommandIndex > recordPublishedCommandIndex) {
+    findings.push('markdown must present social evidence review before record-published');
+  }
+}
 if (!markdown.includes('After publication is recorded, triage replies from this exact source:')) {
   findings.push('markdown must include post-publication reply triage instructions');
 }
@@ -144,6 +172,9 @@ if (!markdown.includes('social-publish-evidence.yml')) {
 }
 if (/\b(private key|seed phrase|guaranteed buyers|fake engagement|pump|moon|100x)\b/i.test(markdown)) {
   findings.push('dispatch markdown must not include prohibited or secret-requesting language');
+}
+if (/then record the live URL with evidence|record the publication with the approved SHA-256/i.test(markdown)) {
+  findings.push('social dispatch markdown must require evidence review before record-published');
 }
 if (/post-next-approved|createPost|api\.x\.com|SATA_X_BEARER_TOKEN|SATA_X_ACCESS_TOKEN/.test(agent)) {
   findings.push('dispatch agent must not import or execute live X posting capability');
@@ -169,6 +200,11 @@ if (publicBrief) {
     normalizeMarkdown(publicMarkdown) !== normalizeMarkdown(renderSocialDispatchMarkdown(publicBrief))
   ) {
     findings.push('public social-dispatch-brief.md must match public JSON brief');
+  }
+  for (const post of publicBrief.readyManualPosts ?? []) {
+    if (post.evidenceReviewCommand !== EVIDENCE_REVIEW_COMMAND) {
+      findings.push(`${post.id}: public manual social post must expose the social publish evidence review command`);
+    }
   }
 }
 if (publicMarkdown && !publicBrief) {

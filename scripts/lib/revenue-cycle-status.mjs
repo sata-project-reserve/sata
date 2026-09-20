@@ -131,7 +131,7 @@ export function buildRevenueCycleStatus({
     blockers.push('No confirmed direct-reserve BTC receipt is recorded.');
   if (approvedPosts.length > 0 && !livePostingEnabled) {
     blockers.push(
-      'Approved social content exists; publish manually and record the live URL, or enable approved-only X credentials.'
+      'Approved social content exists; publish manually, submit live URL evidence, run evidence review, then record only with the verified command.'
     );
   }
 
@@ -940,8 +940,8 @@ function buildActionQueue({
       priority: actions.length + 1,
       type: 'manual-outreach-send',
       title: packet.prospectId
-        ? `Send priority-scored manual outreach packet ${packet.id} for ${packet.prospectId} and record contact evidence.`
-        : `Send ready manual outreach packet ${packet.id} and record contact evidence.`,
+        ? `Send priority-scored manual outreach packet ${packet.id} for ${packet.prospectId}, submit contact evidence, and run evidence review before recording.`
+        : `Send ready manual outreach packet ${packet.id}, submit contact evidence, and run evidence review before recording.`,
       requiredActor: 'Executive Chairman or authorized human',
       command: withSentAtUtcPlaceholder(packet.recordContactCommand, packet.id),
       outreachPriority: packet.priority,
@@ -1150,7 +1150,7 @@ function manualSocialPublishAction({ post }) {
     id: `publish-social-${post.id}`,
     priority: 0,
     type: 'manual-social-publish',
-    title: `Manually publish approved post ${post.id} and record the live URL for attribution.`,
+    title: `Manually publish approved post ${post.id}, submit live URL evidence, and run evidence review before recording.`,
     requiredActor: 'Executive Chairman or authorized human',
     command: `npm run social:agent -- record-published --post ${post.id} --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash ${contentHash}`,
     approvedMessage: normalizeContent(post.text),

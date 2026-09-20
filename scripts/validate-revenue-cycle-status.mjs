@@ -993,6 +993,7 @@ assertRejects('unsafe next action', /avoid prohibited routes/, () =>
 const publicInputs = await readPublicInputs();
 const expectedPublicStatus = buildRevenueCycleStatus({ ...publicInputs, env: {} });
 validateRevenueCycleStatus(expectedPublicStatus);
+assertNoStaleRecordFirstLanguage(expectedPublicStatus, 'expected public revenue-cycle status');
 const publishedPublicStatus = await readJson(join('public', 'revenue-cycle-status.json'));
 assertDeepEqual(publishedPublicStatus, expectedPublicStatus, 'public revenue-cycle-status.json');
 await assertRevenueStateMutatorsRefreshPublicStatus();
@@ -1015,6 +1016,20 @@ function assertDeepEqual(actual, expected, label) {
   const expectedJson = JSON.stringify(expected);
   if (actualJson !== expectedJson) {
     throw new Error(`${label} must match the generated revenue cycle status.`);
+  }
+}
+
+function assertNoStaleRecordFirstLanguage(value, label) {
+  const text = JSON.stringify(value);
+  const stalePatterns = [
+    /publish manually and record the live URL/i,
+    /record the live URL for attribution/i,
+    /and record contact evidence/i
+  ];
+  for (const pattern of stalePatterns) {
+    if (pattern.test(text)) {
+      throw new Error(`${label} must require evidence review before record mutation: ${pattern}`);
+    }
   }
 }
 

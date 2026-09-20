@@ -358,6 +358,9 @@ for (const command of markdown.match(/node scripts\/service-outreach-packet-agen
 if (/\b(private key|seed phrase|guaranteed buyers|fake engagement|pump)\b/i.test(markdown)) {
   findings.push('reply conversion brief must not include prohibited or secret-requesting language');
 }
+if (/then record contact evidence/i.test(markdown)) {
+  findings.push('reply conversion brief must require evidence review before mark-sent');
+}
 if (publicBrief) {
   const expectedPublicBrief = buildReplyConversionBrief({
     status,

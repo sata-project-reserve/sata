@@ -1,6 +1,6 @@
 # SATA Reserve Token Outreach Dispatch Brief
 
-Generated: 2026-09-20T11:30:01.574Z
+Generated: 2026-09-20T12:31:09.851Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -16,7 +16,7 @@ Destination: https://sanctumelysium.com/whitepaper.html
 Tracked service: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_sanctum_elysium_loam_transparency_audit_first_contact&utm_content=sanctum_elysium_loam_audit_service
 Approved message SHA-256: 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
 
-Send the exact approved message only, record durable evidence, then stop for reply review. Do not send invoices, payment instructions, price claims, grants, or asset movement from this sheet.
+Send the exact approved message only, submit durable evidence, run evidence review, then record only with the verified command before reply review. Do not send invoices, payment instructions, price claims, grants, or asset movement from this sheet.
 
 Exact approved message:
 
@@ -41,7 +41,15 @@ Prepare the contact evidence issue body after manual send:
 node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```
 
-After manual send, record durable evidence:
+After manual send, submit the evidence issue, review it, and record only with the verified hash-bound command:
+
+Evidence review command:
+
+```sh
+npm run ops:outreach-contact-evidence-plan
+```
+
+Record contact command:
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
@@ -86,7 +94,7 @@ Any invoice, paid work, token grant, or payment instruction requires Executive C
 ## Ready Manual Sends
 Sprint: 5 of 30 ready packets. Backlog after this sprint: 25.
 
-Run one focused manual sprint: send the listed packets exactly as approved, record evidence after each send, then stop and review replies before expanding the batch.
+Run one focused manual sprint: send the listed packets exactly as approved, submit evidence after each send, run evidence review, then record only with the verified command before reviewing replies or expanding the batch.
 
 ## Sprint Economics
 Gross service target if current approved asks convert: $1245.
@@ -135,7 +143,15 @@ Prepare the contact evidence issue body after manual send:
 node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```
 
-After manual send, record durable evidence:
+After manual send, submit the evidence issue, review it, and record only with the verified hash-bound command:
+
+Evidence review command:
+
+```sh
+npm run ops:outreach-contact-evidence-plan
+```
+
+Record contact command:
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100
@@ -177,7 +193,15 @@ Prepare the contact evidence issue body after manual send:
 node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```
 
-After manual send, record durable evidence:
+After manual send, submit the evidence issue, review it, and record only with the verified hash-bound command:
+
+Evidence review command:
+
+```sh
+npm run ops:outreach-contact-evidence-plan
+```
+
+Record contact command:
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 28ed7b84f82ae8b4f07961b70ab46a494d3b04349e0d0408e3d1e9bab30d090a
@@ -219,7 +243,15 @@ Prepare the contact evidence issue body after manual send:
 node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```
 
-After manual send, record durable evidence:
+After manual send, submit the evidence issue, review it, and record only with the verified hash-bound command:
+
+Evidence review command:
+
+```sh
+npm run ops:outreach-contact-evidence-plan
+```
+
+Record contact command:
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash c3da58a0c6934bc5a9c9790e5a45b0efe164b2b9f520d7eeb878c3a016742a64
@@ -261,7 +293,15 @@ Prepare the contact evidence issue body after manual send:
 node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```
 
-After manual send, record durable evidence:
+After manual send, submit the evidence issue, review it, and record only with the verified hash-bound command:
+
+Evidence review command:
+
+```sh
+npm run ops:outreach-contact-evidence-plan
+```
+
+Record contact command:
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 202d9912a588930de17a540a0e0a32721bad0ea0c3b5d72e679786583a3b3a70
@@ -301,7 +341,15 @@ Prepare the contact evidence issue body after manual send:
 node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
 ```
 
-After manual send, record durable evidence:
+After manual send, submit the evidence issue, review it, and record only with the verified hash-bound command:
+
+Evidence review command:
+
+```sh
+npm run ops:outreach-contact-evidence-plan
+```
+
+Record contact command:
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 0add8ed0b05bf1e1ea2d9dcb9ea949fe6961cbcbf0dac929291381af9ed82a3e
@@ -311,4 +359,4 @@ node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packe
 No outreach approval packets are pending.
 
 ## Next Action
-Send outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact exactly as approved, then record contact evidence.
+Send outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact exactly as approved, then submit contact evidence for review.

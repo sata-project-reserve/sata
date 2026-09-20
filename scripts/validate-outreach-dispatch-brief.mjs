@@ -17,6 +17,7 @@ const markdown = renderOutreachDispatchMarkdown(brief);
 const publicBrief = readOptionalJson(join('public', 'outreach-dispatch-brief.json'));
 const publicMarkdown = readOptionalText(join('public', 'outreach-dispatch-brief.md'));
 const findings = [];
+const EVIDENCE_REVIEW_COMMAND = 'npm run ops:outreach-contact-evidence-plan';
 const expectedSetupReserveSats = planningUsdToReserveSatsFloor({
   usd:
     revenuePlan.revenueStreams?.find((stream) => stream.id === 'transparency-report-setup')
@@ -99,6 +100,9 @@ if (brief.readyManualSends.length > 0) {
     if (sheet.evidenceIssueTemplateCommand !== topPacket.evidenceIssueTemplateCommand) {
       findings.push('next manual send sheet must preserve the evidence issue helper command');
     }
+    if (sheet.evidenceReviewCommand !== EVIDENCE_REVIEW_COMMAND) {
+      findings.push('next manual send sheet must expose the contact evidence review command');
+    }
     if (sheet.recordContactCommand !== topPacket.recordContactCommand) {
       findings.push('next manual send sheet must preserve the record-contact command');
     }
@@ -128,8 +132,11 @@ if (brief.readyManualSends.length > 0) {
     ) {
       findings.push('next manual send sheet must expose the approved message SHA-256');
     }
-    if (!/stop for reply review/i.test(sheet.stopRule ?? '')) {
-      findings.push('next manual send sheet must require stopping for reply review');
+    if (!/reply review/i.test(sheet.stopRule ?? '')) {
+      findings.push('next manual send sheet must gate reply review');
+    }
+    if (!/evidence review/i.test(sheet.stopRule ?? '')) {
+      findings.push('next manual send sheet must require evidence review before recording');
     }
     if (/\b(can|may|should)\s+(send invoices|send payment instructions|move assets)/i.test(sheet.stopRule ?? '')) {
       findings.push('next manual send sheet stop rule must not permit invoices, payments, or asset movement');
@@ -258,6 +265,9 @@ for (const packet of brief.readyManualSends) {
   ) {
     findings.push(`${packet.packetId}: ready packet must include a contact evidence issue template command`);
   }
+  if (packet.evidenceReviewCommand !== EVIDENCE_REVIEW_COMMAND) {
+    findings.push(`${packet.packetId}: ready packet must expose the contact evidence review command`);
+  }
   if (!packet.evidenceIssueTemplateCommand?.includes(`--packet ${packet.packetId}`)) {
     findings.push(`${packet.packetId}: evidence issue template command must target the packet`);
   }
@@ -324,6 +334,15 @@ if (!markdown.includes('Tracked service: https://') || !markdown.includes('utm_s
 if (!markdown.includes('Prepare the contact evidence issue body after manual send')) {
   findings.push('markdown brief must include the contact evidence issue-body helper');
 }
+if (!markdown.includes('Evidence review command:')) {
+  findings.push('markdown brief must include the contact evidence review command');
+}
+if (!markdown.includes(EVIDENCE_REVIEW_COMMAND)) {
+  findings.push('markdown brief must include the outreach contact evidence review plan command');
+}
+if (!/submit the evidence issue, review it, and record only/i.test(markdown)) {
+  findings.push('markdown brief must require evidence review before mark-sent');
+}
 if (!markdown.includes('Current approved ask:')) {
   findings.push('markdown must separate the current approved ask from the qualified revenue path');
 }
@@ -341,6 +360,26 @@ if (!markdown.includes('Upgrade path:')) {
 }
 if (/\b(private key|seed phrase|guaranteed buyers|fake engagement|pump)\b/i.test(markdown)) {
   findings.push('dispatch brief must not include prohibited or secret-requesting language');
+}
+if (/record durable evidence|then record contact evidence/i.test(markdown)) {
+  findings.push('dispatch brief must require evidence review before mark-sent');
+}
+const issueCommandIndex = markdown.indexOf(
+  'Prepare the contact evidence issue body after manual send:'
+);
+const reviewCommandIndex = markdown.indexOf(EVIDENCE_REVIEW_COMMAND);
+const markSentCommandIndex = markdown.indexOf(
+  'node scripts/service-outreach-packet-agent.mjs mark-sent'
+);
+if (issueCommandIndex === -1 || reviewCommandIndex === -1 || markSentCommandIndex === -1) {
+  findings.push('markdown must present outreach issue-body, evidence review, and mark-sent commands');
+} else {
+  if (issueCommandIndex > reviewCommandIndex) {
+    findings.push('markdown must present outreach issue-body command before evidence review');
+  }
+  if (reviewCommandIndex > markSentCommandIndex) {
+    findings.push('markdown must present outreach evidence review before mark-sent');
+  }
 }
 for (const command of markdown.match(/node scripts\/service-outreach-packet-agent\.mjs mark-sent[^\n]*/g) ?? []) {
   if (!/--messageHash (?:[0-9a-f]{64}|"<approved-message-sha256>")(?=\s|$)/.test(command)) {
@@ -377,6 +416,9 @@ if (publicBrief) {
       )
     ) {
       findings.push(`${packet.packetId}: public ready packet must include contact evidence issue template command`);
+    }
+    if (packet.evidenceReviewCommand !== EVIDENCE_REVIEW_COMMAND) {
+      findings.push(`${packet.packetId}: public ready packet must expose the contact evidence review command`);
     }
   }
 }

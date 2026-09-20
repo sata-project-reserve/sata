@@ -5,6 +5,8 @@ import { renderOutreachContactEvidenceIssueBody } from './outreach-contact-evide
 import { prioritizeOutreachPackets } from './lib/prospect-priority.mjs';
 import { planningUsdToReserveSatsFloor } from './lib/planning-sats.mjs';
 
+const EVIDENCE_REVIEW_COMMAND = 'npm run ops:outreach-contact-evidence-plan';
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [, , command = 'plan', ...args] = process.argv;
   const options = parseOptions(args);
@@ -72,6 +74,7 @@ export function buildOutreachDispatchBrief({
         tracking: packet.tracking ?? null,
         message: packet.message,
         evidenceIssueTemplateCommand: evidenceIssueTemplateCommand(packet.id),
+        evidenceReviewCommand: EVIDENCE_REVIEW_COMMAND,
         recordContactCommand: withSentAtUtcPlaceholder(packet.recordContactCommand, packet.id),
         targetRevenueUsd: offerPriceUsd({ revenuePlan, offerId: packet.offerId }),
         trackingLabel: `manual_outreach:${packet.id}`,
@@ -171,9 +174,9 @@ export function buildOutreachDispatchBrief({
       'Prioritize higher-value setup/dashboard fit, reserve/custody claims, authority/liquidity claims, tooling/platform fit, evidence depth, and chairman-approved outreach paths.',
     pendingOutreachApprovals,
     dispatchRule:
-      'Run one focused manual sprint: send the listed packets exactly as approved, record evidence after each send, then stop and review replies before expanding the batch.',
+      'Run one focused manual sprint: send the listed packets exactly as approved, submit evidence after each send, run evidence review, then record only with the verified command before reviewing replies or expanding the batch.',
     nextAction: sprintPackets[0]?.packetId
-      ? `Send ${sprintPackets[0].packetId} exactly as approved, then record contact evidence.`
+      ? `Send ${sprintPackets[0].packetId} exactly as approved, then submit contact evidence for review.`
       : pendingOutreachApprovals[0]?.approvalId
         ? `Chairman decision needed for ${pendingOutreachApprovals[0].approvalId}.`
         : status.nextAction,
@@ -218,7 +221,15 @@ export function renderOutreachDispatchMarkdown(brief) {
           brief.nextManualSendSheet.evidenceIssueTemplateCommand,
           '```',
           '',
-          'After manual send, record durable evidence:',
+          'After manual send, submit the evidence issue, review it, and record only with the verified hash-bound command:',
+          '',
+          'Evidence review command:',
+          '',
+          '```sh',
+          brief.nextManualSendSheet.evidenceReviewCommand,
+          '```',
+          '',
+          'Record contact command:',
           '',
           '```sh',
           brief.nextManualSendSheet.recordContactCommand,
@@ -284,7 +295,15 @@ export function renderOutreachDispatchMarkdown(brief) {
       packet.evidenceIssueTemplateCommand,
       '```',
       '',
-      'After manual send, record durable evidence:',
+      'After manual send, submit the evidence issue, review it, and record only with the verified hash-bound command:',
+      '',
+      'Evidence review command:',
+      '',
+      '```sh',
+      packet.evidenceReviewCommand,
+      '```',
+      '',
+      'Record contact command:',
       '',
       '```sh',
       packet.recordContactCommand,
@@ -333,6 +352,7 @@ function buildNextManualSendSheet({ packet, packetQueue }) {
     approvedMessageSha256: messageHashFromRecordCommand(packet.recordContactCommand),
     exactMessage: packet.message,
     evidenceIssueTemplateCommand: packet.evidenceIssueTemplateCommand,
+    evidenceReviewCommand: packet.evidenceReviewCommand,
     contactEvidenceIssueBodyTemplate: renderOutreachContactEvidenceIssueBody({
       packetQueue,
       packetId: packet.packetId,
@@ -341,7 +361,7 @@ function buildNextManualSendSheet({ packet, packetQueue }) {
     }),
     recordContactCommand: packet.recordContactCommand,
     stopRule:
-      'Send the exact approved message only, record durable evidence, then stop for reply review. Do not send invoices, payment instructions, price claims, grants, or asset movement from this sheet.'
+      'Send the exact approved message only, submit durable evidence, run evidence review, then record only with the verified command before reply review. Do not send invoices, payment instructions, price claims, grants, or asset movement from this sheet.'
   };
 }
 

@@ -334,7 +334,7 @@ export function buildRevenueExecutionBrief({
       evidenceRequired: publishRequest.evidenceRequired,
       operatorChecklist: manualSocialPublishChecklist(),
       stopRule:
-        'Publish only the approved post content manually, then record the live URL and evidence; do not change copy or enable live automation.'
+        'Publish only the approved post content manually, submit the live URL evidence issue, run evidence review, then record only with the verified command; do not change copy or enable live automation.'
     });
   }
 

@@ -39,7 +39,7 @@
   "blockers": [
     "No chairman-approved exact-sats invoice is ready to send.",
     "No confirmed direct-reserve BTC receipt is recorded.",
-    "Approved social content exists; publish manually and record the live URL, or enable approved-only X credentials."
+    "Approved social content exists; publish manually, submit live URL evidence, run evidence review, then record only with the verified command."
   ],
   "actionQueue": [
     {
@@ -137,7 +137,7 @@
       "id": "publish-social-transparency-service-offer",
       "priority": 3,
       "type": "manual-social-publish",
-      "title": "Manually publish approved post transparency-service-offer and record the live URL for attribution.",
+      "title": "Manually publish approved post transparency-service-offer, submit live URL evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "npm run social:agent -- record-published --post transparency-service-offer --postUrl \"https://x.com/SATAReserve/status/<numeric-id>\" --evidence \"<live-post-screenshot-or-exported-text>\" --publishedAtUtc \"<published-at-utc>\" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448",
       "approvedMessage": "SATA offers $249 Transparency Audits: authority, supply, LP lock/ownership, reserve claims, risk disclosures, and JSON.\n\nReserve work is not a redemption promise. Locked LP must be verified.\n\nhttps://sata-project-reserve.github.io/sata/services/transparency-audit",
@@ -159,7 +159,7 @@
       "id": "send-outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact",
       "priority": 4,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact for sanctum-elysium-loam and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact for sanctum-elysium-loam, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100",
       "outreachPriority": {
@@ -205,7 +205,7 @@
       "id": "send-outreach-packet-20260903-meme-launch-transparency-audit-first-contact",
       "priority": 5,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact for meme-launch and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact for meme-launch, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 28ed7b84f82ae8b4f07961b70ab46a494d3b04349e0d0408e3d1e9bab30d090a",
       "outreachPriority": {
@@ -250,7 +250,7 @@
       "id": "send-outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact",
       "priority": 6,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact for instar-meme-futures and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact for instar-meme-futures, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash c3da58a0c6934bc5a9c9790e5a45b0efe164b2b9f520d7eeb878c3a016742a64",
       "outreachPriority": {
@@ -295,7 +295,7 @@
       "id": "send-outreach-packet-20260903-soltokenlab-transparency-audit-first-contact",
       "priority": 7,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact for soltokenlab and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact for soltokenlab, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 202d9912a588930de17a540a0e0a32721bad0ea0c3b5d72e679786583a3b3a70",
       "outreachPriority": {
@@ -340,7 +340,7 @@
       "id": "send-outreach-packet-20260903-cia-token-transparency-audit-first-contact",
       "priority": 8,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-cia-token-transparency-audit-first-contact for cia-token and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-cia-token-transparency-audit-first-contact for cia-token, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-cia-token-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 0add8ed0b05bf1e1ea2d9dcb9ea949fe6961cbcbf0dac929291381af9ed82a3e",
       "outreachPriority": {
@@ -383,7 +383,7 @@
       "id": "send-outreach-packet-20260903-lastshift-transparency-audit-first-contact",
       "priority": 9,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-lastshift-transparency-audit-first-contact for lastshift and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-lastshift-transparency-audit-first-contact for lastshift, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-lastshift-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 4103401e99d443c2d70413c49a69f62509cc254ad316f675a74ffbe95a0dade0",
       "outreachPriority": {
@@ -426,7 +426,7 @@
       "id": "send-outreach-packet-20260903-bitdust-transparency-audit-first-contact",
       "priority": 10,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-bitdust-transparency-audit-first-contact for bitdust and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-bitdust-transparency-audit-first-contact for bitdust, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-bitdust-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 98ac94a0f80cf0e31e07ea34e3bb425d43776a2135e9d0441618521c61895524",
       "outreachPriority": {
@@ -470,7 +470,7 @@
       "id": "send-outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact",
       "priority": 11,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact for limelight-launchpad and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact for limelight-launchpad, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 38e0b9c608923fcd702b0785126faad38ee70509703534c314607b9e7be117aa",
       "outreachPriority": {
@@ -514,7 +514,7 @@
       "id": "send-outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact",
       "priority": 12,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact for solana-mint-forge and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact for solana-mint-forge, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 7f761f56e51930416aa39d2a425143bef7eb62204f821285ce965e0258235c81",
       "outreachPriority": {
@@ -558,7 +558,7 @@
       "id": "send-outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact",
       "priority": 13,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact for black-bull-ansem and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact for black-bull-ansem, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 33cb3d72693505f582a7e12e970f9aab018b69dc950baa543675fd85b52c7284",
       "outreachPriority": {
@@ -600,7 +600,7 @@
       "id": "send-outreach-packet-20260903-funtom-transparency-audit-first-contact",
       "priority": 14,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-funtom-transparency-audit-first-contact for funtom and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-funtom-transparency-audit-first-contact for funtom, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-funtom-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 503be9ab423e4be68c56d9dba12350580d5bb0bfce1bc7c67a5823e8d5b91fa9",
       "outreachPriority": {
@@ -642,7 +642,7 @@
       "id": "send-outreach-packet-20260903-fyborg-transparency-audit-first-contact",
       "priority": 15,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-fyborg-transparency-audit-first-contact for fyborg and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-fyborg-transparency-audit-first-contact for fyborg, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-fyborg-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 9d553f97e710f41a9fea35fc76691a1b68cb6fe5e013746c78fad58c97416468",
       "outreachPriority": {
@@ -684,7 +684,7 @@
       "id": "send-outreach-packet-20260903-kedol-token-transparency-audit-first-contact",
       "priority": 16,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-kedol-token-transparency-audit-first-contact for kedol-token and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-kedol-token-transparency-audit-first-contact for kedol-token, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-kedol-token-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 7c244f38700d0a5c268a53d80a6a9b59d2cdbfdce0242aeb4ced9ce7aad6bb0e",
       "outreachPriority": {
@@ -726,7 +726,7 @@
       "id": "send-outreach-packet-20260903-lilmeme-transparency-audit-first-contact",
       "priority": 17,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-lilmeme-transparency-audit-first-contact for lilmeme and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-lilmeme-transparency-audit-first-contact for lilmeme, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-lilmeme-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash bd36afd89b6b486720ef72920cc25d2f76fb3367e39e9eb4cae54c606b3b4904",
       "outreachPriority": {
@@ -769,7 +769,7 @@
       "id": "send-outreach-packet-20260903-meor-transparency-audit-first-contact",
       "priority": 18,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-meor-transparency-audit-first-contact for meor and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-meor-transparency-audit-first-contact for meor, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meor-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 5036f45327abd262e662d1dd795b9934f8b57f6baa467beb571db4637f1640d0",
       "outreachPriority": {
@@ -811,7 +811,7 @@
       "id": "send-outreach-packet-20260903-troptionsmint-transparency-audit-first-contact",
       "priority": 19,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-troptionsmint-transparency-audit-first-contact for troptionsmint and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-troptionsmint-transparency-audit-first-contact for troptionsmint, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-troptionsmint-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 164e7eb55203fab6ea30edd24a6060086e47536638527dde4646787ef03fea1f",
       "outreachPriority": {
@@ -854,7 +854,7 @@
       "id": "send-outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact",
       "priority": 20,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact for bonkwifhat-bif and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact for bonkwifhat-bif, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 5d1c7478ceab5886dbae0b745e25e44cc5f833d71aaaf68a59c23b07236ec223",
       "outreachPriority": {
@@ -896,7 +896,7 @@
       "id": "send-outreach-packet-20260831-arnold-solana-transparency-audit-first-contact",
       "priority": 21,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact for arnold-solana and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact for arnold-solana, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 5b2a05f62888e3bdab910a5efb623f04a637e0627c0565cd26d56d34af2868a7",
       "outreachPriority": {
@@ -937,7 +937,7 @@
       "id": "send-outreach-packet-20260831-npc-meme-transparency-audit-first-contact",
       "priority": 22,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260831-npc-meme-transparency-audit-first-contact for npc-meme and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260831-npc-meme-transparency-audit-first-contact for npc-meme, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260831-npc-meme-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash ca6e7f83cbecf64cf506a2dcec90bcb3d1b358e8cd26aac1cdd7fe489c6db73b",
       "outreachPriority": {
@@ -978,7 +978,7 @@
       "id": "send-outreach-packet-20260903-ansem-season-transparency-audit-first-contact",
       "priority": 23,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-ansem-season-transparency-audit-first-contact for ansem-season and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-ansem-season-transparency-audit-first-contact for ansem-season, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-ansem-season-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash deb9d88afad8a6b79f6e0bc145f45de71a914c51b1fca8eda0348a475c8feaba",
       "outreachPriority": {
@@ -1019,7 +1019,7 @@
       "id": "send-outreach-packet-20260903-foxclub-transparency-audit-first-contact",
       "priority": 24,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-foxclub-transparency-audit-first-contact for foxclub and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-foxclub-transparency-audit-first-contact for foxclub, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-foxclub-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash e1399c1fc831719db54586c1cc87da558007176a5e4564adea19b8904ead3d8f",
       "outreachPriority": {
@@ -1060,7 +1060,7 @@
       "id": "send-outreach-packet-20260903-honk-solana-transparency-audit-first-contact",
       "priority": 25,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-honk-solana-transparency-audit-first-contact for honk-solana and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-honk-solana-transparency-audit-first-contact for honk-solana, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-honk-solana-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 2145dcc841f7b58452edb68dc0f7e4f76c2411c727d6d3b76b737e451f07d24e",
       "outreachPriority": {
@@ -1101,7 +1101,7 @@
       "id": "send-outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact",
       "priority": 26,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact for kerythos-kyrt and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact for kerythos-kyrt, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 13d33359cabf961bd22c1e33baffbb30aa861f2772a33553a48ee8255b46972f",
       "outreachPriority": {
@@ -1142,7 +1142,7 @@
       "id": "send-outreach-packet-20260903-modest-money-transparency-audit-first-contact",
       "priority": 27,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-modest-money-transparency-audit-first-contact for modest-money and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-modest-money-transparency-audit-first-contact for modest-money, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-modest-money-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash c587b2aad58e0fabca150249d5c05f02439260e2a2e7a80a5f951aa5617e656f",
       "outreachPriority": {
@@ -1183,7 +1183,7 @@
       "id": "send-outreach-packet-20260903-niulai-transparency-audit-first-contact",
       "priority": 28,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-niulai-transparency-audit-first-contact for niulai and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-niulai-transparency-audit-first-contact for niulai, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-niulai-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 07269629fa1f040a367ea17eabf3891697367b47c386fe75e34f69d732dc2c0f",
       "outreachPriority": {
@@ -1224,7 +1224,7 @@
       "id": "send-outreach-packet-20260903-pippin-smc-transparency-audit-first-contact",
       "priority": 29,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-pippin-smc-transparency-audit-first-contact for pippin-smc and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-pippin-smc-transparency-audit-first-contact for pippin-smc, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-pippin-smc-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash c3a1a387a7963cc1b559cec71814e4c9d78eea78e5641d8587111fe5713db028",
       "outreachPriority": {
@@ -1265,7 +1265,7 @@
       "id": "send-outreach-packet-20260903-roach-solana-transparency-audit-first-contact",
       "priority": 30,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-roach-solana-transparency-audit-first-contact for roach-solana and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-roach-solana-transparency-audit-first-contact for roach-solana, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-roach-solana-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 844e8eb25af342bb59e428f06464c7cbe3a498dda4f7be09b3dee281b994811e",
       "outreachPriority": {
@@ -1306,7 +1306,7 @@
       "id": "send-outreach-packet-20260903-spcx-transparency-audit-first-contact",
       "priority": 31,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-spcx-transparency-audit-first-contact for spcx and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-spcx-transparency-audit-first-contact for spcx, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-spcx-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 0ee4e5ab8639c6631d7fadddcd77bf29b80a10f99f9fd443d99a68e01af00561",
       "outreachPriority": {
@@ -1347,7 +1347,7 @@
       "id": "send-outreach-packet-20260903-ssqueeze-transparency-audit-first-contact",
       "priority": 32,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-ssqueeze-transparency-audit-first-contact for ssqueeze and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-ssqueeze-transparency-audit-first-contact for ssqueeze, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-ssqueeze-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 75e11aa9f6af3b1f34c072457025a6fd80d98c06350f7d7506b69e9aaafbe1cc",
       "outreachPriority": {
@@ -1388,7 +1388,7 @@
       "id": "send-outreach-packet-20260903-tradiecoin-transparency-audit-first-contact",
       "priority": 33,
       "type": "manual-outreach-send",
-      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-tradiecoin-transparency-audit-first-contact for tradiecoin and record contact evidence.",
+      "title": "Send priority-scored manual outreach packet outreach-packet-20260903-tradiecoin-transparency-audit-first-contact for tradiecoin, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
       "command": "node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-tradiecoin-transparency-audit-first-contact --evidence \"<contact-evidence-url-or-reference>\" --sentAtUtc \"<sent-at-utc>\" --messageHash d3f0fd199c1ebe6e548e8469709073c366dce992e7f4a9337f94f2c6b83ad124",
       "outreachPriority": {

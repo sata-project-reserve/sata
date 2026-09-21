@@ -1436,6 +1436,8 @@ export default function OperationsPage() {
             <div className="command-list">
               <span>Prepare Evidence Issue</span>
               <code>{nextManualSendSheet.evidenceIssueTemplateCommand}</code>
+              <span>Evidence Review</span>
+              <code>{nextManualSendSheet.evidenceReviewCommand}</code>
               <span>Record Contact Evidence</span>
               <code>{withSentAtUtcPlaceholder(nextManualSendSheet.recordContactCommand)}</code>
             </div>
@@ -1526,6 +1528,12 @@ export default function OperationsPage() {
                   <>
                     <span>Prepare Evidence Issue</span>
                     <code>{packet.evidenceIssueTemplateCommand}</code>
+                  </>
+                ) : null}
+                {'evidenceReviewCommand' in packet ? (
+                  <>
+                    <span>Evidence Review</span>
+                    <code>{packet.evidenceReviewCommand}</code>
                   </>
                 ) : null}
                 <span>Record Contact</span>

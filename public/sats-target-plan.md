@@ -1,6 +1,6 @@
 # SATA Reserve Token Sats Target Plan
 
-Generated: 2026-09-21T13:22:39.241Z
+Generated: 2026-09-21T17:03:23.194Z
 BTC/USD assumption: 100000
 Reserve allocation assumption: 70%
 

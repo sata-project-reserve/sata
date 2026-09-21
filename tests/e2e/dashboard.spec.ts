@@ -70,7 +70,9 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
     '/services/sample-audit'
   );
   await expect(page.getByRole('heading', { name: 'Upgrade Path' })).toBeVisible();
-  await expect(page.getByText('Offer the $4999/month continuous transparency monitoring plan only')).toBeVisible();
+  await expect(
+    page.getByText('Offer the $4999/month continuous transparency monitoring plan only')
+  ).toBeVisible();
   await expect(page.getByRole('link', { name: 'View Setup' })).toHaveAttribute(
     'href',
     '/services/transparency-report-setup'
@@ -254,9 +256,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
       { exact: true }
     )
   ).toBeVisible();
-  await expect(
-    replyTriageAction.getByText('npm run ops:inbound-reply-triage-plan')
-  ).toBeVisible();
+  await expect(replyTriageAction.getByText('npm run ops:inbound-reply-triage-plan')).toBeVisible();
   await expect(page.getByText('#4 manual-outreach-send')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Social Review Queue' })).toBeVisible();
   await expect(page.getByText('post-receipt-referral-partners', { exact: true })).toBeVisible();
@@ -283,6 +283,35 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
       'npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e'
     )
   ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Next Social Publish Sheet' })).toBeVisible();
+  const nextSocialPublishSheet = page
+    .locator('section')
+    .filter({ has: page.getByRole('heading', { name: 'Next Social Publish Sheet' }) });
+  await expect(
+    nextSocialPublishSheet.getByText('transparency-service-offer', { exact: true })
+  ).toBeVisible();
+  await expect(
+    nextSocialPublishSheet.getByText('SATA offers $249 Transparency Audits').first()
+  ).toBeVisible();
+  await expect(
+    nextSocialPublishSheet.getByText(
+      '4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448',
+      { exact: true }
+    )
+  ).toBeVisible();
+  await expect(
+    nextSocialPublishSheet.getByText(
+      'node scripts/social-publish-evidence-agent.mjs render-template --post transparency-service-offer --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448'
+    )
+  ).toBeVisible();
+  await expect(
+    nextSocialPublishSheet.getByText('npm run ops:social-publish-evidence-plan')
+  ).toBeVisible();
+  await expect(
+    nextSocialPublishSheet.getByText(
+      'npm run social:agent -- record-published --post transparency-service-offer --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448'
+    )
+  ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Social Dispatch Brief' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Social Dispatch Brief' })).toHaveAttribute(
     'href',
@@ -300,6 +329,9 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
       '4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e',
       { exact: true }
     )
+  ).toBeVisible();
+  await expect(
+    socialDispatchBlock.getByText('npm run ops:social-publish-evidence-plan')
   ).toBeVisible();
   await expect(
     socialDispatchBlock.getByText(
@@ -377,7 +409,9 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     .locator('section')
     .filter({ has: page.getByRole('heading', { name: 'Next Manual Send Sheet' }) });
   await expect(
-    nextSendSheet.getByText('Single-packet path from approved outreach copy to auditable contact evidence.')
+    nextSendSheet.getByText(
+      'Single-packet path from approved outreach copy to auditable contact evidence.'
+    )
   ).toBeVisible();
   await expect(nextSendSheet.getByText('sanctum-elysium-loam').first()).toBeVisible();
   await expect(nextSendSheet.getByText('send next', { exact: true })).toBeVisible();

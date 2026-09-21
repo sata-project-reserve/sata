@@ -327,6 +327,7 @@ export default function OperationsPage() {
     (post) => post.status === 'ready-for-review'
   );
   const approvedSocialPosts = socialQueue.posts.filter((post) => post.status === 'approved');
+  const nextSocialPublishSheet = socialDispatchBrief.readyManualPosts[0];
   const outreachDispatchSprint = outreachDispatchBrief.readyManualSends;
   const nextManualSendSheet = outreachDispatchBrief.nextManualSendSheet;
   const outreachDispatchRemainder = Math.max(
@@ -458,7 +459,8 @@ export default function OperationsPage() {
     (item) => item.type === 'manual-outreach-send'
   );
   const manualOutreachQualifiedRevenueUsd = manualOutreachActions.reduce(
-    (total, item) => total + Number((item as { qualifiedRevenueUsd?: string }).qualifiedRevenueUsd ?? 0),
+    (total, item) =>
+      total + Number((item as { qualifiedRevenueUsd?: string }).qualifiedRevenueUsd ?? 0),
     0
   );
   const manualOutreachReserveSats = satsFromUsd(
@@ -664,7 +666,9 @@ export default function OperationsPage() {
                   <>
                     <span>Evidence Intake</span>
                     <code>
-                      <a href={action.evidenceIssueTemplateUrl}>{action.evidenceIssueTemplateUrl}</a>
+                      <a href={action.evidenceIssueTemplateUrl}>
+                        {action.evidenceIssueTemplateUrl}
+                      </a>
                     </code>
                   </>
                 ) : null}
@@ -1015,6 +1019,52 @@ export default function OperationsPage() {
         </div>
       </section>
 
+      {nextSocialPublishSheet ? (
+        <section className="public-band">
+          <div className="section-heading">
+            <h2>Next Social Publish Sheet</h2>
+            <p>
+              Publish the next approved post exactly as written, then capture evidence before any
+              state record.
+            </p>
+          </div>
+          <div className="notice">
+            <strong>Stop Rule</strong>
+            <span>{nextSocialPublishSheet.stopRule}</span>
+          </div>
+          <div className="warning-list">
+            <div className="proof-block">
+              <span>{nextSocialPublishSheet.type}</span>
+              <strong>{nextSocialPublishSheet.id}</strong>
+              <p>{nextSocialPublishSheet.publicationInstructions}</p>
+              <pre className="preview">{nextSocialPublishSheet.text}</pre>
+              <div className="command-list">
+                <span>Approved Content SHA-256</span>
+                <code>{nextSocialPublishSheet.contentSha256}</code>
+                <span>Evidence Intake</span>
+                <code>
+                  <a href={nextSocialPublishSheet.evidenceIssueUrl}>
+                    {nextSocialPublishSheet.evidenceIssueUrl}
+                  </a>
+                </code>
+                <span>Evidence Issue Body</span>
+                <code>{nextSocialPublishSheet.evidenceIssueTemplateCommand}</code>
+                <span>Evidence Review</span>
+                <code>{nextSocialPublishSheet.evidenceReviewCommand}</code>
+                <span>Record Published URL</span>
+                <code>{nextSocialPublishSheet.recordPublishedCommand}</code>
+                <span>Post-Publication Reply Triage</span>
+                <code>{nextSocialPublishSheet.postPublishReplyTriageCommand}</code>
+                <span>Post-Publication Invoice Evidence</span>
+                <code>{nextSocialPublishSheet.postPublishInvoiceEvidenceIssueTemplateCommand}</code>
+                <span>Post-Publication Intake Evidence</span>
+                <code>{nextSocialPublishSheet.postPublishIntakeEvidenceIssueTemplateCommand}</code>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <section className="public-band">
         <div className="section-heading">
           <h2>Settlement Options Brief</h2>
@@ -1128,6 +1178,10 @@ export default function OperationsPage() {
                 <code>
                   <a href={post.evidenceIssueUrl}>{post.evidenceIssueUrl}</a>
                 </code>
+                <span>Evidence Issue Body</span>
+                <code>{post.evidenceIssueTemplateCommand}</code>
+                <span>Evidence Review</span>
+                <code>{post.evidenceReviewCommand}</code>
                 <span>Record Published URL</span>
                 <code>{post.recordPublishedCommand}</code>
                 <span>Post-Publication Reply Triage</span>
@@ -1516,9 +1570,7 @@ export default function OperationsPage() {
                 {packet.conversionPlan ? (
                   <>
                     <span>Upgrade Gate</span>
-                    <code>
-                      {packet.conversionPlan.upgradeOfferId} only after explicit fit
-                    </code>
+                    <code>{packet.conversionPlan.upgradeOfferId} only after explicit fit</code>
                   </>
                 ) : null}
               </div>
@@ -1625,7 +1677,11 @@ export default function OperationsPage() {
             {'contactEvidenceFormUrl' in replyConversionBrief.invoiceConversionSprint.candidate ? (
               <p>
                 Evidence form:{' '}
-                <a href={replyConversionBrief.invoiceConversionSprint.candidate.contactEvidenceFormUrl}>
+                <a
+                  href={
+                    replyConversionBrief.invoiceConversionSprint.candidate.contactEvidenceFormUrl
+                  }
+                >
                   contact evidence intake
                 </a>
               </p>
@@ -1633,7 +1689,9 @@ export default function OperationsPage() {
             {'approvedMessageSha256' in replyConversionBrief.invoiceConversionSprint.candidate ? (
               <div className="command-list">
                 <span>Approved Message SHA-256</span>
-                <code>{replyConversionBrief.invoiceConversionSprint.candidate.approvedMessageSha256}</code>
+                <code>
+                  {replyConversionBrief.invoiceConversionSprint.candidate.approvedMessageSha256}
+                </code>
               </div>
             ) : null}
             {'approvedMessage' in replyConversionBrief.invoiceConversionSprint.candidate ? (

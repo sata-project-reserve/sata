@@ -1,6 +1,6 @@
 # SATA Reserve Token Reply Conversion Brief
 
-Generated: 2026-09-21T00:16:24.884Z
+Generated: 2026-09-21T04:01:48.847Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary

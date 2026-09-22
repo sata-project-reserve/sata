@@ -60,6 +60,16 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
   await expect(page.getByRole('heading', { name: 'Payment Path' })).toBeVisible();
   await expect(page.getByText('BTC to the published reserve address')).toBeVisible();
   await expect(page.getByText('Commercial intent')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Invoice-Ready Intake' })).toBeVisible();
+  await expect(page.getByText('Token, contract, or mint address')).toBeVisible();
+  await expect(
+    page.getByText('Confirmation that an exact-sats invoice should be prepared for chairman review')
+  ).toBeVisible();
+  await expect(page.getByText('Intake does not approve work or payment')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Submit Invoice-Ready Intake' })).toHaveAttribute(
+    'href',
+    'https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml'
+  );
   await expect(page.getByRole('heading', { name: 'Sales Pipeline' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'View Prospect Pipeline' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Delivery Kit' })).toBeVisible();

@@ -33,6 +33,14 @@ const checks = [
   'Risk wording and paid-promotion disclosure review'
 ];
 
+const invoiceReadyFields = [
+  'Token, contract, or mint address',
+  'Website and public social/profile links',
+  'Authority, liquidity, reserve, or disclosure claims to check',
+  'Preferred public or private deliverable visibility',
+  'Confirmation that an exact-sats invoice should be prepared for chairman review'
+];
+
 const intakeLabels: Record<string, string> = {
   projectName: 'Project name',
   network: 'Network',
@@ -57,8 +65,8 @@ export default function TransparencyAuditServicePage() {
           <span className="eyebrow">SATA services</span>
           <h1>Transparency audits for crypto teams.</h1>
           <p>
-            SATA turns public token, liquidity, authority, reserve, and disclosure evidence into
-            a buyer-readable audit. The starter audit is ${auditOffer?.priceUsd} with a{' '}
+            SATA turns public token, liquidity, authority, reserve, and disclosure evidence into a
+            buyer-readable audit. The starter audit is ${auditOffer?.priceUsd} with a{' '}
             {starterTurnaroundHours}-hour target after approved payment or escrow terms.
           </p>
           <div className="inline-actions">
@@ -105,7 +113,10 @@ export default function TransparencyAuditServicePage() {
       <section className="public-band">
         <div className="section-heading">
           <h2>Start Here</h2>
-          <p>Submit public evidence first. Payment is requested only after scope and invoice approval.</p>
+          <p>
+            Submit public evidence first. Payment is requested only after scope and invoice
+            approval.
+          </p>
         </div>
         <div className="summary-grid">
           <div className="metric">
@@ -217,6 +228,38 @@ export default function TransparencyAuditServicePage() {
               <strong>{check}</strong>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="public-band">
+        <div className="section-heading">
+          <h2>Invoice-Ready Intake</h2>
+          <p>
+            Serious buyers can shorten the path to a chairman-reviewed invoice by submitting the
+            fields below with public evidence.
+          </p>
+        </div>
+        <div className="service-checklist">
+          {invoiceReadyFields.map((field) => (
+            <div className="proof-block" key={field}>
+              <strong>{field}</strong>
+            </div>
+          ))}
+        </div>
+        <div className="notice">
+          <strong>Invoice Gate</strong>
+          <span>
+            Intake does not approve work or payment. SATA prepares exact-sats invoice terms only
+            after Executive Chairman review.
+          </span>
+        </div>
+        <div className="inline-actions">
+          <a className="button-link" href={deliveryKit.intakeUrl}>
+            Submit Invoice-Ready Intake
+          </a>
+          <a className="button-link" href={publicPath('/services/sample-audit')}>
+            Compare Sample Audit
+          </a>
         </div>
       </section>
 

@@ -113,6 +113,17 @@ for (const route of partnerRoutes) {
 if (!auditPage.includes("publicPath('/partners/referrals')")) {
   findings.push('/services/transparency-audit: public page must link to referral partners');
 }
+for (const required of [
+  'Invoice-Ready Intake',
+  'Token, contract, or mint address',
+  'Confirmation that an exact-sats invoice should be prepared for chairman review',
+  'Intake does not approve work or payment',
+  'Submit Invoice-Ready Intake'
+]) {
+  if (!auditPage.includes(required)) {
+    findings.push(`/services/transparency-audit: invoice-ready intake section missing ${required}`);
+  }
+}
 if (!existsSync(sampleAuditRoute.file)) {
   findings.push(`${sampleAuditRoute.path}: route file is missing`);
 } else {

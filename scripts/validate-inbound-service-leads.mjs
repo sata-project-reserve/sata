@@ -17,6 +17,23 @@ const agent = readFileSync(join('scripts', 'inbound-service-lead-agent.mjs'), 'u
 const findings = [];
 
 validateInboundLeadQueue(queue);
+const intakeTemplate = queue.replyTemplates.find(
+  (template) => template.id === 'request-intake-fields'
+);
+const invoiceBoundaryTemplate = queue.replyTemplates.find(
+  (template) => template.id === 'invoice-request-boundary'
+);
+if (!/services\/transparency-audit#invoice-ready-intake/.test(intakeTemplate?.text ?? '')) {
+  findings.push('intake reply template must link to the invoice-ready intake section');
+}
+if (!/services\/sample-audit/.test(intakeTemplate?.text ?? '')) {
+  findings.push('intake reply template must link to the sample audit');
+}
+if (
+  !/services\/transparency-audit#invoice-ready-intake/.test(invoiceBoundaryTemplate?.text ?? '')
+) {
+  findings.push('invoice boundary template must link to invoice-ready intake fields');
+}
 const plan = buildInboundLeadPlan({ queue, paidPromotionLedger, socialQueue });
 if (plan.mode !== 'inbound-service-lead-plan') {
   findings.push('plan mode must be inbound-service-lead-plan');

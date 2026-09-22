@@ -206,6 +206,19 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(page.getByRole('heading', { name: 'Inbound Lead Capture' })).toBeVisible();
   await expect(page.getByText('Live Sources', { exact: true })).toBeVisible();
   await expect(page.getByText('request-intake-fields')).toBeVisible();
+  const intakeReplyTemplate = page
+    .locator('.proof-block')
+    .filter({ hasText: 'request-intake-fields' });
+  await expect(
+    intakeReplyTemplate.getByText(
+      'https://sata-project-reserve.github.io/sata/services/transparency-audit#invoice-ready-intake'
+    )
+  ).toBeVisible();
+  await expect(
+    intakeReplyTemplate.getByText(
+      'https://sata-project-reserve.github.io/sata/services/sample-audit'
+    )
+  ).toBeVisible();
   await expect(page.getByText('Paid promotion from @142C_')).toBeVisible();
   await expect(
     page.getByText('node scripts/inbound-service-lead-agent.mjs record-lead').first()

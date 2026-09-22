@@ -50,12 +50,12 @@
     {
       "id": "request-intake-fields",
       "purpose": "Ask an inbound lead for the minimum fields required to qualify paid transparency-audit work.",
-      "text": "Thanks for reaching out. If you want SATA to review transparency claims, send the project name, token or contract address, public website/X link, and the specific authority, liquidity, reserve, or disclosure claims you want checked. SATA Transparency Audit is $249. Any exact BTC invoice and payment instructions require Executive Chairman approval first."
+      "text": "Thanks for reaching out. If you want SATA to review transparency claims, send the project name, token or contract address, public website/X link, and the specific authority, liquidity, reserve, or disclosure claims you want checked. SATA Transparency Audit is $249. Invoice-ready intake: https://sata-project-reserve.github.io/sata/services/transparency-audit#invoice-ready-intake . Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit . Any exact BTC invoice and payment instructions require Executive Chairman approval first."
     },
     {
       "id": "invoice-request-boundary",
       "purpose": "Acknowledge an invoice request without sending payment instructions.",
-      "text": "Got it. I can prepare the scope and exact-sats invoice packet for Executive Chairman approval. Payment instructions are not sent until approved. The work is a public-evidence transparency audit only: no price guarantee, no redemption promise, no investor targeting, and no market-support commitment."
+      "text": "Got it. I can prepare the scope and exact-sats invoice packet for Executive Chairman approval. Payment instructions are not sent until approved. To make the packet invoice-ready, send the fields listed here: https://sata-project-reserve.github.io/sata/services/transparency-audit#invoice-ready-intake . The work is a public-evidence SATA Transparency Audit for $249 only: no price guarantee, no redemption promise, no investor targeting, and no market-support commitment."
     }
   ],
   "leads": [],

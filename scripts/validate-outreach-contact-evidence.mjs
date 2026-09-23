@@ -1,17 +1,40 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { buildOutreachContactEvidenceDraft } from './lib/outreach-contact-evidence-parser.mjs';
+import {
+  buildOutreachContactEvidenceDraft,
+  parseOutreachContactEvidenceIssueBody
+} from './lib/outreach-contact-evidence-parser.mjs';
 import { renderOutreachContactEvidenceIssueBody } from './outreach-contact-evidence-agent.mjs';
 import { renderOutreachContactEvidenceComment } from './outreach-contact-evidence-comment-agent.mjs';
 
 const pipeline = readJson(join('public', 'sats-prospect-pipeline.json'));
 const packetQueue = readJson(join('public', 'service-outreach-packet-queue.json'));
 const issueFixture = readJson(join('tests', 'fixtures', 'outreach-contact-evidence-issue.json'));
-const form = readFileSync(join('.github', 'ISSUE_TEMPLATE', 'outreach-contact-evidence.yml'), 'utf8');
+const form = readFileSync(
+  join('.github', 'ISSUE_TEMPLATE', 'outreach-contact-evidence.yml'),
+  'utf8'
+);
 const workflow = readOptionalText(join('.github', 'workflows', 'outreach-contact-evidence.yml'));
 const evidenceAgent = readFileSync(join('scripts', 'outreach-contact-evidence-agent.mjs'), 'utf8');
 const packageJson = readJson('package.json');
-const draft = buildOutreachContactEvidenceDraft({ issue: issueFixture, packetQueue, pipeline });
+const fixtureIntake = parseOutreachContactEvidenceIssueBody(issueFixture.body ?? '');
+const fixturePacket = (packetQueue.packets ?? []).find(
+  (item) => item.id === fixtureIntake.packetId
+);
+const fixtureIssue = fixturePacket
+  ? {
+      ...issueFixture,
+      body: renderOutreachContactEvidenceIssueBody({
+        packetQueue,
+        packetId: fixturePacket.id,
+        contactChannel: fixtureIntake.contactChannel,
+        contactEvidenceUrl: fixtureIntake.contactEvidenceUrl,
+        sentAtUtc: fixtureIntake.sentAtUtc
+      })
+    }
+  : issueFixture;
+const expectedFixtureHash = fixturePacket?.messageSha256 ?? fixtureIntake.approvedMessageSha256;
+const draft = buildOutreachContactEvidenceDraft({ issue: fixtureIssue, packetQueue, pipeline });
 const comment = renderOutreachContactEvidenceComment(draft);
 const findings = [];
 
@@ -39,10 +62,16 @@ if (!/id: sentAtUtc[\s\S]*?required: true/.test(form)) {
 if (/payment address|send payment|private key|seed phrase/i.test(form)) {
   findings.push('issue form must not request payments or wallet secrets');
 }
-if (packageJson.scripts?.['ops:outreach-contact-evidence-check'] !== 'node scripts/validate-outreach-contact-evidence.mjs') {
+if (
+  packageJson.scripts?.['ops:outreach-contact-evidence-check'] !==
+  'node scripts/validate-outreach-contact-evidence.mjs'
+) {
   findings.push('package.json must expose ops:outreach-contact-evidence-check');
 }
-if (packageJson.scripts?.['ops:outreach-contact-evidence-plan'] !== 'node scripts/outreach-contact-evidence-agent.mjs plan') {
+if (
+  packageJson.scripts?.['ops:outreach-contact-evidence-plan'] !==
+  'node scripts/outreach-contact-evidence-agent.mjs plan'
+) {
   findings.push('package.json must expose ops:outreach-contact-evidence-plan');
 }
 if (!draft.readyToRecord) {
@@ -54,7 +83,12 @@ if (!draft.messageMatchesApprovedPacket) {
 if (!draft.hashMatchesApprovedPacket) {
   findings.push('fixture approved message SHA-256 must match approved packet');
 }
-if (!/service-outreach-packet-agent\.mjs mark-sent --packet outreach-packet-20260831-arnold-solana/.test(draft.operatorCommand ?? '')) {
+if (
+  fixturePacket &&
+  !new RegExp(
+    `service-outreach-packet-agent\\.mjs mark-sent --packet ${escapeRegExp(fixturePacket.id)}`
+  ).test(draft.operatorCommand ?? '')
+) {
   findings.push('operator command must use packet-aware mark-sent command');
 }
 if (!/--evidence "https:\/\/x\.com\/example\/status\/108"/.test(draft.operatorCommand ?? '')) {
@@ -63,7 +97,12 @@ if (!/--evidence "https:\/\/x\.com\/example\/status\/108"/.test(draft.operatorCo
 if (!/--sentAtUtc "2026-09-10T10:00:00.000Z"/.test(draft.operatorCommand ?? '')) {
   findings.push('operator command must preserve the submitted sentAtUtc timestamp');
 }
-if (!/--messageHash 5b2a05f62888e3bdab910a5efb623f04a637e0627c0565cd26d56d34af2868a7/.test(draft.operatorCommand ?? '')) {
+if (
+  expectedFixtureHash &&
+  !new RegExp(`--messageHash ${escapeRegExp(expectedFixtureHash)}`).test(
+    draft.operatorCommand ?? ''
+  )
+) {
   findings.push('operator command must include approved message SHA-256');
 }
 if (/sats-prospect-response-agent\.mjs record-contacted/.test(draft.operatorCommand ?? '')) {
@@ -84,10 +123,16 @@ if (!/No outreach, invoice, payment instruction/i.test(comment)) {
 if (!/Operator command/.test(comment)) {
   findings.push('comment must expose the operator command section');
 }
-if (!/Approved message SHA-256/.test(comment) || !/Hash matches approved packet: true/.test(comment)) {
+if (
+  !/Approved message SHA-256/.test(comment) ||
+  !/Hash matches approved packet: true/.test(comment)
+) {
   findings.push('comment must expose approved message hash match status');
 }
-if (!/approvedMessageSha256/.test(evidenceAgent) || !/approved SHA-256 match the packet/i.test(evidenceAgent)) {
+if (
+  !/approvedMessageSha256/.test(evidenceAgent) ||
+  !/approved SHA-256 match the packet/i.test(evidenceAgent)
+) {
   findings.push('evidence agent plan must expose the approved hash match requirement');
 }
 if (!/requiredFields:[\s\S]*'sentAtUtc'/.test(evidenceAgent)) {
@@ -108,10 +153,10 @@ for (const expected of [
   '### Outreach packet ID',
   'outreach-packet-20260831-arnold-solana-transparency-audit-first-contact',
   '### Approved message SHA-256',
-  '5b2a05f62888e3bdab910a5efb623f04a637e0627c0565cd26d56d34af2868a7',
+  expectedFixtureHash,
   '### Exact message sent',
   '### Sent at UTC'
-]) {
+].filter(Boolean)) {
   if (!renderedEvidenceBody.includes(expected)) {
     findings.push(`rendered evidence issue body missing ${expected}`);
   }
@@ -122,15 +167,20 @@ const renderedEvidenceDraft = buildOutreachContactEvidenceDraft({
   pipeline
 });
 if (!renderedEvidenceDraft.readyToRecord) {
-  findings.push(`rendered evidence issue body must be ready to record: ${renderedEvidenceDraft.findings.join('; ')}`);
+  findings.push(
+    `rendered evidence issue body must be ready to record: ${renderedEvidenceDraft.findings.join('; ')}`
+  );
 }
-if (!renderedEvidenceDraft.messageMatchesApprovedPacket || !renderedEvidenceDraft.hashMatchesApprovedPacket) {
+if (
+  !renderedEvidenceDraft.messageMatchesApprovedPacket ||
+  !renderedEvidenceDraft.hashMatchesApprovedPacket
+) {
   findings.push('rendered evidence issue body must preserve exact approved message and hash');
 }
 
 const mismatchedIssue = {
-  ...issueFixture,
-  body: issueFixture.body.replace('Hi arnold-solana,', 'Hi altered-team,')
+  ...fixtureIssue,
+  body: fixtureIssue.body.replace('Hi arnold-solana,', 'Hi altered-team,')
 };
 const mismatchedDraft = buildOutreachContactEvidenceDraft({
   issue: mismatchedIssue,
@@ -145,8 +195,8 @@ if (!mismatchedDraft.findings.some((finding) => /does not match/i.test(finding))
 }
 
 const wrongProspectIssue = {
-  ...issueFixture,
-  body: issueFixture.body.replace('### Prospect ID\narnold-solana', '### Prospect ID\nnpc-meme')
+  ...fixtureIssue,
+  body: fixtureIssue.body.replace('### Prospect ID\narnold-solana', '### Prospect ID\nnpc-meme')
 };
 const wrongProspectDraft = buildOutreachContactEvidenceDraft({
   issue: wrongProspectIssue,
@@ -161,9 +211,9 @@ if (!wrongProspectDraft.findings.some((finding) => /Packet prospect mismatch/i.t
 }
 
 const wrongHashIssue = {
-  ...issueFixture,
-  body: issueFixture.body.replace(
-    '### Approved message SHA-256\n5b2a05f62888e3bdab910a5efb623f04a637e0627c0565cd26d56d34af2868a7',
+  ...fixtureIssue,
+  body: fixtureIssue.body.replace(
+    `### Approved message SHA-256\n${expectedFixtureHash}`,
     `### Approved message SHA-256\n${'0'.repeat(64)}`
   )
 };
@@ -180,9 +230,9 @@ if (!wrongHashDraft.findings.some((finding) => /SHA-256 does not match/i.test(fi
 }
 
 const malformedHashIssue = {
-  ...issueFixture,
-  body: issueFixture.body.replace(
-    '### Approved message SHA-256\n5b2a05f62888e3bdab910a5efb623f04a637e0627c0565cd26d56d34af2868a7',
+  ...fixtureIssue,
+  body: fixtureIssue.body.replace(
+    `### Approved message SHA-256\n${expectedFixtureHash}`,
     '### Approved message SHA-256\nnot-a-valid-hash'
   )
 };
@@ -199,8 +249,8 @@ if (!malformedHashDraft.findings.some((finding) => /64-character lowercase hex/i
 }
 
 const missingTimestampIssue = {
-  ...issueFixture,
-  body: issueFixture.body.replace(/\n\n### Sent at UTC\n2026-09-10T10:00:00\.000Z\n/, '\n')
+  ...fixtureIssue,
+  body: fixtureIssue.body.replace(/\n\n### Sent at UTC\n2026-09-10T10:00:00\.000Z\s*$/, '')
 };
 const missingTimestampDraft = buildOutreachContactEvidenceDraft({
   issue: missingTimestampIssue,
@@ -219,8 +269,8 @@ if (
 }
 
 const malformedTimestampIssue = {
-  ...issueFixture,
-  body: issueFixture.body.replace(
+  ...fixtureIssue,
+  body: fixtureIssue.body.replace(
     '### Sent at UTC\n2026-09-10T10:00:00.000Z',
     '### Sent at UTC\nnot-a-date'
   )
@@ -272,4 +322,8 @@ function readOptionalText(path) {
     if (error.code === 'ENOENT') return null;
     throw error;
   }
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

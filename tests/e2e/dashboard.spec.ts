@@ -451,7 +451,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   ).toBeVisible();
   await expect(
     nextSendSheet
-      .getByText('3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100')
+      .getByText('b5fd3c92884794a7d032a10244fa442d841ead2a948b2c08d86ffd07128e4b98')
       .first()
   ).toBeVisible();
   await expect(
@@ -462,7 +462,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(nextSendSheet.getByText('npm run ops:outreach-contact-evidence-plan')).toBeVisible();
   await expect(
     nextSendSheet.getByText(
-      'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100'
+      'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash b5fd3c92884794a7d032a10244fa442d841ead2a948b2c08d86ffd07128e4b98'
     )
   ).toBeVisible();
   await expect(nextSendSheet.getByText('Contact Evidence Issue Body')).toBeVisible();
@@ -502,6 +502,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
       .locator('.preview')
       .filter({ hasText: 'Hi sanctum-elysium-loam' })
       .filter({ hasText: 'SATA runs a $249 Transparency Audit for crypto teams.' })
+      .filter({ hasText: '#invoice-ready-intake' })
       .first()
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Reply Conversion' })).toBeVisible();
@@ -525,7 +526,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   await expect(
     page
       .getByText(
-        'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 3659dfff515c0a1e9641fe414fb00e404f68535a53d3bcfece9f229abd356100'
+        'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash b5fd3c92884794a7d032a10244fa442d841ead2a948b2c08d86ffd07128e4b98'
       )
       .first()
   ).toBeVisible();

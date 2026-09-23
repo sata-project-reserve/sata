@@ -76,6 +76,7 @@ for (const required of [
   /no investor targeting/i,
   /no market-support promises/i,
   /services\/transparency-audit/i,
+  /#invoice-ready-intake/i,
   /services\/sample-audit/i,
   /transparency-audit-intake\.yml/i,
   /Executive Chairman approval/i
@@ -115,8 +116,15 @@ for (const [field, value] of Object.entries(approvedRecord.tracking ?? {})) {
     findings.push(`approved outreach tracking ${field} must include manual_outreach source`);
   }
 }
-if (!/utm_campaign=outreach_packet_20260831_approved_team_transparency_audit_first_contact/i.test(approvedRecord.message)) {
+if (
+  !/utm_campaign=outreach_packet_20260831_approved_team_transparency_audit_first_contact/i.test(
+    approvedRecord.message
+  )
+) {
   findings.push('approved outreach message must include packet-specific tracking campaign');
+}
+if (!/services\/transparency-audit\?[^#\s]+#invoice-ready-intake/i.test(approvedRecord.message)) {
+  findings.push('approved outreach message must point service traffic to invoice-ready intake');
 }
 if (!/template=transparency-audit-intake\.yml/i.test(approvedRecord.message)) {
   findings.push('approved outreach message must preserve the GitHub intake template parameter');
@@ -171,20 +179,35 @@ const publicQueue = readOptionalJson(join('public', 'service-outreach-packet-que
 if (publicQueue) {
   validateOutreachPacketQueue({ queue: publicQueue, pipeline });
   for (const item of publicQueue.packets ?? []) {
-    if (item.status === 'ready-for-manual-send' && !/services\/sample-audit/i.test(item.message ?? '')) {
+    if (
+      item.status === 'ready-for-manual-send' &&
+      !/services\/sample-audit/i.test(item.message ?? '')
+    ) {
       findings.push(`${item.id}: ready outreach packet must include the sample audit link`);
+    }
+    if (
+      item.status === 'ready-for-manual-send' &&
+      !/services\/transparency-audit\?[^#\s]+#invoice-ready-intake/i.test(item.message ?? '')
+    ) {
+      findings.push(
+        `${item.id}: ready outreach packet service link must target invoice-ready intake`
+      );
     }
     if (
       item.status === 'ready-for-manual-send' &&
       !/--sentAtUtc "<sent-at-utc>"/.test(item.recordContactCommand ?? '')
     ) {
-      findings.push(`${item.id}: ready outreach packet command must require explicit sentAtUtc evidence`);
+      findings.push(
+        `${item.id}: ready outreach packet command must require explicit sentAtUtc evidence`
+      );
     }
     if (
       item.status === 'ready-for-manual-send' &&
       !/--messageHash [a-f0-9]{64}/.test(item.recordContactCommand ?? '')
     ) {
-      findings.push(`${item.id}: ready outreach packet command must include approved message SHA-256`);
+      findings.push(
+        `${item.id}: ready outreach packet command must include approved message SHA-256`
+      );
     }
   }
 }
@@ -279,7 +302,9 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('Service outreach packet check passed: manual outreach drafts are bounded and reviewable.');
+console.log(
+  'Service outreach packet check passed: manual outreach drafts are bounded and reviewable.'
+);
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));

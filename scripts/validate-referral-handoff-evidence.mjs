@@ -9,8 +9,14 @@ const paidPromotionLedger = readJson(join('public', 'paid-promotion-ledger.json'
 const referralPartnerPolicy = readJson(join('public', 'referral-partner-policy.json'));
 const inboundQueue = readJson(join('public', 'inbound-service-lead-queue.json'));
 const issueFixture = readJson(join('tests', 'fixtures', 'referral-handoff-evidence-issue.json'));
-const form = readFileSync(join('.github', 'ISSUE_TEMPLATE', 'referral-handoff-evidence.yml'), 'utf8');
-const workflow = readFileSync(join('.github', 'workflows', 'referral-handoff-evidence.yml'), 'utf8');
+const form = readFileSync(
+  join('.github', 'ISSUE_TEMPLATE', 'referral-handoff-evidence.yml'),
+  'utf8'
+);
+const workflow = readFileSync(
+  join('.github', 'workflows', 'referral-handoff-evidence.yml'),
+  'utf8'
+);
 const evidenceAgent = readFileSync(join('scripts', 'referral-handoff-evidence-agent.mjs'), 'utf8');
 const agent = readFileSync(join('scripts', 'referral-partner-handoff-agent.mjs'), 'utf8');
 const packageJson = readJson('package.json');
@@ -91,7 +97,11 @@ if (!/--evidence "https:\/\/x\.com\/example\/status\/109"/.test(draft.operatorCo
 if (!/--sentAtUtc "2026-09-10T12:00:00.000Z"/.test(draft.operatorCommand ?? '')) {
   findings.push('operator command must preserve sentAtUtc when provided');
 }
-if (!/--messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18/.test(draft.operatorCommand ?? '')) {
+if (
+  !/--messageHash 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7/.test(
+    draft.operatorCommand ?? ''
+  )
+) {
   findings.push('operator command must include approved terms SHA-256');
 }
 if (!/sentAtUtc: options\.sentAtUtc/.test(agent)) {
@@ -115,7 +125,10 @@ if (!/No partner, compensation, invoice/i.test(comment)) {
 if (!/Operator command/.test(comment)) {
   findings.push('comment must expose the operator command section');
 }
-if (!/Approved terms SHA-256/.test(comment) || !/Hash matches approved packet: true/.test(comment)) {
+if (
+  !/Approved terms SHA-256/.test(comment) ||
+  !/Hash matches approved packet: true/.test(comment)
+) {
   findings.push('comment must expose approved terms hash match status');
 }
 if (!/approved SHA-256 match the packet/i.test(evidenceAgent)) {
@@ -124,13 +137,19 @@ if (!/approved SHA-256 match the packet/i.test(evidenceAgent)) {
 if (!/render-template --campaign/.test(evidenceAgent)) {
   findings.push('evidence agent must expose the render-template helper command');
 }
-if (!renderedTemplate.includes('### Source campaign ID\ndiana-crypto-20260903-transparency-tweet')) {
+if (
+  !renderedTemplate.includes('### Source campaign ID\ndiana-crypto-20260903-transparency-tweet')
+) {
   findings.push('rendered evidence template must include the source campaign ID');
 }
 if (!renderedTemplate.includes('### Partner handle\n142C_')) {
   findings.push('rendered evidence template must include the partner handle');
 }
-if (!renderedTemplate.includes('### Approved terms SHA-256\n71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18')) {
+if (
+  !renderedTemplate.includes(
+    '### Approved terms SHA-256\n74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7'
+  )
+) {
   findings.push('rendered evidence template must include the approved terms hash');
 }
 if (!renderedTemplate.includes('### Exact referral terms sent\nThanks Diana Crypto.')) {
@@ -187,7 +206,7 @@ if (!wrongHandleDraft.findings.some((finding) => /Partner handle mismatch/i.test
 const wrongHashIssue = {
   ...issueFixture,
   body: issueFixture.body.replace(
-    '### Approved terms SHA-256\n71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18',
+    '### Approved terms SHA-256\n74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7',
     `### Approved terms SHA-256\n${'0'.repeat(64)}`
   )
 };
@@ -208,7 +227,7 @@ if (!wrongHashDraft.findings.some((finding) => /SHA-256 does not match/i.test(fi
 const malformedHashIssue = {
   ...issueFixture,
   body: issueFixture.body.replace(
-    '### Approved terms SHA-256\n71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18',
+    '### Approved terms SHA-256\n74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7',
     '### Approved terms SHA-256\nnot-a-valid-hash'
   )
 };
@@ -240,13 +259,20 @@ const missingTimestampDraft = buildReferralHandoffEvidenceDraft({
 if (missingTimestampDraft.readyToRecord) {
   findings.push('missing sentAtUtc issue must not be ready to record');
 }
-if (!missingTimestampDraft.findings.some((finding) => /Missing required fields: sentAtUtc/i.test(finding))) {
+if (
+  !missingTimestampDraft.findings.some((finding) =>
+    /Missing required fields: sentAtUtc/i.test(finding)
+  )
+) {
   findings.push('missing sentAtUtc issue must report missing timestamp');
 }
 
 const malformedTimestampIssue = {
   ...issueFixture,
-  body: issueFixture.body.replace('### Sent at UTC\n2026-09-10T12:00:00.000Z', '### Sent at UTC\nnot-a-date')
+  body: issueFixture.body.replace(
+    '### Sent at UTC\n2026-09-10T12:00:00.000Z',
+    '### Sent at UTC\nnot-a-date'
+  )
 };
 const malformedTimestampDraft = buildReferralHandoffEvidenceDraft({
   issue: malformedTimestampIssue,

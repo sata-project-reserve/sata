@@ -50,6 +50,20 @@ if (
   findings.push('candidate packet must preserve manual-referral lead recording');
 }
 if (
+  !/\/services\/transparency-audit\?[^#\s]+#invoice-ready-intake/i.test(
+    plan.candidates[0]?.packet?.source?.serviceUrl ?? ''
+  )
+) {
+  findings.push('candidate packet service URL must route referrals to invoice-ready intake');
+}
+if (
+  !/\/services\/transparency-audit\?[^#\s]+#invoice-ready-intake/i.test(
+    plan.candidates[0]?.packet?.replyTemplate ?? ''
+  )
+) {
+  findings.push('candidate reply template must route referrals to invoice-ready intake');
+}
+if (
   !plan.candidates[0]?.packet?.recordReferredLeadCommand?.includes(
     '--recordedAtUtc "<recorded-at-utc>"'
   )

@@ -26,8 +26,8 @@ const handoffQueue = {
       status: 'accepted-awaiting-referred-lead',
       sentEvidence: 'https://x.com/example/status/109',
       sentAtUtc: '2026-09-10T12:00:00.000Z',
-      messageHash: '71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18',
-      approvedTermsSha256: '71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18',
+      messageHash: '74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7',
+      approvedTermsSha256: '74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7',
       responseEvidence: 'https://x.com/example/status/110',
       respondedAtUtc: '2026-09-10T12:30:00.000Z',
       nextAction:
@@ -143,9 +143,15 @@ if (!pendingQueueDraft.findings.some((finding) => /not awaiting referred lead/i.
 
 const badTimestampIssue = {
   ...issueFixture,
-  body: issueFixture.body.replace('### Recorded at UTC\n2026-09-10T13:00:00.000Z', '### Recorded at UTC\nnot-a-date')
+  body: issueFixture.body.replace(
+    '### Recorded at UTC\n2026-09-10T13:00:00.000Z',
+    '### Recorded at UTC\nnot-a-date'
+  )
 };
-const badTimestampDraft = buildReferralLeadEvidenceDraft({ issue: badTimestampIssue, handoffQueue });
+const badTimestampDraft = buildReferralLeadEvidenceDraft({
+  issue: badTimestampIssue,
+  handoffQueue
+});
 if (badTimestampDraft.readyToRecord) {
   findings.push('bad recordedAtUtc issue must not be ready to record');
 }
@@ -155,7 +161,10 @@ if (!badTimestampDraft.findings.some((finding) => /valid ISO timestamp/i.test(fi
 
 const unsafeIssue = {
   ...issueFixture,
-  body: issueFixture.body.replace('Customer asked about', 'Customer asked for guaranteed buyers and')
+  body: issueFixture.body.replace(
+    'Customer asked about',
+    'Customer asked for guaranteed buyers and'
+  )
 };
 const unsafeDraft = buildReferralLeadEvidenceDraft({ issue: unsafeIssue, handoffQueue });
 if (unsafeDraft.readyToRecord) {
@@ -167,7 +176,10 @@ if (!unsafeDraft.findings.some((finding) => /prohibited/i.test(finding))) {
 
 const invoiceRequestIssue = {
   ...issueFixture,
-  body: issueFixture.body.replace('### Customer asked for invoice\nfalse', '### Customer asked for invoice\ntrue')
+  body: issueFixture.body.replace(
+    '### Customer asked for invoice\nfalse',
+    '### Customer asked for invoice\ntrue'
+  )
 };
 const invoiceRequestDraft = buildReferralLeadEvidenceDraft({
   issue: invoiceRequestIssue,

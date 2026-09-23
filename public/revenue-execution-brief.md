@@ -1,6 +1,6 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-09-23T20:22:00.545Z
+Generated: 2026-09-23T22:48:29.092Z
 Reserve: 500000 sats confirmed, 999500000 sats remaining.
 
 ## Boundary
@@ -16,7 +16,7 @@ Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?templat
 Evidence issue-body command: node scripts/referral-handoff-evidence-agent.mjs render-template --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>"
 Evidence review command: npm run ops:referral-handoff-evidence-plan
 Evidence: Partner terms sent evidence, explicit sentAtUtc timestamp, and approved terms SHA-256.
-Approved message SHA-256: 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18
+Approved message SHA-256: 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7
 
 Approved send copy:
 
@@ -29,7 +29,7 @@ Compensation is considered only after a referred customer pays and the receipt i
 
 No upfront payment, no price or buyer claims, no fake engagement, no bots, no raids, and no market-support commitment.
 
-Service link: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=transparency_audit
+Service link: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=transparency_audit#invoice-ready-intake
 
 Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=sample_audit
 
@@ -49,7 +49,7 @@ Operator checklist:
 Stop rule: Record sent evidence only after manual send. Do not approve compensation, invoices, payment instructions, grants, or asset movement.
 
 ```sh
-node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18
+node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7
 ```
 
 ### 2. Triage replies and DMs from live SATA attribution sources before recording leads or invoice requests.

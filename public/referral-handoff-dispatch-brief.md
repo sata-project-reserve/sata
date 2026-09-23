@@ -1,6 +1,6 @@
 # SATA Reserve Token Referral Handoff Dispatch Brief
 
-Generated: 2026-09-23T20:22:01.038Z
+Generated: 2026-09-23T22:48:29.092Z
 
 ## Boundary
 This brief coordinates manual referral handoff dispatch only. It does not send messages, approve partners, approve compensation, issue invoices, provide payment instructions, publish posts, grant tokens, move assets, or record state.
@@ -15,7 +15,7 @@ Ready candidates: 1 of 1.
 Campaign: diana-crypto-20260903-transparency-tweet
 Source evidence: https://x.com/142C_/status/2086570576530010172
 Packet artifact: public/referral-partner-handoff-packet.md
-Approved terms SHA-256: 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18
+Approved terms SHA-256: 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7
 Planning reserve impact: 174300 sats primary / 699300 sats qualified upgrade
 Planning basis: 70% reserve allocation at BTC/USD 100000
 Planning BTC/USD source: operator planning assumption, not a live quote.
@@ -32,7 +32,7 @@ Compensation is considered only after a referred customer pays and the receipt i
 
 No upfront payment, no price or buyer claims, no fake engagement, no bots, no raids, and no market-support commitment.
 
-Service link: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=transparency_audit
+Service link: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=transparency_audit#invoice-ready-intake
 
 Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=sample_audit
 
@@ -62,7 +62,7 @@ npm run ops:referral-handoff-evidence-plan
 Record-sent command:
 
 ```sh
-node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18
+node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7
 ```
 
 If the partner later refers a qualified customer:

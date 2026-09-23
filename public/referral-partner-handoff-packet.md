@@ -1,6 +1,6 @@
 # SATA Referral Partner Packet
 
-Generated: 2026-09-10T13:48:13.341Z
+Generated: 2026-09-23T22:48:18.771Z
 Partner: Diana Crypto (@142C_)
 Source ID: referral-partner-diana-crypto
 
@@ -18,7 +18,7 @@ Compensation is considered only after a referred customer pays and the receipt i
 
 No upfront payment, no price or buyer claims, no fake engagement, no bots, no raids, and no market-support commitment.
 
-Service link: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=transparency_audit
+Service link: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=transparency_audit#invoice-ready-intake
 
 Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=sample_audit
 
@@ -32,8 +32,8 @@ Send the referred project, contact path, expected role, requested compensation m
 ```
 
 ## Tracking
-Approved terms SHA-256: 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18
-Service URL: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=transparency_audit
+Approved terms SHA-256: 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7
+Service URL: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=transparency_audit#invoice-ready-intake
 Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=sample_audit
 Referral policy: https://sata-project-reserve.github.io/sata/partners/referrals?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=policy
 Customer intake: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml
@@ -62,7 +62,7 @@ node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sou
 ## Record Sent Evidence
 
 ```sh
-node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18
+node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7
 ```
 
 ## Artifact Boundary

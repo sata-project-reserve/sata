@@ -263,7 +263,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   ).toBeVisible();
   await expect(
     referralHandoffAction.getByText(
-      'node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18'
+      'node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7'
     )
   ).toBeVisible();
   await expect(
@@ -402,7 +402,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   ).toHaveAttribute('href', '/referral-partner-handoff-packet.md');
   await expect(
     referralHandoffCandidateBlock.getByText(
-      'node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 71ef634b65ba414aaef782694740d26da37c71d16d0bd65e8593fe4d90945d18'
+      'node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7'
     )
   ).toBeVisible();
   await expect(

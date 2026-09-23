@@ -47,6 +47,20 @@ for (const item of brief.readyManualHandoffs) {
   if (!item.exactTerms || item.exactTerms !== packetFor(item)?.replyTemplate) {
     findings.push(`${item.sourceCampaignId}: exact terms must match the approved packet template`);
   }
+  if (
+    !/\/services\/transparency-audit\?[^#\s]+#invoice-ready-intake/i.test(item.exactTerms ?? '')
+  ) {
+    findings.push(
+      `${item.sourceCampaignId}: exact terms must route service traffic to invoice-ready intake`
+    );
+  }
+  if (
+    !/\/services\/transparency-audit\?[^#\s]+#invoice-ready-intake/i.test(
+      packetFor(item)?.source?.serviceUrl ?? ''
+    )
+  ) {
+    findings.push(`${item.sourceCampaignId}: packet service URL must target invoice-ready intake`);
+  }
   if (!/^[a-f0-9]{64}$/.test(item.approvedTermsSha256 ?? '')) {
     findings.push(`${item.sourceCampaignId}: approved terms SHA-256 must be exposed`);
   }
@@ -57,29 +71,41 @@ for (const item of brief.readyManualHandoffs) {
     findings.push(`${item.sourceCampaignId}: primary offer must come from revenue operating plan`);
   }
   if (item.reserveImpactPlanning?.btcUsd !== revenuePlan.planningAssumptions?.btcUsd) {
-    findings.push(`${item.sourceCampaignId}: planning BTC/USD must come from revenue operating plan`);
+    findings.push(
+      `${item.sourceCampaignId}: planning BTC/USD must come from revenue operating plan`
+    );
   }
-  if (
-    item.reserveImpactPlanning?.btcUsdSource !== revenuePlan.planningAssumptions?.btcUsdSource
-  ) {
-    findings.push(`${item.sourceCampaignId}: planning BTC/USD source must come from revenue operating plan`);
+  if (item.reserveImpactPlanning?.btcUsdSource !== revenuePlan.planningAssumptions?.btcUsdSource) {
+    findings.push(
+      `${item.sourceCampaignId}: planning BTC/USD source must come from revenue operating plan`
+    );
   }
   if (
     item.reserveImpactPlanning?.actualSatsRule !== revenuePlan.planningAssumptions?.actualSatsRule
   ) {
-    findings.push(`${item.sourceCampaignId}: actual sats rule must come from revenue operating plan`);
+    findings.push(
+      `${item.sourceCampaignId}: actual sats rule must come from revenue operating plan`
+    );
   }
   if (!/referred customer pays/i.test(item.reserveImpactPlanning?.trigger ?? '')) {
-    findings.push(`${item.sourceCampaignId}: reserve impact trigger must require a referred customer payment`);
+    findings.push(
+      `${item.sourceCampaignId}: reserve impact trigger must require a referred customer payment`
+    );
   }
   if (!/confirmed/i.test(item.reserveImpactPlanning?.trigger ?? '')) {
-    findings.push(`${item.sourceCampaignId}: reserve impact trigger must require confirmed receipt`);
+    findings.push(
+      `${item.sourceCampaignId}: reserve impact trigger must require confirmed receipt`
+    );
   }
   if (!/chairman-approved/i.test(item.reserveImpactPlanning?.trigger ?? '')) {
-    findings.push(`${item.sourceCampaignId}: reserve impact trigger must require chairman-approved allocation`);
+    findings.push(
+      `${item.sourceCampaignId}: reserve impact trigger must require chairman-approved allocation`
+    );
   }
   if (item.reserveImpactPlanning?.primaryOfferReserveSats !== '174300') {
-    findings.push(`${item.sourceCampaignId}: primary offer planning sats should be 174300 at current assumptions`);
+    findings.push(
+      `${item.sourceCampaignId}: primary offer planning sats should be 174300 at current assumptions`
+    );
   }
   if (item.reserveImpactPlanning?.qualifiedUpgradeReserveSats !== '699300') {
     findings.push(
@@ -97,13 +123,19 @@ for (const item of brief.readyManualHandoffs) {
       item.evidenceIssueTemplateCommand ?? ''
     )
   ) {
-    findings.push(`${item.sourceCampaignId}: ready handoff must expose the evidence issue-body command`);
+    findings.push(
+      `${item.sourceCampaignId}: ready handoff must expose the evidence issue-body command`
+    );
   }
   if (item.evidenceReviewCommand !== REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND) {
-    findings.push(`${item.sourceCampaignId}: ready handoff must expose the evidence review command`);
+    findings.push(
+      `${item.sourceCampaignId}: ready handoff must expose the evidence review command`
+    );
   }
   if (!item.recordReferredLeadCommand?.includes('--sourceType manual-referral')) {
-    findings.push(`${item.sourceCampaignId}: referred lead command must preserve manual-referral attribution`);
+    findings.push(
+      `${item.sourceCampaignId}: referred lead command must preserve manual-referral attribution`
+    );
   }
   if (!/(no|do not offer) upfront/i.test(item.stopRule ?? '')) {
     findings.push(`${item.sourceCampaignId}: stop rule must block upfront compensation`);
@@ -115,10 +147,17 @@ if (!markdown.includes('## Ready Manual Handoffs')) {
 if (!markdown.includes('Approved terms SHA-256')) {
   findings.push('markdown must expose approved terms SHA-256');
 }
-if (!markdown.includes('Planning reserve impact: 174300 sats primary / 699300 sats qualified upgrade')) {
+if (!markdown.includes('#invoice-ready-intake')) {
+  findings.push('markdown must route referral service traffic to invoice-ready intake');
+}
+if (
+  !markdown.includes('Planning reserve impact: 174300 sats primary / 699300 sats qualified upgrade')
+) {
   findings.push('markdown must expose planning reserve impact for referral handoff conversion');
 }
-if (!markdown.includes('Planning BTC/USD source: operator planning assumption, not a live quote.')) {
+if (
+  !markdown.includes('Planning BTC/USD source: operator planning assumption, not a live quote.')
+) {
   findings.push('markdown must expose planning BTC/USD source');
 }
 if (!markdown.includes('Counting rule: Count zero sats until a referred customer pays')) {
@@ -130,7 +169,11 @@ if (!markdown.includes('referral-handoff-evidence.yml')) {
 if (!markdown.includes('referral-handoff-evidence-agent.mjs render-template --campaign')) {
   findings.push('markdown must include the evidence issue-body command');
 }
-if (!markdown.includes(`Evidence review command:\n\n\`\`\`sh\n${REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND}`)) {
+if (
+  !markdown.includes(
+    `Evidence review command:\n\n\`\`\`sh\n${REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND}`
+  )
+) {
   findings.push('markdown must include the evidence review command before record-sent');
 }
 const reviewCommandIndex = markdown.indexOf(REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND);
@@ -147,7 +190,9 @@ if (
 ) {
   findings.push('markdown must present evidence review before record-sent');
 }
-for (const command of markdown.match(/node scripts\/referral-partner-handoff-agent\.mjs record-sent[^\n]*/g) ?? []) {
+for (const command of markdown.match(
+  /node scripts\/referral-partner-handoff-agent\.mjs record-sent[^\n]*/g
+) ?? []) {
   if (!/--messageHash [a-f0-9]{64}\b/.test(command)) {
     findings.push(`markdown record-sent command must require approved terms hash: ${command}`);
   }
@@ -158,13 +203,21 @@ if (/\b(private key|seed phrase)\b/i.test(markdown)) {
 if (unsafePositiveClaimPattern().test(stripNegativeSafetyLanguage(markdown))) {
   findings.push('dispatch markdown must not promote prohibited operating language');
 }
-if (/recordReferralHandoffSent|record-sent/.test(agent.replace(/record-sent/g, 'record_sent_literal'))) {
+if (
+  /recordReferralHandoffSent|record-sent/.test(agent.replace(/record-sent/g, 'record_sent_literal'))
+) {
   findings.push('dispatch agent must not import or execute referral handoff state mutation');
 }
-if (packageJson.scripts?.['ops:referral-handoff-dispatch-check'] !== 'node scripts/validate-referral-handoff-dispatch-brief.mjs') {
+if (
+  packageJson.scripts?.['ops:referral-handoff-dispatch-check'] !==
+  'node scripts/validate-referral-handoff-dispatch-brief.mjs'
+) {
   findings.push('package.json must expose ops:referral-handoff-dispatch-check');
 }
-if (packageJson.scripts?.['ops:referral-handoff-dispatch-write'] !== 'node scripts/referral-handoff-dispatch-brief-agent.mjs write') {
+if (
+  packageJson.scripts?.['ops:referral-handoff-dispatch-write'] !==
+  'node scripts/referral-handoff-dispatch-brief-agent.mjs write'
+) {
   findings.push('package.json must expose ops:referral-handoff-dispatch-write');
 }
 if (publicBrief) {

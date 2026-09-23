@@ -23,12 +23,16 @@ export function buildReferralPartnerPacket({
   const cleanPartnerId = kebab(partnerId || handle || displayName);
   const cleanHandle = cleanHandleValue(handle);
   const sourceId = `referral-partner-${cleanPartnerId}`;
-  const serviceUrl = trackedPublicUrl('/services/transparency-audit', {
-    utm_source: `referral_${cleanPartnerId}`,
-    utm_medium: 'partner_referral',
-    utm_campaign: sourceId,
-    utm_content: 'transparency_audit'
-  });
+  const serviceUrl = trackedPublicUrl(
+    '/services/transparency-audit',
+    {
+      utm_source: `referral_${cleanPartnerId}`,
+      utm_medium: 'partner_referral',
+      utm_campaign: sourceId,
+      utm_content: 'transparency_audit'
+    },
+    'invoice-ready-intake'
+  );
   const referralPageUrl = trackedPublicUrl('/partners/referrals', {
     utm_source: `referral_${cleanPartnerId}`,
     utm_medium: 'partner_referral',
@@ -167,6 +171,20 @@ export function validateReferralPartnerPacket({ packet, policy, inboundQueue }) 
   if (!/\/services\/sample-audit\?/i.test(packet.source?.sampleAuditUrl ?? '')) {
     findings.push('packet must include a tracked sample audit URL');
   }
+  if (
+    !/\/services\/transparency-audit\?[^#\s]+#invoice-ready-intake/i.test(
+      packet.source?.serviceUrl ?? ''
+    )
+  ) {
+    findings.push('packet service URL must target invoice-ready intake');
+  }
+  if (
+    !/\/services\/transparency-audit\?[^#\s]+#invoice-ready-intake/i.test(
+      packet.replyTemplate ?? ''
+    )
+  ) {
+    findings.push('packet reply template must route service traffic to invoice-ready intake');
+  }
   if (!/^[a-f0-9]{64}$/.test(packet.termsSha256 ?? '')) {
     findings.push('packet must include approved terms SHA-256');
   }
@@ -217,12 +235,13 @@ function renderPartnerReply({
   ].join('\n\n');
 }
 
-function trackedPublicUrl(path, params) {
+function trackedPublicUrl(path, params, hash = '') {
   const query = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     query.set(key, cleanTrackingValue(value));
   }
-  return `${PUBLIC_BASE_URL}${path}?${query.toString()}`;
+  const fragment = hash ? `#${hash}` : '';
+  return `${PUBLIC_BASE_URL}${path}?${query.toString()}${fragment}`;
 }
 
 function assertNoUnsafePositiveClaims(text, findings) {

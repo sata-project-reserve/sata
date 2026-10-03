@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "mode": "sats-target-planner",
-  "generatedAtUtc": "2026-10-02T20:44:50.909Z",
+  "generatedAtUtc": "2026-10-03T00:30:03.453Z",
   "assumptions": {
     "btcUsd": "100000",
     "btcUsdSource": "operator planning assumption, not a live quote",

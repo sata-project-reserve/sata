@@ -46,6 +46,7 @@ The app is designed to stop before every mainnet transaction. The owner must unl
 - Material history ledger: `https://sata-project-reserve.github.io/sata/transparency/history.json`
 - Deployment health check: `https://sata-project-reserve.github.io/sata/health.json`
 - Today revenue close sheet: `https://sata-project-reserve.github.io/sata/today-revenue-close-sheet.md`
+- Transparency audit intake template: `https://sata-project-reserve.github.io/sata/transparency-audit-intake-template.md`
 - Revenue execution brief: `https://sata-project-reserve.github.io/sata/revenue-execution-brief.md`
 - Outreach dispatch brief: `https://sata-project-reserve.github.io/sata/outreach-dispatch-brief.md`
 - Founder and sole maintainer: [Jean Bilong](https://github.com/jboudou007)

@@ -37,6 +37,8 @@ Service link: https://sata-project-reserve.github.io/sata/services/transparency-
 
 Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=sample_audit
 
+Invoice-ready intake template: https://sata-project-reserve.github.io/sata/transparency-audit-intake-template.md
+
 Referral policy: https://sata-project-reserve.github.io/sata/partners/referrals?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=policy
 
 Customer intake: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml
@@ -70,6 +72,15 @@ https://sata-project-reserve.github.io/sata/services/transparency-audit
 ```
 
 Approved SHA-256: `4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448`
+
+Reply helper when someone asks what to send:
+
+```text
+Use this intake template so we can review the project cleanly:
+https://sata-project-reserve.github.io/sata/transparency-audit-intake-template.md
+
+Include the token/contract, website, public profile, claims to review, and whether you want a public or private deliverable. Invoice terms still require Executive Chairman review.
+```
 
 After manual publication:
 

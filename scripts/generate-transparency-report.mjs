@@ -877,6 +877,8 @@ function buildSitemap(report) {
     `${PUBLIC_BASE_URL}/reserve-growth-plan.json`,
     `${PUBLIC_BASE_URL}/revenue-operating-plan.json`,
     report.source.revenueCycleStatusJson,
+    `${PUBLIC_BASE_URL}/today-revenue-close-sheet.md`,
+    `${PUBLIC_BASE_URL}/transparency-audit-intake-template.md`,
     `${PUBLIC_BASE_URL}/sats-generation-ledger.json`,
     `${PUBLIC_BASE_URL}/sats-invoice-queue.json`,
     `${PUBLIC_BASE_URL}/sats-prospect-pipeline.json`,

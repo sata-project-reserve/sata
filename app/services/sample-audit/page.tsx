@@ -86,6 +86,9 @@ export default function SampleTransparencyAuditPage() {
             <a className="button-link" href={deliveryKit.intakeUrl}>
               Request Audit
             </a>
+            <a className="button-link" href={publicPath('/transparency-audit-intake-template.md')}>
+              Copy Intake Template
+            </a>
             <a className="button-link" href={publicPath('/services/transparency-audit')}>
               View Service
             </a>

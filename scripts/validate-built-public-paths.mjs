@@ -26,7 +26,8 @@ const publicFiles = [
   join('out', 'settlement-options-brief.json'),
   join('out', 'settlement-options-brief.md'),
   join('out', 'sats-target-plan.json'),
-  join('out', 'sats-target-plan.md')
+  join('out', 'sats-target-plan.md'),
+  join('out', 'transparency-audit-intake-template.md')
 ];
 
 for (const htmlFile of htmlFiles) {
@@ -80,9 +81,11 @@ if (githubPagesMode) {
     [auditPage, 'href="/sata/services/transparency-report-setup"'],
     [auditPage, 'href="/sata/services/full-proof-dashboard"'],
     [auditPage, 'href="/sata/services/sample-audit"'],
+    [auditPage, 'href="/sata/transparency-audit-intake-template.md"'],
     [auditPage, 'href="/sata/partners/referrals"'],
     [auditPage, 'src="/sata/mainnet/sata-image.png"'],
     [sampleAuditPage, 'href="/sata/services/transparency-audit"'],
+    [sampleAuditPage, 'href="/sata/transparency-audit-intake-template.md"'],
     [sampleAuditPage, 'href="/sata/transparency-audit-delivery-kit.json"'],
     [sampleAuditPage, 'src="/sata/mainnet/sata-image.png"'],
     [referralPage, 'href="/sata/services/sample-audit"'],

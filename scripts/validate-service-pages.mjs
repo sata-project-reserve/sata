@@ -124,6 +124,12 @@ for (const required of [
     findings.push(`/services/transparency-audit: invoice-ready intake section missing ${required}`);
   }
 }
+if (!auditPage.includes("publicPath('/transparency-audit-intake-template.md')")) {
+  findings.push('/services/transparency-audit: public page must link to intake template');
+}
+if (!staticExporter.includes("url.pathname === '/transparency-audit-intake-template.md'")) {
+  findings.push('static exporter must serve transparency audit intake template');
+}
 if (!existsSync(sampleAuditRoute.file)) {
   findings.push(`${sampleAuditRoute.path}: route file is missing`);
 } else {
@@ -146,6 +152,9 @@ if (!existsSync(sampleAuditRoute.file)) {
 }
 if (!auditPage.includes("publicPath('/services/sample-audit')")) {
   findings.push('/services/transparency-audit: public page must link to sample audit');
+}
+if (!readText(sampleAuditRoute.file).includes("publicPath('/transparency-audit-intake-template.md')")) {
+  findings.push('/services/sample-audit: public page must link to intake template');
 }
 if (!referralPage.includes("publicPath('/services/sample-audit')")) {
   findings.push('/partners/referrals: public page must link to sample audit');

@@ -70,6 +70,10 @@ test('transparency audit service page publishes offer and boundaries', async ({ 
     'href',
     'https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml'
   );
+  await expect(page.getByRole('link', { name: 'Copy Intake Template' }).first()).toHaveAttribute(
+    'href',
+    '/transparency-audit-intake-template.md'
+  );
   await expect(page.getByRole('heading', { name: 'Sales Pipeline' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'View Prospect Pipeline' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Delivery Kit' })).toBeVisible();
@@ -114,6 +118,10 @@ test('sample transparency audit page publishes fictional deliverable boundaries'
   await expect(page.getByRole('link', { name: 'View Service' })).toHaveAttribute(
     'href',
     '/services/transparency-audit'
+  );
+  await expect(page.getByRole('link', { name: 'Copy Intake Template' })).toHaveAttribute(
+    'href',
+    '/transparency-audit-intake-template.md'
   );
 });
 

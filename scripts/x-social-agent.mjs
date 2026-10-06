@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { writeRevenueCyclePublicStatus } from './lib/revenue-cycle-public-state.mjs';
+import { prioritizeApprovedSocialPosts } from './lib/social-post-priority.mjs';
 
 const QUEUE_PATH = join('public', 'social-agent-content-queue.json');
 const MONITORING_PATH = join('public', 'social-agent-monitoring-log.json');
@@ -246,7 +247,9 @@ async function refreshContentHashes() {
 }
 
 function approvedPosts() {
-  return (queue.posts ?? []).filter((post) => post.status === 'approved');
+  return prioritizeApprovedSocialPosts({
+    posts: (queue.posts ?? []).filter((post) => post.status === 'approved')
+  });
 }
 
 function findPost(postId) {

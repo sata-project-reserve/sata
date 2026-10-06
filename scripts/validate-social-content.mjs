@@ -48,6 +48,7 @@ for (const required of [
   /case 'approve-post'/,
   /case 'reject-post'/,
   /case 'record-published'/,
+  /prioritizeApprovedSocialPosts/,
   /case 'refresh-content-hashes'/,
   /I am Executive Chairman and approve social post/,
   /I am Executive Chairman and reject social post/,

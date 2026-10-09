@@ -7,7 +7,7 @@ import {
 } from './lib/revenue-cycle-status.mjs';
 import { planningUsdToReserveSatsFloor } from './lib/planning-sats.mjs';
 
-const reserveAddress = 'bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk';
+const pendingReserveAddress = 'pending-new-reserve-address-publication';
 const readyOutreachMessage =
   'Hi prospect, SATA runs a $249 Transparency Audit for crypto teams. No price promotion, no investor targeting, and no market-support promises.';
 const readyOutreachMessageSha256 = sha256(readyOutreachMessage);
@@ -16,8 +16,9 @@ const baseInputs = {
   report: {
     generatedAtUtc: '2026-08-29T01:00:00Z',
     bitcoinReserve: {
-      address: reserveAddress,
-      confirmedReserveSats: '500000'
+      address: null,
+      reserveSats: '0',
+      confirmedReserveSats: '0'
     }
   },
   revenuePlan: {
@@ -31,14 +32,14 @@ const baseInputs = {
   ledger: {
     target: {
       targetSats: '1000000000',
-      currentReserveSats: '500000'
+      currentReserveSats: '0'
     },
     receipts: [],
     allocations: []
   },
   invoiceQueue: {
     paymentPolicy: {
-      reserveAddress
+      reserveAddress: pendingReserveAddress
     },
     invoices: []
   },
@@ -83,7 +84,7 @@ const baseInputs = {
 
 const status = buildRevenueCycleStatus({ ...baseInputs, env: {} });
 validateRevenueCycleStatus(status);
-assertEqual(status.currentReserve.remainingSats, '999500000');
+assertEqual(status.currentReserve.remainingSats, '1000000000');
 assertEqual(status.funnel.prospects, 0);
 assertEqual(status.funnel.paidPromotionCampaigns, 0);
 assertEqual(status.funnel.paidPromotionsAwaitingVerification, 0);

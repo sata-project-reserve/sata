@@ -58,6 +58,9 @@ export function assertApprovedInvoice({ invoice, queue, generatedAtUtc = new Dat
   if (invoice.paymentAddress !== queue.paymentPolicy?.reserveAddress) {
     throw new Error(`${label}: payment address must match the published reserve address.`);
   }
+  if (!isPublishedBitcoinAddress(queue.paymentPolicy?.reserveAddress)) {
+    throw new Error(`${label}: payment packets require a published Bitcoin reserve address.`);
+  }
   if (!/^\d+$/.test(invoice.amountSats) || BigInt(invoice.amountSats) <= 0n) {
     throw new Error(`${label}: amountSats must be a positive integer string.`);
   }
@@ -86,6 +89,10 @@ export function assertApprovedInvoice({ invoice, queue, generatedAtUtc = new Dat
   }
 
   return true;
+}
+
+function isPublishedBitcoinAddress(value) {
+  return /^(bc1|[13])[a-zA-Z0-9]{20,90}$/.test(String(value ?? ''));
 }
 
 function toTime(value, label) {

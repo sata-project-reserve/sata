@@ -1,7 +1,7 @@
 {
   "project": "SATA Reserve Token",
   "mode": "sats-target-planner",
-  "generatedAtUtc": "2026-10-09T16:12:31.656Z",
+  "generatedAtUtc": "2026-10-09T17:44:11.613Z",
   "assumptions": {
     "btcUsd": "100000",
     "btcUsdSource": "operator planning assumption, not a live quote",
@@ -9,26 +9,26 @@
     "actualSatsRule": "Planning only. Record actual sats only after confirmed receipt and chairman-approved allocation."
   },
   "target": {
-    "confirmedSats": "500000",
+    "confirmedSats": "0",
     "nextMilestoneSats": "1000000",
-    "nextMilestoneAdditionalSats": "500000",
+    "nextMilestoneAdditionalSats": "1000000",
     "targetSats": "1000000000",
-    "remainingSats": "999500000"
+    "remainingSats": "1000000000"
   },
   "milestones": [
     {
       "id": "next-1m-sats",
       "label": "Reach 1,000,000 sats reserve",
-      "additionalSats": "500000",
-      "netReserveUsd": "500.00",
-      "grossRevenueUsd": "714.29"
+      "additionalSats": "1000000",
+      "netReserveUsd": "1000.00",
+      "grossRevenueUsd": "1428.57"
     },
     {
       "id": "full-1b-sats",
       "label": "Reach 1,000,000,000 sats reserve",
-      "additionalSats": "999500000",
-      "netReserveUsd": "999500.00",
-      "grossRevenueUsd": "1427857.14"
+      "additionalSats": "1000000000",
+      "netReserveUsd": "1000000.00",
+      "grossRevenueUsd": "1428571.43"
     }
   ],
   "scenarios": [
@@ -38,8 +38,8 @@
       "priceUsd": "249",
       "estimatedReserveUsdPerDeal": "174.30",
       "estimatedReserveSatsPerDeal": "174300",
-      "dealsToNextMilestone": 3,
-      "dealsToFullTarget": 5735
+      "dealsToNextMilestone": 6,
+      "dealsToFullTarget": 5738
     },
     {
       "offerId": "transparency-report-setup",
@@ -47,8 +47,8 @@
       "priceUsd": "999",
       "estimatedReserveUsdPerDeal": "699.30",
       "estimatedReserveSatsPerDeal": "699300",
-      "dealsToNextMilestone": 1,
-      "dealsToFullTarget": 1430
+      "dealsToNextMilestone": 2,
+      "dealsToFullTarget": 1431
     },
     {
       "offerId": "full-proof-dashboard",
@@ -67,9 +67,9 @@
     "qualifiedRevenueUsd": "13470.00",
     "estimatedReserveUsdAtFullClose": "9429.00",
     "estimatedReserveSatsAtFullClose": "9429000",
-    "nextMilestoneCoveragePercent": "1885.80",
+    "nextMilestoneCoveragePercent": "942.90",
     "fullTargetCoveragePercent": "0.94",
-    "requiredCloseRateToNextMilestonePercent": "5.30",
+    "requiredCloseRateToNextMilestonePercent": "10.61",
     "gapToNextMilestoneSatsAtFullClose": "0",
     "operatingRead": "The current ready outreach queue can cover the next sats milestone if enough qualified prospects close and receipts are allocated."
   },

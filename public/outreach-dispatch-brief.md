@@ -1,7 +1,7 @@
 # SATA Reserve Token Outreach Dispatch Brief
 
-Generated: 2026-10-09T16:12:30.654Z
-Reserve: 500000 sats confirmed, 999500000 sats remaining.
+Generated: 2026-10-09T17:27:48.883Z
+Reserve: 0 sats confirmed, 1000000000 sats remaining.
 
 ## Boundary
 This brief is for manual dispatch coordination only. It does not approve outreach, contact prospects, send invoices, request payment, move assets, grant tokens, or make public commitments.

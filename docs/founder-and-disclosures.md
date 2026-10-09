@@ -17,6 +17,8 @@ SATA is an independent personal project. It is not affiliated with, sponsored by
 
 SATA is intentionally described as early-stage and founder-led. The founder currently controls a large portion of the token supply. The latest transparency report shows no owner unlocked LP balance, but any future owner-held LP remains removable unless it is separately locked, burned, or transferred to accountable multisig control. Founder concentration and any owner-controlled liquidity are disclosed as material risks, not hidden.
 
+The founder and sole maintainer may use founder-controlled SATA for internal operations, ecosystem work, service compensation, or other project needs at founder discretion. This is not hidden from the public report: the founder direct SATA balance is read from chain, and SATA that leaves the founder wallet but is not in the Raydium pool is reported as outside founder wallet and pool unless separately categorized in a future public record.
+
 The intended long-term direction is to reduce unilateral control over time through transparent actions such as:
 
 - Deploying more undeployed SATA into liquidity and ecosystem uses.

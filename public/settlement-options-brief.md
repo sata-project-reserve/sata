@@ -1,7 +1,7 @@
 # SATA Reserve Token Settlement Options Brief
 
-Generated: 2026-10-09T16:12:31.501Z
-Reserve: 500000 sats confirmed, 999500000 sats remaining.
+Generated: 2026-10-09T17:44:11.243Z
+Reserve: 0 sats confirmed, 1000000000 sats remaining.
 
 ## Boundary
 This brief explains settlement options only. It does not approve invoices, send payment instructions, receive funds, convert assets, grant tokens, move assets, or record state.

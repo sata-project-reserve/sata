@@ -29,9 +29,29 @@ for (const required of [
   'chairman-funded-tranche',
   'operating-revenue-allocation',
   'grant-or-donation',
-  'asset-conversion'
+  'asset-conversion',
+  'reserve-address-migration'
 ]) {
   if (!routeIds.has(required)) findings.push(`missing allowed route ${required}`);
+}
+
+const migrationRoute = (plan.allowedRoutes ?? []).find(
+  (route) => route.id === 'reserve-address-migration'
+);
+const migrationEvidence = (migrationRoute?.requiredEvidence ?? []).join('\n');
+for (const required of [
+  /old reserve address/i,
+  /new reserve address/i,
+  /bitcoin transaction id/i,
+  /amount received/i,
+  /fee rate|wallet fee/i,
+  /confirmation count/i,
+  /address-control proof/i,
+  /transparency report update/i
+]) {
+  if (!required.test(migrationEvidence)) {
+    findings.push(`reserve-address-migration evidence missing ${required}`);
+  }
 }
 
 const prohibited = (plan.prohibitedRoutes ?? []).join('\n');

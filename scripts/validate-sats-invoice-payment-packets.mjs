@@ -1,7 +1,7 @@
 import { renderInvoicePaymentPacket } from './lib/sats-invoice-payment-packet.mjs';
 import { readFileSync } from 'node:fs';
 
-const reserveAddress = 'bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk';
+const reserveAddress = 'bc1qpublishedreservefixture0000000000000000000000000';
 const agentSource = readFileSync('scripts/sats-invoice-payment-packet-agent.mjs', 'utf8');
 const queue = {
   paymentPolicy: {
@@ -58,6 +58,11 @@ for (const invoice of [
 ]) {
   assertRejects(invoice);
 }
+assertRejects(approvedInvoice, '2026-08-28T00:10:00.000Z', {
+  paymentPolicy: {
+    reserveAddress: 'pending-new-reserve-address-publication'
+  }
+});
 assertRejects(approvedInvoice, '2026-08-28T00:31:00.000Z');
 assertRejects(approvedInvoice, '2026-08-27T23:59:59.000Z');
 assertRejects({
@@ -76,9 +81,9 @@ console.log(
   'Sats invoice payment packet check passed: only approved current invoices can render customer payment text.'
 );
 
-function assertRejects(invoice, generatedAtUtc = '2026-08-28T00:10:00.000Z') {
+function assertRejects(invoice, generatedAtUtc = '2026-08-28T00:10:00.000Z', queueOverride = queue) {
   try {
-    renderInvoicePaymentPacket({ invoice, queue, generatedAtUtc });
+    renderInvoicePaymentPacket({ invoice, queue: queueOverride, generatedAtUtc });
     findings.push(`${invoice.id}: invalid invoice unexpectedly rendered`);
   } catch {
     // Expected: invalid payment packets must be rejected.

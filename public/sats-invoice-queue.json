@@ -5,8 +5,8 @@
   "mode": "chairman-approved-direct-reserve-invoices",
   "purpose": "Convert legitimate service revenue into confirmed BTC reserve sats without agent custody.",
   "paymentPolicy": {
-    "preferredSettlement": "BTC directly to the published SATA reserve address",
-    "reserveAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
+    "preferredSettlement": "BTC directly to the published SATA reserve address after the new reserve address and proof are published",
+    "reserveAddress": "pending-new-reserve-address-publication",
     "quoteRule": "Each invoice must include an exact sats amount, quote source, quote timestamp, and expiration before it is sent to a customer.",
     "custodyRule": "No agent may receive funds, hold keys, or redirect payments away from the published reserve address.",
     "deliveryRule": "Deliver service work only after payment confirmation or chairman-approved escrow terms."
@@ -19,7 +19,7 @@
       "customer": "to-be-filled-after-qualified-lead",
       "usdPrice": "249",
       "settlementCurrency": "BTC",
-      "paymentAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
+      "paymentAddress": "pending-new-reserve-address-publication",
       "amountSats": "quote-required-before-sending",
       "quoteSource": "quote-required-before-sending",
       "quoteCreatedAtUtc": "quote-required-before-sending",
@@ -27,7 +27,7 @@
       "chairmanApprovalRequired": true,
       "deliverable": "SATA Transparency Audit covering token authorities, supply and concentration, LP ownership or lock evidence, reserve claims, risk disclosures, machine-readable JSON, and a public or private final report.",
       "postPaymentActions": [
-        "wait for Bitcoin transaction confirmation",
+        "wait for new reserve address publication and Bitcoin transaction confirmation",
         "record transaction id in sats-generation-ledger.json receipts",
         "deliver audit artifact",
         "regenerate transparency report so confirmed reserve sats update publicly"
@@ -41,7 +41,7 @@
       "customer": "to-be-filled-after-qualified-lead",
       "usdPrice": "999",
       "settlementCurrency": "BTC",
-      "paymentAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
+      "paymentAddress": "pending-new-reserve-address-publication",
       "amountSats": "quote-required-before-sending",
       "quoteSource": "quote-required-before-sending",
       "quoteCreatedAtUtc": "quote-required-before-sending",
@@ -49,7 +49,7 @@
       "chairmanApprovalRequired": true,
       "deliverable": "Repo-based public report template, disclosure checklist, deployment instructions, and first reporting refresh for a client project.",
       "postPaymentActions": [
-        "wait for Bitcoin transaction confirmation",
+        "wait for new reserve address publication and Bitcoin transaction confirmation",
         "record transaction id in sats-generation-ledger.json receipts",
         "deliver report setup artifact",
         "prepare any requested public summary only after customer and chairman approval"
@@ -63,7 +63,7 @@
       "customer": "to-be-filled-after-qualified-lead",
       "usdPrice": "4999",
       "settlementCurrency": "BTC",
-      "paymentAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
+      "paymentAddress": "pending-new-reserve-address-publication",
       "amountSats": "quote-required-before-sending",
       "quoteSource": "quote-required-before-sending",
       "quoteCreatedAtUtc": "quote-required-before-sending",
@@ -71,7 +71,7 @@
       "chairmanApprovalRequired": true,
       "deliverable": "Continuous transparency monitoring with automated public report workflow, proof dashboard, public JSON endpoints, monthly evidence refresh, and operating runbook.",
       "postPaymentActions": [
-        "wait for Bitcoin transaction confirmation",
+        "wait for new reserve address publication and Bitcoin transaction confirmation",
         "record transaction id in sats-generation-ledger.json receipts",
         "deliver dashboard and workflow setup artifact",
         "record deployment, repo, or handoff evidence before marking work complete"

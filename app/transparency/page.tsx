@@ -327,6 +327,10 @@ export default function TransparencyPage() {
           <strong>Control caveat</strong>
           <span>{distribution.controlCaveat}</span>
         </div>
+        <div className="notice">
+          <strong>Founder operational use</strong>
+          <span>{distribution.founderOperationalUseDisclosure}</span>
+        </div>
         <div className="notice safe">
           <strong>Intended direction</strong>
           <span>{distribution.intendedDirection}</span>

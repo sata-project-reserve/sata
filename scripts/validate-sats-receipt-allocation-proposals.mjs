@@ -9,7 +9,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const reserveAddress = 'bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk';
+const reserveAddress = 'bc1qpublishedreservefixture0000000000000000000000000';
 const approvedInvoice = {
   id: 'invoice-approved-audit-1',
   status: 'approved-by-chairman',

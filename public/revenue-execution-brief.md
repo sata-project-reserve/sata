@@ -1,7 +1,7 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-10-09T16:12:30.831Z
-Reserve: 500000 sats confirmed, 999500000 sats remaining.
+Generated: 2026-10-09T17:44:10.264Z
+Reserve: 0 sats confirmed, 1000000000 sats remaining.
 
 ## Boundary
 This brief coordinates execution only. The Executive Chairman approves final outreach, invoices, transactions, allocations, paid promotion, token grants, and asset movement.

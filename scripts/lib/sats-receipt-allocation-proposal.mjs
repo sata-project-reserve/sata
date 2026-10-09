@@ -181,6 +181,9 @@ export function assertConfirmedReceipt({ receipt, ledger, queue, generatedAtUtc 
   if (receipt.receivedAddress !== queue.paymentPolicy?.reserveAddress) {
     throw new Error(`${label}: receivedAddress must match the published reserve address.`);
   }
+  if (!isPublishedBitcoinAddress(queue.paymentPolicy?.reserveAddress)) {
+    throw new Error(`${label}: receipt allocation requires a published Bitcoin reserve address.`);
+  }
   if (/placeholder|to-be-filled|quote-required/i.test(receipt.transactionId)) {
     throw new Error(`${label}: transactionId must be the real Bitcoin transaction id.`);
   }
@@ -215,6 +218,10 @@ export function assertConfirmedReceipt({ receipt, ledger, queue, generatedAtUtc 
   if (duplicateReceipt) throw new Error(`${label}: receipt id must be unique.`);
 
   return { invoice };
+}
+
+function isPublishedBitcoinAddress(value) {
+  return /^(bc1|[13])[a-zA-Z0-9]{20,90}$/.test(String(value ?? ''));
 }
 
 export function assertConfirmedAllocation({

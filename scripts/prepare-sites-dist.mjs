@@ -492,6 +492,7 @@ function buildTransparencyHtml(report) {
       <div class="metric"><span>Outside Founder And Pool</span><strong>${escapeHtml(report.distribution.outsideFounderAndPoolUi)} (${escapeHtml(report.distribution.outsideFounderAndPoolPercent)})</strong></div>
     </div>
     <div class="metric warning"><span>Control Caveat</span><strong>${escapeHtml(report.distribution.controlCaveat)}</strong></div>
+    <div class="metric warning"><span>Founder Operational Use</span><strong>${escapeHtml(report.distribution.founderOperationalUseDisclosure)}</strong></div>
     <div class="metric"><span>Intended Direction</span><strong>${escapeHtml(report.distribution.intendedDirection)}</strong></div>
     <div class="metric warning"><span>Independence Disclosure</span><strong>${escapeHtml(report.distribution.founderDisclosure)}</strong></div>
   </section>

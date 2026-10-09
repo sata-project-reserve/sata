@@ -34,8 +34,8 @@ try {
 if (plan.target.remainingSats !== status.currentReserve.remainingSats) {
   findings.push('target remaining sats must match revenue cycle status');
 }
-if (plan.milestones[0]?.additionalSats !== '500000') {
-  findings.push('next milestone must require 500000 additional sats');
+if (plan.milestones[0]?.additionalSats !== '1000000') {
+  findings.push('next milestone must require 1000000 additional sats');
 }
 const starter = plan.scenarios.find((scenario) => scenario.offerId === 'transparency-audit');
 if (!starter) {
@@ -44,8 +44,8 @@ if (!starter) {
   if (starter.estimatedReserveSatsPerDeal !== '174300') {
     findings.push('starter audit should add 174300 planning sats at $100k BTC and 70% allocation');
   }
-  if (starter.dealsToNextMilestone !== 3) {
-    findings.push('starter audit should require 3 deals to reach the next 1M sats milestone');
+  if (starter.dealsToNextMilestone !== 6) {
+    findings.push('starter audit should require 6 deals to reach the next 1M sats milestone');
   }
   if (starter.dealsToFullTarget <= 1000) {
     findings.push('full target must show starter-audit volume is not enough alone');

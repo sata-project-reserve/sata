@@ -1,7 +1,7 @@
 # SATA Reserve Token Today Revenue Close Sheet
 
-Generated: 2026-09-26T00:00:00.000Z
-Reserve: 500000 sats confirmed, 999500000 sats remaining.
+Generated: 2026-10-09T14:48:03.491Z
+Reserve: 0 sats confirmed while new reserve address proof is pending, 1000000000 sats remaining.
 
 ## Boundary
 This sheet coordinates manual execution only. It does not publish posts, contact prospects, send DMs, approve invoices, issue payment instructions, move assets, grant tokens, or record state.

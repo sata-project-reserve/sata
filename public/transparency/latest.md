@@ -1,7 +1,7 @@
 # SATA Transparency Report
 
 Status: TRANSPARENCY_VERIFIED_WITH_DISCLOSURES
-Generated UTC: 2026-10-05T04:45:55.971Z
+Generated UTC: 2026-10-09T16:57:13.634Z
 Cadence: scheduled every 12 hours when GitHub Actions is enabled
 Slogan: Proof over promises.
 
@@ -29,8 +29,8 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Pool: CYRZoXLjgNFTQJnvyJpym1wfTAEoGz6kJMYJFb5hUd8e
 - Pool program: CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C
 - Pool open: true
-- SATA reserve: 210171504.114371947 (210171504114371947 base units)
-- WSOL reserve: 3.407928168 (3407928168 lamports)
+- SATA reserve: 266803320.114371947 (266803320114371947 base units)
+- WSOL reserve: 2.68626987 (2686269870 lamports)
 - LP mint: 4wp3yZVVdwBvkRnx5qHn8uLRFuw3P9Srt3JvGqn6mrdi
 - Total locked LP: 26627909375363
 - Owner unlocked LP: 0
@@ -43,12 +43,13 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Stage: early-stage-founder-led
 - Founder role: Founder and sole maintainer
 - Founder public GitHub: https://github.com/jboudou007
-- Founder direct SATA: 774361428.019676678 (77.45%)
-- SATA in pool: 210171504.114371947 (21.02%)
+- Founder direct SATA: 717729612.019676678 (71.78%)
+- SATA in pool: 266803320.114371947 (26.68%)
 - SATA outside founder wallet and pool: 15230291.02447832 (1.52%)
 - Owner unlocked LP: 0
 - Locked LP: 26627909375363
 - Control caveat: Adding SATA to liquidity reduces direct wallet concentration, but founder control only materially decreases when the resulting LP tokens are locked, burned, or controlled by an accountable multisig.
+- Founder operational use: The founder and sole maintainer may use founder-controlled SATA for internal operations, ecosystem work, service compensation, or other project needs at founder discretion. These movements are not hidden: the current owner wallet balance is read from chain, and SATA that leaves the founder wallet but is not in the Raydium pool is reported as outside founder wallet and pool unless separately categorized in a future public record.
 - Intended direction: Gradually deploy undeployed supply into liquidity and ecosystem uses while publishing whether LP positions remain owner-controlled, locked, burned, or multisig-controlled.
 
 ## Raydium Lock Transactions
@@ -57,20 +58,20 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 
 ## Bitcoin Reserve
 
-- Status: verified-balance-and-published-proof
-- Address: bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk
-- Actual reserve: 500000 sats (0.005 BTC)
-- Confirmed reserve: 500000 sats (0.005 BTC)
+- Status: reserve-pending-new-address-proof
+- Address: pending
+- Actual reserve: 0 sats (0 BTC)
+- Confirmed reserve: 0 sats (0 BTC)
 - Unconfirmed reserve: 0 sats (0 BTC)
-- Planned reserve: 500000 sats (0.005 BTC)
+- Planned reserve: 0 sats (0 BTC)
 - Metrics basis: actual-confirmed-chain
-- Proof message: SATA Bitcoin reserve address for Solana mint A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH. No redemption promise. Snapshot UTC: 2026-08-01T13:20:55Z.
-- Proof signature: AkcwRAIgTuFktugOzK4NVrAQFqvymy3gREk6LMV8AW9JTE7GvPACIBr8A6wMdHcm2nnN7NuxQmc9ZluTRPabRpp6cwwM9EKpASECMkly6+9vvZrpsgNHhFcSpklkpaluJV8IEsjNLweRTMk=
-- Proof validation: proof fields match the public transparency register; independent cryptographic verification should still be performed with Bitcoin tooling
-- Sats per SATA: 100000000000000/199952644631705389
-- SATA per sat: 199952644631705389/100000000000000
+- Proof message: not published
+- Proof signature: not published
+- Proof validation: reserve was moved at founder discretion; new reserve address and address-control proof are pending publication
+- Sats per SATA: 0
+- SATA per sat: 0
 - Target for 1 sat per 1 SATA: 999763224 sats (9.99763224 BTC)
-- Additional sats to that treasury milestone: 999263224
+- Additional sats to that treasury milestone: 999763224
 
 The Bitcoin reserve is a transparency metric only. It is not a redemption promise, guaranteed price floor, yield product, or market-support commitment.
 
@@ -89,6 +90,7 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 
 - sata-supply-equals-launch-initial: 999763223158526945
 - metadata-mutability-disclosed: mutable
+- bitcoin-reserve-proof: reserve-pending-new-address-proof
 
 ## Checks
 
@@ -107,11 +109,11 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 - raydium-pool-account: pass (critical) - CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C
 - raydium-pool-mints: pass (critical) - So11111111111111111111111111111111111111112, A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
 - raydium-pool-open: pass (critical) - 1785346170
-- raydium-sata-reserve: pass (critical) - 210171504114371947
-- raydium-wsol-reserve: pass (critical) - 3407928168
+- raydium-sata-reserve: pass (critical) - 266803320114371947
+- raydium-wsol-reserve: pass (critical) - 2686269870
 - raydium-lp-lock-verified: pass (critical) - Raydium Burn & Earn lock verified and no owner unlocked LP balance was detected.
 - owner-unlocked-lp-balance-zero: pass (warning) - 0
-- bitcoin-reserve-proof: pass (warning) - verified-balance-and-published-proof
+- bitcoin-reserve-proof: fail (warning) - reserve-pending-new-address-proof
 
 ## Links
 

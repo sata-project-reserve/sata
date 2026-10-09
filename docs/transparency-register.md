@@ -16,11 +16,13 @@ This register is the public-source template for SATA facts that should be easy t
 
 ## Bitcoin Reserve
 
-Status: first tranche confirmed with signed address proof.
+Status: first tranche was previously confirmed with signed address proof. Current public reserve accounting is `0 sats` while the founder-controlled reserve is being migrated and a new address/proof package is pending publication.
 
-Reserve address: `bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk`.
+Historical reserve address: `bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk`.
 
-Planned first tranche: `500,000 sats` (`0.005 BTC`).
+Current public reserve: `0 sats` until the new address and proof are published.
+
+Historical first tranche: `500,000 sats` (`0.005 BTC`).
 
 Proof message:
 
@@ -41,11 +43,20 @@ The first tranche can be described as balance-verified with signed address proof
 
 ## Current Reserve Ratio Template
 
-When the `500,000 sats` first tranche is published and verified:
+Until the new reserve address and proof are published, the current reserve ratio is calculated from `0 sats`:
 
-- `1 SATA ~= 1/2000 sat`
-- `1 sat ~= 2,000 SATA`
-- `1 sat per 1 SATA` treasury milestone currently requires `999,996,854 sats` (`9.99996854 BTC`)
+- `sats per SATA`: `0`
+- `SATA per sat`: `0`
+- `1 sat per 1 SATA` treasury milestone currently requires `999,763,224 sats` (`9.99763224 BTC`) based on the latest reported supply.
+
+## Founder-Controlled SATA
+
+The founder and sole maintainer may use founder-controlled SATA for internal operations, ecosystem work, service compensation, or other project needs at founder discretion. The public transparency report must continue to show:
+
+- current founder direct SATA from the owner token account;
+- SATA in the Raydium pool;
+- SATA outside the founder wallet and pool;
+- whether any owner-held LP remains removable.
 
 ## Public Wording
 

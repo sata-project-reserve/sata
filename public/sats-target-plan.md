@@ -1,6 +1,6 @@
 # SATA Reserve Token Sats Target Plan
 
-Generated: 2026-10-09T16:12:31.656Z
+Generated: 2026-10-09T17:44:11.613Z
 BTC/USD assumption: 100000
 Reserve allocation assumption: 70%
 
@@ -10,14 +10,14 @@ This planner does not approve prices, invoices, payments, trading, promotion, to
 ## Milestones
 
 ### Reach 1,000,000 sats reserve
-Additional sats: 500000
-Net reserve value: $500.00
-Gross revenue at allocation rate: $714.29
+Additional sats: 1000000
+Net reserve value: $1000.00
+Gross revenue at allocation rate: $1428.57
 
 ### Reach 1,000,000,000 sats reserve
-Additional sats: 999500000
-Net reserve value: $999500.00
-Gross revenue at allocation rate: $1427857.14
+Additional sats: 1000000000
+Net reserve value: $1000000.00
+Gross revenue at allocation rate: $1428571.43
 
 ## Revenue Scenarios
 
@@ -25,15 +25,15 @@ Gross revenue at allocation rate: $1427857.14
 Offer: transparency-audit
 Price: $249
 Sats to reserve per closed deal: 174300
-Deals to next milestone: 3
-Deals to full target: 5735
+Deals to next milestone: 6
+Deals to full target: 5738
 
 ### Transparency report setup
 Offer: transparency-report-setup
 Price: $999
 Sats to reserve per closed deal: 699300
-Deals to next milestone: 1
-Deals to full target: 1430
+Deals to next milestone: 2
+Deals to full target: 1431
 
 ### Continuous transparency monitoring
 Offer: full-proof-dashboard
@@ -46,8 +46,8 @@ Deals to full target: 286
 Manual outreach actions: 30
 Qualified revenue if all current manual sends close: $13470.00
 Estimated sats to reserve at full close: 9429000
-Next milestone coverage: 1885.80%
-Required close rate for next milestone: 5.30%
+Next milestone coverage: 942.90%
+Required close rate for next milestone: 10.61%
 Gap to next milestone at full close: 0 sats
 The current ready outreach queue can cover the next sats milestone if enough qualified prospects close and receipts are allocated.
 

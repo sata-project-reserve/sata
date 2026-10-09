@@ -1,15 +1,15 @@
 {
   "project": "SATA Reserve Token",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-08-26T13:00:00Z",
+  "updatedAtUtc": "2026-10-09T14:48:03.491Z",
   "mode": "sats-generation-ledger",
   "objective": "Increase confirmed BTC reserve sats through legitimate revenue, grants, donations, and chairman-approved asset conversions.",
   "target": {
     "targetSats": "1000000000",
-    "currentReserveSats": "500000",
-    "remainingSats": "999500000",
+    "currentReserveSats": "0",
+    "remainingSats": "1000000000",
     "nextMilestoneSats": "1000000",
-    "nextMilestoneAdditionalSatsNeeded": "500000"
+    "nextMilestoneAdditionalSatsNeeded": "1000000"
   },
   "unitEconomics": {
     "primaryMetric": "confirmed BTC reserve sats",

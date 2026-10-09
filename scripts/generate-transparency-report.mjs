@@ -28,7 +28,8 @@ const RAYDIUM_LOCK_AUTH = '3f7GcQFG397GAaEnv51zR6tsTVihYRydnydDD1cXekxH';
 const EXPECTED_DECIMALS = 9;
 const LAUNCH_INITIAL_SUPPLY_RAW = '1000000000000000000';
 const SATS_PER_BTC = 100_000_000n;
-const DEFAULT_PLANNED_RESERVE_SATS = 1_000_000n;
+const DEFAULT_PLANNED_RESERVE_SATS = 0n;
+const BTC_RESERVE_REPORTING_MODE = envValue('SATA_BTC_RESERVE_REPORTING_MODE') ?? 'pending-new-proof';
 const DEFAULT_RPC_URL = 'https://solana-rpc.publicnode.com';
 const PUBLIC_BASE_URL = 'https://sata-project-reserve.github.io/sata';
 const TOKEN_METADATA_URL = 'https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-metadata.json';
@@ -579,6 +580,26 @@ function allInstructions(tx) {
 }
 
 async function readBitcoinReserve() {
+  if (BTC_RESERVE_REPORTING_MODE === 'pending-new-proof') {
+    return {
+      status: 'reserve-pending-new-address-proof',
+      address: null,
+      reserveSats: 0n,
+      confirmedReserveSats: 0n,
+      mempoolReserveSats: 0n,
+      proofMessage: null,
+      proofSignature: null,
+      proofValidation: {
+        ok: false,
+        method: 'pending-new-address-proof',
+        detail:
+          'reserve was moved at founder discretion; new reserve address and address-control proof are pending publication'
+      },
+      lastCheckedUtc: new Date().toISOString(),
+      historicalAddress: PUBLISHED_BTC_PROOF.address
+    };
+  }
+
   const reserveAddress = envValue('SATA_BTC_RESERVE_ADDRESS');
   const proofMessage = envValue('SATA_BTC_RESERVE_MESSAGE');
   const proofSignature = envValue('SATA_BTC_RESERVE_SIGNATURE');
@@ -687,6 +708,8 @@ function buildDistributionMetrics({
     founderPublicGithub: 'https://github.com/jboudou007',
     founderDisclosure:
       "SATA is an independent personal project and is not affiliated with or endorsed by the founder's employer, clients, schools, or other organizations.",
+    founderOperationalUseDisclosure:
+      'The founder and sole maintainer may use founder-controlled SATA for internal operations, ecosystem work, service compensation, or other project needs at founder discretion. These movements are not hidden: the current owner wallet balance is read from chain, and SATA that leaves the founder wallet but is not in the Raydium pool is reported as outside founder wallet and pool unless separately categorized in a future public record.',
     founderDirectRaw: ownerSataRaw.toString(),
     founderDirectUi: formatBaseUnits(ownerSataRaw, decimals),
     founderDirectPercent: formatPercent(ownerSataRaw, supplyRaw),
@@ -980,6 +1003,7 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Owner unlocked LP: ${report.distribution.ownerUnlockedLpRaw}
 - Locked LP: ${report.distribution.totalLockedLpRaw}
 - Control caveat: ${report.distribution.controlCaveat}
+- Founder operational use: ${report.distribution.founderOperationalUseDisclosure}
 - Intended direction: ${report.distribution.intendedDirection}
 
 ## Raydium Lock Transactions

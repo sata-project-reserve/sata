@@ -26,13 +26,13 @@
     },
     {
       "id": "btc-reserve-first-tranche",
-      "status": "approved",
+      "status": "hold-until-new-reserve-proof",
       "type": "transparency",
-      "text": "SATA has a dedicated Bitcoin reserve address with signed address-control proof. Current first tranche: 500,000 sats.\n\nThe BTC reserve is not a redemption promise or guaranteed price floor.\n\nhttps://sata-project-reserve.github.io/sata/transparency",
+      "text": "Held: reserve address migration pending. Current public BTC reserve accounting is 0 sats until a new address-control proof is published.\n\nNot a redemption promise or guaranteed price floor.\nhttps://sata-project-reserve.github.io/sata/transparency",
       "approvedBy": "owner",
       "approvalRole": "executive-chairman",
       "approvedAtUtc": "2026-09-03T21:48:29.101Z",
-      "contentSha256": "4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e"
+      "contentSha256": "41de09c46d07f1f28692525f123f2c58a6e5ca19ebfd1b1618fc56b20b654fe0"
     },
     {
       "id": "authority-revoked",
@@ -103,11 +103,11 @@
     },
     {
       "id": "quick-project-status-20260915",
-      "status": "approved",
+      "status": "hold-until-new-reserve-proof",
       "type": "transparency",
       "requiresHumanApproval": true,
-      "text": "Quick SATA status:\n- 500,000 sats reserve disclosed\n- Mint/freeze authorities revoked\n- Locked LP verified\n- Revenue First: $249 Transparency Audits\n\nReserve is not a redemption promise.\n\nhttps://sata-project-reserve.github.io/sata/transparency",
-      "contentSha256": "a3ad3c4d30be88d9f57feb1e33abbc08a9ee34be937034a80931bed2cf968b15",
+      "text": "Quick SATA status:\n- Public BTC reserve accounting: 0 sats pending new address proof\n- Mint/freeze authorities revoked\n- Locked LP verified\n- Revenue First: $249 audits\n\nNot a redemption promise.\n\nhttps://sata-project-reserve.github.io/sata/transparency",
+      "contentSha256": "14894196a32d6ed6d8b056d34f444a94f39b45e131736933adc4f8b3b7a71302",
       "approvedBy": "owner",
       "approvalRole": "executive-chairman",
       "approvedAtUtc": "2026-09-15T11:25:37.689Z"
@@ -121,13 +121,13 @@
     },
     {
       "id": "transparency-20260903T162453Z",
-      "status": "approved",
+      "status": "hold-until-new-reserve-proof",
       "type": "transparency",
-      "text": "SATA transparency report updated.\n\nReserve: 500000 sats. Raydium LP lock status is publicly reported.\n\nNot a redemption promise or guaranteed price floor. Locked LP verified; unlocked LP disclosed separately.\nhttps://sata-project-reserve.github.io/sata/transparency",
+      "text": "Transparency update: reserve address migration pending. Public BTC reserve accounting is 0 sats until new proof is published.\n\nNot a redemption promise or guaranteed price floor. Locked LP verified; unlocked LP disclosed.\nhttps://sata-project-reserve.github.io/sata/transparency",
       "approvedBy": "owner",
       "approvalRole": "executive-chairman",
       "approvedAtUtc": "2026-09-03T21:48:54.376Z",
-      "contentSha256": "b1fba705b18d42967148fae64d4fbfdde1561a404e4638983061ac516cf1da3b"
+      "contentSha256": "e5c69a0e2ed116abbbd4f9e3fa5ef38dcc17e056c356d9d9a9e40b38f66755f8"
     }
   ]
 }

@@ -15,11 +15,11 @@ const packageJson = readJson('package.json');
 const draft = buildSocialPublishEvidenceDraft({ issue: issueFixture, socialQueue });
 const comment = renderSocialPublishEvidenceComment(draft);
 const renderedTemplate = renderSocialPublishEvidenceIssueBody({
-  postId: 'btc-reserve-first-tranche',
+  postId: 'transparency-service-offer',
   postUrl: 'https://x.com/SATAReserve/status/2085000000000000000',
   publicationEvidence: 'https://x.com/SATAReserve/status/2085000000000000000',
-  approvedContentSha256: '4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e',
-  exactPostText: socialQueue.posts.find((post) => post.id === 'btc-reserve-first-tranche')?.text,
+  approvedContentSha256: '4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448',
+  exactPostText: socialQueue.posts.find((post) => post.id === 'transparency-service-offer')?.text,
   publishedAtUtc: '2026-09-10T13:00:00.000Z'
 });
 const findings = [];
@@ -55,13 +55,13 @@ if (!draft.textMatchesApprovedPost) {
 if (!draft.hashMatchesApprovedPost) {
   findings.push('fixture approved content hash must match approved social post');
 }
-if (!/social:agent -- record-published --post btc-reserve-first-tranche/.test(draft.operatorCommand ?? '')) {
+if (!/social:agent -- record-published --post transparency-service-offer/.test(draft.operatorCommand ?? '')) {
   findings.push('operator command must record the approved social post as published');
 }
 if (!/--publishedAtUtc "2026-09-10T13:00:00.000Z"/.test(draft.operatorCommand ?? '')) {
   findings.push('operator command must preserve publishedAtUtc');
 }
-if (!/--contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e/.test(draft.operatorCommand ?? '')) {
+if (!/--contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448/.test(draft.operatorCommand ?? '')) {
   findings.push('operator command must include approved content hash');
 }
 if (!/contentHash does not match the approved post text/.test(socialAgent)) {
@@ -103,13 +103,13 @@ if (!/--contentHash "<approved-content-sha256>"/.test(evidenceAgent)) {
 if (!/contentHash does not match the approved social queue post/.test(evidenceAgent)) {
   findings.push('render-template must reject mismatched content hashes');
 }
-if (!renderedTemplate.includes('### Social post ID\nbtc-reserve-first-tranche')) {
+if (!renderedTemplate.includes('### Social post ID\ntransparency-service-offer')) {
   findings.push('rendered social template must include social post id');
 }
-if (!renderedTemplate.includes('### Approved content SHA-256\n4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e')) {
+if (!renderedTemplate.includes('### Approved content SHA-256\n4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448')) {
   findings.push('rendered social template must include approved content hash');
 }
-if (!renderedTemplate.includes('### Exact post text published\nSATA has a dedicated Bitcoin reserve address')) {
+if (!renderedTemplate.includes('### Exact post text published\nSATA offers $249 Transparency Audits')) {
   findings.push('rendered social template must include exact approved post text');
 }
 if (!/renderSocialPublishEvidenceComment/.test(commentAgent)) {
@@ -129,7 +129,7 @@ if (/record-published|ops:approve|ops:reject|social:agent:post|post-next-approve
 
 const alteredTextIssue = {
   ...issueFixture,
-  body: issueFixture.body.replace('Current first tranche: 500,000 sats.', 'Current first tranche: 1,000,000 sats.')
+  body: issueFixture.body.replace('$249 Transparency Audits', '$999 Transparency Audits')
 };
 const alteredTextDraft = buildSocialPublishEvidenceDraft({ issue: alteredTextIssue, socialQueue });
 if (alteredTextDraft.readyToRecord) {
@@ -142,7 +142,7 @@ if (!alteredTextDraft.findings.some((finding) => /does not match/i.test(finding)
 const wrongHashIssue = {
   ...issueFixture,
   body: issueFixture.body.replace(
-    '### Approved content SHA-256\n4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e',
+    '### Approved content SHA-256\n4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448',
     `### Approved content SHA-256\n${'0'.repeat(64)}`
   )
 };

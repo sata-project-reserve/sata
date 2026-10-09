@@ -3,12 +3,12 @@
   "cycleId": "revenue-cycle-001",
   "objective": "Generate legitimate operating revenue from existing SATA transparency infrastructure and allocate approved proceeds toward the 1,000,000,000 sats reserve target.",
   "currentReserve": {
-    "confirmedSats": "500000",
-    "confirmedBtc": "0.005",
+    "confirmedSats": "0",
+    "confirmedBtc": "0",
     "targetSats": "1000000000",
-    "remainingSats": "999500000",
-    "remainingBtc": "9.995",
-    "latestReportGeneratedAtUtc": "2026-10-05T04:45:55.971Z"
+    "remainingSats": "1000000000",
+    "remainingBtc": "10",
+    "latestReportGeneratedAtUtc": "2026-10-09T16:57:13.634Z"
   },
   "funnel": {
     "prospects": 30,
@@ -32,7 +32,7 @@
   },
   "social": {
     "queueMode": "approved-only-automation",
-    "approvedPosts": 8,
+    "approvedPosts": 5,
     "readyForReviewPosts": 2,
     "livePostingEnabled": false
   },

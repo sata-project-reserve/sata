@@ -1,7 +1,7 @@
 # SATA Reserve Token Reply Conversion Brief
 
-Generated: 2026-10-09T16:12:31.008Z
-Reserve: 500000 sats confirmed, 999500000 sats remaining.
+Generated: 2026-10-09T17:27:49.447Z
+Reserve: 0 sats confirmed, 1000000000 sats remaining.
 
 ## Boundary
 This brief records reply-conversion evidence only. It does not contact prospects, approve invoices, send payment instructions, move assets, grant tokens, publish posts, or make commitments.

@@ -1257,7 +1257,12 @@ function assertInputs({
   for (const [label, value] of Object.entries(required)) {
     if (!value || typeof value !== 'object') throw new Error(`Missing ${label}.`);
   }
-  if (invoiceQueue.paymentPolicy?.reserveAddress !== report.bitcoinReserve?.address) {
+  const reserveAddress = report.bitcoinReserve?.address;
+  const reserveAddressPending = !reserveAddress && report.bitcoinReserve?.reserveSats === '0';
+  const expectedPaymentAddress = reserveAddressPending
+    ? 'pending-new-reserve-address-publication'
+    : reserveAddress;
+  if (invoiceQueue.paymentPolicy?.reserveAddress !== expectedPaymentAddress) {
     throw new Error('Invoice reserve address must match the latest transparency report.');
   }
   if (prospectPipeline.target?.reserveTargetSats !== ledger.target?.targetSats) {

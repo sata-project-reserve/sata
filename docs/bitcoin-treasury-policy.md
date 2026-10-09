@@ -96,3 +96,25 @@ Every reserve growth action must have:
 - destination reserve address;
 - public caveat language;
 - post-execution evidence.
+
+## Reserve Address Migration
+
+A reserve address migration is a treasury action, even when the intent is only temporary custody cleanup. The published reserve address must not be replaced in the public report until the migration transaction is broadcast, confirmed, and evidence is recorded.
+
+For a manual sweep:
+
+- The Executive Chairman chooses the destination address and fee rate in the wallet.
+- Agents must not hold keys, request seed phrases, sign transactions, broadcast transactions, or operate wallet software.
+- If the instruction is `send max`, the destination will receive the current UTXO value minus the miner fee unless another wallet input funds the fee.
+- The public report must continue to show the old address until the new address has confirmed balance evidence.
+
+Required post-execution evidence before changing the published reserve address:
+
+- old reserve address;
+- new reserve address;
+- Bitcoin transaction id;
+- amount received by the new address;
+- fee rate or wallet fee setting used;
+- confirmation count;
+- whether the new address has signed address-control proof;
+- explicit note that the migration is not a redemption promise, price floor, yield product, or market-support action.

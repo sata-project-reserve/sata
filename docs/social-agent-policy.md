@@ -116,7 +116,7 @@ The agent must ask a human before posting about:
 
 Post 1:
 
-`SATA now has a dedicated Bitcoin reserve address with signed address-control proof. Current first tranche: 500,000 sats. This reserve is a transparency metric, not a redemption promise or guaranteed price floor.`
+`SATA reserve status: 0 sats currently reported while the reserve address migration and new address-control proof are pending publication. Reserve reporting is a transparency metric, not a redemption promise or guaranteed price floor.`
 
 Post 2:
 

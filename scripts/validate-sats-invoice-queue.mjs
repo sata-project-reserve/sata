@@ -15,9 +15,14 @@ if (!/confirmed BTC reserve sats|BTC reserve sats|reserve/i.test(queue.purpose ?
 }
 
 const reserveAddress = report.bitcoinReserve?.address;
-if (!reserveAddress) findings.push('latest transparency report must include bitcoinReserve.address');
-if (queue.paymentPolicy?.reserveAddress !== reserveAddress) {
-  findings.push('paymentPolicy.reserveAddress must match the latest transparency reserve address');
+const reserveAddressPending = !reserveAddress && report.bitcoinReserve?.reserveSats === '0';
+const pendingAddressPlaceholder = 'pending-new-reserve-address-publication';
+if (!reserveAddress && !reserveAddressPending) {
+  findings.push('latest transparency report must include bitcoinReserve.address or report 0 reserve sats while pending new proof');
+}
+const expectedPaymentAddress = reserveAddressPending ? pendingAddressPlaceholder : reserveAddress;
+if (queue.paymentPolicy?.reserveAddress !== expectedPaymentAddress) {
+  findings.push('paymentPolicy.reserveAddress must match the latest transparency reserve address or pending placeholder');
 }
 if (!/exact sats amount/i.test(queue.paymentPolicy?.quoteRule ?? '')) {
   findings.push('quoteRule must require an exact sats amount');
@@ -63,8 +68,11 @@ for (const invoice of invoices) {
   if (invoice.chairmanApprovalRequired !== true) {
     findings.push(`${label}: chairmanApprovalRequired must be true`);
   }
-  if (invoice.paymentAddress !== reserveAddress) {
-    findings.push(`${label}: paymentAddress must match the latest transparency reserve address`);
+  if (invoice.paymentAddress !== expectedPaymentAddress) {
+    findings.push(`${label}: paymentAddress must match the latest transparency reserve address or pending placeholder`);
+  }
+  if (reserveAddressPending && !/after the new reserve address/i.test(queue.paymentPolicy?.preferredSettlement ?? '')) {
+    findings.push('pending reserve mode must not present the placeholder as a payable address');
   }
   if (!Array.isArray(invoice.postPaymentActions) || invoice.postPaymentActions.length === 0) {
     findings.push(`${label}: postPaymentActions must be a non-empty array`);

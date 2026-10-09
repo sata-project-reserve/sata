@@ -64,6 +64,7 @@ export function buildSocialDispatchBrief({
     approvalRole: post.approvalRole ?? null,
     approvedAtUtc: post.approvedAtUtc ?? null,
     evidenceIssueUrl: EVIDENCE_INTAKE_URL,
+    composeIntentUrl: xComposeIntentUrl(post),
     evidenceIssueTemplateCommand: evidenceIssueTemplateCommand({ queue, post }),
     evidenceReviewCommand: EVIDENCE_REVIEW_COMMAND,
     recordPublishedCommand: recordPublishedCommand({ queue, post }),
@@ -155,6 +156,7 @@ export function renderSocialDispatchMarkdown(brief) {
       `Approval role: ${post.approvalRole ?? 'not recorded'}`,
       `Approved at: ${post.approvedAtUtc ?? 'not recorded'}`,
       `Approved content SHA-256: ${post.contentSha256}`,
+      `X compose URL: ${post.composeIntentUrl}`,
       post.publicationInstructions,
       post.stopRule,
       '',
@@ -242,6 +244,10 @@ function evidenceIssueTemplateCommand({ queue, post }) {
     '--publishedAtUtc "<published-at-utc>"',
     `--contentHash ${post.contentSha256}`
   ].join(' ');
+}
+
+function xComposeIntentUrl(post) {
+  return `https://x.com/intent/tweet?text=${encodeURIComponent(post.text)}`;
 }
 
 function publishedSocialReplyTriageCommand(post) {

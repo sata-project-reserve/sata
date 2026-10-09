@@ -1047,6 +1047,12 @@ export default function OperationsPage() {
                     {nextSocialPublishSheet.evidenceIssueUrl}
                   </a>
                 </code>
+                <span>X Compose</span>
+                <code>
+                  <a href={nextSocialPublishSheet.composeIntentUrl}>
+                    {nextSocialPublishSheet.composeIntentUrl}
+                  </a>
+                </code>
                 <span>Evidence Issue Body</span>
                 <code>{nextSocialPublishSheet.evidenceIssueTemplateCommand}</code>
                 <span>Evidence Review</span>
@@ -1177,6 +1183,10 @@ export default function OperationsPage() {
                 <span>Evidence Intake</span>
                 <code>
                   <a href={post.evidenceIssueUrl}>{post.evidenceIssueUrl}</a>
+                </code>
+                <span>X Compose</span>
+                <code>
+                  <a href={post.composeIntentUrl}>{post.composeIntentUrl}</a>
                 </code>
                 <span>Evidence Issue Body</span>
                 <code>{post.evidenceIssueTemplateCommand}</code>

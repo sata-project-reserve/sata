@@ -57,6 +57,12 @@ for (const post of brief.readyManualPosts) {
   if (!post.recordPublishedCommand?.includes(`--contentHash ${post.contentSha256}`)) {
     findings.push(`${post.id}: record command must include the approved content hash`);
   }
+  const expectedComposeIntentUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(
+    post.text
+  )}`;
+  if (post.composeIntentUrl !== expectedComposeIntentUrl) {
+    findings.push(`${post.id}: manual social post must expose an exact-text X compose URL`);
+  }
   if (!/social-publish-evidence-agent\.mjs render-template --post/.test(post.evidenceIssueTemplateCommand ?? '')) {
     findings.push(`${post.id}: evidence issue-body command must render the social publish evidence template`);
   }
@@ -124,6 +130,9 @@ if (!markdown.includes('Priority: tier')) {
 }
 if (!markdown.includes('Approved content SHA-256')) {
   findings.push('markdown must expose approved content SHA-256');
+}
+if (!markdown.includes('X compose URL: https://x.com/intent/tweet?text=')) {
+  findings.push('markdown must expose exact-text X compose URLs');
 }
 if (!markdown.includes('record-published')) {
   findings.push('markdown must expose manual record-published commands');

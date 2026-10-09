@@ -1,7 +1,7 @@
 # SATA Transparency Report
 
 Status: TRANSPARENCY_VERIFIED_WITH_DISCLOSURES
-Generated UTC: 2026-10-09T16:57:13.634Z
+Generated UTC: 2026-10-09T22:48:30.943Z
 Cadence: scheduled every 12 hours when GitHub Actions is enabled
 Slogan: Proof over promises.
 
@@ -29,8 +29,8 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Pool: CYRZoXLjgNFTQJnvyJpym1wfTAEoGz6kJMYJFb5hUd8e
 - Pool program: CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C
 - Pool open: true
-- SATA reserve: 266803320.114371947 (266803320114371947 base units)
-- WSOL reserve: 2.68626987 (2686269870 lamports)
+- SATA reserve: 259103689.999640669 (259103689999640669 base units)
+- WSOL reserve: 2.76626987 (2766269870 lamports)
 - LP mint: 4wp3yZVVdwBvkRnx5qHn8uLRFuw3P9Srt3JvGqn6mrdi
 - Total locked LP: 26627909375363
 - Owner unlocked LP: 0
@@ -44,8 +44,8 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Founder role: Founder and sole maintainer
 - Founder public GitHub: https://github.com/jboudou007
 - Founder direct SATA: 717729612.019676678 (71.78%)
-- SATA in pool: 266803320.114371947 (26.68%)
-- SATA outside founder wallet and pool: 15230291.02447832 (1.52%)
+- SATA in pool: 259103689.999640669 (25.91%)
+- SATA outside founder wallet and pool: 22929921.139209598 (2.29%)
 - Owner unlocked LP: 0
 - Locked LP: 26627909375363
 - Control caveat: Adding SATA to liquidity reduces direct wallet concentration, but founder control only materially decreases when the resulting LP tokens are locked, burned, or controlled by an accountable multisig.
@@ -63,7 +63,7 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Actual reserve: 0 sats (0 BTC)
 - Confirmed reserve: 0 sats (0 BTC)
 - Unconfirmed reserve: 0 sats (0 BTC)
-- Planned reserve: 0 sats (0 BTC)
+- Planned reserve: 500000 sats (0.005 BTC)
 - Metrics basis: actual-confirmed-chain
 - Proof message: not published
 - Proof signature: not published
@@ -109,8 +109,8 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 - raydium-pool-account: pass (critical) - CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C
 - raydium-pool-mints: pass (critical) - So11111111111111111111111111111111111111112, A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
 - raydium-pool-open: pass (critical) - 1785346170
-- raydium-sata-reserve: pass (critical) - 266803320114371947
-- raydium-wsol-reserve: pass (critical) - 2686269870
+- raydium-sata-reserve: pass (critical) - 259103689999640669
+- raydium-wsol-reserve: pass (critical) - 2766269870
 - raydium-lp-lock-verified: pass (critical) - Raydium Burn & Earn lock verified and no owner unlocked LP balance was detected.
 - owner-unlocked-lp-balance-zero: pass (warning) - 0
 - bitcoin-reserve-proof: fail (warning) - reserve-pending-new-address-proof

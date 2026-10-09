@@ -36,10 +36,11 @@ test('liquidity planner exposes permanent LP lock controls', async ({ page }) =>
 test('public transparency page publishes reserve proof status', async ({ page }) => {
   await page.goto('/transparency');
   await expect(page.getByRole('heading', { name: 'Proof over promises.' })).toBeVisible();
-  await expect(page.getByText('verified-balance-and-published-proof')).toBeVisible();
+  await expect(page.getByText('reserve-pending-new-address-proof', { exact: true })).toBeVisible();
   await expect(
-    page.getByText('Confirmed Reserve').locator('..').getByText('500000 sats')
+    page.getByText('Confirmed Reserve').locator('..').getByText('0 sats')
   ).toBeVisible();
+  await expect(page.getByText('new reserve address and address-control proof are pending')).toBeVisible();
   await expect(page.getByText('LOCKED_BY_RAYDIUM_BURN_AND_EARN')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Sats Generation' })).toBeVisible();
   await expect(page.getByText('confirmed BTC reserve sats')).toBeVisible();
@@ -190,9 +191,9 @@ test('referral partner page publishes post-receipt gates', async ({ page }) => {
 test('operations page surfaces chairman queue and prospect batch', async ({ page }) => {
   await page.goto('/operations', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: 'Reserve growth queue.' })).toBeVisible();
-  await expect(page.getByText('500000 sats').first()).toBeVisible();
+  await expect(page.getByText('0 sats').first()).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Cycle Status' })).toBeVisible();
-  await expect(page.getByText('999,500,000 sats')).toBeVisible();
+  await expect(page.getByText('1,000,000,000 sats').first()).toBeVisible();
   await expect(page.getByText('Ready Outreach Packets')).toBeVisible();
   await expect(
     page.locator('.metric').filter({ hasText: 'Inbound Invoice Requests' }).first()
@@ -304,14 +305,14 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     .filter({ has: page.getByRole('heading', { name: 'Approved Social Publishing Queue' }) });
   const approvedSocialBlock = approvedSocialSection
     .locator('.proof-block')
-    .filter({ hasText: 'btc-reserve-first-tranche' })
+    .filter({ hasText: 'transparency-service-offer' })
     .filter({ hasText: 'Record Published URL' });
   await expect(
-    approvedSocialBlock.getByText('btc-reserve-first-tranche', { exact: true })
+    approvedSocialBlock.getByText('transparency-service-offer', { exact: true })
   ).toBeVisible();
   await expect(
     approvedSocialBlock.getByText(
-      'npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e'
+      'npm run social:agent -- record-published --post transparency-service-offer --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448'
     )
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Next Social Publish Sheet' })).toBeVisible();
@@ -353,11 +354,11 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     .filter({ has: page.getByRole('heading', { name: 'Social Dispatch Brief' }) });
   const socialDispatchBlock = socialDispatchSection
     .locator('.proof-block')
-    .filter({ hasText: 'btc-reserve-first-tranche' })
+    .filter({ hasText: 'transparency-service-offer' })
     .filter({ hasText: 'Approved Content SHA-256' });
   await expect(
     socialDispatchBlock.getByText(
-      '4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e',
+      '4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448',
       { exact: true }
     )
   ).toBeVisible();
@@ -366,7 +367,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   ).toBeVisible();
   await expect(
     socialDispatchBlock.getByText(
-      'npm run social:agent -- record-published --post btc-reserve-first-tranche --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4789767cdadc7ca0bee4858b4976bc36d8fdffffb28b6e19862d4116a732252e'
+      'npm run social:agent -- record-published --post transparency-service-offer --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448'
     )
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Paid Promotion Control' })).toBeVisible();

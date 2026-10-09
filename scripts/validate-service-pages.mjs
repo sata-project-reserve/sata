@@ -46,6 +46,7 @@ const staticExporter = readText(join('scripts', 'prepare-sites-dist.mjs'));
 const auditPage = readText(join('app', 'services', 'transparency-audit', 'page.tsx'));
 const referralPage = readText(join('app', 'partners', 'referrals', 'page.tsx'));
 const operationsPage = readText(join('app', 'operations', 'page.tsx'));
+const todayRevenueCloseSheet = readText(join('public', 'today-revenue-close-sheet.md'));
 const collaboratorMeetingIntake = readJson(join('public', 'collaborator-meeting-intake.json'));
 
 const revenueStreams = revenuePlan.revenueStreams ?? [];
@@ -202,6 +203,16 @@ for (const required of [
 ]) {
   if (!operationsPage.includes(required)) {
     findings.push(`/operations: social conversion handoff must expose ${required}`);
+  }
+}
+for (const required of [
+  'Open exact-text X composer:',
+  'https://x.com/intent/tweet?text=SATA%20offers%20%24249%20Transparency%20Audits',
+  '4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448',
+  'npm run social:agent -- record-published --post transparency-service-offer'
+]) {
+  if (!todayRevenueCloseSheet.includes(required)) {
+    findings.push(`today revenue close sheet must expose ${required}`);
   }
 }
 if (!/recordSentCommand/.test(operationsPage)) {

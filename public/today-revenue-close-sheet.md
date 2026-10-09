@@ -73,6 +73,12 @@ https://sata-project-reserve.github.io/sata/services/transparency-audit
 
 Approved SHA-256: `4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448`
 
+Open exact-text X composer:
+
+```text
+https://x.com/intent/tweet?text=SATA%20offers%20%24249%20Transparency%20Audits%3A%20authority%2C%20supply%2C%20LP%20lock%2Fownership%2C%20reserve%20claims%2C%20risk%20disclosures%2C%20and%20JSON.%0A%0AReserve%20work%20is%20not%20a%20redemption%20promise.%20Locked%20LP%20must%20be%20verified.%0A%0Ahttps%3A%2F%2Fsata-project-reserve.github.io%2Fsata%2Fservices%2Ftransparency-audit
+```
+
 Reply helper when someone asks what to send:
 
 ```text

@@ -75,7 +75,7 @@ permissions:
 
 concurrency:
   group: sata-transparency-report
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   publish:

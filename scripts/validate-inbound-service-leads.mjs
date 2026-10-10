@@ -26,6 +26,9 @@ const invoiceBoundaryTemplate = queue.replyTemplates.find(
 if (!/services\/transparency-audit#invoice-ready-intake/.test(intakeTemplate?.text ?? '')) {
   findings.push('intake reply template must link to the invoice-ready intake section');
 }
+if (!/transparency-audit-buyer-packet\.md/.test(intakeTemplate?.text ?? '')) {
+  findings.push('intake reply template must link to the buyer packet');
+}
 if (!/services\/sample-audit/.test(intakeTemplate?.text ?? '')) {
   findings.push('intake reply template must link to the sample audit');
 }
@@ -33,6 +36,9 @@ if (
   !/services\/transparency-audit#invoice-ready-intake/.test(invoiceBoundaryTemplate?.text ?? '')
 ) {
   findings.push('invoice boundary template must link to invoice-ready intake fields');
+}
+if (!/transparency-audit-buyer-packet\.md/.test(invoiceBoundaryTemplate?.text ?? '')) {
+  findings.push('invoice boundary template must link to the buyer packet');
 }
 const plan = buildInboundLeadPlan({ queue, paidPromotionLedger, socialQueue });
 if (plan.mode !== 'inbound-service-lead-plan') {

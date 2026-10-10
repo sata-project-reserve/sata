@@ -41,6 +41,22 @@ const invoiceReadyFields = [
   'Confirmation that an exact-sats invoice should be prepared for chairman review'
 ];
 
+const invoiceRequestCopy = `Hi SATA,
+
+We want a Transparency Audit and are requesting invoice review.
+
+Project name:
+Network:
+Token/contract/mint:
+Website:
+Public profile:
+Claims to review:
+Preferred deliverable visibility: public / private / undecided
+
+Please prepare an exact-sats BTC invoice for Executive Chairman review.
+
+We understand this request does not approve work or payment, and the audit is not a price guarantee, redemption promise, market-support commitment, investment advice, legal advice, or tax advice.`;
+
 const intakeLabels: Record<string, string> = {
   projectName: 'Project name',
   network: 'Network',
@@ -244,6 +260,14 @@ export default function TransparencyAuditServicePage() {
             Serious buyers can shorten the path to a chairman-reviewed invoice by submitting the
             fields below with public evidence.
           </p>
+        </div>
+        <div className="proof-block">
+          <strong>Copy/Paste Invoice Request</strong>
+          <span>
+            Send this by DM, email, or GitHub issue when you want an invoice reviewed without
+            waiting for back-and-forth.
+          </span>
+          <pre className="preview">{invoiceRequestCopy}</pre>
         </div>
         <div className="service-checklist">
           {invoiceReadyFields.map((field) => (

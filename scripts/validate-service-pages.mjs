@@ -116,8 +116,11 @@ if (!auditPage.includes("publicPath('/partners/referrals')")) {
 }
 for (const required of [
   'Invoice-Ready Intake',
+  'Copy/Paste Invoice Request',
+  'We want a Transparency Audit and are requesting invoice review.',
   'Token, contract, or mint address',
   'Confirmation that an exact-sats invoice should be prepared for chairman review',
+  'Please prepare an exact-sats BTC invoice for Executive Chairman review.',
   'Intake does not approve work or payment',
   'Submit Invoice-Ready Intake'
 ]) {

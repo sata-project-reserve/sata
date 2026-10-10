@@ -497,6 +497,12 @@ export default function OperationsPage() {
             <a className="button-link" href={publicPath('/services/transparency-audit')}>
               Audit Service
             </a>
+            <a className="button-link" href={publicPath('/today-revenue-close-sheet.md')}>
+              Today Close Sheet
+            </a>
+            <a className="button-link" href={publicPath('/transparency-audit-buyer-packet.md')}>
+              Buyer Packet
+            </a>
             <a className="button-link" href={publicPath('/executive-approval-queue.json')}>
               Approval JSON
             </a>
@@ -612,6 +618,16 @@ export default function OperationsPage() {
         <div className="notice">
           <strong>Next Action</strong>
           <span>{cycleStatus.nextAction}</span>
+        </div>
+        <div className="notice">
+          <strong>Revenue Close Pack</strong>
+          <span>
+            Use the <a href={publicPath('/today-revenue-close-sheet.md')}>today close sheet</a> to
+            run the manual sequence, and send the{' '}
+            <a href={publicPath('/transparency-audit-buyer-packet.md')}>buyer packet</a> when a
+            prospect needs invoice-request copy. These links do not approve outreach, payment
+            instructions, invoices, or asset movement.
+          </span>
         </div>
         <div className="warning-list">
           {cycleStatus.blockers.map((blocker) => (

@@ -210,6 +210,11 @@ for (const required of [
   }
 }
 for (const required of [
+  "publicPath('/today-revenue-close-sheet.md')",
+  "publicPath('/transparency-audit-buyer-packet.md')",
+  'Today Close Sheet',
+  'Buyer Packet',
+  'Revenue Close Pack',
   'Referral Handoff Queue',
   'referralPartnerHandoffQueue',
   'referralPartnerHandoffPacket',

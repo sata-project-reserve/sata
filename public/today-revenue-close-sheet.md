@@ -1,6 +1,6 @@
 # SATA Reserve Token Today Revenue Close Sheet
 
-Generated: 2026-10-09T14:48:03.491Z
+Generated: 2026-10-10T05:53:18.950Z
 Reserve: 0 sats confirmed while new reserve address proof is pending, 1000000000 sats remaining.
 
 ## Boundary
@@ -36,6 +36,8 @@ No upfront payment, no price or buyer claims, no fake engagement, no bots, no ra
 Service link: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=transparency_audit#invoice-ready-intake
 
 Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=sample_audit
+
+Buyer packet: https://sata-project-reserve.github.io/sata/transparency-audit-buyer-packet.md
 
 Invoice-ready intake template: https://sata-project-reserve.github.io/sata/transparency-audit-intake-template.md
 
@@ -82,7 +84,9 @@ https://x.com/intent/tweet?text=SATA%20offers%20%24249%20Transparency%20Audits%3
 Reply helper when someone asks what to send:
 
 ```text
-Use this intake template so we can review the project cleanly:
+Use this buyer packet and intake template so we can review the project cleanly:
+https://sata-project-reserve.github.io/sata/transparency-audit-buyer-packet.md
+
 https://sata-project-reserve.github.io/sata/transparency-audit-intake-template.md
 
 Include the token/contract, website, public profile, claims to review, and whether you want a public or private deliverable. Invoice terms still require Executive Chairman review.

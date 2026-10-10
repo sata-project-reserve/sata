@@ -245,6 +245,8 @@ for (const required of [
 for (const required of [
   'Open exact-text X composer:',
   'https://x.com/intent/tweet?text=SATA%20offers%20%24249%20Transparency%20Audits',
+  'https://sata-project-reserve.github.io/sata/transparency-audit-buyer-packet.md',
+  'Use this buyer packet and intake template so we can review the project cleanly:',
   '4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448',
   'npm run social:agent -- record-published --post transparency-service-offer'
 ]) {

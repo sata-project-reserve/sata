@@ -169,6 +169,12 @@ if (brief.readyManualSends.length > 0) {
     if (!/#invoice-ready-intake\b/i.test(sheet.trackedServiceUrl ?? '')) {
       findings.push('next manual send sheet tracked service URL must target invoice-ready intake');
     }
+    if (sheet.trackedBuyerPacketUrl !== topPacket.tracking?.buyerPacketUrl) {
+      findings.push('next manual send sheet must expose the tracked buyer packet URL');
+    }
+    if (!/transparency-audit-buyer-packet\.md\?/.test(sheet.trackedBuyerPacketUrl ?? '')) {
+      findings.push('next manual send sheet tracked buyer packet URL must target the buyer packet');
+    }
   }
 } else if (brief.nextManualSendSheet !== null) {
   findings.push('nextManualSendSheet must be null when no packet is ready');
@@ -318,7 +324,7 @@ for (const packet of brief.readyManualSends) {
   if (!packet.tracking || typeof packet.tracking !== 'object') {
     findings.push(`${packet.packetId}: ready packet must expose structured tracking URLs`);
   } else {
-    for (const field of ['serviceUrl', 'sampleAuditUrl', 'intakeUrl']) {
+    for (const field of ['serviceUrl', 'sampleAuditUrl', 'buyerPacketUrl', 'intakeUrl']) {
       if (!/utm_source=manual_outreach/i.test(packet.tracking[field] ?? '')) {
         findings.push(`${packet.packetId}: tracking.${field} must include manual_outreach UTM`);
       }
@@ -373,6 +379,9 @@ if (
   !markdown.includes('utm_source=manual_outreach')
 ) {
   findings.push('markdown brief must include structured tracked service URLs');
+}
+if (!markdown.includes('Tracked buyer packet: https://')) {
+  findings.push('markdown brief must include structured tracked buyer packet URLs');
 }
 if (!markdown.includes('Prepare the contact evidence issue body after manual send')) {
   findings.push('markdown brief must include the contact evidence issue-body helper');

@@ -57,6 +57,7 @@ function printPlan(pipeline, deliveryKit) {
         })),
         servicePage: 'https://sata-project-reserve.github.io/sata/services/transparency-audit',
         sampleAudit: deliveryKit.sampleAuditUrl,
+        buyerPacket: `${PUBLIC_BASE_URL}/transparency-audit-buyer-packet.md`,
         intakeUrl: deliveryKit.intakeUrl,
         nextAction:
           'Render a packet from an approved template for a qualified public-evidence prospect, then request chairman approval before outreach. Use render-approved only for outreach-approved prospect records.',
@@ -406,6 +407,7 @@ export function renderOutreachPacket({
     context.length > 0 ? '' : null,
     `Service page: ${urls.service}`,
     `Sample audit: ${urls.sampleAudit}`,
+    `Buyer packet: ${urls.buyerPacket}`,
     `Intake form: ${urls.intake}`,
     '',
     'Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.'
@@ -490,7 +492,7 @@ export function validateOutreachPacketQueue({ queue, pipeline }) {
       if (!packet.tracking || typeof packet.tracking !== 'object') {
         findings.push(`${packet.id}: ready packet must include tracking links`);
       } else {
-        for (const field of ['serviceUrl', 'sampleAuditUrl', 'intakeUrl']) {
+        for (const field of ['serviceUrl', 'sampleAuditUrl', 'buyerPacketUrl', 'intakeUrl']) {
           if (!/utm_source=manual_outreach/i.test(packet.tracking[field] ?? '')) {
             findings.push(`${packet.id}: tracking.${field} must include manual_outreach UTM`);
           }
@@ -579,6 +581,10 @@ function trackingForManualPacket(packet) {
       ...params,
       utm_content: `${params.utm_content}_sample_audit`
     }),
+    buyerPacketUrl: trackedPublicUrl('/transparency-audit-buyer-packet.md', {
+      ...params,
+      utm_content: `${params.utm_content}_buyer_packet`
+    }),
     intakeUrl: trackedPublicUrl('/issues/new', {
       ...params,
       template: 'transparency-audit-intake.yml'
@@ -591,12 +597,14 @@ function outreachUrls({ deliveryKit, tracking }) {
     return {
       service: tracking.serviceUrl,
       sampleAudit: tracking.sampleAuditUrl,
+      buyerPacket: tracking.buyerPacketUrl,
       intake: tracking.intakeUrl
     };
   }
   return {
     service: `${PUBLIC_BASE_URL}/services/transparency-audit#invoice-ready-intake`,
     sampleAudit: deliveryKit.sampleAuditUrl,
+    buyerPacket: `${PUBLIC_BASE_URL}/transparency-audit-buyer-packet.md`,
     intake: deliveryKit.intakeUrl
   };
 }

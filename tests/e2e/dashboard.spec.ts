@@ -1,4 +1,20 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
+
+type OutreachDispatchBrief = {
+  nextManualSendSheet: {
+    approvedMessageSha256: string;
+    packetId: string;
+    recordContactCommand: string;
+    trackedBuyerPacketUrl: string;
+  };
+};
+
+const outreachDispatchBrief = JSON.parse(
+  readFileSync(resolve('public/outreach-dispatch-brief.json'), 'utf8')
+) as OutreachDispatchBrief;
+const nextOutreachPacket = outreachDispatchBrief.nextManualSendSheet;
 
 async function openLaunchStep(page: Page, name: RegExp, heading: string) {
   await expect(async () => {
@@ -460,9 +476,10 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   ).toBeVisible();
   await expect(
     nextSendSheet
-      .getByText('b5fd3c92884794a7d032a10244fa442d841ead2a948b2c08d86ffd07128e4b98')
+      .getByText(nextOutreachPacket.approvedMessageSha256)
       .first()
   ).toBeVisible();
+  await expect(nextSendSheet.getByText(nextOutreachPacket.trackedBuyerPacketUrl).first()).toBeVisible();
   await expect(
     nextSendSheet.getByText(
       'node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"'
@@ -470,9 +487,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   ).toBeVisible();
   await expect(nextSendSheet.getByText('npm run ops:outreach-contact-evidence-plan')).toBeVisible();
   await expect(
-    nextSendSheet.getByText(
-      'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash b5fd3c92884794a7d032a10244fa442d841ead2a948b2c08d86ffd07128e4b98'
-    )
+    nextSendSheet.getByText(nextOutreachPacket.recordContactCommand)
   ).toBeVisible();
   await expect(nextSendSheet.getByText('Contact Evidence Issue Body')).toBeVisible();
   await expect(
@@ -534,9 +549,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
   ).toBeVisible();
   await expect(
     page
-      .getByText(
-        'node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash b5fd3c92884794a7d032a10244fa442d841ead2a948b2c08d86ffd07128e4b98'
-      )
+      .getByText(nextOutreachPacket.recordContactCommand)
       .first()
   ).toBeVisible();
   await expect(

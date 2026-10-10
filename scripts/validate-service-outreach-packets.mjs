@@ -78,6 +78,7 @@ for (const required of [
   /services\/transparency-audit/i,
   /#invoice-ready-intake/i,
   /services\/sample-audit/i,
+  /transparency-audit-buyer-packet\.md/i,
   /transparency-audit-intake\.yml/i,
   /Executive Chairman approval/i
 ]) {
@@ -125,6 +126,9 @@ if (
 }
 if (!/services\/transparency-audit\?[^#\s]+#invoice-ready-intake/i.test(approvedRecord.message)) {
   findings.push('approved outreach message must point service traffic to invoice-ready intake');
+}
+if (!/transparency-audit-buyer-packet\.md\?/i.test(approvedRecord.message)) {
+  findings.push('approved outreach message must include the tracked buyer packet');
 }
 if (!/template=transparency-audit-intake\.yml/i.test(approvedRecord.message)) {
   findings.push('approved outreach message must preserve the GitHub intake template parameter');
@@ -184,6 +188,12 @@ if (publicQueue) {
       !/services\/sample-audit/i.test(item.message ?? '')
     ) {
       findings.push(`${item.id}: ready outreach packet must include the sample audit link`);
+    }
+    if (
+      item.status === 'ready-for-manual-send' &&
+      !/transparency-audit-buyer-packet\.md/i.test(item.message ?? '')
+    ) {
+      findings.push(`${item.id}: ready outreach packet must include the buyer packet link`);
     }
     if (
       item.status === 'ready-for-manual-send' &&

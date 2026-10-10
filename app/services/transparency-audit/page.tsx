@@ -89,6 +89,9 @@ export default function TransparencyAuditServicePage() {
             <a className="button-link" href={deliveryKit.intakeUrl}>
               Request Audit
             </a>
+            <a className="button-link" href={publicPath('/transparency-audit-buyer-packet.md')}>
+              Buyer Packet
+            </a>
             <a className="button-link" href={publicPath('/transparency-audit-intake-template.md')}>
               Copy Intake Template
             </a>
@@ -161,6 +164,9 @@ export default function TransparencyAuditServicePage() {
         <div className="inline-actions">
           <a className="button-link" href={deliveryKit.intakeUrl}>
             Open Audit Intake
+          </a>
+          <a className="button-link" href={publicPath('/transparency-audit-buyer-packet.md')}>
+            View Buyer Packet
           </a>
           <a className="button-link" href={publicPath('/transparency-audit-intake-template.md')}>
             Copy Intake Template
@@ -286,6 +292,9 @@ export default function TransparencyAuditServicePage() {
         <div className="inline-actions">
           <a className="button-link" href={deliveryKit.intakeUrl}>
             Submit Invoice-Ready Intake
+          </a>
+          <a className="button-link" href={publicPath('/transparency-audit-buyer-packet.json')}>
+            View Buyer Packet JSON
           </a>
           <a className="button-link" href={publicPath('/transparency-audit-intake-template.md')}>
             Copy Intake Template

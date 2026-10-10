@@ -48,6 +48,8 @@ const referralPage = readText(join('app', 'partners', 'referrals', 'page.tsx'));
 const operationsPage = readText(join('app', 'operations', 'page.tsx'));
 const todayRevenueCloseSheet = readText(join('public', 'today-revenue-close-sheet.md'));
 const collaboratorMeetingIntake = readJson(join('public', 'collaborator-meeting-intake.json'));
+const buyerPacketJson = readJson(join('public', 'transparency-audit-buyer-packet.json'));
+const buyerPacketMarkdown = readText(join('public', 'transparency-audit-buyer-packet.md'));
 
 const revenueStreams = revenuePlan.revenueStreams ?? [];
 for (const route of serviceRoutes) {
@@ -131,8 +133,20 @@ for (const required of [
 if (!auditPage.includes("publicPath('/transparency-audit-intake-template.md')")) {
   findings.push('/services/transparency-audit: public page must link to intake template');
 }
+if (!auditPage.includes("publicPath('/transparency-audit-buyer-packet.md')")) {
+  findings.push('/services/transparency-audit: public page must link to buyer packet markdown');
+}
+if (!auditPage.includes("publicPath('/transparency-audit-buyer-packet.json')")) {
+  findings.push('/services/transparency-audit: public page must link to buyer packet JSON');
+}
 if (!staticExporter.includes("url.pathname === '/transparency-audit-intake-template.md'")) {
   findings.push('static exporter must serve transparency audit intake template');
+}
+if (!staticExporter.includes("url.pathname === '/transparency-audit-buyer-packet.md'")) {
+  findings.push('static exporter must serve transparency audit buyer packet markdown');
+}
+if (!staticExporter.includes("url.pathname === '/transparency-audit-buyer-packet.json'")) {
+  findings.push('static exporter must serve transparency audit buyer packet JSON');
 }
 if (!existsSync(sampleAuditRoute.file)) {
   findings.push(`${sampleAuditRoute.path}: route file is missing`);
@@ -159,6 +173,26 @@ if (!auditPage.includes("publicPath('/services/sample-audit')")) {
 }
 if (!readText(sampleAuditRoute.file).includes("publicPath('/transparency-audit-intake-template.md')")) {
   findings.push('/services/sample-audit: public page must link to intake template');
+}
+for (const required of [
+  'buyer-invoice-request-packet',
+  'We want a Transparency Audit and are requesting invoice review.',
+  'Please prepare an exact-sats BTC invoice for Executive Chairman review.',
+  'No agent receives funds, controls keys, approves spending, or moves assets.',
+  'No price guarantee'
+]) {
+  if (!buyerPacketMarkdown.includes(required)) {
+    findings.push(`transparency audit buyer packet markdown missing ${required}`);
+  }
+}
+if (buyerPacketJson.offer?.priceUsd !== '249') {
+  findings.push('transparency audit buyer packet JSON must preserve $249 price');
+}
+if (!buyerPacketJson.copyPasteInvoiceRequest?.includes('requesting invoice review')) {
+  findings.push('transparency audit buyer packet JSON must include invoice request copy');
+}
+if (!buyerPacketJson.approvalGates?.some((gate) => /Executive Chairman/.test(gate))) {
+  findings.push('transparency audit buyer packet JSON must preserve chairman approval gate');
 }
 if (!referralPage.includes("publicPath('/services/sample-audit')")) {
   findings.push('/partners/referrals: public page must link to sample audit');
@@ -244,8 +278,22 @@ for (const required of [
 if (!sitemap.includes(`https://sata-project-reserve.github.io/sata${sampleAuditRoute.path}`)) {
   findings.push(`${sampleAuditRoute.path}: public sitemap is missing route`);
 }
+if (!sitemap.includes('https://sata-project-reserve.github.io/sata/transparency-audit-buyer-packet.md')) {
+  findings.push('public sitemap is missing transparency audit buyer packet markdown');
+}
+if (
+  !sitemap.includes('https://sata-project-reserve.github.io/sata/transparency-audit-buyer-packet.json')
+) {
+  findings.push('public sitemap is missing transparency audit buyer packet JSON');
+}
 if (!reportGenerator.includes(`\${PUBLIC_BASE_URL}${sampleAuditRoute.path}`)) {
   findings.push(`${sampleAuditRoute.path}: transparency report sitemap generator is missing route`);
+}
+if (!reportGenerator.includes('${PUBLIC_BASE_URL}/transparency-audit-buyer-packet.md')) {
+  findings.push('transparency report sitemap generator is missing buyer packet markdown');
+}
+if (!reportGenerator.includes('${PUBLIC_BASE_URL}/transparency-audit-buyer-packet.json')) {
+  findings.push('transparency report sitemap generator is missing buyer packet JSON');
 }
 if (!staticExporter.includes(`url.pathname === '${sampleAuditRoute.path}'`)) {
   findings.push(`${sampleAuditRoute.path}: Sites static exporter is missing fallback route`);

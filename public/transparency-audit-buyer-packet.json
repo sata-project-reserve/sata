@@ -1,0 +1,48 @@
+{
+  "project": "SATA Reserve Token",
+  "schemaVersion": 1,
+  "updatedAtUtc": "2026-10-10T00:00:00.000Z",
+  "mode": "buyer-invoice-request-packet",
+  "offer": {
+    "id": "transparency-audit",
+    "label": "SATA Transparency Audit",
+    "priceUsd": "249",
+    "turnaround": "48-hour target after approved payment or escrow terms",
+    "deliverable": "Authority, supply, LP ownership or lock evidence, reserve-claim, disclosure, and risk-language review with concise report and machine-readable JSON."
+  },
+  "buyerFit": [
+    "Crypto teams with public authority, liquidity, reserve, ownership, or disclosure claims.",
+    "Projects that want a factual public-evidence review without promotion or market claims.",
+    "Operators who can provide token, website, public profile, and claims to review."
+  ],
+  "requiredIntakeFields": [
+    "Project name",
+    "Network",
+    "Token, contract, or mint address",
+    "Website",
+    "Public profile",
+    "Claims to review",
+    "Preferred deliverable visibility",
+    "Explicit request for exact-sats BTC invoice review"
+  ],
+  "copyPasteInvoiceRequest": "Hi SATA,\n\nWe want a Transparency Audit and are requesting invoice review.\n\nProject name:\nNetwork:\nToken/contract/mint:\nWebsite:\nPublic profile:\nClaims to review:\nPreferred deliverable visibility: public / private / undecided\n\nPlease prepare an exact-sats BTC invoice for Executive Chairman review.\n\nWe understand this request does not approve work or payment, and the audit is not a price guarantee, redemption promise, market-support commitment, investment advice, legal advice, or tax advice.",
+  "submissionPaths": {
+    "githubIntake": "https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml",
+    "servicePage": "https://sata-project-reserve.github.io/sata/services/transparency-audit",
+    "sampleAudit": "https://sata-project-reserve.github.io/sata/services/sample-audit",
+    "intakeTemplate": "https://sata-project-reserve.github.io/sata/transparency-audit-intake-template.md"
+  },
+  "approvalGates": [
+    "Executive Chairman reviews scope before any invoice is sent.",
+    "Exact-sats BTC amount, quote source, timestamp, expiration, and payment path are required before payment instructions.",
+    "No agent receives funds, controls keys, approves spending, or moves assets.",
+    "Delivery starts only after payment confirmation or chairman-approved escrow terms."
+  ],
+  "boundaries": [
+    "No price guarantee.",
+    "No redemption promise.",
+    "No market-support commitment.",
+    "No fake engagement, bots, raids, investor lists, or buyer guarantees.",
+    "No legal, tax, or investment advice."
+  ]
+}

@@ -62,6 +62,14 @@ const transparencyAuditIntakeTemplateMd = readFileSync(
   join('public', 'transparency-audit-intake-template.md'),
   'utf8'
 );
+const transparencyAuditBuyerPacketJson = readFileSync(
+  join('public', 'transparency-audit-buyer-packet.json'),
+  'utf8'
+);
+const transparencyAuditBuyerPacketMd = readFileSync(
+  join('public', 'transparency-audit-buyer-packet.md'),
+  'utf8'
+);
 const projectProfile = readFileSync(join('public', 'project-profile.json'), 'utf8');
 const metadataPolicy = readFileSync(join('docs', 'metadata-policy.md'), 'utf8');
 const hostingJson = readFileSync(join('.openai', 'hosting.json'), 'utf8');
@@ -105,6 +113,8 @@ const satsInvoiceQueue = ${JSON.stringify(satsInvoiceQueue)};
 const satsProspectPipeline = ${JSON.stringify(satsProspectPipeline)};
 const transparencyAuditDeliveryKit = ${JSON.stringify(transparencyAuditDeliveryKit)};
 const transparencyAuditIntakeTemplateMd = ${JSON.stringify(transparencyAuditIntakeTemplateMd)};
+const transparencyAuditBuyerPacketJson = ${JSON.stringify(transparencyAuditBuyerPacketJson)};
+const transparencyAuditBuyerPacketMd = ${JSON.stringify(transparencyAuditBuyerPacketMd)};
 const projectProfile = ${JSON.stringify(projectProfile)};
 const metadataPolicy = ${JSON.stringify(metadataPolicy)};
 const transparencyHtml = ${JSON.stringify(buildTransparencyHtml(report))};
@@ -388,6 +398,16 @@ export default {
         headers: withCors({ 'content-type': 'text/markdown; charset=utf-8' })
       });
     }
+    if (url.pathname === '/transparency-audit-buyer-packet.json') {
+      return new Response(transparencyAuditBuyerPacketJson, {
+        headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
+      });
+    }
+    if (url.pathname === '/transparency-audit-buyer-packet.md') {
+      return new Response(transparencyAuditBuyerPacketMd, {
+        headers: withCors({ 'content-type': 'text/markdown; charset=utf-8' })
+      });
+    }
     if (url.pathname === '/project-profile.json') {
       return new Response(projectProfile, {
         headers: withCors({ 'content-type': 'application/json; charset=utf-8' })
@@ -400,7 +420,7 @@ export default {
     }
     if (url.pathname === '/') {
       return new Response(
-        '<!doctype html><title>SATA Reserve Token</title><h1>SATA Reserve Token</h1><p>Proof over promises. Temporary transparency and launch-app surface while the official SATA website is being built. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/services/transparency-audit">Transparency audit service</a></li><li><a href="/transparency-audit-intake-template.md">Transparency audit intake template</a></li><li><a href="/services/sample-audit">Sample transparency audit</a></li><li><a href="/partners/referrals">Referral partners</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">Latest Markdown</a></li><li><a href="/transparency/history">history</a></li><li><a href="/transparency/history.json">history.json</a></li><li><a href="/health.json">health.json</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="/revenue-operating-plan.json">revenue-operating-plan.json</a></li><li><a href="/revenue-execution-brief.json">revenue-execution-brief.json</a></li><li><a href="/revenue-execution-brief.md">revenue-execution-brief.md</a></li><li><a href="/outreach-dispatch-brief.json">outreach-dispatch-brief.json</a></li><li><a href="/outreach-dispatch-brief.md">outreach-dispatch-brief.md</a></li><li><a href="/reply-conversion-brief.json">reply-conversion-brief.json</a></li><li><a href="/reply-conversion-brief.md">reply-conversion-brief.md</a></li><li><a href="/referral-handoff-dispatch-brief.json">referral-handoff-dispatch-brief.json</a></li><li><a href="/referral-handoff-dispatch-brief.md">referral-handoff-dispatch-brief.md</a></li><li><a href="/referral-partner-policy.json">referral-partner-policy.json</a></li><li><a href="/sats-generation-ledger.json">sats-generation-ledger.json</a></li><li><a href="/sats-invoice-queue.json">sats-invoice-queue.json</a></li><li><a href="/sats-prospect-pipeline.json">sats-prospect-pipeline.json</a></li><li><a href="/transparency-audit-delivery-kit.json">transparency-audit-delivery-kit.json</a></li><li><a href="/docs/metadata-policy.md">metadata-policy.md</a></li><li><a href="https://github.com/sata-project-reserve/sata">GitHub repository</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.png">sata-image.png</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/sata-x-header.png">sata-x-header.png</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
+        '<!doctype html><title>SATA Reserve Token</title><h1>SATA Reserve Token</h1><p>Proof over promises. Temporary transparency and launch-app surface while the official SATA website is being built. Long-term treasury target: 10 BTC, with no redemption or price guarantee.</p><ul><li><a href="/transparency">Transparency</a></li><li><a href="/services/transparency-audit">Transparency audit service</a></li><li><a href="/transparency-audit-buyer-packet.md">Transparency audit buyer packet</a></li><li><a href="/transparency-audit-buyer-packet.json">Transparency audit buyer packet JSON</a></li><li><a href="/transparency-audit-intake-template.md">Transparency audit intake template</a></li><li><a href="/services/sample-audit">Sample transparency audit</a></li><li><a href="/partners/referrals">Referral partners</a></li><li><a href="/transparency/latest.json">latest.json</a></li><li><a href="/transparency/latest.md">Latest Markdown</a></li><li><a href="/transparency/history">history</a></li><li><a href="/transparency/history.json">history.json</a></li><li><a href="/health.json">health.json</a></li><li><a href="/project-profile.json">project-profile.json</a></li><li><a href="/revenue-operating-plan.json">revenue-operating-plan.json</a></li><li><a href="/revenue-execution-brief.json">revenue-execution-brief.json</a></li><li><a href="/revenue-execution-brief.md">revenue-execution-brief.md</a></li><li><a href="/outreach-dispatch-brief.json">outreach-dispatch-brief.json</a></li><li><a href="/outreach-dispatch-brief.md">outreach-dispatch-brief.md</a></li><li><a href="/reply-conversion-brief.json">reply-conversion-brief.json</a></li><li><a href="/reply-conversion-brief.md">reply-conversion-brief.md</a></li><li><a href="/referral-handoff-dispatch-brief.json">referral-handoff-dispatch-brief.json</a></li><li><a href="/referral-handoff-dispatch-brief.md">referral-handoff-dispatch-brief.md</a></li><li><a href="/referral-partner-policy.json">referral-partner-policy.json</a></li><li><a href="/sats-generation-ledger.json">sats-generation-ledger.json</a></li><li><a href="/sats-invoice-queue.json">sats-invoice-queue.json</a></li><li><a href="/sats-prospect-pipeline.json">sats-prospect-pipeline.json</a></li><li><a href="/transparency-audit-delivery-kit.json">transparency-audit-delivery-kit.json</a></li><li><a href="/docs/metadata-policy.md">metadata-policy.md</a></li><li><a href="https://github.com/sata-project-reserve/sata">GitHub repository</a></li><li><a href="/social-agent-profile.json">social-agent-profile.json</a></li><li><a href="/social-agent-content-queue.json">social-agent-content-queue.json</a></li><li><a href="/social-agent-monitoring-log.json">social-agent-monitoring-log.json</a></li><li><a href="/mainnet/sata-image.png">sata-image.png</a></li><li><a href="/mainnet/sata-image.svg">sata-image.svg</a></li><li><a href="/sata-x-header.png">sata-x-header.png</a></li><li><a href="/mainnet/sata-metadata.json">sata-metadata.json</a></li><li><a href="https://x.com/SATAReserve">@SATAReserve</a></li></ul>',
         { headers: withCors({ 'content-type': 'text/html; charset=utf-8' }) }
       );
     }
@@ -614,7 +634,7 @@ function buildServiceHtml(report, revenuePlan, prospectPipeline, deliveryKit) {
       <p><strong>SATA services</strong></p>
       <h1>Transparency audits for crypto teams.</h1>
       <p>SATA is packaging its own public reporting stack into compact audits and setup work for teams that want clearer authority, liquidity, reserve, and disclosure evidence.</p>
-      <p><a href="${escapeHtml(deliveryKit.intakeUrl)}">Request audit</a> · <a href="/transparency-audit-intake-template.md">Copy intake template</a> · <a href="https://x.com/SATAReserve">Contact @SATAReserve</a> · <a href="/revenue-operating-plan.json">Operating plan</a> · <a href="/sats-invoice-queue.json">Invoice queue</a> · <a href="/sats-prospect-pipeline.json">Prospect pipeline</a> · <a href="/transparency-audit-delivery-kit.json">Delivery kit JSON</a> · <a href="/transparency">SATA transparency</a></p>
+      <p><a href="${escapeHtml(deliveryKit.intakeUrl)}">Request audit</a> · <a href="/transparency-audit-buyer-packet.md">Buyer packet</a> · <a href="/transparency-audit-intake-template.md">Copy intake template</a> · <a href="https://x.com/SATAReserve">Contact @SATAReserve</a> · <a href="/revenue-operating-plan.json">Operating plan</a> · <a href="/sats-invoice-queue.json">Invoice queue</a> · <a href="/sats-prospect-pipeline.json">Prospect pipeline</a> · <a href="/transparency-audit-delivery-kit.json">Delivery kit JSON</a> · <a href="/transparency">SATA transparency</a></p>
     </div>
     <div>
       <img class="mark" src="/mainnet/sata-image.png" alt="SATA reserve token mark">

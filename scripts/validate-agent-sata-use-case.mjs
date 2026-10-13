@@ -116,8 +116,11 @@ if (ledger.policyFile !== 'use_case/agent-sata-economy.json') {
 if (ledger.realAssetMovement !== false) findings.push('ledger.realAssetMovement must be false');
 if (ledger.publicReserveImpact !== false) findings.push('ledger.publicReserveImpact must be false');
 if (!Array.isArray(ledger.transactions)) findings.push('ledger.transactions must be an array');
-if (!/first agent-to-agent task quote/i.test(ledger.nextAction ?? '')) {
-  findings.push('ledger.nextAction must point to the first agent-to-agent task quote');
+if ((ledger.transactions ?? []).length === 0 && !/first agent-to-agent task quote/i.test(ledger.nextAction ?? '')) {
+  findings.push('empty ledger nextAction must point to the first agent-to-agent task quote');
+}
+if ((ledger.transactions ?? []).length > 0 && !/settlement proposal/i.test(ledger.nextAction ?? '')) {
+  findings.push('non-empty ledger nextAction must point to settlement proposal review');
 }
 
 if (architecture.schemaVersion !== 1) findings.push('architecture schemaVersion must be 1');

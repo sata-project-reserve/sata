@@ -6,6 +6,45 @@
   "createdFor": "Private internal agent-efficiency accounting across G:\\ and approved external workspaces.",
   "realAssetMovement": false,
   "publicReserveImpact": false,
-  "transactions": [],
-  "nextAction": "Record the first agent-to-agent task quote before delegating work."
+  "transactions": [
+    {
+      "id": "agent-sata-tx-2026-10-13-001",
+      "timestampUtc": "2026-10-13T16:57:43Z",
+      "taskId": "task-on-chain-agent-settlement-gates",
+      "fromAgent": "primary-codex",
+      "toAgent": "implementation-agent",
+      "type": "delegation_payment",
+      "sataAmount": "25",
+      "computeBudgetUnits": "implementation-cycle",
+      "tokenEstimate": {
+        "basis": "post-work estimate from repository change scope",
+        "estimatedTokens": "unknown",
+        "actualTokens": "unavailable"
+      },
+      "evidence": [
+        {
+          "type": "commit",
+          "value": "abd01f721a3f5a4e6344952f839f750fea464988",
+          "description": "Added gated on-chain agent SATA settlement policy, queue, planner, validator, package scripts, and CI gates."
+        },
+        {
+          "type": "workflow",
+          "value": "https://github.com/sata-project-reserve/sata/actions/runs/38434798686",
+          "description": "CI completed successfully after the settlement gate change."
+        },
+        {
+          "type": "workflow",
+          "value": "https://github.com/sata-project-reserve/sata/actions/runs/38434798690",
+          "description": "Transparency report workflow completed successfully after the settlement gate change."
+        }
+      ],
+      "status": "settled",
+      "settlementApproval": {
+        "mode": "private-ledger-only",
+        "approvedBy": "primary-codex",
+        "approvalBasis": "Completed implementation work with retained commit and workflow evidence. This private settlement does not move real assets."
+      }
+    }
+  ],
+  "nextAction": "Review the draft on-chain settlement proposal for agent-sata-tx-2026-10-13-001 after chairman-approved agent wallet addresses are assigned."
 }

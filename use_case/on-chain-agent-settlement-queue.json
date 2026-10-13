@@ -1,11 +1,37 @@
 {
   "schemaVersion": 1,
   "mode": "agent-sata-on-chain-settlement-queue",
-  "status": "empty-awaiting-wallet-assignment",
+  "status": "draft-proposal-awaiting-wallet-assignment",
   "policyFile": "use_case/on-chain-agent-settlement-policy.json",
   "liveExecutionEnabled": false,
   "realAssetMovement": false,
-  "proposals": [],
+  "proposals": [
+    {
+      "id": "agent-sata-onchain-proposal-2026-10-13-001",
+      "ledgerTransactionId": "agent-sata-tx-2026-10-13-001",
+      "taskId": "task-on-chain-agent-settlement-gates",
+      "fromAgent": "primary-codex",
+      "toAgent": "implementation-agent",
+      "sataAmount": "25",
+      "memo": "SATA_AGENT_SETTLEMENT task=task-on-chain-agent-settlement-gates ledger=agent-sata-tx-2026-10-13-001 from=primary-codex to=implementation-agent amount=25 hash=2ec0517b91b2e5830d4a66e05b3a8bb0b85be1396e1c26e1bd23f0b1b90e6ecd",
+      "memoContentHash": "2ec0517b91b2e5830d4a66e05b3a8bb0b85be1396e1c26e1bd23f0b1b90e6ecd",
+      "idempotencyKey": "agent-sata-onchain-2026-10-13-001-primary-codex-implementation-agent-25",
+      "status": "draft-wallets-unassigned",
+      "blockers": [
+        "chairman-approved public Solana addresses are not assigned for primary-codex and implementation-agent",
+        "preflight simulation has not been run",
+        "chairman approval has not been recorded",
+        "live execution is disabled"
+      ],
+      "requiredBeforeSimulation": [
+        "assign and verify source agent wallet",
+        "assign and verify recipient agent wallet",
+        "confirm recipient associated token account behavior",
+        "confirm SOL fee and rent payer",
+        "refresh memo content hash if any proposal field changes"
+      ]
+    }
+  ],
   "executedTransactions": [],
-  "nextAction": "Assign chairman-approved public Solana addresses for agent wallets before drafting the first unsigned on-chain settlement proposal."
+  "nextAction": "Complete wallet assignment with chairman-approved public Solana addresses for primary-codex and implementation-agent, then simulate agent-sata-onchain-proposal-2026-10-13-001 without signing."
 }

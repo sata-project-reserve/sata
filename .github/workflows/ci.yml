@@ -80,6 +80,9 @@ jobs:
       - name: Validate revenue cycle status
         run: npm run ops:cycle-check
 
+      - name: Validate private agent SATA use case
+        run: npm run ops:agent-sata-use-case-check
+
       - name: Validate revenue execution brief
         run: npm run ops:execution-brief-check
 

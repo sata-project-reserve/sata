@@ -37,6 +37,7 @@
     "livePostingEnabled": false
   },
   "blockers": [
+    "New BTC reserve address and proof must be published before exact-sats invoices can be approved.",
     "No chairman-approved exact-sats invoice is ready to send.",
     "No confirmed direct-reserve BTC receipt is recorded.",
     "Approved social content exists; publish manually, submit live URL evidence, run evidence review, then record only with the verified command."
@@ -1464,6 +1465,16 @@
       "command": "npm run ops:approve -- dubai-collaborator-meeting-intake-policy --confirm-chairman-approval \"I am Executive Chairman and approve dubai-collaborator-meeting-intake-policy\"",
       "evidenceRequired": "2 evidence record(s) in executive approval queue.",
       "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
+    },
+    {
+      "id": "publish-new-btc-reserve-address-proof",
+      "priority": 35,
+      "type": "reserve-address-publication-needed",
+      "title": "Publish the new BTC reserve address and proof before approving exact-sats invoices.",
+      "requiredActor": "Executive Chairman",
+      "command": "Publish the new BTC reserve address/proof, then update the approved reserve-address configuration and regenerate the transparency report.",
+      "evidenceRequired": "Public BTC reserve address, proof/signature if available, and updated transparency report showing the payable reserve address.",
+      "boundary": "This action publishes/records proof only; it does not move BTC, create invoices, send payment instructions, or change custody."
     }
   ],
   "nextAction": "Send prepared no-upfront post-receipt referral terms to Diana Crypto and record sent evidence.",

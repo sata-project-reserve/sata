@@ -73,6 +73,10 @@ export function buildRevenueCycleStatus({
   const receiptsAwaitingAllocation = confirmedReceipts.filter(
     (receipt) => !allocationReceiptIds.has(receipt.id)
   );
+  const reserveAddressPending =
+    !report.bitcoinReserve?.address &&
+    report.bitcoinReserve?.reserveSats === '0' &&
+    invoiceQueue.paymentPolicy?.reserveAddress === 'pending-new-reserve-address-publication';
   const readyOutreachPackets = (outreachPacketQueue.packets ?? []).filter(
     (packet) => packet.status === 'ready-for-manual-send'
   );
@@ -125,6 +129,11 @@ export function buildRevenueCycleStatus({
 
   const blockers = [];
   if (prospects.length === 0) blockers.push('No evidence-backed prospects are recorded.');
+  if (reserveAddressPending) {
+    blockers.push(
+      'New BTC reserve address and proof must be published before exact-sats invoices can be approved.'
+    );
+  }
   if (approvedInvoices.length === 0)
     blockers.push('No chairman-approved exact-sats invoice is ready to send.');
   if (confirmedReceipts.length === 0)
@@ -138,6 +147,7 @@ export function buildRevenueCycleStatus({
   const actionQueue = buildActionQueue({
     prospects,
     revenuePlan,
+    reserveAddressPending,
     approvedInvoices,
     receiptsAwaitingAllocation,
     readyOutreachPackets,
@@ -468,7 +478,11 @@ export function validateRevenueCycleStatus(status) {
           `${item.id ?? '<missing-id>'}: manual social publish action must expose the social publish evidence issue-body command`
         );
       }
-      if (!String(item.evidenceIssueTemplateCommand ?? '').includes(item.approvedMessageSha256 ?? '<missing>')) {
+      if (
+        !String(item.evidenceIssueTemplateCommand ?? '').includes(
+          item.approvedMessageSha256 ?? '<missing>'
+        )
+      ) {
         findings.push(
           `${item.id ?? '<missing-id>'}: social publish evidence command must be tied to the approved post hash`
         );
@@ -555,7 +569,9 @@ export function validateRevenueCycleStatus(status) {
           );
         }
       } else {
-        if (item.evidenceIssueTemplateUrl !== REFERRAL_HANDOFF_RESPONSE_EVIDENCE_ISSUE_TEMPLATE_URL) {
+        if (
+          item.evidenceIssueTemplateUrl !== REFERRAL_HANDOFF_RESPONSE_EVIDENCE_ISSUE_TEMPLATE_URL
+        ) {
           findings.push(
             `${item.id ?? '<missing-id>'}: referral response action must expose the response evidence issue template`
           );
@@ -657,7 +673,9 @@ export function validateRevenueCycleStatus(status) {
           `${item.id ?? '<missing-id>'}: reply triage invoice rule must use invoice-request-boundary`
         );
       }
-      if (!/inbound-invoice-request-agent\.mjs render/.test(invoiceRule?.nextCommandAfterRecord ?? '')) {
+      if (
+        !/inbound-invoice-request-agent\.mjs render/.test(invoiceRule?.nextCommandAfterRecord ?? '')
+      ) {
         findings.push(
           `${item.id ?? '<missing-id>'}: reply triage invoice rule must render inbound invoice review`
         );
@@ -709,6 +727,7 @@ export function validateRevenueCycleStatus(status) {
 function buildActionQueue({
   prospects,
   revenuePlan,
+  reserveAddressPending,
   approvedInvoices,
   receiptsAwaitingAllocation,
   readyOutreachPackets,
@@ -757,6 +776,10 @@ function buildActionQueue({
     });
   }
 
+  if (reserveAddressPending && (approvedInvoices.length > 0 || inboundInvoiceRequests.length > 0)) {
+    actions.push(reserveAddressPublicationAction());
+  }
+
   for (const invoice of approvedInvoices) {
     actions.push({
       id: `payment-packet-${invoice.id}`,
@@ -774,7 +797,9 @@ function buildActionQueue({
     const quotedLeadId = quoteShell(lead.id);
     const requestedOfferId = lead.requestedOfferId ?? 'transparency-audit';
     const quotedOfferId = quoteShell(requestedOfferId);
-    const quotedEvidence = quoteShell(lead.evidence ?? '<invoice-request-evidence-url-or-reference>');
+    const quotedEvidence = quoteShell(
+      lead.evidence ?? '<invoice-request-evidence-url-or-reference>'
+    );
     actions.push({
       id: `inbound-invoice-request-${lead.id}`,
       priority: actions.length + 1,
@@ -1106,6 +1131,13 @@ function buildActionQueue({
     });
   }
 
+  if (
+    reserveAddressPending &&
+    !actions.some((action) => action.id === 'publish-new-btc-reserve-address-proof')
+  ) {
+    actions.push(reserveAddressPublicationAction());
+  }
+
   if (prospects.length === 0) {
     actions.push({
       id: 'identify-evidence-backed-prospects',
@@ -1140,6 +1172,22 @@ function buildActionQueue({
   return actions.map((action, index) => ({ ...action, priority: index + 1 }));
 }
 
+function reserveAddressPublicationAction() {
+  return {
+    id: 'publish-new-btc-reserve-address-proof',
+    priority: 0,
+    type: 'reserve-address-publication-needed',
+    title: 'Publish the new BTC reserve address and proof before approving exact-sats invoices.',
+    requiredActor: 'Executive Chairman',
+    command:
+      'Publish the new BTC reserve address/proof, then update the approved reserve-address configuration and regenerate the transparency report.',
+    evidenceRequired:
+      'Public BTC reserve address, proof/signature if available, and updated transparency report showing the payable reserve address.',
+    boundary:
+      'This action publishes/records proof only; it does not move BTC, create invoices, send payment instructions, or change custody.'
+  };
+}
+
 function approvalCommand(item) {
   return `npm run ops:approve -- ${item.id} --confirm-chairman-approval "I am Executive Chairman and approve ${item.id}"`;
 }
@@ -1160,18 +1208,16 @@ function manualSocialPublishAction({ post }) {
     evidenceReviewCommand: SOCIAL_PUBLISH_EVIDENCE_REVIEW_COMMAND,
     evidenceIssueTemplateCommand: socialPublishEvidenceTemplateCommand(post),
     postPublishReplyTriageCommand: publishedSocialReplyTriageCommand(post),
-    postPublishInvoiceEvidenceIssueTemplateCommand:
-      publishedSocialReplyEvidenceTemplateCommand({
-        post,
-        classification: 'invoice-request-needs-chairman-review',
-        customerAskedForInvoice: true
-      }),
-    postPublishIntakeEvidenceIssueTemplateCommand:
-      publishedSocialReplyEvidenceTemplateCommand({
-        post,
-        classification: 'needs-intake-fields',
-        customerAskedForInvoice: false
-      }),
+    postPublishInvoiceEvidenceIssueTemplateCommand: publishedSocialReplyEvidenceTemplateCommand({
+      post,
+      classification: 'invoice-request-needs-chairman-review',
+      customerAskedForInvoice: true
+    }),
+    postPublishIntakeEvidenceIssueTemplateCommand: publishedSocialReplyEvidenceTemplateCommand({
+      post,
+      classification: 'needs-intake-fields',
+      customerAskedForInvoice: false
+    }),
     evidenceRequired: 'Published @SATAReserve post URL plus screenshot or exported text.',
     boundary:
       'Only chairman-approved factual posts may be published; post-publication reply commands only record evidence for review.'
@@ -1199,8 +1245,7 @@ function safeTriageRulesForCycleStatus(rules) {
     rule.classification === 'reject-prohibited-promotion'
       ? {
           ...rule,
-          when:
-            'Reply asks for disallowed promotional activity covered by the inbound triage policy.'
+          when: 'Reply asks for disallowed promotional activity covered by the inbound triage policy.'
         }
       : rule
   );

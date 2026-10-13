@@ -8,6 +8,7 @@ import {
 import { planningUsdToReserveSatsFloor } from './lib/planning-sats.mjs';
 
 const pendingReserveAddress = 'pending-new-reserve-address-publication';
+const publishedReserveAddress = 'bc1qtestreserveaddress0000000000000000000000';
 const readyOutreachMessage =
   'Hi prospect, SATA runs a $249 Transparency Audit for crypto teams. No price promotion, no investor targeting, and no market-support promises.';
 const readyOutreachMessageSha256 = sha256(readyOutreachMessage);
@@ -75,8 +76,7 @@ const baseInputs = {
       {
         id: 'transparency-service-offer',
         status: 'approved',
-        text:
-          'SATA offers transparency audits for public authority, liquidity, reserve, and disclosure claims. Not a price target.'
+        text: 'SATA offers transparency audits for public authority, liquidity, reserve, and disclosure claims. Not a price target.'
       }
     ]
   }
@@ -89,17 +89,25 @@ assertEqual(status.funnel.prospects, 0);
 assertEqual(status.funnel.paidPromotionCampaigns, 0);
 assertEqual(status.funnel.paidPromotionsAwaitingVerification, 0);
 assertEqual(status.social.livePostingEnabled, false);
-assertEqual(status.actionQueue[0]?.type, 'prospect-discovery');
+assertEqual(status.actionQueue[0]?.type, 'reserve-address-publication-needed');
 assertIncludes(status.blockers, 'No evidence-backed prospects are recorded.');
 assertIncludes(
+  status.blockers,
+  'New BTC reserve address and proof must be published before exact-sats invoices can be approved.'
+);
+assertIncludes(
   status.nextAction,
-  'Identify ten crypto teams with public but weakly evidenced authority, liquidity, reserve, or disclosure claims'
+  'Publish the new BTC reserve address and proof before approving exact-sats invoices.'
+);
+assertIncludes(
+  status.actionQueue[0]?.boundary,
+  'does not move BTC, create invoices, send payment instructions, or change custody'
 );
 
 const readyInvoiceStatus = buildRevenueCycleStatus({
-  ...baseInputs,
+  ...withPublishedReserveAddress(baseInputs),
   invoiceQueue: {
-    ...baseInputs.invoiceQueue,
+    ...withPublishedReserveAddress(baseInputs).invoiceQueue,
     invoices: [
       {
         id: 'invoice-ready-1',
@@ -189,7 +197,7 @@ assertEqual(manualSocialPublishAction?.socialPriority?.tier, 9);
 assertEqual(manualSocialPublishAction?.socialPriority?.reason, 'approved backlog order');
 
 const revenueFirstSocialStatus = buildRevenueCycleStatus({
-  ...baseInputs,
+  ...withPublishedReserveAddress(baseInputs),
   prospectPipeline: {
     ...baseInputs.prospectPipeline,
     prospects: [
@@ -221,8 +229,7 @@ const revenueFirstSocialStatus = buildRevenueCycleStatus({
         id: 'transparency-audit-offer',
         status: 'approved',
         type: 'revenue',
-        text:
-          'SATA offers $249 Transparency Audits for authority, liquidity, reserve, and disclosure claims. Not a price target.'
+        text: 'SATA offers $249 Transparency Audits for authority, liquidity, reserve, and disclosure claims. Not a price target.'
       }
     ]
   },
@@ -230,10 +237,7 @@ const revenueFirstSocialStatus = buildRevenueCycleStatus({
 });
 validateRevenueCycleStatus(revenueFirstSocialStatus);
 assertEqual(revenueFirstSocialStatus.actionQueue[0]?.type, 'manual-social-publish');
-assertIncludes(
-  revenueFirstSocialStatus.actionQueue[0]?.title,
-  'transparency-audit-offer'
-);
+assertIncludes(revenueFirstSocialStatus.actionQueue[0]?.title, 'transparency-audit-offer');
 assertEqual(revenueFirstSocialStatus.actionQueue[0]?.socialPriority?.tier, 1);
 assertEqual(
   revenueFirstSocialStatus.actionQueue[0]?.socialPriority?.reason,
@@ -257,7 +261,10 @@ const receiptStatus = buildRevenueCycleStatus({
 validateRevenueCycleStatus(receiptStatus);
 assertIncludes(receiptStatus.nextAction, 'Render receipt allocation proposal for receipt-1');
 assertEqual(receiptStatus.funnel.receiptsAwaitingAllocation, 1);
-assertEqual(receiptStatus.actionQueue[0]?.command, 'node scripts/sats-receipt-allocation-agent.mjs render receipt-1');
+assertEqual(
+  receiptStatus.actionQueue[0]?.command,
+  'node scripts/sats-receipt-allocation-agent.mjs render receipt-1'
+);
 const allocatedReceiptStatus = buildRevenueCycleStatus({
   ...baseInputs,
   ledger: {
@@ -284,7 +291,7 @@ if (allocatedReceiptStatus.actionQueue.some((item) => item.id === 'allocate-rece
 }
 
 const inboundInvoiceStatus = buildRevenueCycleStatus({
-  ...baseInputs,
+  ...withPublishedReserveAddress(baseInputs),
   inboundLeadQueue: {
     leads: [
       {
@@ -424,7 +431,10 @@ assertIncludes(
   readyOutreachPacketStatus.actionQueue[0]?.evidenceIssueTemplateCommand,
   'outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-1'
 );
-assertEqual(readyOutreachPacketStatus.actionQueue[0]?.reserveImpactPlanning?.basis, 'planning-only');
+assertEqual(
+  readyOutreachPacketStatus.actionQueue[0]?.reserveImpactPlanning?.basis,
+  'planning-only'
+);
 assertIncludes(
   readyOutreachPacketStatus.nextAction,
   'Send ready manual outreach packet outreach-packet-1'
@@ -564,7 +574,10 @@ assertEqual(
     reserveAllocationPercent: '70'
   }).toString()
 );
-assertEqual(upgradeOutreachStatus.actionQueue[0]?.reserveImpactPlanning?.qualifiedReserveSats, '699300');
+assertEqual(
+  upgradeOutreachStatus.actionQueue[0]?.reserveImpactPlanning?.qualifiedReserveSats,
+  '699300'
+);
 
 const socialBeforeOutreachStatus = buildRevenueCycleStatus({
   ...baseInputs,
@@ -674,7 +687,10 @@ assertEqual(
   liveVerifiedPaidPromotionStatus.actionQueue[0]?.type,
   'paid-promotion-conversion-measurement'
 );
-assertIncludes(liveVerifiedPaidPromotionStatus.actionQueue[0]?.command, '--measuredAtUtc "<measured-at-utc>"');
+assertIncludes(
+  liveVerifiedPaidPromotionStatus.actionQueue[0]?.command,
+  '--measuredAtUtc "<measured-at-utc>"'
+);
 
 const completedPaidPromotionStatus = buildRevenueCycleStatus({
   ...baseInputs,
@@ -770,7 +786,10 @@ const completedInvoiceRule = completedPaidPromotionStatus.actionQueue[1]?.classi
 );
 assertEqual(completedInvoiceRule?.customerAskedForInvoice, true);
 assertEqual(completedInvoiceRule?.suggestedReplyTemplateId, 'invoice-request-boundary');
-assertIncludes(completedInvoiceRule?.nextCommandAfterRecord, 'inbound-invoice-request-agent.mjs render');
+assertIncludes(
+  completedInvoiceRule?.nextCommandAfterRecord,
+  'inbound-invoice-request-agent.mjs render'
+);
 const completedIntakeRule = completedPaidPromotionStatus.actionQueue[1]?.classificationRules?.find(
   (rule) => rule.classification === 'needs-intake-fields'
 );
@@ -806,8 +825,7 @@ const preparedReferralPacketStatus = buildRevenueCycleStatus({
       replyTemplate: preparedReferralReply,
       termsSha256: preparedReferralReplySha256
     },
-    recordSentCommand:
-      `node scripts/referral-partner-handoff-agent.mjs record-sent --campaign campaign-1 --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash ${preparedReferralReplySha256}`
+    recordSentCommand: `node scripts/referral-partner-handoff-agent.mjs record-sent --campaign campaign-1 --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash ${preparedReferralReplySha256}`
   },
   prospectPipeline: completedPaidPromotionStatusInput().prospectPipeline,
   outreachPacketQueue: completedPaidPromotionStatusInput().outreachPacketQueue,
@@ -1127,6 +1145,26 @@ function trackingUrl(id, route, content) {
 
 function sha256(value) {
   return createHash('sha256').update(String(value).replaceAll('\r\n', '\n'), 'utf8').digest('hex');
+}
+
+function withPublishedReserveAddress(inputs) {
+  return {
+    ...inputs,
+    report: {
+      ...inputs.report,
+      bitcoinReserve: {
+        ...inputs.report.bitcoinReserve,
+        address: publishedReserveAddress
+      }
+    },
+    invoiceQueue: {
+      ...inputs.invoiceQueue,
+      paymentPolicy: {
+        ...inputs.invoiceQueue.paymentPolicy,
+        reserveAddress: publishedReserveAddress
+      }
+    }
+  };
 }
 
 async function assertRevenueStateMutatorsRefreshPublicStatus() {

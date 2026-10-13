@@ -3,6 +3,7 @@ import { join } from 'node:path';
 
 const policy = readJson(join('use_case', 'agent-sata-economy.json'));
 const ledger = readJson(join('use_case', 'agent-sata-ledger.json'));
+const architecture = readJson(join('use_case', 'engineering-economy-architecture.json'));
 const readme = readFileSync(join('use_case', 'README.md'), 'utf8');
 const packageJson = readJson('package.json');
 const findings = [];
@@ -119,9 +120,61 @@ if (!/first agent-to-agent task quote/i.test(ledger.nextAction ?? '')) {
   findings.push('ledger.nextAction must point to the first agent-to-agent task quote');
 }
 
+if (architecture.schemaVersion !== 1) findings.push('architecture schemaVersion must be 1');
+if (architecture.mode !== 'private-sata-engineering-economy-architecture') {
+  findings.push('architecture mode must be private-sata-engineering-economy-architecture');
+}
+for (const flag of [
+  'privateAccountingOnly',
+  'notOnChain',
+  'noAssetMovement',
+  'noWalletKeys',
+  'noMarketValueClaim',
+  'chairmanApprovalRequiredForPublicOrFinancialUse'
+]) {
+  if (architecture.boundary?.[flag] !== true)
+    findings.push(`architecture.boundary.${flag} must be true`);
+}
+const layers = new Set((architecture.layers ?? []).map((layer) => layer.id));
+for (const requiredLayer of [
+  'engineering-mind',
+  'specialized-agents',
+  'sata-reserve',
+  'compute-providers'
+]) {
+  if (!layers.has(requiredLayer)) findings.push(`architecture layers missing ${requiredLayer}`);
+}
+const specializedAgents =
+  (architecture.layers ?? []).find((layer) => layer.id === 'specialized-agents')?.agents ?? [];
+for (const requiredAgent of ['gmgn-agent', 'micronaut-agent', 'career-agent']) {
+  const agent = specializedAgents.find((candidate) => candidate.id === requiredAgent);
+  if (!agent) findings.push(`architecture specialized agents missing ${requiredAgent}`);
+  if (agent && agent.privateSataWallet !== true) {
+    findings.push(`architecture ${requiredAgent} must have privateSataWallet true`);
+  }
+}
+const flows = new Set((architecture.flows ?? []).map((flow) => flow.type));
+for (const requiredFlow of [
+  'task-allocation',
+  'private-sata-settlement',
+  'compute-budget-accounting',
+  'execution-capacity'
+]) {
+  if (!flows.has(requiredFlow)) findings.push(`architecture flows missing ${requiredFlow}`);
+}
+if (!/first real private agent-to-agent task quote/i.test(architecture.nextAction ?? '')) {
+  findings.push('architecture.nextAction must point to first real private agent task quote');
+}
+
 for (const required of [
   /private internal use case/i,
   /accounting metric/i,
+  /Engineering Mind/i,
+  /GMGN Agent/i,
+  /Micronaut Agent/i,
+  /Career Agent/i,
+  /SATA_RESERVE/i,
+  /Compute providers/i,
   /GitHub Pro subscription/i,
   /agents interact/i,
   /associated private SATA accounting transaction/i,

@@ -10,6 +10,17 @@ The goal is to make agent operations more efficient. When agents interact with e
 
 The initial compute budget source is the GitHub Pro subscription and any other chairman-approved agent compute budget. Agent SATA is used to price internal work against that budget.
 
+## Engineering Economy Architecture
+
+The private engineering economy has four layers:
+
+- Engineering Mind: strategy, task allocation, verification, learning, and governance.
+- Specialized agents: GMGN Agent, Micronaut Agent, Career Agent, and future domain agents with private SATA wallets.
+- SATA_RESERVE: compute treasury, private accounting ledger, budget allocation, settlement, and evidence retention.
+- Compute providers: Codex sessions, model inference, tool execution, testing, and other measurable compute inputs.
+
+The machine-readable architecture is in `use_case/engineering-economy-architecture.json`.
+
 ## Operating Model
 
 1. A task is opened with a clear objective, scope, and evidence requirement.

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "mode": "private-sata-engineering-economy-architecture",
+  "visibility": "private-use-case",
+  "purpose": "Represent the private SATA engineering economy where agents use internal SATA accounting to allocate compute, pay for delegated work, verify outcomes, and conserve tokens.",
+  "boundary": {
+    "privateAccountingOnly": true,
+    "notOnChain": true,
+    "noAssetMovement": true,
+    "noWalletKeys": true,
+    "noMarketValueClaim": true,
+    "chairmanApprovalRequiredForPublicOrFinancialUse": true
+  },
+  "layers": [
+    {
+      "id": "engineering-mind",
+      "label": "Engineering Mind",
+      "role": "Strategy, task allocation, verification, learning, and governance.",
+      "authority": "Can allocate private work budgets and evaluate outcomes; cannot move assets."
+    },
+    {
+      "id": "specialized-agents",
+      "label": "Specialized Agents",
+      "role": "Domain agents execute tasks and settle private SATA accounting entries with evidence.",
+      "agents": [
+        {
+          "id": "gmgn-agent",
+          "label": "GMGN Agent",
+          "privateSataWallet": true,
+          "purpose": "Market and route research tasks inside the private compute economy."
+        },
+        {
+          "id": "micronaut-agent",
+          "label": "Micronaut Agent",
+          "privateSataWallet": true,
+          "purpose": "Implementation, testing, and code-review tasks inside the private compute economy."
+        },
+        {
+          "id": "career-agent",
+          "label": "Career Agent",
+          "privateSataWallet": true,
+          "purpose": "External opportunity, relationship, and operating-support tasks inside the private compute economy."
+        }
+      ]
+    },
+    {
+      "id": "sata-reserve",
+      "label": "SATA_RESERVE",
+      "role": "Compute treasury, private accounting ledger, budget allocation, settlement, and evidence retention.",
+      "settlementMode": "private-ledger-only"
+    },
+    {
+      "id": "compute-providers",
+      "label": "Compute Providers",
+      "role": "Codex sessions, model inference, tool execution, tests, and other measurable compute inputs.",
+      "budgetSource": "GitHub Pro subscription and chairman-approved compute budget."
+    }
+  ],
+  "flows": [
+    {
+      "from": "engineering-mind",
+      "to": "specialized-agents",
+      "type": "task-allocation",
+      "requires": ["scope", "quote", "evidence-standard"]
+    },
+    {
+      "from": "specialized-agents",
+      "to": "sata-reserve",
+      "type": "private-sata-settlement",
+      "requires": ["task-id", "ledger-entry", "evidence", "verification-status"]
+    },
+    {
+      "from": "sata-reserve",
+      "to": "compute-providers",
+      "type": "compute-budget-accounting",
+      "requires": ["estimated-tokens", "actual-tokens-when-available", "reuse-score"]
+    },
+    {
+      "from": "compute-providers",
+      "to": "specialized-agents",
+      "type": "execution-capacity",
+      "requires": ["session", "tooling", "test-or-output-evidence"]
+    }
+  ],
+  "efficiencyRules": [
+    "Prefer reuse of existing validated artifacts before spending new compute.",
+    "Charge private SATA to the requesting agent when delegated work consumes meaningful compute.",
+    "Pay evidence bonuses for artifacts that reduce future token usage.",
+    "Apply rework penalties for avoidable duplication, missing evidence, or unsupported claims.",
+    "Do not treat private SATA balances as public token balances or market value."
+  ],
+  "nextAction": "Record the first real private agent-to-agent task quote using this architecture and the agent-sata-ledger schema."
+}

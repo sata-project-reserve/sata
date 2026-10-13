@@ -182,6 +182,9 @@ jobs:
       - name: Validate private agent SATA use case
         run: npm run ops:agent-sata-use-case-check
 
+      - name: Validate on-chain agent SATA settlement gates
+        run: npm run ops:on-chain-agent-settlement-check
+
       - name: Validate revenue execution brief
         run: npm run ops:execution-brief-check
 

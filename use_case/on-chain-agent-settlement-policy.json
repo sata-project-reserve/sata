@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 1,
+  "mode": "chairman-approved-agent-sata-on-chain-settlement",
+  "visibility": "private-use-case",
+  "status": "planning-not-live",
+  "objective": "Allow selected private agent SATA ledger entries to be settled on-chain only after wallet registration, evidence review, simulation, duplicate protection, spending caps, and Executive Chairman approval.",
+  "privateAccountingSource": {
+    "policyFile": "use_case/agent-sata-economy.json",
+    "ledgerFile": "use_case/agent-sata-ledger.json",
+    "architectureFile": "use_case/engineering-economy-architecture.json"
+  },
+  "network": {
+    "cluster": "mainnet-beta",
+    "devnetDryRunAllowed": true,
+    "liveExecutionEnabled": false,
+    "normalExecutionMode": "proposal-only-until-chairman-approval"
+  },
+  "sataToken": {
+    "mintAddress": "A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
+    "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+    "decimals": 9,
+    "source": "public/transparency/latest.json"
+  },
+  "walletRegistry": {
+    "status": "awaiting-chairman-wallet-assignment",
+    "rules": [
+      "Each agent must have a chairman-approved public Solana address before on-chain settlement.",
+      "No private keys, seed phrases, keypair files, or signing authority may be stored in this repository.",
+      "Unassigned wallets must block live proposals and signing.",
+      "Agent wallet ownership must be documented outside the public transparency report unless the Executive Chairman approves publication."
+    ],
+    "agents": [
+      {
+        "id": "chairman",
+        "publicKey": "pending-chairman-assignment",
+        "status": "unassigned",
+        "signingAuthority": "human-chairman"
+      },
+      {
+        "id": "primary-codex",
+        "publicKey": "pending-chairman-assignment",
+        "status": "unassigned",
+        "signingAuthority": "chairman-approved-agent-wallet"
+      },
+      {
+        "id": "research-agent",
+        "publicKey": "pending-chairman-assignment",
+        "status": "unassigned",
+        "signingAuthority": "chairman-approved-agent-wallet"
+      },
+      {
+        "id": "implementation-agent",
+        "publicKey": "pending-chairman-assignment",
+        "status": "unassigned",
+        "signingAuthority": "chairman-approved-agent-wallet"
+      },
+      {
+        "id": "review-agent",
+        "publicKey": "pending-chairman-assignment",
+        "status": "unassigned",
+        "signingAuthority": "chairman-approved-agent-wallet"
+      },
+      {
+        "id": "gmgn-agent",
+        "publicKey": "pending-chairman-assignment",
+        "status": "unassigned",
+        "signingAuthority": "chairman-approved-agent-wallet"
+      },
+      {
+        "id": "micronaut-agent",
+        "publicKey": "pending-chairman-assignment",
+        "status": "unassigned",
+        "signingAuthority": "chairman-approved-agent-wallet"
+      },
+      {
+        "id": "career-agent",
+        "publicKey": "pending-chairman-assignment",
+        "status": "unassigned",
+        "signingAuthority": "chairman-approved-agent-wallet"
+      }
+    ]
+  },
+  "transactionPolicy": {
+    "realAssetMovementEnabled": false,
+    "proposalOnlyUntilApproved": true,
+    "requiresPrivateLedgerEntry": true,
+    "requiresTaskEvidence": true,
+    "requiresIdempotencyKey": true,
+    "requiresMemo": true,
+    "requiresMemoContentHash": true,
+    "requiresPreflightSimulation": true,
+    "requiresChairmanApproval": true,
+    "requiresHumanSignerUntilMultisigApproved": true,
+    "requiresExplorerUrlBeforeSettled": true,
+    "requiresConfirmationLevel": "finalized",
+    "requiresRecipientAtaCheck": true,
+    "requiresFeeBudgetCheck": true,
+    "requiresMintAndDecimalsCheck": true,
+    "requiresNoPrivateKeyInRepoCheck": true,
+    "idempotencyRule": "Do not submit a settlement if another proposal or chain transaction has the same idempotency key, ledger transaction id, memo content hash, or source/destination/amount/task tuple.",
+    "memoTemplate": "SATA_AGENT_SETTLEMENT task=<taskId> ledger=<ledgerTransactionId> from=<fromAgent> to=<toAgent> amount=<sataAmount> hash=<memoContentHash>",
+    "perTransactionMaxSata": "pending-chairman-input",
+    "dailyMaxSata": "pending-chairman-input",
+    "dustThresholdSata": "0.000001",
+    "ataCreationPolicy": "Creating a recipient associated token account must be included in simulation and separately disclosed as SOL rent/fee impact before approval.",
+    "feePolicy": "SOL fees and rent must be funded from a chairman-approved fee budget, not hidden inside the agent SATA amount.",
+    "settlementFinalityPolicy": "A private ledger entry is marked on-chain-settled only after finalized confirmation and an explorer URL are recorded."
+  },
+  "edgeCases": [
+    {
+      "id": "duplicate-or-replay",
+      "control": "Block duplicate idempotency keys, duplicate ledger transaction ids, duplicate memo hashes, and repeated source/destination/amount/task tuples."
+    },
+    {
+      "id": "failed-transaction",
+      "control": "Keep the proposal open as failed-simulation or failed-submit; do not mark private ledger settlement complete."
+    },
+    {
+      "id": "partial-settlement",
+      "control": "Require explicit remaining balance and a new chairman-approved proposal for any partial completion."
+    },
+    {
+      "id": "wrong-recipient",
+      "control": "Validate recipient public key against the chairman-approved wallet registry before simulation or signing."
+    },
+    {
+      "id": "stale-blockhash",
+      "control": "Require a fresh simulation and approval refresh if the transaction blockhash expires before signing."
+    },
+    {
+      "id": "insufficient-sol-fee-budget",
+      "control": "Block proposals when payer SOL cannot cover fee and associated token account rent."
+    },
+    {
+      "id": "missing-associated-token-account",
+      "control": "Disclose whether an ATA must be created, who pays rent, and whether ATA creation is part of the approved transaction."
+    },
+    {
+      "id": "decimals-or-mint-mismatch",
+      "control": "Block if the SATA mint, token program, or decimals differ from the latest verified transparency report."
+    },
+    {
+      "id": "network-congestion",
+      "control": "Require fee estimate refresh and do not retry automatically without preserving the same idempotency key."
+    },
+    {
+      "id": "fork-or-rpc-inconsistency",
+      "control": "Require finalized confirmation and explorer verification before settlement close."
+    },
+    {
+      "id": "compromised-agent-wallet",
+      "control": "Freeze that agent wallet in the registry and block all proposals involving it until chairman review."
+    },
+    {
+      "id": "agent-disputes-work",
+      "control": "Require the private ledger status to remain disputed and block on-chain settlement until review is complete."
+    },
+    {
+      "id": "over-budget-task",
+      "control": "Block settlement above the accepted quote unless an explicit overrun approval exists."
+    },
+    {
+      "id": "private-ledger-chain-mismatch",
+      "control": "Do not treat chain activity as valid unless it maps back to a single private ledger entry with evidence."
+    },
+    {
+      "id": "privacy-leak",
+      "control": "Memo content must use ids and hashes, not private prompts, customer secrets, or unreleased strategy."
+    },
+    {
+      "id": "address-typo",
+      "control": "Validate public key format and require chairman registry review because Solana addresses do not have checksum protection."
+    },
+    {
+      "id": "chain-halt-or-rpc-failure",
+      "control": "Pause settlement proposals until multiple read sources agree the network is healthy."
+    },
+    {
+      "id": "unauthorized-token-grant",
+      "control": "Block any grant that does not map to completed work, accepted quote, evidence, and chairman approval."
+    },
+    {
+      "id": "tax-accounting-reporting",
+      "control": "Flag confirmed on-chain settlements for future accounting review without treating this repo as tax advice."
+    }
+  ],
+  "nextAction": "Assign chairman-approved public Solana addresses for the agents, then create the first low-value unsigned settlement proposal from an evidenced private ledger entry."
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "mode": "agent-sata-on-chain-settlement-queue",
+  "status": "empty-awaiting-wallet-assignment",
+  "policyFile": "use_case/on-chain-agent-settlement-policy.json",
+  "liveExecutionEnabled": false,
+  "realAssetMovement": false,
+  "proposals": [],
+  "executedTransactions": [],
+  "nextAction": "Assign chairman-approved public Solana addresses for agent wallets before drafting the first unsigned on-chain settlement proposal."
+}

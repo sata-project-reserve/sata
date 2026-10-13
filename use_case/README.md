@@ -21,6 +21,12 @@ The private engineering economy has four layers:
 
 The machine-readable architecture is in `use_case/engineering-economy-architecture.json`.
 
+## On-Chain Settlement Readiness
+
+The private ledger remains the default operating model. On-chain agent SATA settlement is a separate approval layer tracked in `use_case/on-chain-agent-settlement-policy.json` and `use_case/on-chain-agent-settlement-queue.json`.
+
+That layer exists so agents can eventually settle selected evidenced ledger entries on Solana, but it is currently planning-only. It does not create, sign, submit, or retry Solana transactions. It requires chairman-approved public Solana addresses, idempotency checks, memo content hashes, preflight simulation, fee/rent disclosure, finalized confirmation, and explicit Executive Chairman approval before any real SATA movement can be treated as settled.
+
 ## Operating Model
 
 1. A task is opened with a clear objective, scope, and evidence requirement.

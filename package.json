@@ -62,6 +62,8 @@
     "ops:cycle-check": "node scripts/validate-revenue-cycle-status.mjs",
     "ops:cycle-write": "node scripts/revenue-cycle-agent.mjs write",
     "ops:cycle-plan": "node scripts/revenue-cycle-agent.mjs status",
+    "ops:agent-sata-use-case-check": "node scripts/validate-agent-sata-use-case.mjs",
+    "ops:agent-sata-use-case-plan": "node scripts/agent-sata-use-case-agent.mjs plan",
     "ops:execution-brief-check": "node scripts/validate-revenue-execution-brief.mjs",
     "ops:execution-brief-plan": "node scripts/revenue-execution-brief-agent.mjs plan",
     "ops:execution-brief-markdown": "node scripts/revenue-execution-brief-agent.mjs markdown",

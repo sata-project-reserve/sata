@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "mode": "private-agent-sata-ledger",
+  "status": "draft-private-use-case",
+  "policyFile": "use_case/agent-sata-economy.json",
+  "createdFor": "Private internal agent-efficiency accounting across G:\\ and approved external workspaces.",
+  "realAssetMovement": false,
+  "publicReserveImpact": false,
+  "transactions": [],
+  "nextAction": "Record the first agent-to-agent task quote before delegating work."
+}

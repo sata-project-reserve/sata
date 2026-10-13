@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "mode": "private-agent-sata-economy",
+  "visibility": "private-use-case",
+  "objective": "Use SATA as a private accounting metric for agent-to-agent work across G:\\ and approved external workspaces so compute is spent efficiently and token waste is reduced.",
+  "boundary": {
+    "notOnChain": true,
+    "notPublicReserve": true,
+    "noAssetMovement": true,
+    "noWalletAuthority": true,
+    "noBrokerAuthority": true,
+    "noMarketValueClaim": true,
+    "chairmanApprovalRequiredForPublicOrFinancialUse": true
+  },
+  "computeBudget": {
+    "source": "GitHub Pro subscription and approved agent compute budget",
+    "unit": "internal-compute-budget",
+    "budgetPeriod": "monthly",
+    "budgetAmount": null,
+    "budgetAmountStatus": "unset-pending-chairman-input",
+    "tokenBudgetSource": "actual measured token usage where available; otherwise estimate until instrumentation exists"
+  },
+  "sataUnit": {
+    "name": "agent SATA",
+    "symbol": "SATA",
+    "type": "private accounting credit",
+    "decimalPlaces": 6,
+    "conversionPolicy": "No market conversion. Agent SATA is earned and spent only inside private use_case ledgers."
+  },
+  "agents": [
+    {
+      "id": "chairman",
+      "role": "approver",
+      "canApproveBudgets": true,
+      "canApproveSettlement": true,
+      "startingBalanceSata": "0"
+    },
+    {
+      "id": "primary-codex",
+      "role": "orchestrator",
+      "canApproveBudgets": false,
+      "canApproveSettlement": false,
+      "startingBalanceSata": "1000"
+    },
+    {
+      "id": "research-agent",
+      "role": "research",
+      "canApproveBudgets": false,
+      "canApproveSettlement": false,
+      "startingBalanceSata": "0"
+    },
+    {
+      "id": "implementation-agent",
+      "role": "implementation",
+      "canApproveBudgets": false,
+      "canApproveSettlement": false,
+      "startingBalanceSata": "0"
+    },
+    {
+      "id": "review-agent",
+      "role": "review",
+      "canApproveBudgets": false,
+      "canApproveSettlement": false,
+      "startingBalanceSata": "0"
+    }
+  ],
+  "transactionTypes": [
+    {
+      "id": "task_quote",
+      "description": "A proposed private SATA price before delegated agent work begins."
+    },
+    {
+      "id": "task_acceptance",
+      "description": "A requesting agent accepts a quote and reserves private SATA budget."
+    },
+    {
+      "id": "delegation_payment",
+      "description": "Payment for completed delegated work with evidence."
+    },
+    {
+      "id": "review_payment",
+      "description": "Payment for independent review, validation, or defect discovery."
+    },
+    {
+      "id": "evidence_bonus",
+      "description": "Bonus for reusable evidence or measurable future token savings."
+    },
+    {
+      "id": "rework_penalty",
+      "description": "Penalty for avoidable rework, missing evidence, or duplicated effort."
+    },
+    {
+      "id": "refund",
+      "description": "Return of reserved private SATA for rejected, failed, or out-of-scope work."
+    },
+    {
+      "id": "settlement_close",
+      "description": "Final closeout after evidence, review, and budget accounting."
+    }
+  ],
+  "pricingModel": {
+    "baseRateSata": "1",
+    "formula": "sataCost = baseRate + tokenCost + riskPremium - reuseDiscount",
+    "tokenCostRule": "Estimate private SATA cost from expected tokens until actual token instrumentation is available.",
+    "riskPremiumRule": "Increase quote for cross-project context, external-write risk, irreversible changes, or financial-adjacent work.",
+    "reuseDiscountRule": "Discount work that uses existing artifacts, validated scripts, prior reports, or durable templates.",
+    "evidenceBonusRule": "Award bonus when the work creates a reusable artifact that reduces future token use.",
+    "penaltyRule": "Apply penalty for hallucinated work, missing evidence, avoidable duplication, or scope overrun."
+  },
+  "requiredTransactionFields": [
+    "id",
+    "timestampUtc",
+    "taskId",
+    "fromAgent",
+    "toAgent",
+    "type",
+    "sataAmount",
+    "computeBudgetUnits",
+    "tokenEstimate",
+    "evidence",
+    "status",
+    "settlementApproval"
+  ],
+  "efficiencyMetrics": [
+    "tokensEstimated",
+    "tokensActual",
+    "reusedArtifacts",
+    "avoidedTokensEstimate",
+    "sataPerUsefulArtifact",
+    "reworkCount",
+    "verificationStatus"
+  ],
+  "settlementPolicy": {
+    "defaultStatus": "draft",
+    "requiresEvidenceForCompletion": true,
+    "requiresChairmanApprovalForPublicUse": true,
+    "requiresChairmanApprovalForFinancialUse": true,
+    "normalSettlementAuthority": "private agent ledger only"
+  }
+}

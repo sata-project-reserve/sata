@@ -8,7 +8,7 @@
     "targetSats": "1000000000",
     "remainingSats": "1000000000",
     "remainingBtc": "10",
-    "latestReportGeneratedAtUtc": "2026-10-14T04:07:20.184Z"
+    "latestReportGeneratedAtUtc": "2026-10-14T12:14:18.770Z"
   },
   "funnel": {
     "prospects": 30,
@@ -1467,8 +1467,18 @@
       "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
     },
     {
-      "id": "publish-new-btc-reserve-address-proof",
+      "id": "approve-agent-wallet-assignment-20261013-first-settlement",
       "priority": 35,
+      "type": "chairman-approval-needed",
+      "title": "Chairman decision needed for agent-wallet-assignment-20261013-first-settlement: Review first agent SATA settlement wallet assignment.",
+      "requiredActor": "Executive Chairman",
+      "command": "npm run ops:approve -- agent-wallet-assignment-20261013-first-settlement --confirm-chairman-approval \"I am Executive Chairman and approve agent-wallet-assignment-20261013-first-settlement\"",
+      "evidenceRequired": "3 evidence record(s) in executive approval queue.",
+      "boundary": "Approval records a chairman decision only; it does not contact prospects, approve invoices, move assets, or make public commitments."
+    },
+    {
+      "id": "publish-new-btc-reserve-address-proof",
+      "priority": 36,
       "type": "reserve-address-publication-needed",
       "title": "Publish the new BTC reserve address and proof before approving exact-sats invoices.",
       "requiredActor": "Executive Chairman",

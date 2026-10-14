@@ -2,7 +2,7 @@
   "project": "SATA Reserve Token",
   "mode": "executive-chairman-final-approval",
   "schemaVersion": 1,
-  "updatedAtUtc": "2026-09-04T18:34:22.799Z",
+  "updatedAtUtc": "2026-10-14T00:00:00.000Z",
   "executiveChairman": {
     "name": "Jean Bilong",
     "role": "Executive Chairman",
@@ -1130,6 +1130,40 @@
         {
           "type": "issue-template",
           "url": ".github/ISSUE_TEMPLATE/collaborator-meeting-intake.yml"
+        }
+      ]
+    },
+    {
+      "id": "agent-wallet-assignment-20261013-first-settlement",
+      "title": "Review first agent SATA settlement wallet assignment",
+      "category": "wallet-custody",
+      "status": "ready-for-chairman-review",
+      "createdAtUtc": "2026-10-14T00:00:00.000Z",
+      "preparedBy": "codex-ops",
+      "summary": "Request chairman-approved public Solana addresses for primary-codex and implementation-agent so the first agent SATA settlement proposal can advance to non-signing simulation.",
+      "rationale": "The private agent SATA economy now has one evidenced ledger entry and one draft on-chain settlement proposal. Wallet assignment is the next required gate before any simulation can be prepared, and it must stay public-address-only with no custody handoff.",
+      "proposedAction": "Review use_case/agent-wallet-assignment-request.json and provide public Solana addresses only for primary-codex and implementation-agent, plus a fee/rent payer policy. This does not approve simulation, signing, submission, custody transfer, or live asset movement.",
+      "execution": "manual-chairman-action",
+      "requiredChairmanApproval": true,
+      "riskReview": [
+        "Only public Solana addresses may be recorded in the repository.",
+        "No signing material, recovery material, local wallet files, custody delegation, or wallet-control transfer is authorized.",
+        "Wallet assignment does not enable live execution and does not approve the settlement transaction.",
+        "The draft proposal still requires associated token account review, fee and rent review, preflight simulation, and a separate chairman approval before signing."
+      ],
+      "publicDisclosure": "Private agent accounting and wallet assignment review only. No price guarantee, no redemption promise, no market-support commitment, and no live asset movement without separate Executive Chairman approval.",
+      "evidence": [
+        {
+          "type": "wallet-assignment-request",
+          "url": "use_case/agent-wallet-assignment-request.json"
+        },
+        {
+          "type": "settlement-proposal",
+          "url": "use_case/on-chain-agent-settlement-queue.json#agent-sata-onchain-proposal-2026-10-13-001"
+        },
+        {
+          "type": "private-ledger-entry",
+          "url": "use_case/agent-sata-ledger.json#agent-sata-tx-2026-10-13-001"
         }
       ]
     }

@@ -185,6 +185,9 @@ jobs:
       - name: Validate on-chain agent SATA settlement gates
         run: npm run ops:on-chain-agent-settlement-check
 
+      - name: Validate agent wallet assignment request
+        run: npm run ops:agent-wallet-assignment-check
+
       - name: Validate revenue execution brief
         run: npm run ops:execution-brief-check
 

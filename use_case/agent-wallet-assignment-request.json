@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "mode": "agent-sata-wallet-assignment-request",
+  "status": "ready-for-chairman-review",
+  "approvalItemId": "agent-wallet-assignment-20261013-first-settlement",
+  "settlementProposalId": "agent-sata-onchain-proposal-2026-10-13-001",
+  "ledgerTransactionId": "agent-sata-tx-2026-10-13-001",
+  "purpose": "Request chairman-approved public Solana addresses for the first agent SATA on-chain settlement simulation.",
+  "requestedAssignments": [
+    {
+      "agentId": "primary-codex",
+      "role": "source-agent",
+      "publicKey": "pending-chairman-assignment",
+      "status": "awaiting-chairman-input"
+    },
+    {
+      "agentId": "implementation-agent",
+      "role": "recipient-agent",
+      "publicKey": "pending-chairman-assignment",
+      "status": "awaiting-chairman-input"
+    }
+  ],
+  "constraints": [
+    "Only public Solana addresses may be recorded in the repository.",
+    "No signing material, recovery material, local wallet files, or custody delegation may be recorded in the repository.",
+    "Wallet assignment does not enable live execution by itself.",
+    "After wallet assignment, the proposal still requires associated token account review, SOL fee and rent payer review, preflight simulation, and a separate chairman approval before signing."
+  ],
+  "chairmanInputTemplate": {
+    "primaryCodexPublicSolanaAddress": "<public-address-only>",
+    "implementationAgentPublicSolanaAddress": "<public-address-only>",
+    "feeRentPayer": "<chairman-approved-fee-payer-public-address-or-policy>",
+    "confirmationPhrase": "I am Executive Chairman and approve wallet assignment agent-wallet-assignment-20261013-first-settlement"
+  },
+  "nextAction": "Executive Chairman reviews this request and supplies public Solana addresses only; agents must then update the wallet registry and run a non-signing simulation."
+}

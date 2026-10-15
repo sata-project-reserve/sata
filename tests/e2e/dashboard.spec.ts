@@ -276,28 +276,16 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     settlementSection.getByText('node scripts/sats-invoice-quote-agent.mjs write-draft').first()
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Priority Action Queue' })).toBeVisible();
-  await expect(page.getByText('#1 manual-referral-handoff-send')).toBeVisible();
-  const referralHandoffAction = page
-    .locator('.proof-block')
-    .filter({ hasText: '#1 manual-referral-handoff-send' });
   await expect(
-    referralHandoffAction.getByText(
+    page.getByText(
       'Send prepared no-upfront post-receipt referral terms to Diana Crypto and record sent evidence.',
       { exact: true }
     )
-  ).toBeVisible();
-  await expect(
-    referralHandoffAction.getByText(
-      'node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7'
-    )
-  ).toBeVisible();
-  await expect(
-    referralHandoffAction.getByRole('link', { name: 'public/referral-partner-handoff-packet.md' })
-  ).toHaveAttribute('href', '/referral-partner-handoff-packet.md');
-  await expect(page.getByText('#2 inbound-reply-triage-monitor')).toBeVisible();
+  ).toHaveCount(0);
+  await expect(page.getByText('#1 inbound-reply-triage-monitor')).toBeVisible();
   const replyTriageAction = page
     .locator('.proof-block')
-    .filter({ hasText: '#2 inbound-reply-triage-monitor' });
+    .filter({ hasText: '#1 inbound-reply-triage-monitor' });
   await expect(
     replyTriageAction.getByText(
       'Triage replies and DMs from live SATA attribution sources before cold outreach.',
@@ -305,7 +293,7 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     )
   ).toBeVisible();
   await expect(replyTriageAction.getByText('npm run ops:inbound-reply-triage-plan')).toBeVisible();
-  await expect(page.getByText('#4 manual-outreach-send')).toBeVisible();
+  await expect(page.getByText('#3 manual-outreach-send')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Social Review Queue' })).toBeVisible();
   await expect(page.getByText('post-receipt-referral-partners', { exact: true })).toBeVisible();
   await expect(

@@ -365,6 +365,7 @@ export default function OperationsPage() {
   const referralHandoffCandidates = paidPromotionLedger.campaigns.filter(
     (campaign) =>
       campaign.status === 'completed' &&
+      campaign.referralFollowUpStatus !== 'retired' &&
       BigInt(campaign.conversion.confirmedReceiptsSats) === 0n &&
       referralPartnerPolicy.status === 'approved-by-chairman' &&
       !recordedReferralHandoffCampaignIds.has(campaign.id)

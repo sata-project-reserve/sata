@@ -67,6 +67,8 @@
     "ops:on-chain-agent-settlement-check": "node scripts/validate-on-chain-agent-settlement.mjs",
     "ops:on-chain-agent-settlement-plan": "node scripts/on-chain-agent-settlement-agent.mjs plan",
     "ops:agent-wallet-assignment-check": "node scripts/validate-agent-wallet-assignment-request.mjs",
+    "ops:agent-wallet-assignment-plan": "node scripts/agent-wallet-assignment-agent.mjs plan",
+    "ops:agent-wallet-assignment-apply": "node scripts/agent-wallet-assignment-agent.mjs apply",
     "ops:execution-brief-check": "node scripts/validate-revenue-execution-brief.mjs",
     "ops:execution-brief-plan": "node scripts/revenue-execution-brief-agent.mjs plan",
     "ops:execution-brief-markdown": "node scripts/revenue-execution-brief-agent.mjs markdown",

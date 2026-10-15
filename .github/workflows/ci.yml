@@ -89,6 +89,9 @@ jobs:
       - name: Validate agent wallet assignment request
         run: npm run ops:agent-wallet-assignment-check
 
+      - name: Test agent wallet assignment transitions
+        run: node --test scripts/agent-wallet-assignment-agent.test.mjs
+
       - name: Validate revenue execution brief
         run: npm run ops:execution-brief-check
 

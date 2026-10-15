@@ -17,3 +17,5 @@ artifacts/
 *keypair*.json
 id.json
 wallet.json
+use_case/.wallet-assignment.lock
+use_case/.wallet-assignment-recovery.json

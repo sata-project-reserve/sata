@@ -9,17 +9,24 @@ const architecture = readJson(join('use_case', 'engineering-economy-architecture
 const report = readJson(join('public', 'transparency', 'latest.json'));
 const packageJson = readJson('package.json');
 const readme = readFileSync(join('use_case', 'README.md'), 'utf8');
-const settlementAgent = readFileSync(join('scripts', 'on-chain-agent-settlement-agent.mjs'), 'utf8');
+const settlementAgent = readFileSync(
+  join('scripts', 'on-chain-agent-settlement-agent.mjs'),
+  'utf8'
+);
 const findings = [];
 
 if (policy.schemaVersion !== 1) findings.push('policy schemaVersion must be 1');
 if (policy.mode !== 'chairman-approved-agent-sata-on-chain-settlement') {
   findings.push('policy mode must be chairman-approved-agent-sata-on-chain-settlement');
 }
-if (policy.visibility !== 'private-use-case') findings.push('policy visibility must be private-use-case');
-if (policy.status !== 'planning-not-live') findings.push('policy status must remain planning-not-live');
+if (policy.visibility !== 'private-use-case')
+  findings.push('policy visibility must be private-use-case');
+if (policy.status !== 'planning-not-live')
+  findings.push('policy status must remain planning-not-live');
 if (!/selected private agent SATA ledger entries/i.test(policy.objective ?? '')) {
-  findings.push('policy objective must tie on-chain settlement to private agent SATA ledger entries');
+  findings.push(
+    'policy objective must tie on-chain settlement to private agent SATA ledger entries'
+  );
 }
 
 if (policy.privateAccountingSource?.policyFile !== 'use_case/agent-sata-economy.json') {
@@ -28,11 +35,15 @@ if (policy.privateAccountingSource?.policyFile !== 'use_case/agent-sata-economy.
 if (policy.privateAccountingSource?.ledgerFile !== 'use_case/agent-sata-ledger.json') {
   findings.push('policy must reference use_case/agent-sata-ledger.json');
 }
-if (policy.privateAccountingSource?.architectureFile !== 'use_case/engineering-economy-architecture.json') {
+if (
+  policy.privateAccountingSource?.architectureFile !==
+  'use_case/engineering-economy-architecture.json'
+) {
   findings.push('policy must reference use_case/engineering-economy-architecture.json');
 }
 
-if (policy.network?.cluster !== 'mainnet-beta') findings.push('network.cluster must be mainnet-beta');
+if (policy.network?.cluster !== 'mainnet-beta')
+  findings.push('network.cluster must be mainnet-beta');
 if (policy.network?.devnetDryRunAllowed !== true) {
   findings.push('network.devnetDryRunAllowed must be true for dry-run safety');
 }
@@ -102,8 +113,12 @@ const registeredAgents = new Set((policy.walletRegistry?.agents ?? []).map((agen
 for (const agentId of requiredAgentIds) {
   if (!registeredAgents.has(agentId)) findings.push(`walletRegistry missing ${agentId}`);
 }
-if (policy.walletRegistry?.status !== 'awaiting-chairman-wallet-assignment') {
-  findings.push('walletRegistry.status must be awaiting-chairman-wallet-assignment');
+if (
+  !['awaiting-chairman-wallet-assignment', 'partially-assigned-awaiting-simulation'].includes(
+    policy.walletRegistry?.status
+  )
+) {
+  findings.push('walletRegistry.status must describe pending assignment or simulation');
 }
 for (const wallet of policy.walletRegistry?.agents ?? []) {
   if (!['assigned', 'unassigned', 'frozen'].includes(wallet.status)) {
@@ -157,8 +172,10 @@ if (queue.policyFile !== 'use_case/on-chain-agent-settlement-policy.json') {
 if (queue.liveExecutionEnabled !== false) findings.push('queue.liveExecutionEnabled must be false');
 if (queue.realAssetMovement !== false) findings.push('queue.realAssetMovement must be false');
 if (!Array.isArray(queue.proposals)) findings.push('queue.proposals must be an array');
-if (!Array.isArray(queue.executedTransactions)) findings.push('queue.executedTransactions must be an array');
-if (!/wallet/i.test(queue.nextAction ?? '')) findings.push('queue.nextAction must point to wallet assignment');
+if (!Array.isArray(queue.executedTransactions))
+  findings.push('queue.executedTransactions must be an array');
+if (!/wallet|simulation/i.test(queue.nextAction ?? ''))
+  findings.push('queue.nextAction must point to wallet assignment or simulation');
 
 validateProposals(queue.proposals ?? [], privateLedger, registeredAgents, policy);
 validateExecutedTransactions(queue.executedTransactions ?? [], queue.proposals ?? []);
@@ -189,7 +206,9 @@ if (
   findings.push('package.json missing ops:on-chain-agent-settlement-plan script');
 }
 if (!/does not create, sign, submit, or retry Solana transactions/i.test(settlementAgent)) {
-  findings.push('settlement agent must disclose that it cannot create/sign/submit/retry transactions');
+  findings.push(
+    'settlement agent must disclose that it cannot create/sign/submit/retry transactions'
+  );
 }
 
 if (findings.length > 0) {
@@ -226,7 +245,8 @@ function validateProposals(proposals, privateLedger, registeredAgents, policyCon
       'idempotencyKey',
       'status'
     ]) {
-      if (!proposal[field]) findings.push(`${proposal.id ?? '<missing-proposal-id>'}: missing ${field}`);
+      if (!proposal[field])
+        findings.push(`${proposal.id ?? '<missing-proposal-id>'}: missing ${field}`);
     }
     if (!registeredAgents.has(proposal.fromAgent)) {
       findings.push(`${proposal.id}: unknown fromAgent ${proposal.fromAgent}`);
@@ -234,13 +254,28 @@ function validateProposals(proposals, privateLedger, registeredAgents, policyCon
     if (!registeredAgents.has(proposal.toAgent)) {
       findings.push(`${proposal.id}: unknown toAgent ${proposal.toAgent}`);
     }
-    if (proposal.fromAgent === proposal.toAgent) findings.push(`${proposal.id}: cannot self-settle`);
-    if (Number(proposal.sataAmount ?? 0) <= Number(policyConfig.transactionPolicy.dustThresholdSata)) {
+    if (proposal.fromAgent === proposal.toAgent)
+      findings.push(`${proposal.id}: cannot self-settle`);
+    if (
+      Number(proposal.sataAmount ?? 0) <= Number(policyConfig.transactionPolicy.dustThresholdSata)
+    ) {
       findings.push(`${proposal.id}: sataAmount must be above dustThresholdSata`);
     }
-    trackUnique(seenIdempotencyKeys, proposal.idempotencyKey, `${proposal.id}: duplicate idempotencyKey`);
-    trackUnique(seenLedgerIds, proposal.ledgerTransactionId, `${proposal.id}: duplicate ledgerTransactionId`);
-    trackUnique(seenMemoHashes, proposal.memoContentHash, `${proposal.id}: duplicate memoContentHash`);
+    trackUnique(
+      seenIdempotencyKeys,
+      proposal.idempotencyKey,
+      `${proposal.id}: duplicate idempotencyKey`
+    );
+    trackUnique(
+      seenLedgerIds,
+      proposal.ledgerTransactionId,
+      `${proposal.id}: duplicate ledgerTransactionId`
+    );
+    trackUnique(
+      seenMemoHashes,
+      proposal.memoContentHash,
+      `${proposal.id}: duplicate memoContentHash`
+    );
 
     if (!privateTransactions.has(proposal.ledgerTransactionId)) {
       findings.push(`${proposal.id}: ledgerTransactionId must exist in private agent SATA ledger`);
@@ -248,19 +283,27 @@ function validateProposals(proposals, privateLedger, registeredAgents, policyCon
     if (!/SATA_AGENT_SETTLEMENT/.test(proposal.memo ?? '')) {
       findings.push(`${proposal.id}: memo must use SATA_AGENT_SETTLEMENT template`);
     }
-    if (['simulated', 'approved', 'ready-to-sign', 'submitted', 'confirmed'].includes(proposal.status)) {
+    if (
+      ['simulated', 'approved', 'ready-to-sign', 'submitted', 'confirmed'].includes(proposal.status)
+    ) {
       for (const agentId of [proposal.fromAgent, proposal.toAgent]) {
         if (!assignedAgents.has(agentId)) {
-          findings.push(`${proposal.id}: ${agentId} must have an assigned wallet before ${proposal.status}`);
+          findings.push(
+            `${proposal.id}: ${agentId} must have an assigned wallet before ${proposal.status}`
+          );
         }
       }
-      if (!proposal.simulation?.ok) findings.push(`${proposal.id}: simulation.ok is required before ${proposal.status}`);
+      if (!proposal.simulation?.ok)
+        findings.push(`${proposal.id}: simulation.ok is required before ${proposal.status}`);
       if (!proposal.chairmanApproval?.approvedAtUtc) {
-        findings.push(`${proposal.id}: chairmanApproval.approvedAtUtc is required before ${proposal.status}`);
+        findings.push(
+          `${proposal.id}: chairmanApproval.approvedAtUtc is required before ${proposal.status}`
+        );
       }
     }
     if (proposal.status === 'confirmed') {
-      if (!proposal.signature) findings.push(`${proposal.id}: confirmed proposal requires signature`);
+      if (!proposal.signature)
+        findings.push(`${proposal.id}: confirmed proposal requires signature`);
       if (!/^https:\/\/explorer\.solana\.com\/tx\//.test(proposal.explorerUrl ?? '')) {
         findings.push(`${proposal.id}: confirmed proposal requires Solana explorer URL`);
       }
@@ -277,7 +320,9 @@ function validateExecutedTransactions(transactions, proposals) {
   );
   for (const tx of transactions) {
     if (!confirmedProposals.has(tx.proposalId)) {
-      findings.push(`${tx.id ?? '<missing-executed-id>'}: executed transaction must map to confirmed proposal`);
+      findings.push(
+        `${tx.id ?? '<missing-executed-id>'}: executed transaction must map to confirmed proposal`
+      );
     }
     if (!tx.signature) findings.push(`${tx.id ?? '<missing-executed-id>'}: missing signature`);
     if (tx.confirmationLevel !== 'finalized') {
@@ -301,7 +346,8 @@ function findSecretKeyPaths(value, path = '$') {
   if (value && typeof value === 'object') {
     for (const [key, child] of Object.entries(value)) {
       const childPath = `${path}.${key}`;
-      if (/^(privateKey|secretKey|seedPhrase|mnemonic|keypair)$/i.test(key)) matches.push(childPath);
+      if (/^(privateKey|secretKey|seedPhrase|mnemonic|keypair)$/i.test(key))
+        matches.push(childPath);
       matches.push(...findSecretKeyPaths(child, childPath));
     }
   }

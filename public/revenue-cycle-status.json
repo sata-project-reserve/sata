@@ -44,24 +44,8 @@
   ],
   "actionQueue": [
     {
-      "id": "send-referral-handoff-diana-crypto-20260903-transparency-tweet",
-      "priority": 1,
-      "type": "manual-referral-handoff-send",
-      "title": "Send prepared no-upfront post-receipt referral terms to Diana Crypto and record sent evidence.",
-      "requiredActor": "Executive Chairman or authorized human",
-      "command": "node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence \"<partner-terms-send-evidence>\" --sentAtUtc \"<sent-at-utc>\" --messageHash 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7",
-      "artifact": "public/referral-partner-handoff-packet.md",
-      "approvedMessage": "Thanks Diana Crypto. SATA can consider referral compensation only for legitimate paid transparency-service referrals.\n\nAny relationship must be clearly disclosed to your audience before compensated coverage or referral activity.\n\nCompensation is considered only after a referred customer pays and the receipt is confirmed.\n\nNo upfront payment, no price or buyer claims, no fake engagement, no bots, no raids, and no market-support commitment.\n\nService link: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=transparency_audit#invoice-ready-intake\n\nSample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=sample_audit\n\nReferral policy: https://sata-project-reserve.github.io/sata/partners/referrals?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=policy\n\nCustomer intake: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml\n\nRequired disclosure: Sponsored/Paid Partnership or token-compensated referral relationship. No price guarantee, no redemption promise, no market-support commitment, and liquidity can be thin and volatile.\n\nSend the referred project, contact path, expected role, requested compensation model, and evidence trail for chairman review.",
-      "approvedMessageSha256": "74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7",
-      "evidenceIssueTemplateUrl": "https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml",
-      "evidenceReviewCommand": "npm run ops:referral-handoff-evidence-plan",
-      "evidenceIssueTemplateCommand": "node scripts/referral-handoff-evidence-agent.mjs render-template --campaign diana-crypto-20260903-transparency-tweet --evidence \"<partner-terms-send-evidence>\" --sentAtUtc \"<sent-at-utc>\"",
-      "evidenceRequired": "Partner terms sent evidence, explicit sentAtUtc timestamp, and approved terms SHA-256.",
-      "boundary": "Recording sent evidence does not approve upfront spend, posts, compensation, invoices, grants, or asset movement."
-    },
-    {
       "id": "triage-live-replies",
-      "priority": 2,
+      "priority": 1,
       "type": "inbound-reply-triage-monitor",
       "title": "Triage replies and DMs from live SATA attribution sources before cold outreach.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -136,7 +120,7 @@
     },
     {
       "id": "publish-social-transparency-service-offer",
-      "priority": 3,
+      "priority": 2,
       "type": "manual-social-publish",
       "title": "Manually publish approved post transparency-service-offer, submit live URL evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -158,7 +142,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact",
-      "priority": 4,
+      "priority": 3,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact for sanctum-elysium-loam, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -205,7 +189,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-meme-launch-transparency-audit-first-contact",
-      "priority": 5,
+      "priority": 4,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact for meme-launch, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -251,7 +235,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact",
-      "priority": 6,
+      "priority": 5,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact for instar-meme-futures, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -297,7 +281,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-soltokenlab-transparency-audit-first-contact",
-      "priority": 7,
+      "priority": 6,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-soltokenlab-transparency-audit-first-contact for soltokenlab, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -343,7 +327,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-cia-token-transparency-audit-first-contact",
-      "priority": 8,
+      "priority": 7,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-cia-token-transparency-audit-first-contact for cia-token, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -387,7 +371,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-lastshift-transparency-audit-first-contact",
-      "priority": 9,
+      "priority": 8,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-lastshift-transparency-audit-first-contact for lastshift, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -431,7 +415,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-bitdust-transparency-audit-first-contact",
-      "priority": 10,
+      "priority": 9,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-bitdust-transparency-audit-first-contact for bitdust, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -476,7 +460,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact",
-      "priority": 11,
+      "priority": 10,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-limelight-launchpad-transparency-audit-first-contact for limelight-launchpad, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -521,7 +505,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact",
-      "priority": 12,
+      "priority": 11,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-solana-mint-forge-transparency-audit-first-contact for solana-mint-forge, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -566,7 +550,7 @@
     },
     {
       "id": "send-outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact",
-      "priority": 13,
+      "priority": 12,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260831-black-bull-ansem-transparency-audit-first-contact for black-bull-ansem, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -609,7 +593,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-funtom-transparency-audit-first-contact",
-      "priority": 14,
+      "priority": 13,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-funtom-transparency-audit-first-contact for funtom, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -652,7 +636,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-fyborg-transparency-audit-first-contact",
-      "priority": 15,
+      "priority": 14,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-fyborg-transparency-audit-first-contact for fyborg, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -695,7 +679,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-kedol-token-transparency-audit-first-contact",
-      "priority": 16,
+      "priority": 15,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-kedol-token-transparency-audit-first-contact for kedol-token, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -738,7 +722,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-lilmeme-transparency-audit-first-contact",
-      "priority": 17,
+      "priority": 16,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-lilmeme-transparency-audit-first-contact for lilmeme, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -782,7 +766,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-meor-transparency-audit-first-contact",
-      "priority": 18,
+      "priority": 17,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-meor-transparency-audit-first-contact for meor, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -825,7 +809,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-troptionsmint-transparency-audit-first-contact",
-      "priority": 19,
+      "priority": 18,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-troptionsmint-transparency-audit-first-contact for troptionsmint, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -869,7 +853,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact",
-      "priority": 20,
+      "priority": 19,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-bonkwifhat-bif-transparency-audit-first-contact for bonkwifhat-bif, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -912,7 +896,7 @@
     },
     {
       "id": "send-outreach-packet-20260831-arnold-solana-transparency-audit-first-contact",
-      "priority": 21,
+      "priority": 20,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260831-arnold-solana-transparency-audit-first-contact for arnold-solana, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -954,7 +938,7 @@
     },
     {
       "id": "send-outreach-packet-20260831-npc-meme-transparency-audit-first-contact",
-      "priority": 22,
+      "priority": 21,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260831-npc-meme-transparency-audit-first-contact for npc-meme, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -996,7 +980,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-ansem-season-transparency-audit-first-contact",
-      "priority": 23,
+      "priority": 22,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-ansem-season-transparency-audit-first-contact for ansem-season, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -1038,7 +1022,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-foxclub-transparency-audit-first-contact",
-      "priority": 24,
+      "priority": 23,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-foxclub-transparency-audit-first-contact for foxclub, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -1080,7 +1064,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-honk-solana-transparency-audit-first-contact",
-      "priority": 25,
+      "priority": 24,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-honk-solana-transparency-audit-first-contact for honk-solana, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -1122,7 +1106,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact",
-      "priority": 26,
+      "priority": 25,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-kerythos-kyrt-transparency-audit-first-contact for kerythos-kyrt, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -1164,7 +1148,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-modest-money-transparency-audit-first-contact",
-      "priority": 27,
+      "priority": 26,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-modest-money-transparency-audit-first-contact for modest-money, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -1206,7 +1190,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-niulai-transparency-audit-first-contact",
-      "priority": 28,
+      "priority": 27,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-niulai-transparency-audit-first-contact for niulai, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -1248,7 +1232,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-pippin-smc-transparency-audit-first-contact",
-      "priority": 29,
+      "priority": 28,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-pippin-smc-transparency-audit-first-contact for pippin-smc, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -1290,7 +1274,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-roach-solana-transparency-audit-first-contact",
-      "priority": 30,
+      "priority": 29,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-roach-solana-transparency-audit-first-contact for roach-solana, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -1332,7 +1316,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-spcx-transparency-audit-first-contact",
-      "priority": 31,
+      "priority": 30,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-spcx-transparency-audit-first-contact for spcx, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -1374,7 +1358,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-ssqueeze-transparency-audit-first-contact",
-      "priority": 32,
+      "priority": 31,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-ssqueeze-transparency-audit-first-contact for ssqueeze, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -1416,7 +1400,7 @@
     },
     {
       "id": "send-outreach-packet-20260903-tradiecoin-transparency-audit-first-contact",
-      "priority": 33,
+      "priority": 32,
       "type": "manual-outreach-send",
       "title": "Send priority-scored manual outreach packet outreach-packet-20260903-tradiecoin-transparency-audit-first-contact for tradiecoin, submit contact evidence, and run evidence review before recording.",
       "requiredActor": "Executive Chairman or authorized human",
@@ -1458,7 +1442,7 @@
     },
     {
       "id": "approve-dubai-collaborator-meeting-intake-policy",
-      "priority": 34,
+      "priority": 33,
       "type": "chairman-approval-needed",
       "title": "Chairman decision needed for dubai-collaborator-meeting-intake-policy: Review Dubai collaborator meeting intake policy.",
       "requiredActor": "Executive Chairman",
@@ -1468,7 +1452,7 @@
     },
     {
       "id": "approve-agent-wallet-assignment-20261013-first-settlement",
-      "priority": 35,
+      "priority": 34,
       "type": "chairman-approval-needed",
       "title": "Chairman decision needed for agent-wallet-assignment-20261013-first-settlement: Review first agent SATA settlement wallet assignment.",
       "requiredActor": "Executive Chairman",
@@ -1478,7 +1462,7 @@
     },
     {
       "id": "publish-new-btc-reserve-address-proof",
-      "priority": 36,
+      "priority": 35,
       "type": "reserve-address-publication-needed",
       "title": "Publish the new BTC reserve address and proof before approving exact-sats invoices.",
       "requiredActor": "Executive Chairman",
@@ -1487,6 +1471,6 @@
       "boundary": "This action publishes/records proof only; it does not move BTC, create invoices, send payment instructions, or change custody."
     }
   ],
-  "nextAction": "Send prepared no-upfront post-receipt referral terms to Diana Crypto and record sent evidence.",
+  "nextAction": "Triage replies and DMs from live SATA attribution sources before cold outreach.",
   "boundary": "Agents may prepare records, packets, and proposals. The Executive Chairman approves outreach, invoices, transactions, allocations, paid promotion, token grants, and any asset movement."
 }

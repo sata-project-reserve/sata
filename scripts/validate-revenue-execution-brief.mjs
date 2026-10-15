@@ -68,7 +68,9 @@ if (brief.unitEconomics?.starterAuditUsd !== primaryOffer?.priceUsd) {
   findings.push('unit economics starter audit price must match the active revenue plan');
 }
 if (brief.unitEconomics?.reserveSatsAtPlanningRate !== expectedReserveSats) {
-  findings.push('unit economics reserve sats must match active price, BTC/USD, and allocation assumptions');
+  findings.push(
+    'unit economics reserve sats must match active price, BTC/USD, and allocation assumptions'
+  );
 }
 if (brief.unitEconomics?.starterAuditUsd === '50') {
   findings.push('unit economics must not use the deprecated $50 starter audit assumption');
@@ -92,60 +94,75 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
     findings.push('live-verified campaigns must not keep verification in the top actions');
   }
   if (
-    !['post-receipt-referral-handoff', 'manual-referral-handoff-send'].includes(
-      brief.topActions[0]?.type
+    (paidPromotionLedger.campaigns ?? []).some(
+      (campaign) => campaign.status === 'completed' && campaign.referralFollowUpStatus !== 'retired'
     )
   ) {
-    findings.push(
-      'completed zero-receipt paid promotion must produce a post-receipt referral handoff action first'
-    );
-  }
-  if (referralPartnerHandoffPacket) {
-    if (brief.topActions[0]?.type !== 'manual-referral-handoff-send') {
-      findings.push(
-        'prepared referral handoff packet must produce a manual send evidence action first'
-      );
-    }
-    if (!brief.topActions[0]?.command?.includes('referral-partner-handoff-agent.mjs record-sent')) {
-      findings.push(
-        'prepared referral handoff action must expose the record-sent evidence command'
-      );
-    }
     if (
-      brief.topActions[0]?.evidenceIssueTemplateUrl !==
-      'https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml'
-    ) {
-      findings.push('prepared referral handoff action must expose the referral handoff evidence issue template');
-    }
-    if (
-      brief.topActions[0]?.evidenceReviewCommand !==
-      'npm run ops:referral-handoff-evidence-plan'
-    ) {
-      findings.push('prepared referral handoff action must expose the referral handoff evidence review command');
-    }
-    if (
-      !/referral-handoff-evidence-agent\.mjs render-template --campaign/.test(
-        brief.topActions[0]?.evidenceIssueTemplateCommand ?? ''
+      !['post-receipt-referral-handoff', 'manual-referral-handoff-send'].includes(
+        brief.topActions[0]?.type
       )
     ) {
-      findings.push('prepared referral handoff action must expose the referral handoff evidence issue-body command');
+      findings.push(
+        'completed zero-receipt paid promotion must produce a post-receipt referral handoff action first'
+      );
     }
-    if (
-      !brief.topActions[0]?.operatorChecklist?.some((step) =>
-        /evidence review before record-sent/i.test(step)
-      )
+    if (referralPartnerHandoffPacket) {
+      if (brief.topActions[0]?.type !== 'manual-referral-handoff-send') {
+        findings.push(
+          'prepared referral handoff packet must produce a manual send evidence action first'
+        );
+      }
+      if (
+        !brief.topActions[0]?.command?.includes('referral-partner-handoff-agent.mjs record-sent')
+      ) {
+        findings.push(
+          'prepared referral handoff action must expose the record-sent evidence command'
+        );
+      }
+      if (
+        brief.topActions[0]?.evidenceIssueTemplateUrl !==
+        'https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml'
+      ) {
+        findings.push(
+          'prepared referral handoff action must expose the referral handoff evidence issue template'
+        );
+      }
+      if (
+        brief.topActions[0]?.evidenceReviewCommand !== 'npm run ops:referral-handoff-evidence-plan'
+      ) {
+        findings.push(
+          'prepared referral handoff action must expose the referral handoff evidence review command'
+        );
+      }
+      if (
+        !/referral-handoff-evidence-agent\.mjs render-template --campaign/.test(
+          brief.topActions[0]?.evidenceIssueTemplateCommand ?? ''
+        )
+      ) {
+        findings.push(
+          'prepared referral handoff action must expose the referral handoff evidence issue-body command'
+        );
+      }
+      if (
+        !brief.topActions[0]?.operatorChecklist?.some((step) =>
+          /evidence review before record-sent/i.test(step)
+        )
+      ) {
+        findings.push(
+          'prepared referral handoff checklist must require evidence review before record-sent'
+        );
+      }
+    } else if (
+      !brief.topActions[0]?.command?.includes('referral-partner-handoff-agent.mjs write-packet')
     ) {
-      findings.push('prepared referral handoff checklist must require evidence review before record-sent');
+      findings.push(
+        'post-receipt referral handoff must expose the referral partner packet artifact command'
+      );
     }
-  } else if (
-    !brief.topActions[0]?.command?.includes('referral-partner-handoff-agent.mjs write-packet')
-  ) {
-    findings.push(
-      'post-receipt referral handoff must expose the referral partner packet artifact command'
-    );
-  }
-  if (brief.topActions[0]?.artifact !== 'public/referral-partner-handoff-packet.md') {
-    findings.push('post-receipt referral handoff must expose the handoff packet artifact path');
+    if (brief.topActions[0]?.artifact !== 'public/referral-partner-handoff-packet.md') {
+      findings.push('post-receipt referral handoff must expose the handoff packet artifact path');
+    }
   }
   if (!brief.topActions.some((action) => action.type === 'manual-outreach-send')) {
     findings.push('manual outreach must remain queued after referral handoff');
@@ -164,34 +181,37 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
       action.evidenceIssueTemplateUrl !==
       'https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml'
     ) {
-      findings.push(`${action.id}: manual outreach action must expose the contact evidence issue template`);
+      findings.push(
+        `${action.id}: manual outreach action must expose the contact evidence issue template`
+      );
     }
     if (action.evidenceReviewCommand !== 'npm run ops:outreach-contact-evidence-plan') {
-      findings.push(`${action.id}: manual outreach action must expose the contact evidence review command`);
+      findings.push(
+        `${action.id}: manual outreach action must expose the contact evidence review command`
+      );
     }
     if (
       !/outreach-contact-evidence-agent\.mjs render-template --packet/.test(
         action.evidenceIssueTemplateCommand ?? ''
       )
     ) {
-      findings.push(`${action.id}: manual outreach action must expose the contact evidence issue-body command`);
+      findings.push(
+        `${action.id}: manual outreach action must expose the contact evidence issue-body command`
+      );
     }
-    if (
-      !action.operatorChecklist?.some((step) =>
-        /evidence review before mark-sent/i.test(step)
-      )
-    ) {
-      findings.push(`${action.id}: manual outreach checklist must require evidence review before mark-sent`);
+    if (!action.operatorChecklist?.some((step) => /evidence review before mark-sent/i.test(step))) {
+      findings.push(
+        `${action.id}: manual outreach checklist must require evidence review before mark-sent`
+      );
     }
-    if (
-      !Number.isSafeInteger(Number(action.currentAskUsd)) ||
-      Number(action.currentAskUsd) <= 0
-    ) {
+    if (!Number.isSafeInteger(Number(action.currentAskUsd)) || Number(action.currentAskUsd) <= 0) {
       findings.push(`${action.id}: manual outreach action must expose the current approved ask`);
     }
     if (Number(action.qualifiedRevenueUsd ?? 0) > Number(action.currentAskUsd ?? 0)) {
       if (!action.conversionPlan || typeof action.conversionPlan !== 'object') {
-        findings.push(`${action.id}: higher-value manual outreach action must expose a conversion plan`);
+        findings.push(
+          `${action.id}: higher-value manual outreach action must expose a conversion plan`
+        );
       } else if (!/only after/i.test(action.conversionPlan.rule ?? '')) {
         findings.push(`${action.id}: conversion plan must preserve explicit-fit gating`);
       }
@@ -225,29 +245,35 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
         triageAction.evidenceIssueTemplateCommand ?? ''
       )
     ) {
-      findings.push('triage monitor action must expose the inbound reply evidence issue-body command');
+      findings.push(
+        'triage monitor action must expose the inbound reply evidence issue-body command'
+      );
     }
     if (
       !/--classification "invoice-request-needs-chairman-review"/.test(
         triageAction.invoiceEvidenceIssueTemplateCommand ?? ''
       ) ||
-      !/--customerAskedForInvoice true/.test(
-        triageAction.invoiceEvidenceIssueTemplateCommand ?? ''
-      )
+      !/--customerAskedForInvoice true/.test(triageAction.invoiceEvidenceIssueTemplateCommand ?? '')
     ) {
-      findings.push('triage monitor action must expose invoice-request evidence command with invoice flag true');
+      findings.push(
+        'triage monitor action must expose invoice-request evidence command with invoice flag true'
+      );
     }
     if (
       !/--classification "needs-intake-fields"/.test(
         triageAction.intakeEvidenceIssueTemplateCommand ?? ''
       ) ||
-      !/--customerAskedForInvoice false/.test(
-        triageAction.intakeEvidenceIssueTemplateCommand ?? ''
+      !/--customerAskedForInvoice false/.test(triageAction.intakeEvidenceIssueTemplateCommand ?? '')
+    ) {
+      findings.push(
+        'triage monitor action must expose intake evidence command with invoice flag false'
+      );
+    }
+    if (
+      !triageAction.sources?.some(
+        (source) => source.id === 'diana-crypto-20260903-transparency-tweet'
       )
     ) {
-      findings.push('triage monitor action must expose intake evidence command with invoice flag false');
-    }
-    if (!triageAction.sources?.some((source) => source.id === 'diana-crypto-20260903-transparency-tweet')) {
       findings.push('triage monitor action must include the Diana paid-promotion source');
     }
     if (!triageAction.sources?.some((source) => source.id === 'pinned-proof-overview')) {
@@ -308,34 +334,44 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
       manualSocialPublishAction.evidenceIssueTemplateUrl !==
       'https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml'
     ) {
-      findings.push('manual social publish action must expose the social publish evidence issue template');
+      findings.push(
+        'manual social publish action must expose the social publish evidence issue template'
+      );
     }
     if (
-      manualSocialPublishAction.evidenceReviewCommand !==
-      'npm run ops:social-publish-evidence-plan'
+      manualSocialPublishAction.evidenceReviewCommand !== 'npm run ops:social-publish-evidence-plan'
     ) {
-      findings.push('manual social publish action must expose the social publish evidence review command');
+      findings.push(
+        'manual social publish action must expose the social publish evidence review command'
+      );
     }
     if (
       !/social-publish-evidence-agent\.mjs render-template --post/.test(
         manualSocialPublishAction.evidenceIssueTemplateCommand ?? ''
       )
     ) {
-      findings.push('manual social publish action must expose the social publish evidence issue-body command');
+      findings.push(
+        'manual social publish action must expose the social publish evidence issue-body command'
+      );
     }
     if (
       !manualSocialPublishAction.operatorChecklist?.some((step) =>
         /evidence review before record-published/i.test(step)
       )
     ) {
-      findings.push('manual social publish checklist must require evidence review before record-published');
-    }
-    if (!manualSocialPublishAction.approvedMessage || !manualSocialPublishAction.approvedMessageSha256) {
-      findings.push('manual social publish action must include the exact approved post text and hash');
+      findings.push(
+        'manual social publish checklist must require evidence review before record-published'
+      );
     }
     if (
-      manualSocialPublishAction.socialPriority?.reason !== 'approved revenue-service offer'
+      !manualSocialPublishAction.approvedMessage ||
+      !manualSocialPublishAction.approvedMessageSha256
     ) {
+      findings.push(
+        'manual social publish action must include the exact approved post text and hash'
+      );
+    }
+    if (manualSocialPublishAction.socialPriority?.reason !== 'approved revenue-service offer') {
       findings.push('manual social publish action must prioritize approved revenue-service offers');
     }
     if (
@@ -353,7 +389,9 @@ if (status.funnel.paidPromotionsAwaitingVerification > 0) {
         '--customerAskedForInvoice true'
       )
     ) {
-      findings.push('manual social publish action must expose invoice-request reply evidence intake');
+      findings.push(
+        'manual social publish action must expose invoice-request reply evidence intake'
+      );
     }
     if (
       !manualSocialPublishAction.postPublishIntakeEvidenceIssueTemplateCommand?.includes(
@@ -416,14 +454,18 @@ if (brief.manualSendBatch.length !== 5) {
 }
 for (const item of brief.manualSendBatch) {
   if (!item.currentOfferId) {
-    findings.push(`${item.packetId}: manual send batch item must expose the current approved offer`);
+    findings.push(
+      `${item.packetId}: manual send batch item must expose the current approved offer`
+    );
   }
   if (!Number.isSafeInteger(Number(item.currentAskUsd)) || Number(item.currentAskUsd) <= 0) {
     findings.push(`${item.packetId}: manual send batch item must expose the current approved ask`);
   }
   if (Number(item.qualifiedRevenueUsd ?? 0) > Number(item.currentAskUsd ?? 0)) {
     if (!item.conversionPlan || typeof item.conversionPlan !== 'object') {
-      findings.push(`${item.packetId}: higher-value manual send batch item must expose a conversion plan`);
+      findings.push(
+        `${item.packetId}: higher-value manual send batch item must expose a conversion plan`
+      );
     } else if (!/only after/i.test(item.conversionPlan.rule ?? '')) {
       findings.push(`${item.packetId}: conversion plan must preserve explicit-fit gating`);
     }
@@ -445,12 +487,10 @@ for (const item of brief.manualSendBatch) {
       `${item.packetId}: manual send batch command must require approved message SHA-256`
     );
   }
-  if (
-    !item.operatorChecklist?.some((step) =>
-      /evidence review before mark-sent/i.test(step)
-    )
-  ) {
-    findings.push(`${item.packetId}: manual send batch checklist must require evidence review before mark-sent`);
+  if (!item.operatorChecklist?.some((step) => /evidence review before mark-sent/i.test(step))) {
+    findings.push(
+      `${item.packetId}: manual send batch checklist must require evidence review before mark-sent`
+    );
   }
   if (!item.approvedMessage || !item.approvedMessageSha256) {
     findings.push(`${item.packetId}: manual send batch item must include copy-ready text and hash`);
@@ -496,43 +536,67 @@ if (!markdown.includes('Triage decision rules:')) {
 if (!markdown.includes('Required evidence fields:')) {
   findings.push('markdown must include inbound reply required evidence fields');
 }
-if (!markdown.includes('Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml')) {
+if (
+  !markdown.includes(
+    'Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=inbound-reply-evidence.yml'
+  )
+) {
   findings.push('markdown must include inbound reply evidence intake URL');
 }
 if (!markdown.includes('Evidence review command: npm run ops:inbound-reply-evidence-plan')) {
   findings.push('markdown must include inbound reply evidence review command');
 }
-if (!markdown.includes('Evidence issue-body command: node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType')) {
+if (
+  !markdown.includes(
+    'Evidence issue-body command: node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType'
+  )
+) {
   findings.push('markdown must include inbound reply evidence issue-body command');
 }
 if (
-  markdown.indexOf('Evidence issue-body command: node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType') >
-  markdown.indexOf('Evidence review command: npm run ops:inbound-reply-evidence-plan')
+  markdown.indexOf(
+    'Evidence issue-body command: node scripts/inbound-reply-evidence-agent.mjs render-template --sourceType'
+  ) > markdown.indexOf('Evidence review command: npm run ops:inbound-reply-evidence-plan')
 ) {
   findings.push('markdown must present inbound reply issue-body command before evidence review');
 }
 if (!markdown.includes('Invoice-request evidence issue-body command:')) {
   findings.push('markdown must include invoice-request evidence issue-body command');
 }
-if (!markdown.includes('--classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true')) {
+if (
+  !markdown.includes(
+    '--classification "invoice-request-needs-chairman-review" --customerAskedForInvoice true'
+  )
+) {
   findings.push('markdown invoice evidence command must preserve customerAskedForInvoice true');
 }
 if (!markdown.includes('Intake evidence issue-body command:')) {
   findings.push('markdown must include intake evidence issue-body command');
 }
-if (!markdown.includes('Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml')) {
-  findings.push('markdown must include referral handoff evidence intake URL');
-}
-if (!markdown.includes('Evidence review command: npm run ops:referral-handoff-evidence-plan')) {
-  findings.push('markdown must include referral handoff evidence review command');
+if (brief.topActions.some((action) => action.type === 'manual-referral-handoff-send')) {
+  if (
+    !markdown.includes(
+      'Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml'
+    )
+  ) {
+    findings.push('markdown must include referral handoff evidence intake URL');
+  }
+  if (!markdown.includes('Evidence review command: npm run ops:referral-handoff-evidence-plan')) {
+    findings.push('markdown must include referral handoff evidence review command');
+  }
 }
 if (
-  markdown.indexOf('Evidence issue-body command: node scripts/referral-handoff-evidence-agent.mjs render-template --campaign') >
-  markdown.indexOf('Evidence review command: npm run ops:referral-handoff-evidence-plan')
+  markdown.indexOf(
+    'Evidence issue-body command: node scripts/referral-handoff-evidence-agent.mjs render-template --campaign'
+  ) > markdown.indexOf('Evidence review command: npm run ops:referral-handoff-evidence-plan')
 ) {
   findings.push('markdown must present referral handoff issue-body command before evidence review');
 }
-if (!markdown.includes('Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml')) {
+if (
+  !markdown.includes(
+    'Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml'
+  )
+) {
   findings.push('markdown must include outreach contact evidence intake URL');
 }
 if (!markdown.includes('Evidence review command: npm run ops:outreach-contact-evidence-plan')) {
@@ -542,18 +606,27 @@ if (!markdown.includes('outreach-contact-evidence-agent.mjs render-template --pa
   findings.push('markdown must include outreach contact evidence issue-body command');
 }
 if (
-  markdown.indexOf('Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet') >
-  markdown.indexOf('Evidence review command: npm run ops:outreach-contact-evidence-plan')
+  markdown.indexOf(
+    'Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet'
+  ) > markdown.indexOf('Evidence review command: npm run ops:outreach-contact-evidence-plan')
 ) {
   findings.push('markdown must present outreach contact issue-body command before evidence review');
 }
 const manualSendMarkdown = markdown.slice(markdown.indexOf('## Manual Send Batch'));
 if (
-  manualSendMarkdown.includes('Evidence review command: npm run ops:outreach-contact-evidence-plan') &&
-  manualSendMarkdown.indexOf('Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet') >
-    manualSendMarkdown.indexOf('Evidence review command: npm run ops:outreach-contact-evidence-plan')
+  manualSendMarkdown.includes(
+    'Evidence review command: npm run ops:outreach-contact-evidence-plan'
+  ) &&
+  manualSendMarkdown.indexOf(
+    'Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet'
+  ) >
+    manualSendMarkdown.indexOf(
+      'Evidence review command: npm run ops:outreach-contact-evidence-plan'
+    )
 ) {
-  findings.push('manual send batch markdown must present issue-body command before evidence review');
+  findings.push(
+    'manual send batch markdown must present issue-body command before evidence review'
+  );
 }
 if (!markdown.includes('SATA offers $249 Transparency Audits')) {
   findings.push('markdown must include the copy-ready approved social post text');
@@ -720,8 +793,7 @@ const receiptAllocationBrief = buildRevenueExecutionBrief({
         type: 'receipt-allocation-proposal',
         title: 'Render receipt allocation proposal for receipt-1.',
         command: 'node scripts/sats-receipt-allocation-agent.mjs render receipt-1',
-        evidenceRequired:
-          'Confirmed direct-reserve BTC receipt and chairman allocation approval.'
+        evidenceRequired: 'Confirmed direct-reserve BTC receipt and chairman allocation approval.'
       },
       ...(status.actionQueue ?? [])
     ]
@@ -755,12 +827,16 @@ if (
 ) {
   findings.push('receipt allocation command must require explicit chairman approval text');
 }
-if (!/transparencyReportUrl/.test(receiptAllocationBrief.topActions[0]?.recordAllocationCommand ?? '')) {
+if (
+  !/transparencyReportUrl/.test(receiptAllocationBrief.topActions[0]?.recordAllocationCommand ?? '')
+) {
   findings.push('receipt allocation command must require a published transparency report URL');
 }
 const receiptAllocationMarkdown = renderRevenueExecutionMarkdown(receiptAllocationBrief);
 if (!receiptAllocationMarkdown.includes('record-allocation')) {
-  findings.push('receipt allocation markdown must show the post-approval record-allocation command');
+  findings.push(
+    'receipt allocation markdown must show the post-approval record-allocation command'
+  );
 }
 
 const approvedInvoicePaymentBrief = buildRevenueExecutionBrief({
@@ -774,7 +850,8 @@ const approvedInvoicePaymentBrief = buildRevenueExecutionBrief({
       {
         id: 'payment-packet-invoice-ready-1',
         type: 'approved-invoice-payment-packet',
-        title: 'Render approved customer payment packet for invoice-ready-1 before the quote expires.',
+        title:
+          'Render approved customer payment packet for invoice-ready-1 before the quote expires.',
         command:
           'node scripts/sats-invoice-payment-packet-agent.mjs render --invoice invoice-ready-1',
         evidenceRequired: 'Chairman-approved exact-sats invoice record.'
@@ -795,7 +872,9 @@ const approvedInvoicePaymentBrief = buildRevenueExecutionBrief({
 });
 validateRevenueExecutionBrief(approvedInvoicePaymentBrief);
 if (approvedInvoicePaymentBrief.topActions[0]?.type !== 'approved-invoice-payment-packet') {
-  findings.push('approved invoice payment packets must outrank manual outreach in the execution brief');
+  findings.push(
+    'approved invoice payment packets must outrank manual outreach in the execution brief'
+  );
 }
 if (
   !/sats-invoice-payment-packet-agent\.mjs render --invoice invoice-ready-1/.test(
@@ -815,7 +894,9 @@ if (
     approvedInvoicePaymentBrief.topActions[0]?.receiptEvidenceTemplateCommand ?? ''
   )
 ) {
-  findings.push('approved invoice payment action must expose the receipt evidence template command');
+  findings.push(
+    'approved invoice payment action must expose the receipt evidence template command'
+  );
 }
 if (
   !/--invoice "invoice-ready-1"/.test(
@@ -890,7 +971,9 @@ if (publicBrief) {
     findings.push('public revenue-execution-brief.json must expose current primary-offer pricing');
   }
   if (publicBrief.unitEconomics?.reserveSatsAtPlanningRate !== expectedReserveSats) {
-    findings.push('public revenue-execution-brief.json must expose current reserve-sats unit economics');
+    findings.push(
+      'public revenue-execution-brief.json must expose current reserve-sats unit economics'
+    );
   }
   const expectedPublicBrief = buildRevenueExecutionBrief({
     status,
@@ -915,7 +998,8 @@ if (publicMarkdown) {
       'public revenue-execution-brief.md requires matching revenue-execution-brief.json'
     );
   } else if (
-    normalizeMarkdown(publicMarkdown) !== normalizeMarkdown(renderRevenueExecutionMarkdown(publicBrief))
+    normalizeMarkdown(publicMarkdown) !==
+    normalizeMarkdown(renderRevenueExecutionMarkdown(publicBrief))
   ) {
     findings.push('public revenue-execution-brief.md must match the public JSON brief');
   }

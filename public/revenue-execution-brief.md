@@ -1,6 +1,6 @@
 # SATA Reserve Token Revenue Execution Brief
 
-Generated: 2026-10-15T01:22:24.914Z
+Generated: 2026-10-15T01:28:46.740Z
 Reserve: 0 sats confirmed, 1000000000 sats remaining.
 
 ## Boundary
@@ -8,51 +8,7 @@ This brief coordinates execution only. The Executive Chairman approves final out
 
 ## Top Actions
 
-### 1. Send prepared no-upfront post-receipt referral terms to Diana Crypto and record sent evidence.
-Type: manual-referral-handoff-send
-Why: A prepared partner handoff can convert a zero-receipt promotion into customer referrals without repeating upfront spend.
-Artifact: public/referral-partner-handoff-packet.md
-Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml
-Evidence issue-body command: node scripts/referral-handoff-evidence-agent.mjs render-template --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>"
-Evidence review command: npm run ops:referral-handoff-evidence-plan
-Evidence: Partner terms sent evidence, explicit sentAtUtc timestamp, and approved terms SHA-256.
-Approved message SHA-256: 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7
-
-Approved send copy:
-
-```text
-Thanks Diana Crypto. SATA can consider referral compensation only for legitimate paid transparency-service referrals.
-
-Any relationship must be clearly disclosed to your audience before compensated coverage or referral activity.
-
-Compensation is considered only after a referred customer pays and the receipt is confirmed.
-
-No upfront payment, no price or buyer claims, no fake engagement, no bots, no raids, and no market-support commitment.
-
-Service link: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=transparency_audit#invoice-ready-intake
-
-Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=sample_audit
-
-Referral policy: https://sata-project-reserve.github.io/sata/partners/referrals?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=policy
-
-Customer intake: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml
-
-Required disclosure: Sponsored/Paid Partnership or token-compensated referral relationship. No price guarantee, no redemption promise, no market-support commitment, and liquidity can be thin and volatile.
-
-Send the referred project, contact path, expected role, requested compensation model, and evidence trail for chairman review.
-```
-
-Operator checklist:
-- Open public/referral-partner-handoff-packet.md and send the Partner Reply exactly.
-- Capture the send evidence and UTC send time before recording anything.
-- Submit the handoff evidence issue and run the evidence review before record-sent.
-Stop rule: Record sent evidence only after manual send. Do not approve compensation, invoices, payment instructions, grants, or asset movement.
-
-```sh
-node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7
-```
-
-### 2. Triage replies and DMs from live SATA attribution sources before recording leads or invoice requests.
+### 1. Triage replies and DMs from live SATA attribution sources before recording leads or invoice requests.
 Type: inbound-reply-triage-monitor
 Why: Fast reply triage turns warm attention into intake records or chairman invoice-review packets without exposing payment instructions.
 Sources: diana-crypto-20260903-transparency-tweet (https://x.com/142C_/status/2086570576530010172), pinned-proof-overview (https://x.com/SATAReserve/status/2084248941801906474)
@@ -87,7 +43,7 @@ Stop rule: Triage only. Do not contact leads, send payment instructions, create 
 npm run ops:inbound-reply-triage-plan
 ```
 
-### 3. Manually publish approved post transparency-service-offer, submit live URL evidence, and run evidence review before recording.
+### 2. Manually publish approved post transparency-service-offer, submit live URL evidence, and run evidence review before recording.
 Type: manual-social-publish
 Why: Chairman-approved factual posts can create attributable inbound attention without autonomous posting or paid promotion.
 Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=social-publish-evidence.yml
@@ -129,7 +85,7 @@ Stop rule: Publish only the approved post content manually, submit the live URL 
 npm run social:agent -- record-published --post transparency-service-offer --postUrl "https://x.com/SATAReserve/status/<numeric-id>" --evidence "<live-post-screenshot-or-exported-text>" --publishedAtUtc "<published-at-utc>" --contentHash 4f846ec83919ae496dbf55643f433fdcb7615ae3055c6c71b73d0faafc544448
 ```
 
-### 4. Send approved transparency-audit outreach to sanctum-elysium-loam.
+### 3. Send approved transparency-audit outreach to sanctum-elysium-loam.
 Type: manual-outreach-send
 Why: The shortest route to new reserve sats is a paid transparency-audit customer requesting an invoice.
 Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml
@@ -172,7 +128,7 @@ Stop rule: Send the approved copy only. Do not add investment, return, liquidity
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-sanctum-elysium-loam-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash fca5f7edcb4f71bedb2c240cfea36097262c1f85f49d497fc6c6549e25861e28
 ```
 
-### 5. Send approved transparency-audit outreach to meme-launch.
+### 4. Send approved transparency-audit outreach to meme-launch.
 Type: manual-outreach-send
 Why: The shortest route to new reserve sats is a paid transparency-audit customer requesting an invoice.
 Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml
@@ -213,6 +169,49 @@ Stop rule: Send the approved copy only. Do not add investment, return, liquidity
 
 ```sh
 node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-meme-launch-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 52e9e27c51be5a4e76c17f8055e628b21217bf848d1ed038b7eba0fd061c63a3
+```
+
+### 5. Send approved transparency-audit outreach to instar-meme-futures.
+Type: manual-outreach-send
+Why: The shortest route to new reserve sats is a paid transparency-audit customer requesting an invoice.
+Evidence intake: https://github.com/sata-project-reserve/sata/issues/new?template=outreach-contact-evidence.yml
+Evidence issue-body command: node scripts/outreach-contact-evidence-agent.mjs render-template --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>"
+Evidence review command: npm run ops:outreach-contact-evidence-plan
+Priority: 104 / hot
+Current approved ask: transparency-audit / $249
+Qualified revenue path: $999
+Planning reserve impact: 174300 sats current ask / 699300 sats qualified path
+Planning basis: 70% reserve allocation at BTC/USD 100000
+Upgrade path: transparency-report-setup only after explicit fit
+Evidence: Durable proof of manual send, such as a message permalink, email record, or contact screenshot reference.
+Approved message SHA-256: 70f79ff619db583082c4456b0c6ca2d221c9a6150a8a2dfbd5ea84c47af3e16f
+
+Approved send copy:
+
+```text
+Hi instar-meme-futures,
+
+Hey, SATA runs a $249 Transparency Audit for crypto teams. We review public authority, supply and concentration, LP ownership or lock evidence, reserve claims, and disclosure gaps, then provide a concise report and machine-readable JSON. No price promotion, no investor targeting, and no market-support promises. If useful, send the token/contract, website, and any reserve or liquidity claims you want checked.
+
+Public profile reviewed: https://instarbrands.com/pages/meme-futures
+Project page reviewed: https://instarbrands.com/pages/meme-futures
+
+Service page: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures_audit_service#invoice-ready-intake
+Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures_sample_audit
+Buyer packet: https://sata-project-reserve.github.io/sata/transparency-audit-buyer-packet.md?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures_buyer_packet
+Intake form: https://github.com/sata-project-reserve/sata/issues/new?utm_source=manual_outreach&utm_medium=public_dm_or_email&utm_campaign=outreach_packet_20260903_instar_meme_futures_transparency_audit_first_contact&utm_content=instar_meme_futures&template=transparency-audit-intake.yml
+
+Any invoice, paid work, token grant, or payment instruction requires Executive Chairman approval.
+```
+
+Operator checklist:
+- Open public/service-outreach-packet-queue.json and locate outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact.
+- Send only the packet message as written, then capture durable evidence and UTC send time.
+- Submit the contact evidence issue and run the evidence review before mark-sent.
+Stop rule: Send the approved copy only. Do not add investment, return, liquidity, or trading claims.
+
+```sh
+node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packet-20260903-instar-meme-futures-transparency-audit-first-contact --evidence "<contact-evidence-url-or-reference>" --sentAtUtc "<sent-at-utc>" --messageHash 70f79ff619db583082c4456b0c6ca2d221c9a6150a8a2dfbd5ea84c47af3e16f
 ```
 
 ## Manual Send Batch
@@ -412,4 +411,4 @@ node scripts/service-outreach-packet-agent.mjs mark-sent --packet outreach-packe
 - No reserve progress is counted until sats are confirmed in the reserve ledger.
 
 ## Next Action
-Send prepared no-upfront post-receipt referral terms to Diana Crypto and record sent evidence.
+Triage replies and DMs from live SATA attribution sources before recording leads or invoice requests.

@@ -31,6 +31,6 @@
     "nextAction"
   ],
   "handoffs": [],
-  "nextAction": "Render the first eligible post-receipt referral handoff, send the approved terms manually, and record durable sent evidence.",
+  "nextAction": "No active referral candidate. Focus on direct transparency-service prospects and incoming customer requests.",
   "boundary": "This queue records referral handoff evidence only. It does not approve any partner, compensation, public post, invoice, payment instruction, token grant, custody change, transaction, or asset movement."
 }

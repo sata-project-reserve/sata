@@ -9,11 +9,40 @@ import {
 } from './lib/referral-partner-handoffs.mjs';
 
 const queue = readJson(join('public', 'referral-partner-handoff-queue.json'));
-const paidPromotionLedger = readJson(join('public', 'paid-promotion-ledger.json'));
+const actualLedger = readJson(join('public', 'paid-promotion-ledger.json'));
+// Exercise the historical handoff lifecycle without requiring a retired
+// campaign to remain active in production.
+const paidPromotionLedger = structuredClone(actualLedger);
+for (const campaign of paidPromotionLedger.campaigns) delete campaign.referralFollowUpStatus;
 const referralPartnerPolicy = readJson(join('public', 'referral-partner-policy.json'));
 const inboundQueue = readJson(join('public', 'inbound-service-lead-queue.json'));
 const agent = readFileSync(join('scripts', 'referral-partner-handoff-agent.mjs'), 'utf8');
 const findings = [];
+const actualPlan = buildReferralPartnerHandoffPlan({
+  queue,
+  paidPromotionLedger: actualLedger,
+  referralPartnerPolicy,
+  inboundQueue
+});
+for (const campaign of actualLedger.campaigns.filter(
+  (item) => item.referralFollowUpStatus === 'retired'
+)) {
+  if (actualPlan.candidates.some((item) => item.sourceCampaignId === campaign.id)) {
+    findings.push('retired campaigns must not be offered for new referral handoffs');
+  }
+  try {
+    recordReferralHandoffSent({
+      queue,
+      paidPromotionLedger: actualLedger,
+      referralPartnerPolicy,
+      inboundQueue,
+      campaignId: campaign.id
+    });
+    findings.push('retired campaign must reject new handoff recording');
+  } catch (error) {
+    if (!error.message.includes('No eligible')) throw error;
+  }
+}
 
 validateReferralPartnerHandoffQueue(queue);
 const plan = buildReferralPartnerHandoffPlan({

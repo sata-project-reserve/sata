@@ -69,6 +69,7 @@ export function buildRevenueExecutionBrief({
   const referralHandoffCampaigns = (paidPromotionLedger.campaigns ?? []).filter(
     (campaign) =>
       campaign.status === 'completed' &&
+      campaign.referralFollowUpStatus !== 'retired' &&
       BigInt(campaign.conversion?.confirmedReceiptsSats ?? '0') === 0n &&
       referralPartnerPolicy?.status === 'approved-by-chairman' &&
       !(referralPartnerHandoffQueue.handoffs ?? []).some(

@@ -1,6 +1,6 @@
 # SATA Reserve Token Referral Handoff Dispatch Brief
 
-Generated: 2026-10-15T01:22:24.914Z
+Generated: 2026-10-15T01:28:46.740Z
 
 ## Boundary
 This brief coordinates manual referral handoff dispatch only. It does not send messages, approve partners, approve compensation, issue invoices, provide payment instructions, publish posts, grant tokens, move assets, or record state.
@@ -9,70 +9,11 @@ This brief coordinates manual referral handoff dispatch only. It does not send m
 https://github.com/sata-project-reserve/sata/issues/new?template=referral-handoff-evidence.yml
 
 ## Ready Manual Handoffs
-Ready candidates: 1 of 1.
+Ready candidates: 0 of 0.
 
-### Diana Crypto (@142C_)
-Campaign: diana-crypto-20260903-transparency-tweet
-Source evidence: https://x.com/142C_/status/2086570576530010172
-Packet artifact: public/referral-partner-handoff-packet.md
-Approved terms SHA-256: 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7
-Planning reserve impact: 174300 sats primary / 699300 sats qualified upgrade
-Planning basis: 70% reserve allocation at BTC/USD 100000
-Planning BTC/USD source: operator planning assumption, not a live quote.
-Counting rule: Count zero sats until a referred customer pays, the receipt is confirmed, and allocation is chairman-approved.
-Send the exact approved terms manually, submit durable sent evidence, then record only after the evidence review returns a verified operator command.
-Do not offer upfront compensation, payment instructions, token grants, public posts, invoices, guaranteed results, market support, or asset movement.
-
-```text
-Thanks Diana Crypto. SATA can consider referral compensation only for legitimate paid transparency-service referrals.
-
-Any relationship must be clearly disclosed to your audience before compensated coverage or referral activity.
-
-Compensation is considered only after a referred customer pays and the receipt is confirmed.
-
-No upfront payment, no price or buyer claims, no fake engagement, no bots, no raids, and no market-support commitment.
-
-Service link: https://sata-project-reserve.github.io/sata/services/transparency-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=transparency_audit#invoice-ready-intake
-
-Sample audit: https://sata-project-reserve.github.io/sata/services/sample-audit?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=sample_audit
-
-Referral policy: https://sata-project-reserve.github.io/sata/partners/referrals?utm_source=referral_diana_crypto&utm_medium=partner_referral&utm_campaign=referral_partner_diana_crypto&utm_content=policy
-
-Customer intake: https://github.com/sata-project-reserve/sata/issues/new?template=transparency-audit-intake.yml
-
-Required disclosure: Sponsored/Paid Partnership or token-compensated referral relationship. No price guarantee, no redemption promise, no market-support commitment, and liquidity can be thin and volatile.
-
-Send the referred project, contact path, expected role, requested compensation model, and evidence trail for chairman review.
-```
-
-After manual send, submit the evidence issue, review it, and record only with the verified hash-bound command:
-
-Evidence issue-body command:
-
-```sh
-node scripts/referral-handoff-evidence-agent.mjs render-template --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>"
-```
-
-Evidence review command:
-
-```sh
-npm run ops:referral-handoff-evidence-plan
-```
-
-Record-sent command:
-
-```sh
-node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7
-```
-
-If the partner later refers a qualified customer:
-
-```sh
-node scripts/inbound-service-lead-agent.mjs record-lead --lead "<lead-id>" --sourceType manual-referral --sourceId referral-partner-diana-crypto --contactHandle "<customer-handle-or-contact>" --publicProfileUrl "<https-customer-profile-url>" --projectUrl "<https-project-url>" --offer transparency-audit --evidence "<referral-and-customer-interest-evidence>" --customerAskedForInvoice false --recordedAtUtc "<recorded-at-utc>" --convertedAtUtc "<converted-at-utc>"
-```
-
+No post-receipt referral handoffs are ready for manual dispatch.
 ## Active Handoffs
 No active referral handoffs are awaiting response or referred-lead evidence.
 
 ## Next Action
-Send exact approved referral terms for diana-crypto-20260903-transparency-tweet, then submit sent evidence with the approved terms SHA-256.
+No active referral candidate. Focus on direct transparency-service prospects and incoming customer requests.

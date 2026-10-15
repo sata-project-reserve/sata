@@ -22,9 +22,13 @@ export function buildReferralPartnerHandoffPlan({
 }) {
   validateReferralPartnerHandoffQueue(queue);
   const eligibleCampaigns = findEligibleCampaigns({ paidPromotionLedger, referralPartnerPolicy });
-  const recordedCampaignIds = new Set((queue.handoffs ?? []).map((handoff) => handoff.sourceCampaignId));
+  const recordedCampaignIds = new Set(
+    (queue.handoffs ?? []).map((handoff) => handoff.sourceCampaignId)
+  );
   const candidates = eligibleCampaigns.filter((campaign) => !recordedCampaignIds.has(campaign.id));
-  const activeHandoffs = (queue.handoffs ?? []).filter((handoff) => !CLOSED_STATUSES.has(handoff.status));
+  const activeHandoffs = (queue.handoffs ?? []).filter(
+    (handoff) => !CLOSED_STATUSES.has(handoff.status)
+  );
   const acceptedHandoffs = activeHandoffs.filter(
     (handoff) => handoff.status === 'accepted-awaiting-referred-lead'
   );
@@ -76,7 +80,8 @@ export function recordReferralHandoffSent({
   const campaign = findEligibleCampaigns({ paidPromotionLedger, referralPartnerPolicy }).find(
     (candidate) => candidate.id === cleanLine(campaignId)
   );
-  if (!campaign) throw new Error(`No eligible completed zero-receipt campaign found: ${campaignId}`);
+  if (!campaign)
+    throw new Error(`No eligible completed zero-receipt campaign found: ${campaignId}`);
   const candidate = buildCandidate({ campaign, referralPartnerPolicy, inboundQueue });
   const approvedTermsHash = cleanLine(messageHash);
   if (!/^[a-f0-9]{64}$/.test(approvedTermsHash)) {
@@ -86,7 +91,11 @@ export function recordReferralHandoffSent({
     throw new Error('Approved referral handoff terms SHA-256 does not match the current packet.');
   }
   const id = `handoff-${campaign.id}`;
-  if ((queue.handoffs ?? []).some((handoff) => handoff.id === id || handoff.sourceCampaignId === campaign.id)) {
+  if (
+    (queue.handoffs ?? []).some(
+      (handoff) => handoff.id === id || handoff.sourceCampaignId === campaign.id
+    )
+  ) {
     throw new Error(`Referral handoff already recorded for campaign: ${campaign.id}`);
   }
   const nextHandoff = {
@@ -98,7 +107,10 @@ export function recordReferralHandoffSent({
       handle: cleanLine(campaign.promoter?.handle),
       profileUrl: cleanUrl(campaign.promoter?.profileUrl, 'partner.profileUrl')
     },
-    sourceEvidence: cleanUrl(campaign.verifiedPostUrl ?? campaign.reportedPostUrl, 'sourceEvidence'),
+    sourceEvidence: cleanUrl(
+      campaign.verifiedPostUrl ?? campaign.reportedPostUrl,
+      'sourceEvidence'
+    ),
     requestedCompensation: cleanReferralCompensation(requestedCompensation),
     status: 'sent-awaiting-response',
     sentEvidence: requireEvidence(sentEvidence, 'Referral handoff sent evidence is required.'),
@@ -170,7 +182,10 @@ export function recordReferralHandoffLeadConversion({
   let converted = false;
   const handoffs = (queue.handoffs ?? []).map((handoff) => {
     const handoffSourceId = `referral-partner-${handoff.partner?.id}`;
-    if (handoffSourceId !== referralSourceId || handoff.status !== 'accepted-awaiting-referred-lead') {
+    if (
+      handoffSourceId !== referralSourceId ||
+      handoff.status !== 'accepted-awaiting-referred-lead'
+    ) {
       return handoff;
     }
     converted = true;
@@ -226,7 +241,16 @@ export function validateReferralPartnerHandoffQueue(queue) {
       findings.push(`handoffStatuses missing ${required}`);
     }
   }
-  for (const required of ['id', 'sourceCampaignId', 'partner', 'sourceEvidence', 'status', 'sentEvidence', 'sentAtUtc', 'nextAction']) {
+  for (const required of [
+    'id',
+    'sourceCampaignId',
+    'partner',
+    'sourceEvidence',
+    'status',
+    'sentEvidence',
+    'sentAtUtc',
+    'nextAction'
+  ]) {
     if (!(queue?.requiredHandoffFields ?? []).includes(required)) {
       findings.push(`requiredHandoffFields missing ${required}`);
     }
@@ -244,12 +268,14 @@ export function validateReferralPartnerHandoffQueue(queue) {
     sourceCampaignIds.add(handoff.sourceCampaignId);
     for (const field of queue.requiredHandoffFields ?? []) {
       if (field === 'partner') {
-        if (!handoff.partner || typeof handoff.partner !== 'object') findings.push(`${label}: missing partner`);
+        if (!handoff.partner || typeof handoff.partner !== 'object')
+          findings.push(`${label}: missing partner`);
       } else if (!cleanLine(handoff[field])) {
         findings.push(`${label}: missing ${field}`);
       }
     }
-    if (!ALLOWED_STATUSES.has(handoff.status)) findings.push(`${label}: unsupported status ${handoff.status}`);
+    if (!ALLOWED_STATUSES.has(handoff.status))
+      findings.push(`${label}: unsupported status ${handoff.status}`);
     if (!/^https?:\/\/\S+$/i.test(handoff.sourceEvidence ?? '')) {
       findings.push(`${label}: sourceEvidence must be an http(s) URL`);
     }
@@ -283,7 +309,9 @@ export function validateReferralPartnerHandoffQueue(queue) {
       findings.push(`${label}: ${error.message}`);
     }
     assertNoUnsafePositiveClaims(
-      [handoff.sentEvidence, handoff.responseEvidence, handoff.nextAction, handoff.boundary].join('\n'),
+      [handoff.sentEvidence, handoff.responseEvidence, handoff.nextAction, handoff.boundary].join(
+        '\n'
+      ),
       `${label}: handoff text`,
       findings
     );
@@ -331,10 +359,13 @@ function findEligibleCampaigns({ paidPromotionLedger, referralPartnerPolicy }) {
   return (paidPromotionLedger?.campaigns ?? []).filter(
     (campaign) =>
       campaign.status === 'completed' &&
+      campaign.referralFollowUpStatus !== 'retired' &&
       BigInt(campaign.conversion?.confirmedReceiptsSats ?? '0') === 0n &&
       cleanLine(campaign.promoter?.handle) &&
       /^https:\/\/x\.com\//i.test(campaign.promoter?.profileUrl ?? '') &&
-      /^https:\/\/x\.com\/[^/]+\/status\/\d+/i.test(campaign.verifiedPostUrl ?? campaign.reportedPostUrl ?? '')
+      /^https:\/\/x\.com\/[^/]+\/status\/\d+/i.test(
+        campaign.verifiedPostUrl ?? campaign.reportedPostUrl ?? ''
+      )
   );
 }
 
@@ -343,7 +374,8 @@ function assertNoUnsafePositiveClaims(text, label, findings) {
     /\b(no|not|without|do not|must not|does not|block(?:s)?|before separate Executive Chairman approval)[^.;\n]*(?:price guarantee|redemption promise|market-support|guaranteed buyers|fake engagement|bots|raids|investment return|payment instruction|asset movement|token grant|compensation)[^.;\n]*/gi,
     ''
   );
-  if (PROHIBITED_PATTERN.test(cleaned)) findings.push(`${label} contains prohibited operating language`);
+  if (PROHIBITED_PATTERN.test(cleaned))
+    findings.push(`${label} contains prohibited operating language`);
 }
 
 function cleanUrl(value, label) {
@@ -360,18 +392,23 @@ function requireEvidence(value, message) {
 
 function cleanReferralCompensation(value) {
   const compensation = cleanLine(value || 'post-receipt referral share');
-  if (!/post-receipt|after (?:the )?(?:referred )?customer pays|after .*receipt/i.test(compensation)) {
+  if (
+    !/post-receipt|after (?:the )?(?:referred )?customer pays|after .*receipt/i.test(compensation)
+  ) {
     throw new Error('requestedCompensation must be post-receipt only.');
   }
   if (PROHIBITED_COMPENSATION_PATTERN.test(compensation)) {
-    throw new Error('requestedCompensation must not include upfront payment, payment instructions, token grants, or immediate transfer language.');
+    throw new Error(
+      'requestedCompensation must not include upfront payment, payment instructions, token grants, or immediate transfer language.'
+    );
   }
   return compensation;
 }
 
 function parseDate(value, label) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) throw new Error(`${label} must be a valid timestamp.`);
+  if (!value || Number.isNaN(date.getTime()))
+    throw new Error(`${label} must be a valid timestamp.`);
   return value;
 }
 

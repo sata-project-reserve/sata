@@ -6,6 +6,8 @@ import { renderReferralHandoffEvidenceComment } from './referral-handoff-evidenc
 
 const queue = readJson(join('public', 'referral-partner-handoff-queue.json'));
 const paidPromotionLedger = readJson(join('public', 'paid-promotion-ledger.json'));
+// The evidence fixture describes a historical active campaign.
+for (const campaign of paidPromotionLedger.campaigns) delete campaign.referralFollowUpStatus;
 const referralPartnerPolicy = readJson(join('public', 'referral-partner-policy.json'));
 const inboundQueue = readJson(join('public', 'inbound-service-lead-queue.json'));
 const issueFixture = readJson(join('tests', 'fixtures', 'referral-handoff-evidence-issue.json'));

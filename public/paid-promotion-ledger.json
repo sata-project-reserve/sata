@@ -30,6 +30,8 @@
       },
       "channel": "x-post",
       "status": "completed",
+      "referralFollowUpStatus": "retired",
+      "referralFollowUpReason": "Founder instructed agents to stop pursuing this promoter and move in a different direction. Historical payment and publication evidence retained.",
       "approval": {
         "approvedBy": "executive-chairman",
         "approvalBasis": "manual DM negotiation and approved factual draft",

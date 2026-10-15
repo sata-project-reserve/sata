@@ -144,58 +144,64 @@ for (const item of brief.readyManualHandoffs) {
 if (!markdown.includes('## Ready Manual Handoffs')) {
   findings.push('markdown must include ready manual handoffs section');
 }
-if (!markdown.includes('Approved terms SHA-256')) {
-  findings.push('markdown must expose approved terms SHA-256');
-}
-if (!markdown.includes('#invoice-ready-intake')) {
-  findings.push('markdown must route referral service traffic to invoice-ready intake');
-}
-if (
-  !markdown.includes('Planning reserve impact: 174300 sats primary / 699300 sats qualified upgrade')
-) {
-  findings.push('markdown must expose planning reserve impact for referral handoff conversion');
-}
-if (
-  !markdown.includes('Planning BTC/USD source: operator planning assumption, not a live quote.')
-) {
-  findings.push('markdown must expose planning BTC/USD source');
-}
-if (!markdown.includes('Counting rule: Count zero sats until a referred customer pays')) {
-  findings.push('markdown must expose zero-sats counting rule before confirmed receipt');
-}
-if (!markdown.includes('referral-handoff-evidence.yml')) {
-  findings.push('markdown must link evidence intake');
-}
-if (!markdown.includes('referral-handoff-evidence-agent.mjs render-template --campaign')) {
-  findings.push('markdown must include the evidence issue-body command');
-}
-if (
-  !markdown.includes(
-    `Evidence review command:\n\n\`\`\`sh\n${REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND}`
-  )
-) {
-  findings.push('markdown must include the evidence review command before record-sent');
-}
-const reviewCommandIndex = markdown.indexOf(REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND);
-const recordSentCommandIndex = markdown.indexOf(
-  'node scripts/referral-partner-handoff-agent.mjs record-sent'
-);
-if (reviewCommandIndex === -1) {
-  findings.push('markdown must include referral handoff evidence review command');
-}
-if (
-  reviewCommandIndex !== -1 &&
-  recordSentCommandIndex !== -1 &&
-  reviewCommandIndex > recordSentCommandIndex
-) {
-  findings.push('markdown must present evidence review before record-sent');
-}
-for (const command of markdown.match(
-  /node scripts\/referral-partner-handoff-agent\.mjs record-sent[^\n]*/g
-) ?? []) {
-  if (!/--messageHash [a-f0-9]{64}\b/.test(command)) {
-    findings.push(`markdown record-sent command must require approved terms hash: ${command}`);
+if (brief.readyManualHandoffs.length > 0) {
+  if (!markdown.includes('Approved terms SHA-256')) {
+    findings.push('markdown must expose approved terms SHA-256');
   }
+  if (!markdown.includes('#invoice-ready-intake')) {
+    findings.push('markdown must route referral service traffic to invoice-ready intake');
+  }
+  if (
+    !markdown.includes(
+      'Planning reserve impact: 174300 sats primary / 699300 sats qualified upgrade'
+    )
+  ) {
+    findings.push('markdown must expose planning reserve impact for referral handoff conversion');
+  }
+  if (
+    !markdown.includes('Planning BTC/USD source: operator planning assumption, not a live quote.')
+  ) {
+    findings.push('markdown must expose planning BTC/USD source');
+  }
+  if (!markdown.includes('Counting rule: Count zero sats until a referred customer pays')) {
+    findings.push('markdown must expose zero-sats counting rule before confirmed receipt');
+  }
+  if (!markdown.includes('referral-handoff-evidence.yml')) {
+    findings.push('markdown must link evidence intake');
+  }
+  if (!markdown.includes('referral-handoff-evidence-agent.mjs render-template --campaign')) {
+    findings.push('markdown must include the evidence issue-body command');
+  }
+  if (
+    !markdown.includes(
+      `Evidence review command:\n\n\`\`\`sh\n${REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND}`
+    )
+  ) {
+    findings.push('markdown must include the evidence review command before record-sent');
+  }
+  const reviewCommandIndex = markdown.indexOf(REFERRAL_HANDOFF_EVIDENCE_REVIEW_COMMAND);
+  const recordSentCommandIndex = markdown.indexOf(
+    'node scripts/referral-partner-handoff-agent.mjs record-sent'
+  );
+  if (reviewCommandIndex === -1) {
+    findings.push('markdown must include referral handoff evidence review command');
+  }
+  if (
+    reviewCommandIndex !== -1 &&
+    recordSentCommandIndex !== -1 &&
+    reviewCommandIndex > recordSentCommandIndex
+  ) {
+    findings.push('markdown must present evidence review before record-sent');
+  }
+  for (const command of markdown.match(
+    /node scripts\/referral-partner-handoff-agent\.mjs record-sent[^\n]*/g
+  ) ?? []) {
+    if (!/--messageHash [a-f0-9]{64}\b/.test(command)) {
+      findings.push(`markdown record-sent command must require approved terms hash: ${command}`);
+    }
+  }
+} else if (/record-sent --campaign/.test(markdown)) {
+  findings.push('empty dispatch must not expose a stale campaign send command');
 }
 if (/\b(private key|seed phrase)\b/i.test(markdown)) {
   findings.push('dispatch markdown must not include prohibited or secret-requesting language');

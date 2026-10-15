@@ -400,24 +400,8 @@ test('operations page surfaces chairman queue and prospect batch', async ({ page
     .locator('.proof-block')
     .filter({ hasText: 'post-receipt candidate' })
     .filter({ hasText: 'Diana Crypto @142C_' });
-  await expect(
-    referralHandoffCandidateBlock.getByText('Write Packet', { exact: true })
-  ).toBeVisible();
-  await expect(
-    referralHandoffCandidateBlock.getByText(
-      'node scripts/referral-partner-handoff-agent.mjs write-packet --campaign diana-crypto-20260903-transparency-tweet'
-    )
-  ).toBeVisible();
-  await expect(
-    referralHandoffCandidateBlock.getByRole('link', {
-      name: 'public/referral-partner-handoff-packet.md'
-    })
-  ).toHaveAttribute('href', '/referral-partner-handoff-packet.md');
-  await expect(
-    referralHandoffCandidateBlock.getByText(
-      'node scripts/referral-partner-handoff-agent.mjs record-sent --campaign diana-crypto-20260903-transparency-tweet --evidence "<partner-terms-send-evidence>" --sentAtUtc "<sent-at-utc>" --messageHash 74e29eee62758fdd29be42b7ab2e2973f0abb150f49b71e7fe763f6ae54b6ac7'
-    )
-  ).toBeVisible();
+  await expect(referralHandoffCandidateBlock).toHaveCount(0);
+  await expect(page.getByText('No referral handoff is waiting on evidence.')).toBeVisible();
   await expect(
     page.getByText(
       'Approved post-receipt partner compensation policy ready for gated referral packet generation.'

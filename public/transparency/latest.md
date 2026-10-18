@@ -1,7 +1,7 @@
 # SATA Transparency Report
 
 Status: TRANSPARENCY_VERIFIED_WITH_DISCLOSURES
-Generated UTC: 2026-10-18T03:41:23.133Z
+Generated UTC: 2026-10-18T15:35:48.813Z
 Cadence: scheduled every 12 hours when GitHub Actions is enabled
 Slogan: Proof over promises.
 
@@ -29,24 +29,24 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Pool: CYRZoXLjgNFTQJnvyJpym1wfTAEoGz6kJMYJFb5hUd8e
 - Pool program: CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C
 - Pool open: true
-- SATA reserve: 158292710.636485198 (158292710636485198 base units)
-- WSOL reserve: 4.535225555 (4535225555 lamports)
+- SATA reserve: 173842201.796253297 (173842201796253297 base units)
+- WSOL reserve: 4.980725555 (4980725555 lamports)
 - LP mint: 4wp3yZVVdwBvkRnx5qHn8uLRFuw3P9Srt3JvGqn6mrdi
 - Total locked LP: 26627909375363
-- Owner unlocked LP: 0
-- Lock status: LOCKED_BY_RAYDIUM_BURN_AND_EARN
-- Removable by owner: false
-- Disclosure: Raydium Burn & Earn lock verified and no owner unlocked LP balance was detected.
+- Owner unlocked LP: 2617117512627
+- Lock status: PARTIALLY_LOCKED_OWNER_LP_REMAINS
+- Removable by owner: true
+- Disclosure: Raydium Burn & Earn lock verified, and an owner unlocked LP balance was detected. Owner-held LP remains removable until separately locked, burned, or transferred to accountable multisig control.
 
 ## Distribution
 
 - Stage: early-stage-founder-led
 - Founder role: Founder and sole maintainer
 - Founder public GitHub: https://github.com/jboudou007
-- Founder direct SATA: 677729612.019676678 (67.78%)
-- SATA in pool: 158292710.636485198 (15.83%)
+- Founder direct SATA: 662180120.859908579 (66.23%)
+- SATA in pool: 173842201.796253297 (17.38%)
 - SATA outside founder wallet and pool: 163740900.502365069 (16.37%)
-- Owner unlocked LP: 0
+- Owner unlocked LP: 2617117512627
 - Locked LP: 26627909375363
 - Control caveat: Adding SATA to liquidity reduces direct wallet concentration, but founder control only materially decreases when the resulting LP tokens are locked, burned, or controlled by an accountable multisig.
 - Founder operational use: The founder and sole maintainer may use founder-controlled SATA for internal operations, ecosystem work, service compensation, or other project needs at founder discretion. These movements are not hidden: the current owner wallet balance is read from chain, and SATA that leaves the founder wallet but is not in the Raydium pool is reported as outside founder wallet and pool unless separately categorized in a future public record.
@@ -90,6 +90,7 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 
 - sata-supply-equals-launch-initial: 999763223158526945
 - metadata-mutability-disclosed: mutable
+- owner-unlocked-lp-balance-zero: 2617117512627
 - bitcoin-reserve-proof: reserve-pending-new-address-proof
 
 ## Checks
@@ -109,10 +110,10 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 - raydium-pool-account: pass (critical) - CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C
 - raydium-pool-mints: pass (critical) - So11111111111111111111111111111111111111112, A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
 - raydium-pool-open: pass (critical) - 1785346170
-- raydium-sata-reserve: pass (critical) - 158292710636485198
-- raydium-wsol-reserve: pass (critical) - 4535225555
-- raydium-lp-lock-verified: pass (critical) - Raydium Burn & Earn lock verified and no owner unlocked LP balance was detected.
-- owner-unlocked-lp-balance-zero: pass (warning) - 0
+- raydium-sata-reserve: pass (critical) - 173842201796253297
+- raydium-wsol-reserve: pass (critical) - 4980725555
+- raydium-lp-lock-verified: pass (critical) - Raydium Burn & Earn lock verified, and an owner unlocked LP balance was detected. Owner-held LP remains removable until separately locked, burned, or transferred to accountable multisig control.
+- owner-unlocked-lp-balance-zero: fail (warning) - 2617117512627
 - bitcoin-reserve-proof: fail (warning) - reserve-pending-new-address-proof
 
 ## Links
@@ -128,6 +129,6 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 - SATA has no hidden mint authority when the mint-authority check is passing.
 - SATA has no freeze authority when the freeze-authority check is passing.
 - SATA is currently founder-led, and the direct founder balance is disclosed as a material concentration risk.
-- No owner unlocked LP balance was detected in the latest report; any future owner-held LP remains removable until separately locked, burned, or transferred to accountable multisig control.
+- Owner-held unlocked LP is disclosed as a material concentration risk and remains removable until separately locked, burned, or transferred to accountable multisig control.
 - Liquidity is described as locked only for LP balances independently verified in Raydium Burn & Earn accounts.
 - No report field contains seed phrases, private keys, signed transaction bytes, or full RPC URLs.

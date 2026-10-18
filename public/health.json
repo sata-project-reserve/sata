@@ -1,19 +1,20 @@
 {
   "status": "ok",
   "project": "SATA Reserve Token",
-  "generatedAtUtc": "2026-10-18T03:41:24.743Z",
-  "latestReportGeneratedAtUtc": "2026-10-18T03:41:23.133Z",
-  "sourceCommit": "feaafda80c576fdcc17f3aef612acaa5a374e883",
+  "generatedAtUtc": "2026-10-18T15:35:49.838Z",
+  "latestReportGeneratedAtUtc": "2026-10-18T15:35:48.813Z",
+  "sourceCommit": "1c6ef9efc18e6b26cf950f5c8fd11e83158d2a54",
   "canonicalTransparencyUrl": "https://sata-project-reserve.github.io/sata/transparency",
   "latestJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
   "historyJson": "https://sata-project-reserve.github.io/sata/transparency/history.json",
   "onChainMetadataUri": "https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-metadata.json",
   "expectedMetadataUri": "https://sata-token-assets.jboudou007.chatgpt.site/mainnet/sata-metadata.json",
   "reportAndMetadataUriMatch": true,
-  "latestHistoryStateHash": "3c71238c77c6b1fbee51d0ce23b4616f4e140204e963a4754ee8719c88dd86ee",
+  "latestHistoryStateHash": "f09c9cf0d5d1b67917b8b054c1a5304653bb41f203cc425302ae84cdb5ad8474",
   "warnings": [
     "sata-supply-equals-launch-initial: 999763223158526945",
     "metadata-mutability-disclosed: mutable",
+    "owner-unlocked-lp-balance-zero: 2617117512627",
     "bitcoin-reserve-proof: reserve-pending-new-address-proof"
   ]
 }

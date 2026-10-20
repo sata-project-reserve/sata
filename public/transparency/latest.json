@@ -3,10 +3,10 @@
   "status": "TRANSPARENCY_VERIFIED_WITH_DISCLOSURES",
   "project": "SATA",
   "slogan": "Proof over promises.",
-  "generatedAtUtc": "2026-10-19T18:31:19.802Z",
+  "generatedAtUtc": "2026-10-20T04:03:15.074Z",
   "reportCadence": "scheduled every 12 hours when GitHub Actions is enabled",
   "source": {
-    "commit": "41a0434986e7a82ca054a156e5277e5f885a7686",
+    "commit": "6b140d1c5f79d914eba517cc660b328801a9dbb4",
     "repository": "https://github.com/sata-project-reserve/sata",
     "transparencyPage": "https://sata-project-reserve.github.io/sata/transparency",
     "latestJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
@@ -19,8 +19,8 @@
   "rpcHost": "solana-rpc.publicnode.com",
   "owner": "HtDVYgAwWWzWWTSer1MtNVvJpZHhKjLo2Drzu2eARRaT",
   "solana": {
-    "ownerSolLamports": "137256927",
-    "ownerSol": "0.137256927",
+    "ownerSolLamports": "131297578",
+    "ownerSol": "0.131297578",
     "sataMint": "A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
     "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
     "decimals": 9,
@@ -114,7 +114,7 @@
       "method": "pending-new-address-proof",
       "detail": "reserve was moved at founder discretion; new reserve address and address-control proof are pending publication"
     },
-    "lastCheckedUtc": "2026-10-19T18:31:21.403Z",
+    "lastCheckedUtc": "2026-10-20T04:03:15.602Z",
     "historicalAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
     "plannedReserveSats": "500000",
     "plannedReserveBtc": "0.005",

@@ -1,7 +1,7 @@
 # SATA Transparency Report
 
 Status: TRANSPARENCY_VERIFIED_WITH_DISCLOSURES
-Generated UTC: 2026-10-22T03:52:18.117Z
+Generated UTC: 2026-10-22T16:51:21.648Z
 Cadence: scheduled every 12 hours when GitHub Actions is enabled
 Slogan: Proof over promises.
 
@@ -29,8 +29,8 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Pool: CYRZoXLjgNFTQJnvyJpym1wfTAEoGz6kJMYJFb5hUd8e
 - Pool program: CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C
 - Pool open: true
-- SATA reserve: 186089507.925662071 (186089507925662071 base units)
-- WSOL reserve: 4.654223032 (4654223032 lamports)
+- SATA reserve: 230089507.925662071 (230089507925662071 base units)
+- WSOL reserve: 3.766208312 (3766208312 lamports)
 - LP mint: 4wp3yZVVdwBvkRnx5qHn8uLRFuw3P9Srt3JvGqn6mrdi
 - Total locked LP: 26627909375363
 - Owner unlocked LP: 2617117512627
@@ -43,8 +43,8 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Stage: early-stage-founder-led
 - Founder role: Founder and sole maintainer
 - Founder public GitHub: https://github.com/jboudou007
-- Founder direct SATA: 644180119 (64.43%)
-- SATA in pool: 186089507.925662071 (18.61%)
+- Founder direct SATA: 600180119 (60.03%)
+- SATA in pool: 230089507.925662071 (23.01%)
 - SATA outside founder wallet and pool: 169493596.232864874 (16.95%)
 - Owner unlocked LP: 2617117512627
 - Locked LP: 26627909375363
@@ -110,8 +110,8 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 - raydium-pool-account: pass (critical) - CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C
 - raydium-pool-mints: pass (critical) - So11111111111111111111111111111111111111112, A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
 - raydium-pool-open: pass (critical) - 1785346170
-- raydium-sata-reserve: pass (critical) - 186089507925662071
-- raydium-wsol-reserve: pass (critical) - 4654223032
+- raydium-sata-reserve: pass (critical) - 230089507925662071
+- raydium-wsol-reserve: pass (critical) - 3766208312
 - raydium-lp-lock-verified: pass (critical) - Raydium Burn & Earn lock verified, and an owner unlocked LP balance was detected. Owner-held LP remains removable until separately locked, burned, or transferred to accountable multisig control.
 - owner-unlocked-lp-balance-zero: fail (warning) - 2617117512627
 - bitcoin-reserve-proof: fail (warning) - reserve-pending-new-address-proof

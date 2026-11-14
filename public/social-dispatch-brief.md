@@ -1,6 +1,6 @@
 # SATA Reserve Token Social Dispatch Brief
 
-Generated: 2026-11-14T17:07:11.766Z
+Generated: 2026-11-14T17:47:50.368Z
 Account: @SATAReserve
 
 ## Boundary

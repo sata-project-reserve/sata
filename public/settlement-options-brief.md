@@ -1,6 +1,6 @@
 # SATA Reserve Token Settlement Options Brief
 
-Generated: 2026-11-20T03:14:41.088Z
+Generated: 2026-11-20T06:22:52.819Z
 Reserve: 0 sats confirmed, 1000000000 sats remaining.
 
 ## Boundary

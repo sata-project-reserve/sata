@@ -1,7 +1,7 @@
 # SATA Transparency Report
 
 Status: TRANSPARENCY_VERIFIED_WITH_DISCLOSURES
-Generated UTC: 2026-11-20T19:47:04.073Z
+Generated UTC: 2026-11-21T06:13:12.671Z
 Cadence: scheduled every 12 hours when GitHub Actions is enabled
 Slogan: Proof over promises.
 
@@ -13,7 +13,7 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - RPC host: solana-rpc.publicnode.com
 - Owner: HtDVYgAwWWzWWTSer1MtNVvJpZHhKjLo2Drzu2eARRaT
 - SATA mint: A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
-- Supply: 999763223.158526945 SATA (999763223158526945 base units)
+- Supply: 999761107.606580078 SATA (999761107606580078 base units)
 - Launch initial supply: 1000000000 SATA (1000000000000000000 base units)
 - Mint authority: revoked
 - Freeze authority: revoked
@@ -45,7 +45,7 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Founder public GitHub: https://github.com/jboudou007
 - Founder direct SATA: 90180119 (9.02%)
 - SATA in pool: 770089507.925662071 (77.02%)
-- SATA outside founder wallet and pool: 139493596.232864874 (13.95%)
+- SATA outside founder wallet and pool: 139491480.680918007 (13.95%)
 - Owner unlocked LP: 2617117512627
 - Locked LP: 26627909375363
 - Control caveat: Adding SATA to liquidity reduces direct wallet concentration, but founder control only materially decreases when the resulting LP tokens are locked, burned, or controlled by an accountable multisig.
@@ -70,8 +70,8 @@ This report is read-only. It does not request wallet signatures, spend SOL, uplo
 - Proof validation: reserve was moved at founder discretion; new reserve address and address-control proof are pending publication
 - Sats per SATA: 0
 - SATA per sat: 0
-- Target for 1 sat per 1 SATA: 999763224 sats (9.99763224 BTC)
-- Additional sats to that treasury milestone: 999763224
+- Target for 1 sat per 1 SATA: 999761108 sats (9.99761108 BTC)
+- Additional sats to that treasury milestone: 999761108
 
 The Bitcoin reserve is a transparency metric only. It is not a redemption promise, guaranteed price floor, yield product, or market-support commitment.
 
@@ -88,7 +88,7 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 
 ## Warnings
 
-- sata-supply-equals-launch-initial: 999763223158526945
+- sata-supply-equals-launch-initial: 999761107606580078
 - metadata-mutability-disclosed: mutable
 - owner-unlocked-lp-balance-zero: 2617117512627
 - bitcoin-reserve-proof: reserve-pending-new-address-proof
@@ -98,8 +98,8 @@ The Bitcoin reserve is a transparency metric only. It is not a redemption promis
 - sata-mint-exists: pass (critical) - A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH
 - sata-token-program: pass (critical) - TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA
 - sata-decimals: pass (critical) - 9
-- sata-supply-not-above-launch-initial: pass (critical) - 999763223158526945
-- sata-supply-equals-launch-initial: fail (warning) - 999763223158526945
+- sata-supply-not-above-launch-initial: pass (critical) - 999761107606580078
+- sata-supply-equals-launch-initial: fail (warning) - 999761107606580078
 - sata-mint-authority-revoked: pass (critical) - revoked
 - sata-freeze-authority-revoked: pass (critical) - revoked
 - metadata-pda: pass (critical) - 4mwFTi6UkG74Gxp1Q912d1SH7Gg7kXWboRCn4kJffs7g

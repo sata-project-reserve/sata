@@ -3,10 +3,10 @@
   "status": "TRANSPARENCY_VERIFIED_WITH_DISCLOSURES",
   "project": "SATA",
   "slogan": "Proof over promises.",
-  "generatedAtUtc": "2026-11-20T19:47:04.073Z",
+  "generatedAtUtc": "2026-11-21T06:13:12.671Z",
   "reportCadence": "scheduled every 12 hours when GitHub Actions is enabled",
   "source": {
-    "commit": "18a72c17250e0aee9254b91331afc4a8305054d8",
+    "commit": "03f1253b5d2a8ed018e5bc402dea2fa756e5ccec",
     "repository": "https://github.com/sata-project-reserve/sata",
     "transparencyPage": "https://sata-project-reserve.github.io/sata/transparency",
     "latestJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
@@ -24,8 +24,8 @@
     "sataMint": "A4U9Z1tDcvf4gfAVpdsDEbZo67hw6rz2r5UVJ12RQzjH",
     "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
     "decimals": 9,
-    "supplyRaw": "999763223158526945",
-    "supplyUi": "999763223.158526945",
+    "supplyRaw": "999761107606580078",
+    "supplyUi": "999761107.606580078",
     "launchInitialSupplyRaw": "1000000000000000000",
     "launchInitialSupplyUi": "1000000000",
     "mintAuthority": null,
@@ -93,8 +93,8 @@
     "poolSataRaw": "770089507925662071",
     "poolSataUi": "770089507.925662071",
     "poolSataPercent": "77.02%",
-    "outsideFounderAndPoolRaw": "139493596232864874",
-    "outsideFounderAndPoolUi": "139493596.232864874",
+    "outsideFounderAndPoolRaw": "139491480680918007",
+    "outsideFounderAndPoolUi": "139491480.680918007",
     "outsideFounderAndPoolPercent": "13.95%",
     "ownerUnlockedLpRaw": "2617117512627",
     "totalLockedLpRaw": "26627909375363",
@@ -114,7 +114,7 @@
       "method": "pending-new-address-proof",
       "detail": "reserve was moved at founder discretion; new reserve address and address-control proof are pending publication"
     },
-    "lastCheckedUtc": "2026-11-20T19:47:06.794Z",
+    "lastCheckedUtc": "2026-11-21T06:13:13.691Z",
     "historicalAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
     "plannedReserveSats": "500000",
     "plannedReserveBtc": "0.005",
@@ -122,9 +122,9 @@
     "confirmedReserveBtc": "0",
     "mempoolReserveBtc": "0",
     "reserveBtc": "0",
-    "targetReserveSatsForOneSatPerSata": "999763224",
-    "targetReserveBtcForOneSatPerSata": "9.99763224",
-    "additionalSatsToOneSatPerSata": "999763224",
+    "targetReserveSatsForOneSatPerSata": "999761108",
+    "targetReserveBtcForOneSatPerSata": "9.99761108",
+    "additionalSatsToOneSatPerSata": "999761108",
     "satsPerSata": "0",
     "sataPerSat": "0",
     "progressToOneSatPerSataPpm": "0",
@@ -169,13 +169,13 @@
       "name": "sata-supply-not-above-launch-initial",
       "ok": true,
       "level": "critical",
-      "detail": "999763223158526945"
+      "detail": "999761107606580078"
     },
     {
       "name": "sata-supply-equals-launch-initial",
       "ok": false,
       "level": "warning",
-      "detail": "999763223158526945"
+      "detail": "999761107606580078"
     },
     {
       "name": "sata-mint-authority-revoked",
@@ -269,7 +269,7 @@
     }
   ],
   "warnings": [
-    "sata-supply-equals-launch-initial: 999763223158526945",
+    "sata-supply-equals-launch-initial: 999761107606580078",
     "metadata-mutability-disclosed: mutable",
     "owner-unlocked-lp-balance-zero: 2617117512627",
     "bitcoin-reserve-proof: reserve-pending-new-address-proof"

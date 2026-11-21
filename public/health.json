@@ -1,9 +1,9 @@
 {
   "status": "ok",
   "project": "SATA Reserve Token",
-  "generatedAtUtc": "2026-11-20T19:47:06.797Z",
-  "latestReportGeneratedAtUtc": "2026-11-20T19:47:04.073Z",
-  "sourceCommit": "18a72c17250e0aee9254b91331afc4a8305054d8",
+  "generatedAtUtc": "2026-11-21T06:13:13.692Z",
+  "latestReportGeneratedAtUtc": "2026-11-21T06:13:12.671Z",
+  "sourceCommit": "03f1253b5d2a8ed018e5bc402dea2fa756e5ccec",
   "canonicalTransparencyUrl": "https://sata-project-reserve.github.io/sata/transparency",
   "latestJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
   "historyJson": "https://sata-project-reserve.github.io/sata/transparency/history.json",
@@ -12,7 +12,7 @@
   "reportAndMetadataUriMatch": true,
   "latestHistoryStateHash": "57c386811a186ea7ca8d385ccbc115344c79ba01cff8a65785e810b2e045e152",
   "warnings": [
-    "sata-supply-equals-launch-initial: 999763223158526945",
+    "sata-supply-equals-launch-initial: 999761107606580078",
     "metadata-mutability-disclosed: mutable",
     "owner-unlocked-lp-balance-zero: 2617117512627",
     "bitcoin-reserve-proof: reserve-pending-new-address-proof"

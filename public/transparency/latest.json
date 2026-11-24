@@ -3,10 +3,10 @@
   "status": "TRANSPARENCY_VERIFIED_WITH_DISCLOSURES",
   "project": "SATA",
   "slogan": "Proof over promises.",
-  "generatedAtUtc": "2026-11-24T09:01:16.616Z",
+  "generatedAtUtc": "2026-11-24T22:05:14.765Z",
   "reportCadence": "scheduled every 12 hours when GitHub Actions is enabled",
   "source": {
-    "commit": "6def302034b1793f5c531fcdcab0b6e4d145f9e2",
+    "commit": "4882ffbfdcfdb0c868b843ec226ec6a262aaf688",
     "repository": "https://github.com/sata-project-reserve/sata",
     "transparencyPage": "https://sata-project-reserve.github.io/sata/transparency",
     "latestJson": "https://sata-project-reserve.github.io/sata/transparency/latest.json",
@@ -114,7 +114,7 @@
       "method": "pending-new-address-proof",
       "detail": "reserve was moved at founder discretion; new reserve address and address-control proof are pending publication"
     },
-    "lastCheckedUtc": "2026-11-24T09:01:18.424Z",
+    "lastCheckedUtc": "2026-11-24T22:05:15.507Z",
     "historicalAddress": "bc1q7dgqqyfh7gxn2kze874d07w4qcj43v4zptv6kk",
     "plannedReserveSats": "500000",
     "plannedReserveBtc": "0.005",
